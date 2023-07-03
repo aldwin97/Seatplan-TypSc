@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import './logInPage.css';
+import styles from './logInPage.module.css';
 
 const LogInPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,45 +16,43 @@ const LogInPage: React.FC = () => {
   };
 
   return (
-  <>
     <body>
-      <div className="container">
-        <form>
+      <div className={styles.container1}>
+        <form className={styles.form1}>
           <h2>Log in</h2>
-
-          <div className="input-group">
+          <div className={styles['input-group']}>
             <input
               required
               type="text"
               name="text"
               autoComplete="off"
-              className="input"
+              className={styles.input}
             />
-            <label className="user-label">Username</label>
+            <label className={styles['user-label']}>Username</label>
           </div>
 
-          <div className="input-group">
+          <div className={styles['input-group']}>
             <input
               required
               type={showPassword ? 'text' : 'password'}
               name="password"
               autoComplete="off"
-              className="input"
+              className={styles.input}
             />
-            <label className="user-label">Password</label>
+            <label className={styles['user-label']}>Password</label>
             <span
-              className={`toggle-password ${showPassword ? 'active' : ''}`}
+              className={`${styles['toggle-password']} ${showPassword ? styles.active : ''}`}
               onClick={togglePasswordVisibility}
             >
               {showPassword ? <FaEye /> : <FaEyeSlash />}
             </span>
           </div>
 
-          <button className="sub" type="submit">
+          <button className={styles.sub} type="submit">
             SIGN IN
           </button>
           <button
-            className="sub"
+            className={styles.sub}
             type="button"
             onClick={viewSeatPageHandleClick}
           >
@@ -64,7 +62,6 @@ const LogInPage: React.FC = () => {
         </form>
       </div>
     </body>
-    </>
   );
 };
 

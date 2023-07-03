@@ -26,7 +26,18 @@ public class usermodel {
         // Default constructor
     }
 
-    public usermodel(Long userId, String username, String password, String fname, String lname, String email, String address, String contact, Long userTypeId, Long positionId, String img, Long markAsDeleteId) {
+    public usermodel(Long userId, 
+     String username, 
+    String password, 
+    String fname, 
+    String lname, 
+    String email, 
+    String address, 
+    String contact, 
+    Long userTypeId, 
+    Long positionId, 
+    String img, 
+    Long markAsDeleteId) {
         this.userId = userId;
         this.username = username;
         this.password = password;

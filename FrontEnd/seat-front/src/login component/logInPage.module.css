@@ -2,12 +2,12 @@ body {
   margin: 0;
   padding: 0;
   background-size: 100% 100%;
-  background-image: url('../../assets/loginbg.jpg');
+  background-image: url('./../assets/loginbg.jpg');
   background-repeat: no-repeat;
   background-position: center;
 }
 
-.container {
+.container1 {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,19 +15,19 @@ body {
   margin: 0 auto;
 }
 
-
-form {
+.form1 {
   border: 1px solid #ccc;
   padding: 20px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.8);
   width: 300px;
+  height: 300px;
   border-radius: 10px;
   transition: transform 0.4s ease-in-out, border-color 0.4s ease-in-out; /* Transition for transform and border-color properties */
   border-color: #ccc; /* Initial border color */
 }
 
-form:hover {
+.form1:hover {
   /* Hover styles */
   transform: scale(1.05);
   border-color: black; /* Hover border color */
@@ -94,9 +94,9 @@ input:valid ~ .user-label {
 
 .sub:hover {
   /* Hover styles */
-  background-color: #62f56e; /* Hover background color */
-  color: #1e5721; /* Hover text color */
-  border-color: #000000; /* Hover border color */
+  background-color: #1e7e28; /* Hover background color */
+  color: #ffffff; /* Hover text color */
+
 }
 
 

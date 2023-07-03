@@ -14,7 +14,9 @@ const LogInPage: React.FC = () => {
   const viewSeatPageHandleClick = () => {
     navigate('/viewSeatPage');
   };
-
+  const helpPageHandleClick = () => {
+    navigate('/helpPage');
+  };
   return (
     <body>
       <div className={styles.container1}>
@@ -58,7 +60,7 @@ const LogInPage: React.FC = () => {
           >
             VIEW SEAT PLAN
           </button>
-          <a href="facebook.com">Need Help?</a>
+          <a href="#" onClick={helpPageHandleClick}>Need Help?</a>
         </form>
       </div>
     </body>

@@ -1,5 +1,5 @@
-import LoginPage from './login component/logInPage';
-import ViewSeatPage from './page/viewSeatPage';
+import LoginPage from './login_component/logInPage';
+import ViewSeatPage from './viewseat_component/viewSeatPage';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 

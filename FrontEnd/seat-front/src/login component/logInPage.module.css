@@ -94,9 +94,9 @@ input:valid ~ .user-label {
 
 .sub:hover {
   /* Hover styles */
-  background-color: #62f56e; /* Hover background color */
-  color: #1e5721; /* Hover text color */
-  border-color: #000000; /* Hover border color */
+  background-color: #1e7e28; /* Hover background color */
+  color: #ffffff; /* Hover text color */
+
 }
 
 

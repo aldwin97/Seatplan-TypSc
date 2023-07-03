@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import './logInPage.css';
 import { useNavigate } from 'react-router-dom';
+import './logInPage.css';
 
 const LogInPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);

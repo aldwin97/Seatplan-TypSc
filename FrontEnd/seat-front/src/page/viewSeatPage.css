@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust this value if needed */
+    margin: 0 auto;
+  }
+  
+  
+  form {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 93%;
+    height: 90%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    border-radius: 10px;
+    transition: transform 0.4s ease-in-out, border-color 0.4s ease-in-out; /* Transition for transform and border-color properties */
+    border-color: #ccc; /* Initial border color */
+  }
+  
+  form:hover {
+    /* Hover styles */
+    transform: scale(1.05);
+    border-color: black; /* Hover border color */
+  }
+  .sub {
+    position: absolute;
+    top: 4px;
+    right: 20px;
+    width: 100px;
+    padding: 8px;
+    background-color: #fff;
+    color: #2da738;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  }
+  

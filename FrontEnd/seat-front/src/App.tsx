@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
+import LoginPage from './page/page/logInPage';
+import ViewSeatPage from './page/page/viewSeatPage';
 import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-function App() {
+function App(): JSX.Element {
   return (
+    <>
+    <body>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <header className="header"></header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/viewSeatPage" element={<ViewSeatPage />} />
+        </Routes>
+      </BrowserRouter>
+      <footer className="footer">All Rights Reserved 2023</footer>
     </div>
+    </body>
+    </>
   );
 }
 

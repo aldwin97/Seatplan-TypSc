@@ -1,4 +1,4 @@
-package user;
+package com.seatplanproj.seatplan.user;
 
 public class UserModel {
     private Long id;

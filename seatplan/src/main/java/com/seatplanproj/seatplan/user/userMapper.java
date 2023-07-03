@@ -1,4 +1,4 @@
-package user;
+package com.seatplanproj.seatplan.user;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -8,4 +8,3 @@ public interface UserMapper {
     @Select("SELECT * FROM users_table WHERE username = #{username}")
     UserModel findByUsername(String username);
 }
-

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+package com.seatplanproj.seatplan.user;
+>>>>>>> dce6e0f329a54436dec434336b9cbdaffbcedb5c
 
 
 public class userModel {

@@ -27,14 +27,13 @@ const HelpPage = () => {
           <div className={styles.scrollable}>
           <div className={styles.text1}>FREQUENTLY ASKED QUESTIONS</div>
           <div className={styles.text2}>General Questions</div>
-          <div className={styles.text3}>•How do I delete My Account?</div>
+          <div className={styles.text3}>• How do I delete My Account?</div>
           <form className={styles.form1}></form>
-          <div className={styles.text3}>•How can I update my seat?</div>
+          <div className={styles.text3}>• How can I update my seat?</div>
           <form className={styles.form1}></form>
-          <div className={styles.text3}>•How can I recover my Account?</div>
+          <div className={styles.text3}>• How can I recover my Account?</div>
           <form className={styles.form1}></form>
           </div>
-
         </form>
       </div>
     </>

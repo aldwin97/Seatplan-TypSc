@@ -25,12 +25,27 @@ body {
   border-radius: 10px;
   transition: transform 0.4s ease-in-out, border-color 0.4s ease-in-out; /* Transition for transform and border-color properties */
   border-color: #ccc; /* Initial border color */
+  animation: changeBorderColor 5s infinite; /* Apply animation */
+}
+
+@keyframes changeBorderColor {
+  0% {
+    border-color: rgb(255, 0, 0); /* Red */
+  }
+  33% {
+    border-color: rgb(0, 255, 0); /* Green */
+  }
+  66% {
+    border-color: rgb(0, 0, 255); /* Blue */
+  }
+  100% {
+    border-color: rgb(255, 255, 255); /* White */
+  }
 }
 
 .form1:hover {
   /* Hover styles */
   transform: scale(1.05);
-  border-color: black; /* Hover border color */
 }
 
 h2 {

@@ -14,13 +14,15 @@
     margin-top: 0%;
   }
   .container2 .form1 {
-    text-align: center;
+    text-align: left;
     background-color: rgba(255, 255, 255, 0.8);
     width: 70%;
     height: 70px;
+    color: #636363;
+    font-family: Arial, Helvetica, sans-serif;
     margin-top: 0%;
-    border-radius: 30px;
-    border: 1px solid #000000;
+    border-radius: 10px;
+    border: 1px solid #e4e4e4;
     display: inline-block;
     padding: 10px;
   }
@@ -65,7 +67,24 @@
       1px -1px 0 #fff,
       -1px 1px 0 #fff,
       1px 1px 0 #fff;
+    animation: textAnimation 6s infinite;
   }
+  
+  @keyframes textAnimation {
+    0%, 100% {
+      color: #308a38; /* Initial and final color */
+ 
+    }
+    50% {
+      color: #00ccff; /* Midway color (red) */
+     
+    }
+    100% {
+      color: #ffbb00; /* Final color (pink) */
+     
+    }
+  }
+  
   .searchBar {
     display: flex;
     align-items: center;

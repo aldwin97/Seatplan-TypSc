@@ -21,6 +21,7 @@ const LogInPage: React.FC = () => {
     <body>
       <div className={styles.container1}>
         <form className={styles.form1}>
+          
           <h2>Log in</h2>
           <div className={styles['input-group']}>
             <input
@@ -62,6 +63,7 @@ const LogInPage: React.FC = () => {
           </button>
           <a href="#" onClick={helpPageHandleClick}>Need Help?</a>
         </form>
+        
       </div>
     </body>
   );

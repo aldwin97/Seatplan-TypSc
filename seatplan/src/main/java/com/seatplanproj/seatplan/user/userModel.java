@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+=======
 package com.seatplanproj.seatplan.user;
+>>>>>>> dce6e0f329a54436dec434336b9cbdaffbcedb5c
 
+<<<<<<< HEAD
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Entity
@@ -10,6 +14,11 @@ public class usermodel {
     @Column(name = "userId")
     private Long userId;
 
+=======
+
+public class userModel {
+    private Long id;
+>>>>>>> eb724d399662aa178524b07cfc2e1b42c162a2da
     private String username;
     private String password;
     private String fname;
@@ -22,6 +31,7 @@ public class usermodel {
     private String img;
     private Long markAsDeleteId;
 
+<<<<<<< HEAD
     public usermodel() {
         // Default constructor
     }
@@ -39,6 +49,14 @@ public class usermodel {
     String img, 
     Long markAsDeleteId) {
         this.userId = userId;
+=======
+    public userModel() {
+        // Default constructor
+    }
+
+    public userModel(Long id, String username, String password) {
+        this.id = id;
+>>>>>>> eb724d399662aa178524b07cfc2e1b42c162a2da
         this.username = username;
         this.password = password;
         this.fname = fname;

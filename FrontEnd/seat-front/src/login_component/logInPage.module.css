@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Adjust this value if needed */
+  height: 100vh;
   margin: 0 auto;
 }
 
@@ -23,28 +23,27 @@ body {
   width: 300px;
   height: 300px;
   border-radius: 10px;
-  transition: transform 0.4s ease-in-out, border-color 0.4s ease-in-out; /* Transition for transform and border-color properties */
-  border-color: #ccc; /* Initial border color */
-  animation: changeBorderColor 5s infinite; /* Apply animation */
+  transition: transform 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  border-color: #ccc;
+  animation: changeBorderColor 5s infinite;
 }
 
 @keyframes changeBorderColor {
   0% {
-    border-color: rgb(255, 0, 0); /* Red */
+    border-color: rgb(255, 0, 0);
   }
   33% {
-    border-color: rgb(0, 255, 0); /* Green */
+    border-color: rgb(0, 255, 0);
   }
   66% {
-    border-color: rgb(0, 0, 255); /* Blue */
+    border-color: rgb(0, 0, 255);
   }
   100% {
-    border-color: rgb(255, 255, 255); /* White */
+    border-color: rgb(255, 255, 255);
   }
 }
 
 .form1:hover {
-  /* Hover styles */
   transform: scale(1.05);
 }
 
@@ -52,9 +51,11 @@ h2 {
   text-align: center;
   color: #656d78;
 }
-a{
+
+a {
   font-size: 10px;
 }
+
 .input-group {
   position: relative;
   margin-bottom: 10px;
@@ -65,12 +66,11 @@ a{
   border-radius: 0px;
   background: none;
   padding: 1rem;
-  width: calc(100% - 40px); /* Adjust this value if needed */ /* Adjust this value if needed */
+  width: calc(100% - 40px);
   font-size: 1rem;
   color: #656d78;
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 
 .user-label {
   position: absolute;
@@ -78,7 +78,7 @@ a{
   color: #656d78;
   pointer-events: none;
   transform: translateY(1rem);
-  transition: 150ms cubic-bezier(0.4,0,0.2,1);
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input:focus,
@@ -104,16 +104,13 @@ input:valid ~ .user-label {
   border-radius: 30px;
   cursor: pointer;
   margin-bottom: 10px;
-  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out; /* Transition for background-color, color, and border-color properties */
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
 }
 
 .sub:hover {
-  /* Hover styles */
-  background-color: #1e7e28; /* Hover background color */
-  color: #ffffff; /* Hover text color */
-
+  background-color: #1e7e28;
+  color: #ffffff;
 }
-
 
 .toggle-password {
   position: absolute;
@@ -125,19 +122,23 @@ input:valid ~ .user-label {
   height: 20px;
   background-color: transparent;
   cursor: pointer;
-  color: #2da738; /* Set the desired color for the icon */
+  color: #2da738;
   transition: color 0.3s ease-in-out;
 }
 
 .toggle-password.active {
   color: #f44336;
-   /* Set the desired color for the active state */
 }
 
-/* Media Queries for Responsiveness */
 @media screen and (max-width: 768px) {
-  form {
-    width: 90%;
+  .container1 {
+    height: auto;
+    padding: 20px;
+  }
+
+  .form1 {
+    width: 100%;
+    height: auto;
     max-width: 400px;
   }
 }

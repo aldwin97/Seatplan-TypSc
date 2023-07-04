@@ -13,50 +13,60 @@ body {
     align-items: center;
     height: 100vh; /* Adjust this value if needed */
   }
-  .header {
-    position: sticky;
-    top: 0;
-    left: 0;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f2f2f2;
-    padding: 10px;
+  .sub {
+    position: absolute;
+    top: 4px;
+    left: 10%;
+    width: 100px;
+    padding: 8px;
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
   }
-  
-  .header-button {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-    font-size: 16px;
-    color: #333;
+  .sub:hover {
+    background-color: #fff;
+    color: #308a38;
   }
-  
-  .icon {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-    background-color: #333;
+  .sub1 {
+    position: absolute;
+    top: 4px;
+    left: 25%;
+    width: 100px;
+    padding: 8px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
   }
-  
-  .notification-icon {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    background-color: #f00;
+  .sub1:hover {
+    background-color: #fff;
+    color: #308a38;
   }
-  
-  .profile-icon {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    background-color: #333;
-    border-radius: 50%;
+  .sub2 {
+    position: absolute;
+    top: 4px;
+    left: 40%;
+    width: 100px;
+    padding: 8px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
   }
-  
-
-
+  .sub2:hover {
+    background-color: #fff;
+    color: #308a38;
+  }
   .form2 {
     border: 1px solid #ccc;
     padding: 20px;

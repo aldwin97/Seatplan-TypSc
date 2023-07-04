@@ -17,6 +17,9 @@ const LogInPage: React.FC = () => {
   const helpPageHandleClick = () => {
     navigate('/helpPage');
   };
+  const dashboardPageHandleClick = () => {
+    navigate('/dashboardPage');
+  };
   return (
     <body>
       <div className={styles.container1}>
@@ -51,7 +54,7 @@ const LogInPage: React.FC = () => {
             </span>
           </div>
 
-          <button className={styles.sub} type="submit">
+          <button onClick={dashboardPageHandleClick} className={styles.sub} type="submit">
             SIGN IN
           </button>
           <button

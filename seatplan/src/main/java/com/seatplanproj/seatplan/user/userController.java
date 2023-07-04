@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
-    private final UserService userService;
+public class userController {
+    private final userService userService;
 
-    public UserController(UserService userService) {
+    public userController(userService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
+    @GetMapping("/login")
+    public ResponseEntity<String> login(@RequestParam(required = true) String username, @RequestParam(required = true) String password) {
         boolean isAuthenticated = userService.authenticateUser(username, password);
 
         if (isAuthenticated) {
@@ -23,5 +23,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
 }
 

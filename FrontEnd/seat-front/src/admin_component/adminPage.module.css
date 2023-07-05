@@ -1,0 +1,625 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow-x: hidden; /* Add this line to hide horizontal scroll */
+  }
+  
+  .container2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust this value if needed */
+  }
+  
+  .form2 {
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 93%;
+    height: 90%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    border-radius: 10px;
+    transition: transform 0.4s ease-in-out, border-color 0.4s ease-in-out; /* Transition for transform and border-color properties */
+    border-color: #ccc; /* Initial border color */
+  }
+
+  .burgerButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 30px;
+    height: 25px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: absolute;
+    top: 7px;
+    left: 5%;
+    transition: transform 0.3s ease;
+  }
+  
+  .burgerButton.open {
+    transform: rotate(90deg);
+  }
+  
+  .burgerIcon {
+    width: 100%;
+    height: 3px;
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Dropdown Menu */
+  .dropdownMenu2 {
+    position: absolute;
+    top: 50px; /* Adjust the top position as needed */
+    right: 10px; /* Adjust the right position as needed */
+    z-index: 100;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+  }
+  
+  .dropdownMenu2 button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdownMenu2 button:hover {
+    background-color: #f5f5f5;
+  }
+  
+.sub
+{
+    color: #308a38;
+}
+
+.dropdownMenu {
+
+    top: 50px; /* Adjust the top position as needed */
+    left: 10px; /* Adjust the right position as needed */
+    z-index: 100;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+  }
+  
+  .dropdownMenu button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dropdownMenu button:hover {
+    background-color: #f5f5f5;
+  }
+  
+.sub
+{
+    color: #308a38;
+}
+
+.dropdownRows {
+    flex-direction: row;
+  }
+  
+
+
+
+  .profile {
+    position: absolute;
+    top: 4px;
+    right: 1%;
+    width: 30px;
+    padding: 8px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+  }
+  .profile:hover {
+    background-color: #fff;
+    color: #308a38;
+  }
+
+  .notif {
+    position: absolute;
+    top: 4px;
+    right: 4%;
+    width: 30px;
+    padding: 8px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+  }
+  .notif:hover {
+    background-color: #fff;
+    color: #308a38;
+  }
+
+  .searchBar {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 4px;
+    right: 140px; /* Adjust this value to position the search bar */
+  }
+  
+  .searchInput {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    margin-right: 4px;
+    font-size: 14px;
+    width: 150px; /* Adjust this value to set the width of the search input */
+  }
+  
+  .searchButton {
+    padding: 8px 12px;
+    background-color: #2da738;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .searchButton:hover {
+    background-color: #1e7e28;
+  }
+  .text
+  {
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    color: #28552e;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    top: 10px;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+    align-items: flex-start;
+    margin-left: 81.5%;
+  }
+  
+  
+  .actionButton {
+    padding: 8px 12px;
+    background-color: #35973d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: -45px;
+  }
+  .actionButton:hover {
+    background-color: #16611e;
+  }
+
+  .table-container {
+    width: 100%;
+
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.8);
+    height: 100vh;
+  }
+ .scrollable {
+    max-height: 550px;
+    overflow: auto;
+  }
+  
+   .scrollable::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .table .scrollable::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
+  
+   .scrollable::-webkit-scrollbar-thumb {
+    background-color: #e6e6e6;
+  }
+  
+   .scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #e6e6e6;
+  }
+  th, td {
+    padding: 10px;
+    height: 20px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  th:hover {
+    background-color: #f2f2f2;
+    color: #2da738;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  tr:hover {
+    background-color: #e0e0e0;
+    color: #ffffff;
+    cursor: pointer;
+  }
+ 
+  .actions1 {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .actions1 button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e0e0e0;
+    cursor: pointer;
+  }
+  
+  .actions1 button:hover {
+    background-color: #d0d0d0;
+  }
+  
+  .tableResponsive {
+    width: 100%;
+    overflow-y: auto;
+    display: block;
+  }
+
+  /* Add these CSS styles to your existing styles.css or create a new CSS file */
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .popup label {
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 90px;
+
+  }
+  
+  .popup input {
+    width: 150px;
+    height: 30%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-left: 45px;
+  }
+
+  .popupContent {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .popupContent h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .popupContent .form {
+    margin-left: 75px;
+    margin-top: 20px;
+  }
+  
+  .popupContent p {
+    margin-bottom: 10px;
+  }
+  
+  .buttonContainer {
+    text-align: center;
+    margin-left: -27%;
+  }
+  
+  .buttonacts {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-top: 20px;
+  }
+  
+  .buttonacts:hover {
+    background-color: #45a049;
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -60%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+
+
+  .editIcon {
+    cursor: pointer;
+  }
+  
+  .deleteIcon {
+    cursor: pointer;
+  }
+  .viewIcon {
+    cursor: pointer;
+  }
+  .viewIcon,
+  .editIcon,
+  .deleteIcon {
+    margin-right: 5px; /* Add margin-right to create spacing between icons */
+  }
+  
+ 
+  /* Media queries for responsiveness */
+  @media (max-width: 768px) {
+    .form2 {
+        width: 85%;
+        margin-top: 100px;
+        margin-bottom: 60px;
+      }
+      .notif {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .profile {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+      .burgerButton {
+        position: absolute;
+        top: 0;
+        left: 2%;
+        opacity: 0.5%;
+      }
+      .searchBar {
+        margin-top: 40px;
+        right: 10px;
+      }
+    
+      .searchInput {
+        width: 120px;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 50px;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        justify-content: flex-end; /* Adjusted value */
+      }
+      #addUserButton {
+        font-size: 0;
+      }
+      .tableResponsive {
+        display: table;
+        width: 100%;
+      }
+    
+      .table,
+      .table thead,
+      .table tbody,
+      .table th,
+      .table td,
+      .table tr {
+        display: block;
+      }
+    
+      .table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+    
+      .table tbody tr {
+        border-bottom: 1px solid #ccc;
+      }
+    
+      .table td {
+        border-bottom: none;
+        position: relative;
+        padding-left: 50%;
+      }
+    
+      .table td:before {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+      }
+    
+      .table td:nth-of-type(1):before {
+        content: "Name";
+      }
+    
+      .table td:nth-of-type(2):before {
+        content: "Username";
+      }
+    
+      .table td:nth-of-type(3):before {
+        content: "Email";
+      }
+    
+      .table td:nth-of-type(4):before {
+        content: "Address";
+      }
+    
+      .table td:nth-of-type(5):before {
+        content: "Contact";
+      }
+    
+      .table td:nth-of-type(6):before {
+        content: "Password";
+      }
+    
+      .table td:nth-of-type(7):before {
+        content: "Actions";
+      }
+          
+      }
+      @media (max-width: 768px) {
+        .container2{height: 100%;}
+        .form2 {
+          width: 85%;
+          margin-top: 100px;
+          margin-bottom: 60px;
+        }
+        .notif {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .profile {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+        .burgerButton {
+          position: absolute;
+          top: 0;
+          left: 2%;
+          opacity: 0.5%;
+        }
+        .searchBar {
+          margin-top: 40px;
+          right: 10px;
+        }
+        .searchInput {
+          width: 120px;
+        }
+        .actions {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 50px;
+          align-items: center;
+          margin-top: 10px;
+          margin-bottom: 20px;
+          justify-content: flex-end;
+        }
+        #addUserButton {
+          font-size: 0;
+        }
+        .tableResponsive {
+          display: table;
+          width: 100%;
+        }
+        .table,
+        .table thead,
+        .table tbody,
+        .table th,
+        .table td,
+        .table tr {
+          display: block;
+        }
+        .table thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+        .table tbody tr {
+          border-bottom: 1px solid #ccc;
+        }
+        .table td {
+          border-bottom: none;
+          position: relative;
+          padding-left: 50%;
+        }
+        .table td:before {
+          position: absolute;
+          top: 6px;
+          left: 6px;
+          width: 45%;
+          padding-right: 10px;
+          white-space: nowrap;
+        }
+        .table td:nth-of-type(1):before {
+          content: "Name";
+        }
+        .table td:nth-of-type(2):before {
+          content: "Username";
+        }
+        .table td:nth-of-type(3):before {
+          content: "Email";
+        }
+        .table td:nth-of-type(4):before {
+          content: "Address";
+        }
+        .table td:nth-of-type(5):before {
+          content: "Contact";
+        }
+        .table td:nth-of-type(6):before {
+          content: "Password";
+        }
+        .table td:nth-of-type(7):before {
+          content: "Actions";
+        }
+      }
+      

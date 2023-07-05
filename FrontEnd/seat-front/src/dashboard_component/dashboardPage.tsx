@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './dashboardPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +10,9 @@ function DashboardPage() {
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
   };
+  const adminPageHandleClick = () => {
+    navigate('/AdminPage');
+  };
 
   const logInPageHandleClick = () => {
     navigate('/');
@@ -17,9 +20,8 @@ function DashboardPage() {
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-
-  const currDate = new Date().toLocaleDateString();
-  const currTime = new Date().toLocaleTimeString();
+  const [currDate, setCurrDate] = useState('');
+  const [currTime, setCurrTime] = useState('');
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -28,6 +30,20 @@ function DashboardPage() {
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
+
+  useEffect(() => {
+    const timerID = setInterval(() => {
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString();
+      const formattedTime = currentDate.toLocaleTimeString();
+      setCurrDate(formattedDate);
+      setCurrTime(formattedTime);
+    }, 1000);
+
+    return () => {
+      clearInterval(timerID);
+    };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -43,7 +59,7 @@ function DashboardPage() {
             <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
             Dashboard
           </button>
-          <button className={styles.sub}>
+          <button onClick={adminPageHandleClick} className={styles.sub}>
             <FontAwesomeIcon icon={faUsers} className={styles.icon} />
             Members
           </button>

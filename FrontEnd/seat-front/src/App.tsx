@@ -2,6 +2,7 @@ import LoginPage from './login_component/logInPage';
 import ViewSeatPage from './viewseat_component/viewSeatPage';
 import HelpPage from './help_component/helpPage';
 import DashboardPage from './dashboard_component/dashboardPage';
+import AdminPage from './admin_component/adminPage';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -29,6 +30,7 @@ function App(): JSX.Element {
           <Route path="/viewSeatPage" element={<ViewSeatPage />} />
           <Route path="/dashboardPage" element={<DashboardPage />} />
           <Route path="/helpPage" element={<HelpPage />} />
+          <Route path="/adminPage" element={<AdminPage />} />
         </Routes>
       </BrowserRouter>
       <footer className="footer">All Rights Reserved 2023</footer>

@@ -182,8 +182,8 @@ const AdminPage: React.FC = () => {
     doc.setFontSize(12);
   
     // Add the logo image
-    const logoWidth = 20; // Adjust the width of the logo
-    const logoHeight = 50; // Adjust the height of the logo
+    const logoWidth = 15; // Adjust the width of the logo
+    const logoHeight = 15; // Adjust the height of the logo
     const logoX = 5; // Adjust the X position of the logo
     const logoY = 5; // Adjust the Y position of the logo
     doc.addImage(logoImage, 'PNG', logoX, logoY, logoWidth, logoHeight);

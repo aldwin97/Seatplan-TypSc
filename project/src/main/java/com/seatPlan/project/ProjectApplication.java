@@ -1,13 +1,13 @@
-package com.seatplanproj.seatplan;
+package com.seatPlan.project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SeatplanApplication {
+public class ProjectApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SeatplanApplication.class, args);
+		SpringApplication.run(ProjectApplication.class, args);
 	}
 
 }

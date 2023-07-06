@@ -2,10 +2,11 @@ package com.seatPlan.project.controller;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class UserController {
 
 
     //insert user
-     @PostMapping("/addUser")
+     @PostMapping("/add")
     public ResponseEntity<String> createUser(@RequestBody UserModel userModel) {
         try {
             userService.createUser(userModel);
@@ -60,7 +61,7 @@ public class UserController {
     }
 
     // display all users
-     @GetMapping("/allUsers")
+     @GetMapping("/all")
     public List<UserModel> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -71,11 +72,15 @@ public class UserController {
         return userService.countUsers();
     }
 
-     @DeleteMapping("/users/{username}")
+    @PostMapping("/delete/{username}")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
-        userService.deleteUserByUsername(username);
+    userService.deleteUserByUsername(username);
+
+
+
         return ResponseEntity.ok("User deleted successfully");
-    }
+}
+
 
 
 

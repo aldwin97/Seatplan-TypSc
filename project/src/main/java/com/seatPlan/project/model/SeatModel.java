@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SeatModel {
-    private  Long  seatId;
-    private Long seatsStatusId;
-    private String seatColor;
+    private  Long  seat_id;
+    private Long user_id;
+    private Long project_id;
+    private Long seatstatus_id;
     private Long areaId;
     private int seatNumber;
-    private Boolean isDeleted;
+    private int isDeleted;
     private LocalDateTime createdTime;
     private String createdBy;
     private LocalDateTime updatedTime;

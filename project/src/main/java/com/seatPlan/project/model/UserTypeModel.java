@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserTypeModel {
-    private Long usersTypeId;
-    private String usersTypeName;
-    private Boolean isDeleted;
-    private LocalDateTime createdTime;
-    private String createdBy;
-    private LocalDateTime  updatedTime;
-    private String updatedBy;
+    private Long userstype_id;
+    private String userstype_name;
+    private int is_deleted;
+    private LocalDateTime created_time;
+    private Long created_by;
+    private LocalDateTime  updated_time;
+    private Long updated_by;
 
 }

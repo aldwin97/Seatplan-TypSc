@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SeatStatusModel {
-    private Long seatsStatusId;
-    private String seatsStatus;
-    private Boolean isDeleted;
-    private LocalDateTime createdTime;
-    private String createdBy;
-    private LocalDateTime updatedTime;
-    private String updatedBy;
+    private Long seatstatus_id;
+    private String seat_status;
+    private int is_deleted;
+    private LocalDateTime created_time;
+    private Long created_by;
+    private LocalDateTime updated_time;
+    private Long updated_by;
 
 }

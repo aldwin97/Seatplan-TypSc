@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './dashboardPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
+import { Grid } from '@mui/material';
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ function DashboardPage() {
   }, []);
 
   return (
+    
     <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
         <div className={styles.burgerIcon}></div>
@@ -90,10 +92,12 @@ function DashboardPage() {
       <button className={styles.notif}>
         <FontAwesomeIcon icon={faBell} />
       </button>
-
-
+<main>
       <div className={styles.container2}>
-        <form className={styles.form2}>
+        <form className={styles.main2}>
+
+          <form className={styles.form3}>
+
           <div className={styles.card}>
             <svg className={styles.cardimg}></svg>
             <div className={styles.cardtitle}>HELLO (USERNAME)</div>
@@ -101,6 +105,8 @@ function DashboardPage() {
             <div className={styles.date}>Today is {currDate}</div>
             <div className={styles.time}>{currTime}</div>
           </div>
+          
+        <form className={styles.form2}>
 
           <div className={styles.card2}>
             <svg className={styles.cardimg2}></svg>
@@ -116,12 +122,6 @@ function DashboardPage() {
             <svg className={styles.cardimg4}></svg>
             <div className={styles.cardtitle4}>AVAILABLE SEAT</div>
           </div>
-
-          <div className={styles.card5}>
-            <svg className={styles.cardimg5}></svg>
-            <div className={styles.cardtitle5}>SEAT CONDITIONS</div>
-          </div>
-
           <div className={styles.card6}>
             <svg className={styles.cardimg6}></svg>
             <div className={styles.cardtitle6}>TOTAL EMPLOYEE</div>
@@ -136,21 +136,23 @@ function DashboardPage() {
             <svg className={styles.cardimg8}></svg>
             <div className={styles.cardtitle8}>REGULAR EMPLOYEE</div>
           </div>
+          </form>
 
+          <form className={styles.form4}>
+          <div className={styles.card5}>
+            <svg className={styles.cardimg5}></svg>
+            <div className={styles.cardtitle5}>SEAT CONDITIONS</div>
+          </div>
           <div className={styles.scrollable}>
           <div className={styles.card9}>
             <svg className={styles.cardimg9}></svg>
             <div className={styles.cardtitle9}>RECENT COMMENTS</div>
           </div></div>
-
-          <div className={styles.scrollable2}>
-          <div className={styles.card0}>
-            <svg className={styles.cardimg0}></svg>
-            <div className={styles.cardtitle0}>RECENT ACTIVITIES</div>
-          </div></div>
-
+    </form>
+          
         </form>
-      </div>
+        </form>
+      </div></main>
     </div>
   );
 }

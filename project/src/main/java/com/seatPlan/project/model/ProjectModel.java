@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectModel {
-    private Long projectId;
-    private String projectName;
-    private Boolean isDeleted;
-    private LocalDateTime createdTime;
-    private String createdBy;
-    private LocalDateTime updatedTime;
-    private String updatedBy;
-
+   private Long project_id;
+private String project_name;
+private Long color_id;
+private int is_deleted;
+private LocalDateTime created_time;
+private Long created_by;
+private LocalDateTime updated_time;
+private Long updated_by;
 }

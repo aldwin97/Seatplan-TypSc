@@ -10,22 +10,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserModel {
-    private Long userId;
-    private Long projectId;
-    private Long seatId;
-    private String fname;
-    private String lname;
+
+    private Long user_id;
+    private Long project_id;
+    private String first_name;
+    private String last_name;
     private String email;
-    private int mobile;
-    private String address;
+    private int mobile_num;
     private String username;
     private String password;
-    private Long userTypeId;
-    private Long positionId;
-    private String userProfile;
-    private Boolean isDeleted;
-    private LocalDateTime createdTime;
-    private String createdBy;
-    private LocalDateTime  updatedTime;
-    private String updatedBy;
+    private Long usertype_id;
+    private Long position_id;
+    private String user_picture;
+    private int is_deleted;
+    private LocalDateTime created_time;
+    private Long created_by;
+    private LocalDateTime updated_time;
+    private Long updated_by;
+
 }

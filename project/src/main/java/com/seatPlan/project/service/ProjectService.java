@@ -27,4 +27,9 @@ public class ProjectService {
      public List<ProjectModel> getAllProjects() {
         return projectMapper.getAllProjects();
     }
+
+    // count the all row in the user table
+    public int countProject() {
+        return projectMapper.countProject();
+    }
 }

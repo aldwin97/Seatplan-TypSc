@@ -18,7 +18,7 @@ import com.seatPlan.project.service.ProjectService;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/project")
 public class ProjectController {
     
       private final ProjectService projectService;
@@ -27,7 +27,7 @@ public class ProjectController {
         this.projectService = projectService;
 
     }
-      @PostMapping("/addProject")
+      @PostMapping("/add")
     public ResponseEntity<String> createProject(@RequestBody ProjectModel projectModel) {
         try {
             projectService.insertProject(projectModel);
@@ -37,9 +37,14 @@ public class ProjectController {
         }
     }
 
-     @GetMapping("/allProject")
+     @GetMapping("/all")
     public List<ProjectModel> getAllProjects() {
         return projectService.getAllProjects();
+    }
+
+     @GetMapping("/count")
+    public int countProject() {
+        return projectService.countProject();
     }
 
     

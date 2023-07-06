@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AreaModel {
-    private Long areaId;
-private String areaName;
-private Boolean isDeleted;
-private LocalDateTime createdTime;
-private String createdBy;
-private LocalDateTime updatedTime;
-private String updatedBy;
+    private Long area_id;
+private String area_name;
+private int is_deleted;
+private LocalDateTime created_time;
+private Long created_by;
+private LocalDateTime updated_time;
+private Long updated_by;
 
 }

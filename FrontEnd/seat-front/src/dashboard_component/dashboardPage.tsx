@@ -47,7 +47,8 @@ function DashboardPage() {
   }, []);
 
   return (
-    
+    <>
+    <main>
     <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
         <div className={styles.burgerIcon}></div>
@@ -92,11 +93,14 @@ function DashboardPage() {
       <button className={styles.notif}>
         <FontAwesomeIcon icon={faBell} />
       </button>
-<main>
+
       <div className={styles.container2}>
         <form className={styles.main2}>
 
           <form className={styles.form3}>
+
+
+          <form className={styles.form}>
 
           <div className={styles.card}>
             <svg className={styles.cardimg}></svg>
@@ -105,7 +109,7 @@ function DashboardPage() {
             <div className={styles.date}>Today is {currDate}</div>
             <div className={styles.time}>{currTime}</div>
           </div>
-          
+          </form>
         <form className={styles.form2}>
 
           <div className={styles.card2}>
@@ -152,8 +156,10 @@ function DashboardPage() {
           
         </form>
         </form>
-      </div></main>
+      </div>
     </div>
+    </main>
+    </>
   );
 }
 

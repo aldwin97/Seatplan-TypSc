@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserTypeModel {
-    private Long userstype_id;
-    private String userstype_name;
+    private Long usertype_id;
+    private String usertype_name;
     private int is_deleted;
     private LocalDateTime created_time;
     private Long created_by;

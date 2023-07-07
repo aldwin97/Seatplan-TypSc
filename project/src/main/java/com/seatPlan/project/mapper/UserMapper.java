@@ -20,13 +20,21 @@ public interface UserMapper {
     List<UserModel> getAllUsers();
 
 
-    // user authetication
-    @Select("SELECT username, password FROM table_user WHERE username = #{username} AND is_deleted = 0")
+    // // user authetication
+    // @Select("SELECT username, password FROM table_user WHERE username = #{username} AND is_deleted = 0")
+    // UserModel getUserByUsername(String username);
+
+    // user authentication
+    // @Select("SELECT username, password, usertype_id FROM table_user WHERE username = #{username} AND is_deleted = 0")
+    // UserModel getUserByUsername(String username);
+
+    @Select("SELECT user_id, username, password, usertype_id FROM table_user WHERE username = #{username} AND is_deleted = 0")
     UserModel getUserByUsername(String username);
 
+
     // add user
-   @Insert("INSERT INTO table_user (project_id, first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, user_picture, is_deleted, created_time, created_by, updated_time, updated_by) "
-            + "VALUES (#{project_id}, #{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id}, #{user_picture}, #{is_deleted}, #{created_time}, #{created_by}, #{updated_time}, #{updated_by})")
+   @Insert("INSERT INTO table_user ( first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, user_picture,  created_time, created_by) "
+            + "VALUES #{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id}, #{user_picture}, #{created_time}, #{created_by})")
     @Options(useGeneratedKeys = true, keyProperty = "user_id")
     void insertUser(UserModel userModel);
 

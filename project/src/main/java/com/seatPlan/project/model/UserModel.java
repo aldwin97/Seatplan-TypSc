@@ -16,9 +16,10 @@ public class UserModel {
     private String first_name;
     private String last_name;
     private String email;
-    private int mobile_num;
+    private Long mobile_num;
     private String username;
     private String password;
+    private Long employementstatus_id;
     private Long usertype_id;
     private Long position_id;
     private String user_picture;

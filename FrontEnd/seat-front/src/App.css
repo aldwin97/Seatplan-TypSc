@@ -3,8 +3,14 @@
   flex-direction: column;
   min-height: 100vh;
   background-color: #f2f2f2;
+}.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1600px; /* Set a fixed width */
+  height: 900px; /* Set a fixed height */
+  background-color: #fff;
 }
-
 .header {
   background-image: url('./assets/LOGO.png');
   width: 100%;

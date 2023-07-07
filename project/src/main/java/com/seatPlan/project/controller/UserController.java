@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.UserService;
 
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -26,29 +27,42 @@ public class UserController {
     
     public UserController(@Autowired UserService userService) {
         this.userService = userService;
+
     }
 
 
-    //Authentication of user log in
-   @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody UserModel userModel) {
-        String username = userModel.getUsername();
-        String password = userModel.getPassword();
+// Authentication of user log in
+@PostMapping("/login")
+public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel) {
+    String username = userModel.getUsername();
+    String password = userModel.getPassword();
 
-        // Perform authentication logic
-        boolean isAuthenticated = userService.authenticateUser(username, password);
+    UserModel authenticatedUser = userService.authenticateUser(username, password);
 
-        if (isAuthenticated) {
-            // Authentication successful
-            return ResponseEntity.ok("Authentication successful");
-        } else {
-            // Authentication failed
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
-        }
+    if (authenticatedUser != null) {
+        return ResponseEntity.ok(authenticatedUser);
+    } else {
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
-    //Authentication of user log in
+}   
 
+// // Authentication of user log in
+// @PostMapping("/login")
+// public ResponseEntity<String> authenticateUser(@RequestBody UserModel userModel) {
+//     String username = userModel.getUsername();
+//     String password = userModel.getPassword();
 
+//     String authenticatedUser = userService.authenticateUser(username, password);
+
+//     if (authenticatedUser != null) {
+//         return ResponseEntity.ok(authenticatedUser);
+//     } else {
+//         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//     }
+// } 
+    
+    
     //insert user
      @PostMapping("/add")
     public ResponseEntity<String> createUser(@RequestBody UserModel userModel) {
@@ -75,11 +89,8 @@ public class UserController {
     @PostMapping("/delete/{username}")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
     userService.deleteUserByUsername(username);
-
-
-
         return ResponseEntity.ok("User deleted successfully");
-}
+    }
 
 
 

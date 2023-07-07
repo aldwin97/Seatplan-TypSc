@@ -29,7 +29,7 @@ import './adminMembersPage.css';
 
 
 const useStyles = makeStyles({
-  selectContainer: {
+  container: {
     width: '200px',
     padding: '8px',
     backgroundColor: '#f0f0f0',
@@ -147,13 +147,26 @@ const navigate = useNavigate();
     setPerPage(value);
     setCurrentPage(1);
   };
-  
-  
+  const [searchText, setSearchText] = useState('');
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  };
+
+  const filteredUsers = users.filter(
+    (user) =>
+      user.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   // Calculate the index of the first and last user on the current page
   const indexOfLastUser = currentPage * perPage;
   const indexOfFirstUser = indexOfLastUser - perPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  
+
+
 
   return (
     <div className='container'>
@@ -164,10 +177,28 @@ const navigate = useNavigate();
     <Button className='add-user-button' color="primary" variant="contained" onClick={handleAddUser}>
       Add User
     </Button>
+    
   </Box>
-  <Typography className='title' variant="h5" gutterBottom>
+  <div className='title'><Typography className='title-main' variant="h5" gutterBottom>
     USER INFORMATION
-  </Typography>
+  </Typography><div className="menu-label">Items per Page:</div>
+  <Select className="select-container" value={perPage} onChange={handlePerPageChange}>
+    {perPageOptions.map((option) => (
+      <MenuItem className="menu-container" key={option} value={option}>
+        {option}
+      </MenuItem>
+  ))}
+</Select>
+  <div className='search-bar'>
+    <TextField
+        className='search-bar'
+        label="Search"
+        variant="outlined"
+        value={searchText}
+        onChange={handleSearch}
+      /></div>
+      
+      </div>
   <TableContainer className='table-container' component={Paper}>
     <Table>
       <TableHead className='table-header'>
@@ -206,37 +237,8 @@ const navigate = useNavigate();
           onChange={handlePageChange}
           color="primary"
         />
-        <Select className='select-container' value={perPage} onChange={handlePerPageChange}>
-  {perPageOptions.map((option) => (
-    <MenuItem className='menu-container' key={option} value={option}>
-      {option}
-    </MenuItem>
-  ))}
-</Select>
+        
       </Box>
-  <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog}>
-    <DialogTitle className='dialog-title'>User Information</DialogTitle>
-    <DialogContent>
-      {selectedUser && (
-        <DialogContentText>
-          <strong className='user-info-title'>Name:</strong> {`${selectedUser.firstName} ${selectedUser.lastName}`} <br />
-          <strong className='user-info-label'>Username:</strong> {selectedUser.username} <br />
-          <strong className='user-info-label'>Email:</strong> {selectedUser.email} <br />
-          <strong className='user-info-label'>Contact:</strong> {selectedUser.contact} <br />
-          <strong className='user-info-label'>Password:</strong> {selectedUser.password ? "********" : ""} <br />
-          <strong className='user-info-label'>UserType:</strong> {selectedUser.usertype} <br />
-          <strong className='user-info-label'>Position:</strong> {selectedUser.position} <br />
-          <strong className='user-info-label'>Created At:</strong> {selectedUser.created_time} <br />
-          <strong className='user-info-label'>Created By:</strong> {selectedUser.created_by}
-        </DialogContentText>
-      )}
-    </DialogContent>
-    <DialogActions className='dialog-actions'>
-      <Button onClick={handleCloseDialog} color="primary">
-        Close
-      </Button>
-    </DialogActions>
-  </Dialog>
   <Dialog open={addUserDialogOpen || newUser.id !== 0} onClose={() => setNewUser({ ...newUser, id: 0 })} className='add-user-dialog'>
     <DialogTitle>Add User</DialogTitle>
     <DialogContent className='add-user-dialog-content'>
@@ -300,7 +302,7 @@ const navigate = useNavigate();
       />
       <Select
         margin="dense"
-        label="User Type"
+        label="UserType"
         value={newUser.usertype}
         onChange={(e) => setNewUser({ ...newUser, usertype: e.target.value as string })}
         fullWidth

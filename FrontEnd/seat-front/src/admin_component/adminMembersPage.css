@@ -12,6 +12,10 @@
 .add-user-button {
   margin-left: 10px;
 }
+.add-user-button {
+  background-color: #2caf42 !important; /* Set your desired color */
+  color: #ffffff !important; /* Set the text color */
+}
 
 .title {
   margin-bottom: 10px;
@@ -78,7 +82,7 @@
 
 /* Custom Styling */
 .container {
-  height: 100vh;
+  height: 110vh;
   background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
@@ -94,10 +98,70 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-right: 10px;
 }
+.title {
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bolder!important;
+}
+.title-main{
+  display: flex;
+  justify-content: flex-start;
+  font-weight: bolder!important;
+}
+.search-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.search-input {
+  margin-right: 10px;
+}
+
+.menu-label {
+  margin-right: 2px;
+  font-weight: lighter;
+  font-size: 13px;
+  margin-left: auto;
+}
+
+
+.select-container {
+  margin-left: 10px;
+}
+
+
+
+.search-bar .MuiOutlinedInput-root {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.search-bar .MuiOutlinedInput-input {
+  padding: 8px;
+  color: #333;
+}
+
+.search-bar .MuiInputLabel-root {
+  color: #888;font-size: 12px;
+}
+
+.search-bar .MuiInputLabel-outlined.Mui-focused {
+  color: #333;
+}
+
+.search-bar .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #999;
+}
+
+.search-bar .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #333;
+}
 
 
 .go-button:hover {
-  background-color: #1976d2;
+  background-color: #3ad11c;
 }
 
 .action-buttons {
@@ -192,10 +256,11 @@
   justify-content: space-between;
 }
 
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .container {
-    height: auto;
+    height: 100vh;
     padding: 10px;
   }
 
@@ -223,6 +288,26 @@
 
   .add-user-dialog {
     width: 100%;
+  }
+  .search-bar {
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .search-input {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .menu-label {
+    display: none;
+  }
+  .title-main
+  {
+   font-size: 20px !important;
+   position: absolute !important;
+   margin-top: -90px !important;
+   margin-left: 38% !important;
   }
 }
 

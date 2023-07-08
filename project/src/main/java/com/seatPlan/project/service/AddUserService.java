@@ -68,19 +68,27 @@ public class AddUserService {
         return filteredUserType;
     }
 
-    public List<Map<String, Object>> getAllUser(){
+    public List<Map<String, Object>> getAllUser() {
         List<UserModel> users = addUserMapper.getAllUser();
         List<Map<String, Object>> filteredUserType = users.stream()
-        .map(user ->{
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("first_name",user.getFirst_name());
-            userMap.put("last_name", user.getLast_name());
-            return userMap;
-
-        }).collect(Collectors.toList());
-
+                .map(user -> {
+                    Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("user_id", user.getUser_id());
+                    userMap.put("first_name", user.getFirst_name());
+                    userMap.put("last_name", user.getLast_name());
+                    userMap.put("email", user.getEmail());
+                    userMap.put("mobile_num", user.getMobile_num());
+                    userMap.put("username", user.getUsername());
+                    userMap.put("password", user.getPassword());
+                    userMap.put("position_name", user.getPosition_name());
+                    userMap.put("usertype_name",user.getUsertype_name());
+                    userMap.put("project_name",user.getProject_name());
+                    userMap.put("stuffstatu_name", user.getStuffstatus_name());
+                    return userMap;
+                }).collect(Collectors.toList());
         return filteredUserType;
     }
+    
 
 
      public List<Map<String, Object>> getAllStuffStatus(){
@@ -109,6 +117,9 @@ public class AddUserService {
     public void updateUser(UserModel userModel) {
         addUserMapper.updateUser(userModel);
     }
+
+
+    
     
 
     

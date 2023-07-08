@@ -48,6 +48,7 @@ function DashboardPage() {
 
   return (
     <>
+    <body>
     <main>
     <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
@@ -159,6 +160,7 @@ function DashboardPage() {
       </div>
     </div>
     </main>
+    </body>
     </>
   );
 }

@@ -4,13 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.AddUserService;
 
 @RestController
@@ -50,11 +54,46 @@ public class AddUserController {
         return users;
     }
 
+    @GetMapping("/allStuffStatus")
+    public List<Map<String, Object>> allStuffStatus(){
+        List<Map<String, Object>> stuffs = addUserService.getAllStuffStatus();
+        return stuffs;
+    }
+
 
     @PostMapping("/delete/{user_id}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long user_id) {
-    addUserService.deleteUserById(user_id);
-        return ResponseEntity.ok("User deleted successfully");
+          try {
+              addUserService.deleteUserById(user_id);
+           return ResponseEntity.ok("User deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user");
+        }    
     }
+
+     @PostMapping("/users")
+    public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
+          try {
+             addUserService.insertUser(userModel);
+           return ResponseEntity.ok("User inserted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
+        }   
+    }
+
+
+    @PutMapping("/updateInfo/{user_id}")
+    public ResponseEntity<String> updateUser(@PathVariable("user_id") Long userId, @RequestBody UserModel userModel) {
+      try {
+              userModel.setUser_id(userId);
+              addUserService.updateUser(userModel);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
+        }
+    }
+
+
+
 
 }

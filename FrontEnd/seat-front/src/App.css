@@ -11,6 +11,7 @@
   height: 900px; /* Set a fixed height */
   background-color: #fff;
 }
+
 .header {
   background-image: url('./assets/LOGO.png');
   width: 100%;

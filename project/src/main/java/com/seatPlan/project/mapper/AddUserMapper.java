@@ -33,8 +33,20 @@ public interface AddUserMapper {
     List<StuffStatusModel> getAllStuffStatusModels();
 
     
-    @Select("SELECT * FROM table_user WHERE is_deleted = 0")
+
+    @Select("SELECT u.*, p.position_name, t.usertype_name, pr.project_name, s.stuffstatus_name " +
+    "FROM table_user u " +
+    "JOIN table_position p ON u.position_id = p.position_id " +
+    "JOIN table_usertype t ON u.usertype_id = t.usertype_id " +
+    "JOIN table_project pr ON u.project_id = pr.project_id " +
+    "JOIN table_stuffstatus s ON u.stuffstatus_id = s.stuffstatus_id " +
+    "WHERE u.is_deleted = 0")
     List<UserModel> getAllUser();
+
+
+
+
+
 
      @Update("UPDATE user_table SET is_deleted = 1 WHERE user_id = #{userId}")
     void deleteUserById(@Param("userId") Long userId);

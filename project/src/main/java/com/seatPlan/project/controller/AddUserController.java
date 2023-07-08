@@ -71,7 +71,7 @@ public class AddUserController {
         }    
     }
 
-     @PostMapping("/users")
+     @PostMapping("insert")
     public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
           try {
              addUserService.insertUser(userModel);

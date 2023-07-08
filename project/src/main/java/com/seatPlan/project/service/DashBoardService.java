@@ -1,9 +1,12 @@
 package com.seatPlan.project.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.mapper.DashBoardMapper;
+import com.seatPlan.project.model.UserModel;
 
 
 @Service
@@ -38,5 +41,9 @@ public class DashBoardService {
         return dashBoardMapper.countUnderMaintenance();
     }
 
+
+    public List<UserModel> getInfo(){
+        return dashBoardMapper.getInfo();
+    }
 
 }

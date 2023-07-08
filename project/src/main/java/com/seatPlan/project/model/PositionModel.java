@@ -2,14 +2,16 @@ package com.seatPlan.project.model;
 
 import java.time.LocalDateTime;
 
+import org.apache.ibatis.type.Alias;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Alias("position_table")
 public class PositionModel {
     private Long position_id;
     private String position_name;
@@ -17,6 +19,5 @@ public class PositionModel {
     private LocalDateTime created_time;
     private Long created_by;
     private LocalDateTime updated_time;
-    private long updated_by;
-
+    private Long updated_by;
 }

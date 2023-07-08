@@ -45,6 +45,13 @@ public interface UserMapper {
     // Delete a user by username
     @Update("UPDATE table_user SET is_deleted = 1 WHERE username = #{username}")
     void deleteUserByUsername(@Param("username") String username);
+
+
+
+
+
+    @Select("SELECT * FROM table_user WHERE username = #{username}")
+    UserModel findByUsername(String username);
     
 
 

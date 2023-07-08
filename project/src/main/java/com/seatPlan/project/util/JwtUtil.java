@@ -1,6 +1,4 @@
 // package com.seatPlan.project.util;
-// package com.seatPlan.project;
-
 // import io.jsonwebtoken.Claims;
 // import io.jsonwebtoken.Jws;
 // import io.jsonwebtoken.Jwts;
@@ -15,7 +13,6 @@
 // import java.util.Date;
 // import java.util.HashMap;
 // import java.util.Map;
-
 // import javax.crypto.SecretKey;
 
 // @Component

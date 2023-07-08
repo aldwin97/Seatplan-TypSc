@@ -19,7 +19,7 @@ public class UserModel {
     private Long mobile_num;
     private String username;
     private String password;
-    private Long employementstatus_id;
+    private Long stuffstatus_id;
     private Long usertype_id;
     private Long position_id;
     private String user_picture;

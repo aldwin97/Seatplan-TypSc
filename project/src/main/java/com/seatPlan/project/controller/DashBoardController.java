@@ -41,6 +41,8 @@ public class DashBoardController {
 
        int countOccupied = dashBoardService.countOccupied(); 
 
+       
+
         Map<String , Object> data = new HashMap<>();
         data.put("countUser", countUser);
         data.put("countSeatAvailable", countSeatAvailable);

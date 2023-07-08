@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 
 import {
   Table,
@@ -26,18 +28,6 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import './adminMembersPage.css';
-
-const useStyles = makeStyles({
-  container: {
-    width: '200px',
-    padding: '8px',
-    backgroundColor: '#f0f0f0',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    marginRight: '10px',
-  },
-});
 
 interface User {
   id: number;
@@ -208,11 +198,102 @@ const AdminMembersPage: React.FC = () => {
     }
   };
   
-  
+
+  const dashboardPageHandleClick = () => {
+    navigate('/DashboardPage');
+  };
+  const adminPageHandleClick = () => {
+    navigate('/AdminPage');
+  };
+
+  const logInPageHandleClick = () => {
+    navigate('/');
+  };
+
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [currDate, setCurrDate] = useState('');
+  const [currTime, setCurrTime] = useState('');
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  useEffect(() => {
+    const timerID = setInterval(() => {
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString();
+      const formattedTime = currentDate.toLocaleTimeString();
+      setCurrDate(formattedDate);
+      setCurrTime(formattedTime);
+    }, 1000);
+
+    return () => {
+      clearInterval(timerID);
+    };
+  }, []);
   
 
   return (
+    
+      
+
+
+
+
+
+
     <div className="container">
+
+<button className={`burgerButton ${isDropdownOpen ? "open" : ""}`} onClick={toggleDropdown}>
+  <div className="burgerIcon"></div>
+  <div className="burgerIcon"></div>
+  <div className="burgerIcon"></div>
+</button>
+
+
+{isDropdownOpen && (
+  <div className="dropdownMenu dropdownRows">
+    <button onClick={dashboardPageHandleClick} className="sub">
+      <FontAwesomeIcon icon={faChartBar} className="icon" />
+      Dashboard
+    </button>
+    <button onClick={adminPageHandleClick} className="sub">
+      <FontAwesomeIcon icon={faUsers} className="icon" />
+      Members
+    </button>
+    <button className="sub">
+      <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
+      Projects
+    </button>
+  </div>
+)}
+
+<button className={`profile ${isProfileDropdownOpen ? "open2" : ""}`} onClick={toggleProfileDropdown}>
+  <FontAwesomeIcon icon={faUser} />
+</button>
+
+{isProfileDropdownOpen && (
+  <div className="dropdownMenu2">
+    <button className="sub">
+      <FontAwesomeIcon icon={faFaceSmile} className="icon" />
+      Profile
+    </button>
+    <button onClick={logInPageHandleClick} className="sub">
+      <FontAwesomeIcon icon={faPowerOff} className="icon" />
+      Logout
+    </button>
+  </div>
+)}
+
+<button className="notif">
+  <FontAwesomeIcon icon={faBell} />
+</button>
+
       <Box className="action-buttons" display="flex" justifyContent="flex-end">
         <IconButton
           className={`delete-button ${selectedUsers.length > 0 ? 'active' : ''}`}

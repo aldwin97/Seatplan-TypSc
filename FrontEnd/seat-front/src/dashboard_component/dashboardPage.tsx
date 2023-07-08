@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './dashboardPage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-import { Grid } from '@mui/material';
+
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -48,8 +48,7 @@ function DashboardPage() {
 
   return (
     <>
-    <body>
-    <main>
+    <body className={styles.backg}>
     <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
         <div className={styles.burgerIcon}></div>
@@ -88,6 +87,7 @@ function DashboardPage() {
             <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
             Logout
           </button>
+          
         </div>
       )}
 
@@ -159,7 +159,6 @@ function DashboardPage() {
         </form>
       </div>
     </div>
-    </main>
     </body>
     </>
   );

@@ -19,7 +19,7 @@ const LogInPage: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className={styles.container2}>
+      <div className={styles.container7}>
         <button onClick={helpPageHandleClick} className={styles.supportLink} type="button">
           Support
         </button>

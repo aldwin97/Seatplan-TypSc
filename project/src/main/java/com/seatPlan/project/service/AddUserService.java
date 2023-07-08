@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.seatPlan.project.mapper.AddUserMapper;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
+import com.seatPlan.project.model.StuffStatusModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.model.UserTypeModel;
 
@@ -81,11 +82,34 @@ public class AddUserService {
         return filteredUserType;
     }
 
+
+     public List<Map<String, Object>> getAllStuffStatus(){
+        List<StuffStatusModel> stuffs = addUserMapper.getAllStuffStatusModels();
+        List<Map<String, Object>> filteredStuffStatus = stuffs.stream()
+        .map(stuff ->{
+            Map<String, Object> stuffMap = new HashMap<>();
+            stuffMap.put("stuffstatus_id",stuff.getStuffstatus_id());
+            stuffMap.put("staffstatus_name", stuff.getStuffstatus_name());
+            return stuffMap;
+
+        }).collect(Collectors.toList());
+
+        return filteredStuffStatus;
+    }
+
      public void deleteUserById(Long user_id) {
         addUserMapper.deleteUserById(user_id);
         
     }
 
+    public void insertUser(UserModel userModel) {
+        addUserMapper.insertUser(userModel);
+    }
+
+    public void updateUser(UserModel userModel) {
+        addUserMapper.updateUser(userModel);
+    }
+    
 
     
 }

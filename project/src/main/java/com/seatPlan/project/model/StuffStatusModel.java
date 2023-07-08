@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StuffStatusModel {
     private Long stuffstatus_id;
-    private String status_name;
+    private String stuffstatus_name;
 }

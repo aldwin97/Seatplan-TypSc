@@ -51,6 +51,7 @@ interface User {
   usertype: string;
   created_time: string;
   created_by: string;
+  updatedAt: string; // Added field for tracking last update
 }
 
 const AdminMembersPage: React.FC = () => {
@@ -72,7 +73,9 @@ const AdminMembersPage: React.FC = () => {
     usertype: '',
     created_time: '',
     created_by: '',
+    updatedAt: '', // Add the updatedAt field
   });
+  
   const [perPage, setPerPage] = useState(8);
   const navigate = useNavigate();
 
@@ -124,6 +127,7 @@ const AdminMembersPage: React.FC = () => {
       id: users.length + 1,
       created_time: currentTime,
       created_by: 'Admin',
+      updatedAt: '', // Initialize with empty string
     };
 
     setUsers([...users, updatedUser]);
@@ -139,6 +143,7 @@ const AdminMembersPage: React.FC = () => {
       usertype: '',
       created_time: '',
       created_by: '',
+      updatedAt: '', // Initialize with empty string
     });
 
     setAddUserDialogOpen(false); // Set the flag to close the dialog
@@ -183,18 +188,28 @@ const AdminMembersPage: React.FC = () => {
 
   const handleSaveUser = () => {
     if (editedUser) {
+      const currentTime = new Date().toISOString().replace('T', ' ').slice(0, 19);
+      const updatedUser: User = {
+        ...editedUser,
+        updatedAt: currentTime, // Set the updated time
+      };
+  
       const updatedUsers = users.map((user) => {
-        if (user.id === editedUser.id) {
-          return editedUser;
+        if (user.id === updatedUser.id) {
+          return updatedUser;
         }
         return user;
       });
-
+  
       setUsers(updatedUsers);
       setEditMode(false);
       setEditedUser(null);
+      handleCloseDialog(); // Close the dialog box
     }
   };
+  
+  
+  
 
   return (
     <div className="container">
@@ -219,226 +234,284 @@ const AdminMembersPage: React.FC = () => {
         <Select className="select-container" value={perPage} onChange={handlePerPageChange}>
           {perPageOptions.map((option) => (
             <MenuItem className="menu-container" key={option} value={option}>
-              {option}
-            </MenuItem>
+            {option}
+          </MenuItem>
           ))}
-        </Select>
-        <div className="search-bar">
-          <TextField className="search-bar" label="Search" variant="outlined" value={searchText} onChange={handleSearch} />
-        </div>
-      </div>
-      <TableContainer className="table-container" component={Paper}>
-    <Table>
-      <TableHead className="table-header">
-        <TableRow>
-          <TableCell></TableCell>
-          <TableCell>Name</TableCell>
-          <TableCell>Username</TableCell>
-          <TableCell>Email</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {currentUsers.map((user) => (
-          <TableRow key={user.id} hover>
-            <TableCell padding="checkbox">
-              <Checkbox
-                checked={selectedUsers.includes(user.id)}
-                onChange={(event) => handleUserCheckboxChange(event, user.id)}
-              />
-            </TableCell>
-            <TableCell>
-              <a className="user-link" href="#" onClick={() => handleUserClick(user.id)}>
-                {`${user.firstName} ${user.lastName}`}
-              </a>
-            </TableCell>
-            <TableCell>{user.username}</TableCell>
-            <TableCell>{user.email}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-  <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
-    <Pagination count={Math.ceil(filteredUsers.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
-  </Box>
-  <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} className="user-info-dialog">
-    <DialogTitle className="user-info-dialog-title">User Information</DialogTitle>
-    <DialogContent className="user-info-content">
-      {selectedUser && (
-        <DialogContentText className="user-info-dialog-content-text">
-        <strong className="user-info-label">Name:</strong>
-        {editMode ? (
-          <TextField
-            className="user-info-value"
-            value={editedUser?.firstName}
-            onChange={(e) =>
-              setEditedUser((prevEditedUser: User | null) => ({
-                ...prevEditedUser!,
-                username: e.target.value
-              }))
-            }
-            
-          />
-        ) : (
-          <span className="user-info-value">{`${selectedUser.firstName} ${selectedUser.lastName}`}</span>
-        )}
-        <br />
-        <strong className="user-info-label">Username:</strong>
-        {editMode ? (
-          <TextField
-            className="user-info-value"
-            value={editedUser?.username}
-            onChange={(e) =>
-              setEditedUser((prevEditedUser: User | null) => ({
-                ...prevEditedUser!,
-                username: e.target.value
-              }))
-            }
-            
-          />
-        ) : (
-          <span className="user-info-value">{selectedUser.username}</span>
-        )}
-        <br />
-        <strong className="user-info-label">Email:</strong>
-        {editMode ? (
-          <TextField
-            className="user-info-value"
-            value={editedUser?.email}
-            onChange={(e) =>
-              setEditedUser((prevEditedUser: User | null) => ({
-                ...prevEditedUser!,
-                email: e.target.value
-              }))
-            }
-            
-          />
-        ) : (
-          <span className="user-info-value">{selectedUser.email}</span>
-        )}
-        <br />
-        <strong className="user-info-label">Contact:</strong>{" "}
-        <span className="user-info-value">{selectedUser.contact}</span> <br />
-        <strong className="user-info-label">Password:</strong>{" "}
-        <span className="user-info-value">
-          {selectedUser.password ? "********" : ""}
-        </span>{" "}
-        <br />
-        <strong className="user-info-label">UserType:</strong>{" "}
-        <span className="user-info-value">{selectedUser.usertype}</span> <br />
-        <strong className="user-info-label">Position:</strong>{" "}
-        <span className="user-info-value">{selectedUser.position}</span> <br />
-        <strong className="user-info-label">Created At:</strong>{" "}
-        <span className="user-info-value">{selectedUser.created_time}</span> <br />
-        <strong className="user-info-label">Created By:</strong>{" "}
-        <span className="user-info-value">{selectedUser.created_by}</span>
-      </DialogContentText>
-      
-    )}
-  </DialogContent>
-  <DialogActions className="user-info-actions">
-  {editMode ? (
-    <Button onClick={handleSaveUser} color="primary" className="user-info-dialog-save-button">
-      Save
-    </Button>
-  ) : (
-    <Button onClick={handleEditUser} color="primary" className="user-info-dialog-edit-button">
-      Edit
-    </Button>
-  )}
-  <Button onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
-    Close
-  </Button>
-</DialogActions>
+          </Select>
+          <div className="search-bar">
+            <TextField className="search-bar" label="Search" variant="outlined" value={searchText} onChange={handleSearch} />
+          </div>
+          </div>
+          <TableContainer className="table-container" component={Paper}>
+          <Table>
+            <TableHead className="table-header">
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Username</TableCell>
+                <TableCell>Email</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {currentUsers.map((user) => (
+                <TableRow key={user.id} hover>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedUsers.includes(user.id)}
+                      onChange={(event) => handleUserCheckboxChange(event, user.id)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <a className="user-link" href="#" onClick={() => handleUserClick(user.id)}>
+                      {`${user.firstName} ${user.lastName}`}
+                    </a>
+                  </TableCell>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          </TableContainer>
+          <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
+          <Pagination count={Math.ceil(filteredUsers.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
+          </Box>
+          <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} className="user-info-dialog">
+            <DialogTitle className="user-info-dialog-title">
+              {editMode ? "Editing User Information" : "User Information"}
+            </DialogTitle>
+            <DialogContent className="user-info-content">
+              {selectedUser && (
+                <DialogContentText className="user-info-dialog-content-text">
+                  <strong className="user-info-label">Name:</strong>
+                  {editMode ? (
+                    <React.Fragment>
+                      <div className="name-label">First Name:</div>
+                      <TextField
+                        className="user-info-value"
+                        value={editedUser?.firstName || ''}
+                        onChange={(e) => {
+                          const firstName = e.target.value;
+                          setEditedUser((prevEditedUser: User | null) => ({
+                            ...prevEditedUser!,
+                            firstName: firstName || '',
+                          }));
+                        }}
+                      />
+                      <div className="name-label">Last Name:</div>
+                      <TextField
+                        className="user-info-value"
+                        value={editedUser?.lastName || ''}
+                        onChange={(e) => {
+                          const lastName = e.target.value;
+                          setEditedUser((prevEditedUser: User | null) => ({
+                            ...prevEditedUser!,
+                            lastName: lastName || '',
+                          }));
+                        }}
+                      />
+                    </React.Fragment>
+                  ) : (
+                    <span className="user-info-value">{`${selectedUser.firstName} ${selectedUser.lastName}`}</span>
+                  )}
+                  <br />
 
-</Dialog>
-
-
-  <Dialog open={addUserDialogOpen || newUser.id !== 0} onClose={() => setNewUser({ ...newUser, id: 0 })} className='add-user-dialog'>
-    <DialogTitle>Add User</DialogTitle>
-    <DialogContent className='add-user-dialog-content'>
-      <DialogContentText>Please enter the user details:</DialogContentText>
-      <TextField
-        autoFocus
-        margin="dense"
-        label="First Name"
-        type="text"
-        fullWidth
-        value={newUser.firstName}
-        onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
-      />
-      <TextField
-        margin="dense"
-        label="Last Name"
-        type="text"
-        fullWidth
-        value={newUser.lastName}
-        onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
-      />
-      <TextField
-        margin="dense"
-        label="Username"
-        type="text"
-        fullWidth
-        value={newUser.username}
-        onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-      />
-      <TextField
-        margin="dense"
-        label="Email"
-        type="email"
-        fullWidth
-        value={newUser.email}
-        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-      />
-      <TextField
-        margin="dense"
-        label="Contact"
-        type="number"
-        fullWidth
-        value={newUser.contact}
-        onChange={(e) => setNewUser({ ...newUser, contact: parseInt(e.target.value) })}
-      />
-      <TextField
-        margin="dense"
-        label="Password"
-        type="password"
-        fullWidth
-        value={newUser.password}
-        onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-      />
-      <TextField
-        margin="dense"
-        label="Position"
-        type="text"
-        fullWidth
-        value={newUser.position}
-        onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
-      />
-      <Select
-        margin="dense"
-        label="UserType"
-        value={newUser.usertype}
-        onChange={(e) => setNewUser({ ...newUser, usertype: e.target.value as string })}
-        fullWidth
-      >
-        <MenuItem value="Viewer">Viewer</MenuItem>
-        <MenuItem value="Admin">Admin</MenuItem>
-        <MenuItem value="Editor">Editor</MenuItem>
-      </Select>
-    </DialogContent>
-    <DialogActions className='add-user-dialog-actions'>
-      <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={handleAddUsers} color="primary">
-        Add
-      </Button>
-    </DialogActions>
-  </Dialog>
-</div>
-
-  );
-};
-
-export default AdminMembersPage;
+                          <strong className="user-info-label">Username:</strong>
+                          {editMode ? (
+                            <TextField
+                              className="user-info-value"
+                              value={editedUser?.username}
+                              onChange={(e) =>
+                                setEditedUser((prevEditedUser: User | null) => ({
+                                  ...prevEditedUser!,
+                                  username: e.target.value
+                                }))
+                              }
+                            />
+                          ) : (
+                            <span className="user-info-value">{selectedUser.username}</span>
+                          )}
+                          <br />
+                          <strong className="user-info-label">Email:</strong>
+                          {editMode ? (
+                            <TextField
+                              className="user-info-value"
+                              value={editedUser?.email}
+                              onChange={(e) =>
+                                setEditedUser((prevEditedUser: User | null) => ({
+                                  ...prevEditedUser!,
+                                  email: e.target.value
+                                }))
+                              }
+                            />
+                          ) : (
+                            <span className="user-info-value">{selectedUser.email}</span>
+                          )}
+                          <br />
+                          <strong className="user-info-label">Contact:</strong>{" "}
+                          {editMode ? (
+                            <TextField
+                              className="user-info-value"
+                              value={editedUser?.contact}
+                              onChange={(e) =>
+                                setEditedUser((prevEditedUser: User | null) => ({
+                                  ...prevEditedUser!,
+                                  contact: parseInt(e.target.value)
+                                }))
+                              }
+                            />
+                          ) : (
+                            <span className="user-info-value">{selectedUser.contact}</span>
+                          )}
+                          <br />
+                          <strong className="user-info-label">Password:</strong>{" "}
+                          {editMode ? (
+                            <TextField
+                              className="user-info-value"
+                              type="password"
+                              value={editedUser?.password || ''}
+                              onChange={(e) =>
+                                setEditedUser((prevEditedUser: User | null) => ({
+                                  ...prevEditedUser!,
+                                  password: e.target.value
+                                }))
+                              }
+                            />
+                          ) : (
+                            <span className="user-info-value">{selectedUser.password ? "********" : ""}</span>
+                          )}
+                          <br />
+                          <strong className="user-info-label">UserType:</strong>{" "}
+                          <span className="user-info-value">{selectedUser.usertype}</span> <br />
+                          <strong className="user-info-label">Position:</strong>{" "}
+                          {editMode ? (
+                            <TextField
+                              className="user-info-value"
+                              value={editedUser?.position}
+                              onChange={(e) =>
+                                setEditedUser((prevEditedUser: User | null) => ({
+                                  ...prevEditedUser!,
+                                  position: e.target.value
+                                }))
+                              }
+                            />
+                          ) : (
+                            <span className="user-info-value">{selectedUser.position}</span>
+                          )}
+                          <br />
+                          <strong className="user-info-label">Created At:</strong>{" "}
+                          <span className="user-info-value">{selectedUser.created_time}</span> <br />
+                          <strong className="user-info-label">Created By:</strong>{" "}
+                          <span className="user-info-value">{selectedUser.created_by}</span> <br />
+                          <strong className="user-info-label">Updated At:</strong>{" "}
+                  {editMode ? (
+                    <span className="user-info-value">{selectedUser.updatedAt}</span>
+                  ) : (
+                    <span className="user-info-value">{editedUser?.updatedAt || selectedUser.updatedAt}</span>
+                  )}
+                  {/* Display the updated date */}
+                </DialogContentText>
+              )}
+            </DialogContent>
+            <DialogActions className="user-info-actions">
+              {editMode ? (
+                <Button onClick={handleSaveUser} color="primary" className="user-info-dialog-save-button">
+                  Save
+                </Button>
+              ) : (
+                <Button onClick={handleEditUser} color="primary" className="user-info-dialog-edit-button">
+                  Edit
+                </Button>
+              )}
+              <Button onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={addUserDialogOpen || newUser.id !== 0} onClose={() => setNewUser({ ...newUser, id: 0 })} className="add-user-dialog">
+          <DialogTitle>Add User</DialogTitle>
+          <DialogContent className="add-user-dialog-content">
+            <DialogContentText>Please enter the user details:</DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="First Name"
+              type="text"
+              fullWidth
+              value={newUser.firstName}
+              onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
+            />
+            <TextField
+              margin="dense"
+              label="Last Name"
+              type="text"
+              fullWidth
+              value={newUser.lastName}
+              onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
+            />
+            <TextField
+              margin="dense"
+              label="Username"
+              type="text"
+              fullWidth
+              value={newUser.username}
+              onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+            />
+            <TextField
+              margin="dense"
+              label="Email"
+              type="email"
+              fullWidth
+              value={newUser.email}
+              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            />
+            <TextField
+              margin="dense"
+              label="Contact"
+              type="number"
+              fullWidth
+              value={newUser.contact}
+              onChange={(e) => setNewUser({ ...newUser, contact: parseInt(e.target.value) })}
+            />
+            <TextField
+              margin="dense"
+              label="Password"
+              type="password"
+              fullWidth
+              value={newUser.password}
+              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            />
+            <TextField
+              margin="dense"
+              label="Position"
+              type="text"
+              fullWidth
+              value={newUser.position}
+              onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
+            />
+            <Select
+              margin="dense"
+              label="UserType"
+              value={newUser.usertype}
+              onChange={(e) => setNewUser({ ...newUser, usertype: e.target.value as string })}
+              fullWidth
+            >
+              <MenuItem value="Viewer">Viewer</MenuItem>
+              <MenuItem value="Admin">Admin</MenuItem>
+              <MenuItem value="Editor">Editor</MenuItem>
+            </Select>
+          </DialogContent>
+          <DialogActions className="add-user-dialog-actions">
+            <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleAddUsers} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+          </Dialog>
+          </div>
+          );
+          };
+          
+          export default AdminMembersPage;

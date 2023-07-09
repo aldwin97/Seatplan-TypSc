@@ -12,8 +12,6 @@ function App(): JSX.Element {
     <>
     <body>
     <div className="App">
-      <header className="header">
-      </header>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -24,7 +22,6 @@ function App(): JSX.Element {
           <Route path="/adminPage" element={<AdminMembersPage />} />
         </Routes>
       </BrowserRouter>
-      <footer className="footer">All Rights Reserved 2023</footer>
     </div>
     </body>
     </>

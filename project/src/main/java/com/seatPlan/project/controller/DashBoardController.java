@@ -1,7 +1,6 @@
 package com.seatPlan.project.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.DashBoardService;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/dashboard")
 public class DashBoardController {
     
 
@@ -28,7 +25,7 @@ public class DashBoardController {
     }
 
 
-   @GetMapping("/display")
+   @GetMapping("/display/count")
     public ResponseEntity<Map<String, Object>> dashboard() {
         
        int countUser = dashBoardService.countUser();
@@ -43,11 +40,6 @@ public class DashBoardController {
 
        int countOccupied = dashBoardService.countOccupied(); 
 
-       List<UserModel> info = dashBoardService.getInfo();
-
-       
-
-       
 
         Map<String , Object> data = new HashMap<>();
         data.put("countUser", countUser);

@@ -33,10 +33,7 @@ public interface UserMapper {
 
 
     // add user
-   @Insert("INSERT INTO table_user ( first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, user_picture,  created_time, created_by) "
-            + "VALUES #{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id}, #{user_picture}, #{created_time}, #{created_by})")
-    @Options(useGeneratedKeys = true, keyProperty = "user_id")
-    void insertUser(UserModel userModel);
+ 
 
     // count the row of the table
     @Select("SELECT COUNT(*) FROM table_user WHERE is_deleted = 0")
@@ -45,9 +42,6 @@ public interface UserMapper {
     // Delete a user by username
     @Update("UPDATE table_user SET is_deleted = 1 WHERE username = #{username}")
     void deleteUserByUsername(@Param("username") String username);
-
-
-
 
 
     @Select("SELECT * FROM table_user WHERE username = #{username}")

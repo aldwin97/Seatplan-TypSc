@@ -47,33 +47,7 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
     }
 }   
 
-// // Authentication of user log in
-// @PostMapping("/login")
-// public ResponseEntity<String> authenticateUser(@RequestBody UserModel userModel) {
-//     String username = userModel.getUsername();
-//     String password = userModel.getPassword();
-
-//     String authenticatedUser = userService.authenticateUser(username, password);
-
-//     if (authenticatedUser != null) {
-//         return ResponseEntity.ok(authenticatedUser);
-//     } else {
-//         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-//     }
-// } 
     
-    
-    //insert user
-     @PostMapping("/add")
-    public ResponseEntity<String> createUser(@RequestBody UserModel userModel) {
-        try {
-            userService.createUser(userModel);
-            return ResponseEntity.ok("User created successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user");
-        }
-    }
-
     // display all users
      @GetMapping("/all")
     public List<UserModel> getAllUsers() {

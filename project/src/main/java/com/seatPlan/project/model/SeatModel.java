@@ -23,4 +23,11 @@ public class SeatModel {
     private LocalDateTime updatedTime;
     private String updatedBy;
 
+
+
+    private String project_name;
+    private String first_name;
+    private String last_name;
+    private String area_name;
+     private String seatstatus_name;
 }

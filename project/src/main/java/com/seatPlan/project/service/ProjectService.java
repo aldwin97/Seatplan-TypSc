@@ -32,4 +32,11 @@ public class ProjectService {
     public int countProject() {
         return projectMapper.countProject();
     }
+
+
+
+    public void deleteProjectById(Long project_id) {
+        projectMapper.deleteProjectById(project_id);
+
+    }
 }

@@ -20,4 +20,6 @@ public class SeatStatusModel {
     private LocalDateTime updated_time;
     private Long updated_by;
 
+
+
 }

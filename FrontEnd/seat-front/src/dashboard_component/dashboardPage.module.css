@@ -4,6 +4,7 @@
   padding: 0;
   background-size: 100% 100%;
   background-image: url('../assets/BG1.jpg');
+
   background-repeat: no-repeat;
   background-position: center;
 
@@ -22,7 +23,7 @@
         padding: 0;
         position: absolute;
         top: 7px;
-        left: 5%;
+        left: 1%;
         transition: transform 0.3s ease;
       }
 

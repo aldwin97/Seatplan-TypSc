@@ -14,7 +14,9 @@ function DashboardPage() {
   const adminPageHandleClick = () => {
     navigate('/AdminPage');
   };
-
+  const seatplanPageHandleClick = () => {
+    navigate('/SeatplanPage');
+  };
   const logInPageHandleClick = () => {
     navigate('/');
   };
@@ -66,7 +68,7 @@ function DashboardPage() {
             <FontAwesomeIcon icon={faUsers} className={styles.icon} />
             Members
           </button>
-          <button className={styles.sub}>
+          <button onClick={seatplanPageHandleClick} className={styles.sub}>
             <FontAwesomeIcon icon={faProjectDiagram} className={styles.icon} />
             Projects
           </button>

@@ -10,26 +10,50 @@ const LogInPage: React.FC = () => {
   const dashboardPageHandleClick = () => {
     navigate('/dashboardPage');
   };
+  const viewSeatPageHandleClick = () => {
+    navigate('/viewSeatPage');
+  };
+
   return (
-    <div className={styles.form1}>
+    <body className={styles.body1}>
       <div className={styles.container1}>
         <div className={styles.signInContainer}>
           <button onClick={dashboardPageHandleClick} className={styles.sub} type="submit">
             Sign In
           </button>
         </div>
+        <div className={styles.supportContainer}>
+          <button onClick={helpPageHandleClick} className={styles.supportLink} type="button">
+            Support
+          </button>
+        </div>
+        </div>
+      
+        
+   
+        <div className={styles.textContainer}>
+          
+          <h3 className={styles.text3}>SE<span className={styles.highlight}>AT</span></h3>
+        <div className={styles.header1}>
+          <h1 className={styles.text1}>MANAGEMENT</h1>
+        </div>
+        <div className={styles.header2}>
+          <h2 className={styles.text2}>"Elevating Office Comfort and Collaboration"</h2>
+          </div>
+          <div className={styles.header3}>
+          <button onClick={viewSeatPageHandleClick}  className={styles.button} type="button">
+    View Seatplan
+  </button>
+  </div>
+        
+        
       </div>
-      <div className={styles.container2}>
-        <button onClick={helpPageHandleClick} className={styles.supportLink} type="button">
-          Support
-        </button>
-      </div>
-      <div className={styles.textContainer}>
-        <h1>Management</h1>
-      </div>
-    </div>
+     
+
+      
+      
+    </body>
   );
 };
 
 export default LogInPage;
-

@@ -1,31 +1,35 @@
 
-body {
+
+.body {
+
   margin: 0;
   padding: 0;
   background-size: 100% 100%;
-  background-image: url('./../assets/backg1.png');
+  background-image: url('../assets/BG1.jpg');
   background-repeat: no-repeat;
   background-position: center;
+  height: 100vh;
+
 }
+
 
 .form1 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-
 .container1 {
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  height: 95vh;
-  margin: 0;
-  margin-left: auto;
+  position: fixed;
+  top: 20px; 
+  right: 90px; 
+  z-index: 2; 
 }
-
 @font-face {
   font-family: 'League Spartan Regular';
-  src: url('./../assets//LeagueSpartan-Regular.ttf') format('truetype');
+  src: url('../assets/LeagueSpartan-Regular.ttf') format('truetype');
   font-style: normal;
 }
 
@@ -33,6 +37,7 @@ body {
   display: flex;
   align-items: flex-start;
   margin-top: 1px;
+  margin-right: 100px; /* Adjust the margin-right value to control the space */
 }
 
 .sub {
@@ -53,16 +58,10 @@ body {
   color: #ffffff;
 }
 
-.container2 {
-  display: flex;
-  align-items: flex-start;
-  margin-top: 30px;
-  margin-right: 100px;
-}
 
 @font-face {
   font-family: 'League Spartan Regular';
-  src: url('./../assets/LeagueSpartan-Bold.ttf') format('truetype');
+  src: url('../assets/LeagueSpartan-Regular.ttf') format('truetype');
   font-style: normal;
 }
 
@@ -76,37 +75,140 @@ body {
   border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  margin-top: 30px;
 }
 
 .supportLink:hover {
   background-color: #1e7e28;
   color: #ffffff;
 }
-
-.textcontainer {
-  display: flex;
-  align-items: flex-start;
-  margin-left: 50px;
-  margin-top: 30px;
-  margin-right: 100px;
+.textContainer {
+  position: fixed;
+  top: 30%;
+  left: 30%;
+  transform: translate(-50%, -50%);
 }
 
-
-
-.text {
+@font-face {
   font-family: 'League Spartan Bold';
-  font-size: 100px;
-  color: #374F59;
+  src: url('../assets/LeagueSpartan-Bold.ttf') format('truetype'); /* Remove the extra dot in the URL */
+  font-style: normal; /* Change bold to normal for font-style */
+}
+.text3 {
+  font-family: 'League Spartan Regular';
+  color: #2FA73A;
+  font-size: 300px;
+  align-items: center;
+  position: relative;
+  margin-left: 400px;
+  z-index: 1; 
 }
 
+.header1 {
+  font-family: 'League Spartan Regular';
+  font-size: 80px;
+  color: #212f35;
+  margin-left: 230px;
+  margin-top: -420px;
+  position: relative;
+  z-index: 1; 
+}
+
+@font-face {
+  font-family: 'League Spartan Regular';
+  src: url('../assets/LeagueSpartan-Regular.ttf') format('truetype'); /* Remove the extra dot in the URL */
+  font-style: normal; /* Change bold to normal for font-style */
+}
+
+.header2 {
+  font-family: 'League Spartan Regular';
+  font-size: 20px;
+  color: #374F59;
+  text-align: center;
+  margin-top:-100px;
+  margin-left: 200px;
+  position: relative;
+  z-index: 1; 
+}
+.header3 {
+  font-family: 'League Spartan Regular';
+  font-size: 20px;
+  color: #374F59;
+  text-align: center;
+  margin-top:100px;
+  margin-left: 200px;
+  position: relative;
+  z-index: 1; 
+}
+  
+.highlight {
+  background-color: #8DC63F;
+  color: white;
+  height: 20px;
+}
+.text1 {
+  background-color: #ffffff;
+  margin-top:370px;
+  color: #374F59;
+  height: 200px;
+}
+
+
+
+@font-face {
+  font-family: 'League Spartan Bold';
+  src: url('../assets/LeagueSpartan-Bold.ttf') format('truetype'); /* Remove the extra dot in the URL */
+  font-style: normal; /* Change bold to normal for font-style */
+}
+.button {
+  font-family: 'League Spartan Regular';
+  font-size: 30px;
+  height: 70px;
+  width: 400px;
+  padding: 10px 30px;
+  background-image: linear-gradient(to right, #00A651, #8DC63F);
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  margin-top: 90px;
+  display: block; 
+  margin: 0 auto; 
+}
+
+.button:hover {
+  background-color: #1e7e28;
+}
 @media screen and (max-width: 768px) {
-  .form1 {
-    width: 70%;
-    max-width: 400px;
+  .container1 {
+    flex-direction: column; 
+    align-items: center;
+    margin-right: 0;
+    margin-bottom: 20px;
   }
-  body {
-    width: 100%;
-    height: 100%;
-    max-width: 400px;
+
+  
+  .signInContainer,
+  .supportContainer {
+    margin-right: 0;
+    margin-bottom: 10px;
   }
+
+  .header {
+    font-size: 36px;
+  }
+
+  .subheader {
+    font-size: 14px;
+  }
+  .textContainer {
+    flex-direction: column; 
+    align-items: center;  
+    margin-right: 100px;
+    margin-left: 100px;
+    margin-bottom: 20px;  
+    top: 30%;
+  }
+
 }

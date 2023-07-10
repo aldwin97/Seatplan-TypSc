@@ -10,6 +10,10 @@ const LogInPage: React.FC = () => {
   const dashboardPageHandleClick = () => {
     navigate('/dashboardPage');
   };
+  const viewSeatPageHandleClick = () => {
+    navigate('/viewSeatPage');
+  };
+
   return (
     <body className={styles.body1}>
       <div className={styles.container1}>
@@ -23,20 +27,31 @@ const LogInPage: React.FC = () => {
             Support
           </button>
         </div>
-      </div>
-      <div className={styles.textContainer}>
+        </div>
+      
+        
+   
+        <div className={styles.textContainer}>
+          
+          <h3 className={styles.text3}>SE<span className={styles.highlight}>AT</span></h3>
         <div className={styles.header1}>
           <h1 className={styles.text1}>MANAGEMENT</h1>
         </div>
         <div className={styles.header2}>
           <h2 className={styles.text2}>"Elevating Office Comfort and Collaboration"</h2>
-        </div>
+          </div>
+          <div className={styles.header3}>
+          <button onClick={viewSeatPageHandleClick}  className={styles.button} type="button">
+    View Seatplan
+  </button>
+  </div>
+        
+        
       </div>
-      <div className={styles.logoContainer}>
-        <div className={styles.logo1}>
-          <h3 className={styles.des1}>SE</h3>
-        </div>
-      </div>
+     
+
+      
+      
     </body>
   );
 };

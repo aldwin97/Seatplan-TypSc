@@ -13,6 +13,7 @@
     "html2pdf.js": "^0.10.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
+    "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.8.0",
     "react-router-dom": "^6.14.1",
     "xlsx": "^0.18.5"

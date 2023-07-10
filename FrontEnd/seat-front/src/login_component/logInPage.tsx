@@ -11,7 +11,7 @@ const LogInPage: React.FC = () => {
     navigate('/dashboardPage');
   };
   return (
-    <body>
+    <body className={styles.body1}>
       <div className={styles.container1}>
         <div className={styles.signInContainer}>
           <button onClick={dashboardPageHandleClick} className={styles.sub} type="submit">

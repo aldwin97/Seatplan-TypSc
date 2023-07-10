@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   background-size: 100% 100%;
-  background-image: url('./../assets/backg1.png');
+  background-image: url('../assets/BG1.jpg');
   background-repeat: no-repeat;
   background-position: center;
 
@@ -594,7 +594,7 @@ width: 357px;
   margin: 0;
   padding: 0;
   background-size: 100% 100%;
-  background-image: url('./../assets/backg1.png');
+  background-image: url('./../assets/BG1.jpg');
   background-repeat: no-repeat;
   background-position: center;
  }

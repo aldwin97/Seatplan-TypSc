@@ -45,6 +45,78 @@ interface StaffStatus {
 }
 
 const AdminMembersPage: React.FC = () => {
+
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080/admin'); // Replace with your WebSocket server URL
+
+    // Event listener for WebSocket connection open
+    socket.addEventListener('open', () => {
+      console.log('WebSocket connection established');
+
+      // Send a message to the server to subscribe to user updates
+      const message = { type: 'subscribe' };
+      socket.send(JSON.stringify(message));
+    });
+
+    // Event listener for WebSocket connection close
+    socket.addEventListener('close', () => {
+      console.log('WebSocket connection closed');
+    });
+
+    // Event listener for WebSocket messages
+    socket.addEventListener('message', (event) => {
+      const message = JSON.parse(event.data);
+
+      // Handle different message types
+      switch (message.type) {
+        case 'userUpdated':
+          handleUserUpdated(message.data);
+          break;
+        case 'userInserted':
+          handleUserInserted(message.data);
+          break;
+        case 'userDeleted':
+          handleUserDeleted(message.data);
+          break;
+        default:
+          break;
+      }
+    });
+
+    // Cleanup function to close the WebSocket connection
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  // Function to handle user updated event
+  const handleUserUpdated = (updatedUser: User) => {
+    // Update the user in the users state
+    setUsers((prevUsers) => {
+      const updatedUsers = prevUsers.map((user) => {
+        if (user.user_id === updatedUser.user_id) {
+          return updatedUser;
+        }
+        return user;
+      });
+      return updatedUsers;
+    });
+  };
+
+  // Function to handle user inserted event
+  const handleUserInserted = (insertedUser: User) => {
+    // Add the inserted user to the users state
+    setUsers((prevUsers) => [...prevUsers, insertedUser]);
+  };
+
+  // Function to handle user deleted event
+  const handleUserDeleted = (deletedUserId: number) => {
+    // Remove the deleted user from the users state
+    setUsers((prevUsers) => prevUsers.filter((user) => user.user_id !== deletedUserId));
+  };
+
+  
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -235,13 +307,10 @@ const AdminMembersPage: React.FC = () => {
     }
   
     const hasEditedFields = Object.keys(editedUser).some(
-      (field) => selectedUser && editedUser[field as keyof User] !== selectedUser[field as keyof User]
+      (field) =>
+        selectedUser &&
+        editedUser[field as keyof User] !== selectedUser[field as keyof User]
     );
-  
-    if (!hasEditedFields) {
-      console.log('No fields were edited');
-      return;
-    }
   
     // Prepare the updated user data
     const updatedUserModel: Partial<User> = {
@@ -264,29 +333,29 @@ const AdminMembersPage: React.FC = () => {
     if (editMode) {
       // Make the PUT request to update the user
       fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(updatedUserModel),
-})
-  .then((response) => {
-    if (response.ok) {
-      console.log('User updated successfully');
-      // Refresh the page to reflect the changes
-      window.location.reload();
-      // Alternatively, update the user in the user list if needed
-    } else {
-      response.text().then((errorMessage) => {
-        console.log('Failed to update user:', errorMessage);
-        // Set the error message state
-        setErrorMessage(errorMessage);
-      });
-    }
-  })
-  .catch((error) => {
-    console.log('Error while updating user', error);
-  });
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUserModel),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('User updated successfully');
+            // Refresh the page to reflect the changes
+            window.location.reload();
+            // Alternatively, update the user in the user list if needed
+          } else {
+            response.text().then((errorMessage) => {
+              console.log('Failed to update user:', errorMessage);
+              // Set the error message state
+              setErrorMessage(errorMessage);
+            });
+          }
+        })
+        .catch((error) => {
+          console.log('Error while updating user', error);
+        });
     } else {
       // Make the POST request to insert a new user
       fetch('http://localhost:8080/admin/insert', {
@@ -316,6 +385,7 @@ const AdminMembersPage: React.FC = () => {
         });
     }
   };
+  
   
   
   

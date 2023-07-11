@@ -1,47 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Checkbox,
-  Paper,
-  IconButton,
-  Button,
-  Typography,
-  Box,
-  Pagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  TextField,
-} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import './adminMembersPage.css';
 
 interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  username: string;
+  user_id: number;
+  first_name: string;
+  last_name: string;
   email: string;
-  contact: number;
+  mobile_num: number;
+  username: string;
   password: string;
-  position: string;
-  usertype: string;
+  staffstatus_id: number;
+  usertype_id: number;
+  position_id: number;
+  user_picture: string;
+  is_deleted: boolean;
   created_time: string;
-  created_by: string;
-  updatedAt: string; // Added field for tracking last update
+  created_by: number;
+  updated_time: string;
+  updated_by: number;
 }
 
 const AdminMembersPage: React.FC = () => {
@@ -52,20 +34,24 @@ const AdminMembersPage: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState<User>({
-    id: 0,
-    firstName: '',
-    lastName: '',
-    username: '',
+    user_id: 0,
+    first_name: '',
+    last_name: '',
     email: '',
-    contact: 0,
+    mobile_num: 0,
+    username: '',
     password: '',
-    position: '',
-    usertype: '',
+    staffstatus_id: 0,
+    usertype_id: 0,
+    position_id: 0,
+    user_picture: '',
+    is_deleted: false,
     created_time: '',
-    created_by: '',
-    updatedAt: '', // Add the updatedAt field
+    created_by: 0,
+    updated_time: '',
+    updated_by: 0,
   });
-  
+
   const [perPage, setPerPage] = useState(8);
   const navigate = useNavigate();
 
@@ -87,7 +73,7 @@ const AdminMembersPage: React.FC = () => {
   };
 
   const handleViewUserInfo = (userId: number) => {
-    const user = users.find((user) => user.id === userId);
+    const user = users.find((user) => user.user_id === userId);
     if (user) {
       setSelectedUser(user);
       setUserInfoDialogOpen(true);
@@ -99,7 +85,23 @@ const AdminMembersPage: React.FC = () => {
   };
 
   const handleDeleteSelected = () => {
-    const remainingUsers = users.filter((user) => !selectedUsers.includes(user.id));
+    // Make the DELETE request to delete selected users
+    selectedUsers.forEach((userId) => {
+      fetch(`http://localhost:8080/admin/delete/${userId}`, { method: 'POST' })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`User with ID ${userId} deleted successfully`);
+          } else {
+            console.log(`Failed to delete user with ID ${userId}`);
+          }
+        })
+        .catch((error) => {
+          console.log(`Error while deleting user with ID ${userId}`, error);
+        });
+    });
+
+    // Update the users state to remove the deleted users
+    const remainingUsers = users.filter((user) => !selectedUsers.includes(user.user_id));
     setSelectedUsers([]);
     setCurrentPage(1);
     setUsers(remainingUsers);
@@ -114,29 +116,52 @@ const AdminMembersPage: React.FC = () => {
 
     const updatedUser: User = {
       ...newUser,
-      id: users.length + 1,
+      user_id: users.length + 1,
       created_time: currentTime,
-      created_by: 'Admin',
-      updatedAt: '', // Initialize with empty string
+      created_by: 1,
+      updated_time: '',
+      updated_by: 0,
     };
 
-    setUsers([...users, updatedUser]);
-    setNewUser({
-      id: 0,
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      contact: 0,
-      password: '',
-      position: '',
-      usertype: '',
-      created_time: '',
-      created_by: '',
-      updatedAt: '', // Initialize with empty string
-    });
-
-    setAddUserDialogOpen(false); // Set the flag to close the dialog
+    // Make the POST request to insert a new user
+    fetch('http://localhost:8080/admin/insert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedUser),
+    })
+    
+      .then((response) => {
+        if (response.ok) {
+          console.log('User inserted successfully');
+          setUsers([...users, updatedUser]);
+          setNewUser({
+            user_id: 0,
+            first_name: '',
+            last_name: '',
+            email: '',
+            mobile_num: 0,
+            username: '',
+            password: '',
+            staffstatus_id: 0,
+            usertype_id: 0,
+            position_id: 0,
+            user_picture: '',
+            is_deleted: false,
+            created_time: '',
+            created_by: 0,
+            updated_time: '',
+            updated_by: 0,
+          });
+          setAddUserDialogOpen(false); // Set the flag to close the dialog
+        } else {
+          console.log('Failed to insert user');
+        }
+      })
+      .catch((error) => {
+        console.log('Error while inserting user', error);
+      });
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -159,8 +184,8 @@ const AdminMembersPage: React.FC = () => {
 
   const filteredUsers = users.filter(
     (user) =>
-      user.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(searchText.toLowerCase()) ||
       user.username.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -181,22 +206,52 @@ const AdminMembersPage: React.FC = () => {
       const currentTime = new Date().toISOString().replace('T', ' ').slice(0, 19);
       const updatedUser: User = {
         ...editedUser,
-        updatedAt: currentTime, // Set the updated time
+        updated_time: currentTime,
       };
-  
-      const updatedUsers = users.map((user) => {
-        if (user.id === updatedUser.id) {
-          return updatedUser;
-        }
-        return user;
-      });
-  
-      setUsers(updatedUsers);
-      setEditMode(false);
-      setEditedUser(null);
-      handleCloseDialog(); // Close the dialog box
+
+      // Make the PUT request to update the user
+      fetch(`http://localhost:8080/admin/update/${updatedUser.user_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('User updated successfully');
+            const updatedUsers = users.map((user) => {
+              if (user.user_id === updatedUser.user_id) {
+                return updatedUser;
+              } else {
+                return user;
+              }
+            });
+            setUsers(updatedUsers);
+            setEditMode(false);
+            setSelectedUser(updatedUser);
+          } else {
+            console.log('Failed to update user');
+          }
+        })
+        .catch((error) => {
+          console.log('Error while updating user', error);
+        });
     }
   };
+
+  useEffect(() => {
+    // Make the GET request to fetch users data
+    fetch('http://localhost:8080/admin/showAllUser')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Users data:', data);
+        setUsers(data);
+      })
+      .catch((error) => {
+        console.log('Error while fetching users data', error);
+      });
+  }, []);
   
 
   const dashboardPageHandleClick = () => {
@@ -320,34 +375,35 @@ const AdminMembersPage: React.FC = () => {
           </div>
           <TableContainer className="table-container" component={Paper}>
           <Table>
-            <TableHead className="table-header">
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Username</TableCell>
-                <TableCell>Email</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentUsers.map((user) => (
-                <TableRow key={user.id} hover>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedUsers.includes(user.id)}
-                      onChange={(event) => handleUserCheckboxChange(event, user.id)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <a className="user-link" href="#" onClick={() => handleUserClick(user.id)}>
-                      {`${user.firstName} ${user.lastName}`}
-                    </a>
-                  </TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+              <TableHead className="table-header">
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Username</TableCell>
+                  <TableCell>Email</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow key={user.user_id} hover>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedUsers.includes(user.user_id)}
+                        onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
+                        {`${user.first_name} ${user.last_name}`}
+                      </a>
+                    </TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
           </TableContainer>
           <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
           <Pagination count={Math.ceil(filteredUsers.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
@@ -372,7 +428,7 @@ const AdminMembersPage: React.FC = () => {
           <div className="name-label">First Name:</div>
           <TextField
             className="user-info-value"
-            value={editedUser?.firstName || ''}
+            value={editedUser?.first_name || ''}
             onChange={(e) => {
               const firstName = e.target.value;
               setEditedUser((prevEditedUser: User | null) => ({
@@ -384,7 +440,7 @@ const AdminMembersPage: React.FC = () => {
           <div className="name-label">Last Name:</div>
           <TextField
             className="user-info-value"
-            value={editedUser?.lastName || ''}
+            value={editedUser?.last_name || ''}
             onChange={(e) => {
               const lastName = e.target.value;
               setEditedUser((prevEditedUser: User | null) => ({
@@ -395,7 +451,7 @@ const AdminMembersPage: React.FC = () => {
           />
         </React.Fragment>
       ) : (
-        <span className="user-info-value">{`${selectedUser.firstName} ${selectedUser.lastName}`}</span>
+        <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
       )}
       <br />
 
@@ -437,7 +493,7 @@ const AdminMembersPage: React.FC = () => {
       {editMode ? (
         <TextField
           className="user-info-value"
-          value={editedUser?.contact}
+          value={editedUser?.mobile_num}
           onChange={(e) =>
             setEditedUser((prevEditedUser: User | null) => ({
               ...prevEditedUser!,
@@ -446,7 +502,7 @@ const AdminMembersPage: React.FC = () => {
           }
         />
       ) : (
-        <span className="user-info-value">{selectedUser.contact}</span>
+        <span className="user-info-value">{selectedUser.mobile_num}</span>
       )}
       <br />
 
@@ -469,13 +525,13 @@ const AdminMembersPage: React.FC = () => {
       <br />
 
       <strong className="user-info-label">UserType:</strong>{" "}
-      <span className="user-info-value">{selectedUser.usertype}</span> <br />
+      <span className="user-info-value">{selectedUser.usertype_id}</span> <br />
 
       <strong className="user-info-label">Position:</strong>{" "}
       {editMode ? (
         <TextField
           className="user-info-value"
-          value={editedUser?.position}
+          value={editedUser?.position_id}
           onChange={(e) =>
             setEditedUser((prevEditedUser: User | null) => ({
               ...prevEditedUser!,
@@ -484,7 +540,7 @@ const AdminMembersPage: React.FC = () => {
           }
         />
       ) : (
-        <span className="user-info-value">{selectedUser.position}</span>
+        <span className="user-info-value">{selectedUser.position_id}</span>
       )}
       <br />
 
@@ -496,9 +552,9 @@ const AdminMembersPage: React.FC = () => {
 
       <strong className="user-info-label">Updated At:</strong>{" "}
       {editMode ? (
-        <span className="user-info-value">{selectedUser.updatedAt}</span>
+        <span className="user-info-value">{selectedUser.updated_time}</span>
       ) : (
-        <span className="user-info-value">{editedUser?.updatedAt || selectedUser.updatedAt}</span>
+        <span className="user-info-value">{editedUser?.updated_time || selectedUser.updated_time}</span>
       )}
       {/* Display the updated date */}
     </div>
@@ -520,7 +576,7 @@ const AdminMembersPage: React.FC = () => {
   </div>
 </div>
 </Dialog>
-          <Dialog open={addUserDialogOpen || newUser.id !== 0} onClose={() => setNewUser({ ...newUser, id: 0 })} className="add-user-dialog">
+          <Dialog open={addUserDialogOpen || newUser.user_id !== 0} onClose={() => setNewUser({ ...newUser, user_id: 0 })} className="add-user-dialog">
           <DialogTitle>Add User</DialogTitle>
           <DialogContent className="add-user-dialog-content">
             <DialogContentText>Please enter the user details:</DialogContentText>
@@ -530,16 +586,16 @@ const AdminMembersPage: React.FC = () => {
               label="First Name"
               type="text"
               fullWidth
-              value={newUser.firstName}
-              onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
+              value={newUser.first_name}
+              onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
             />
             <TextField
               margin="dense"
               label="Last Name"
               type="text"
               fullWidth
-              value={newUser.lastName}
-              onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
+              value={newUser.last_name}
+              onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
             />
             <TextField
               margin="dense"
@@ -562,8 +618,8 @@ const AdminMembersPage: React.FC = () => {
               label="Contact"
               type="number"
               fullWidth
-              value={newUser.contact}
-              onChange={(e) => setNewUser({ ...newUser, contact: parseInt(e.target.value) })}
+              value={newUser.mobile_num}
+              onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value) })}
             />
             <TextField
               margin="dense"
@@ -573,24 +629,28 @@ const AdminMembersPage: React.FC = () => {
               value={newUser.password}
               onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
             />
-            <TextField
-              margin="dense"
-              label="Position"
-              type="text"
-              fullWidth
-              value={newUser.position}
-              onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
-            />
             <Select
               margin="dense"
-              label="UserType"
-              value={newUser.usertype}
-              onChange={(e) => setNewUser({ ...newUser, usertype: e.target.value as string })}
+              label="Position ID"
+              type="number"
+              fullWidth
+              value={newUser.position_id}
+              onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
+            >
+              <MenuItem value={1}>Design Engineer</MenuItem>
+              <MenuItem value={2}>OJT</MenuItem>
+              
+            </Select>
+            <Select
+              margin="dense"
+              label="UserType ID"
+              value={newUser.usertype_id}
+              onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
               fullWidth
             >
-              <MenuItem value="Viewer">Viewer</MenuItem>
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Editor">Editor</MenuItem>
+              <MenuItem value={1}>Viewer</MenuItem>
+              <MenuItem value={2}>Editor</MenuItem>
+              <MenuItem value={3}>Admin</MenuItem>
             </Select>
           </DialogContent>
           <DialogActions className="add-user-dialog-actions">

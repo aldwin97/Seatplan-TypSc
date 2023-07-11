@@ -329,17 +329,27 @@
     height: 100vh;
     padding: 10px;
   }
-
+  .title {
+    display: none;
+  }
   .action-buttons {
     justify-content: center;
   }
+  .notif {
+    position: fixed;
+    top: 50%;
+    left: 50%;
 
+    right: auto;
+  }
   .delete-button {
     margin-right: 0;
+    margin-top: 20% !important;
     margin-bottom: 10px;
   }
 
   .add-user-button {
+    margin-top: 20% !important;
     margin-left: 0;
   }
 

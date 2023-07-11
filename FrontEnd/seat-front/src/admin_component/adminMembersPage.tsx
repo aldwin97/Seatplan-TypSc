@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Snackbar  } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import './adminMembersPage.css';
@@ -45,6 +45,7 @@ interface StaffStatus {
 }
 
 const AdminMembersPage: React.FC = () => {
+  const [errorMessage, setErrorMessage] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
@@ -132,75 +133,60 @@ const AdminMembersPage: React.FC = () => {
     setAddUserDialogOpen(true); // Set the flag to open the dialog
   };
 
-  const handleAddUsers = () => {
-    const currentTime = new Date().toISOString();
-
-
-    const updatedUser: Omit<User, 'user_id'> = {
-      first_name: newUser.first_name,
-      last_name: newUser.last_name,
-      email: newUser.email,
-      mobile_num: newUser.mobile_num,
-      username: newUser.username,
-      password: newUser.password,
-      staffstatus_id: newUser.staffstatus_id,
-      usertype_name: newUser.usertype_name,
-      position_name: newUser.position_name,
-      usertype_id: newUser.usertype_id,
-      staffstatus_name: newUser.staffstatus_name,
-      position_id: newUser.position_id,
-      user_picture: newUser.user_picture,
-      is_deleted: newUser.is_deleted,
-      created_time: currentTime,
-      created_by: 1,
-      updated_time: '',
-      updated_by: 0,
-    };
-
-    // Make the POST request to insert a new user
-    fetch('http://localhost:8080/admin/insert', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedUser),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log('User inserted successfully');
-          response.json().then((insertedUser) => {
-            setUsers([...users, insertedUser]);
-            setNewUser({
-              ...newUser,
-              user_id: 0,
-              first_name: '',
-              last_name: '',
-              email: '',
-              mobile_num: 0,
-              username: '',
-              password: '',
-              staffstatus_id: 0,
-              usertype_name: '',
-              position_name: '',
-              usertype_id: 0,
-              position_id: 0,
-              user_picture: '',
-              is_deleted: false,
-              created_time: currentTime ,
-              created_by: 1,
-              updated_time: '',
-              updated_by: 0,
-            });
-            setAddUserDialogOpen(false); // Set the flag to close the dialog
-          });
-        } else {
-          console.log('Failed to insert user');
-        }
-      })
-      .catch((error) => {
-        console.log('Error while inserting user', error);
-      });
+const handleAddUsers = () => {
+  const currentTime = new Date().toISOString();
+  
+  const newUserModel = {
+    first_name: newUser.first_name,
+    last_name: newUser.last_name,
+    email: newUser.email,
+    mobile_num: newUser.mobile_num,
+    username: newUser.username,
+    password: newUser.password,
+    staffstatus_id: newUser.staffstatus_id,
+    usertype_id: newUser.usertype_id,
+    position_id: newUser.position_id,
   };
+
+  // Make the POST request to insert a new user
+  fetch('http://localhost:8080/admin/insert', {
+    // request configuration
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log('User inserted successfully');
+        // Refresh the page to reflect the changes
+        window.location.reload();
+      } else if (response.status === 400) {
+        response.text().then((errorMessage) => {
+          console.log('Failed to insert user:', errorMessage);
+          // Set the error message state
+          setErrorMessage(errorMessage);
+        });
+      } else {
+        console.log('Failed to insert user');
+      }
+    })
+    .catch((error) => {
+      console.log('Error while inserting user', error);
+    });
+};
+
+const handleCloseSnackbar = () => {
+  setErrorMessage('');
+};
+
+const errorMessageSnackbar = (
+  <Snackbar
+    open={Boolean(errorMessage)}
+    autoHideDuration={6000}
+    onClose={handleCloseSnackbar}
+    message={errorMessage}
+  />
+);
+
+
+  
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
@@ -240,43 +226,46 @@ const AdminMembersPage: React.FC = () => {
   };
 
   const handleSaveUser = () => {
-    if (editedUser) {
-      const currentTime = new Date().toISOString().replace('T', ' ').slice(0, 19);
-      const updatedUser: User = {
-        ...editedUser,
-        updated_time: currentTime,
-      };
-
-      // Make the PUT request to update the user
-      fetch(`http://localhost:8080/admin/update/${updatedUser.user_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUser),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('User updated successfully');
-            const updatedUsers = users.map((user) => {
-              if (user.user_id === updatedUser.user_id) {
-                return updatedUser;
-              } else {
-                return user;
-              }
-            });
-            setUsers(updatedUsers);
-            setEditMode(false);
-            setSelectedUser(updatedUser);
-          } else {
-            console.log('Failed to update user');
-          }
-        })
-        .catch((error) => {
-          console.log('Error while updating user', error);
-        });
+    if (!editedUser) {
+      return;
     }
+  
+    // Prepare the updated user data
+    const updatedUserModel = {
+      user_id: selectedUser?.user_id,
+      first_name: editedUser.first_name || '',
+      last_name: editedUser.last_name || '',
+      email: editedUser.email || '',
+      mobile_num: editedUser.mobile_num || 0,
+      username: editedUser.username || '',
+      password: editedUser.password || '',
+      staffstatus_id: selectedUser?.staffstatus_id,
+      usertype_id: selectedUser?.usertype_id,
+      position_id: selectedUser?.position_id,
+    };
+  
+    // Make the PUT request to update the user
+    fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedUserModel),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('User updated successfully');
+          window.location.reload(); // Refresh the page
+          // Refresh the page or update the user in the user list if needed
+        } else {
+          console.log('Failed to update user');
+        }
+      })
+      .catch((error) => {
+        console.log('Error while updating user', error);
+      });
   };
+  
 
   useEffect(() => {
     // Make the GET request to fetch users data
@@ -526,7 +515,7 @@ const AdminMembersPage: React.FC = () => {
         )}
         <br />
 
-        <strong className="user-info-label">Username:</strong>
+        {/* <strong className="user-info-label">Username:</strong>
         {editMode ? (
           <TextField
             className="user-info-value"
@@ -536,7 +525,7 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.username}</span>
         )}
-        <br />
+        <br /> */}
 
         <strong className="user-info-label">Email:</strong>
         {editMode ? (
@@ -576,8 +565,22 @@ const AdminMembersPage: React.FC = () => {
         <br />
 
         <strong className="user-info-label">UserType:</strong>{" "}
-        <span className="user-info-value">{selectedUser.usertype_name}</span>
-        <br />
+{editMode ? (
+  <Select
+    className="user-info-value"
+    value={editedUser?.usertype_id || ''}
+    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, usertype_id: Number(e.target.value) }))}
+  >
+    {usertypes.map((userType) => (
+      <MenuItem key={userType.usertype_id} value={userType.usertype_id}>
+        {userType.usertype_name}
+      </MenuItem>
+    ))}
+  </Select>
+) : (
+  <span className="user-info-value">{selectedUser.usertype_name}</span>
+)}
+
 
         <strong className="user-info-label">Position:</strong>{" "}
         {editMode ? (
@@ -732,14 +735,15 @@ const AdminMembersPage: React.FC = () => {
 
   </DialogContent>
   <DialogActions className="add-user-dialog-actions">
-    <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
-      Cancel
-    </Button>
-    <Button onClick={handleAddUsers} color="primary">
-  Add
-</Button>
+  <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
+    Cancel
+  </Button>
+  <Button onClick={handleAddUsers} color="primary">
+    Add
+  </Button>
+  {errorMessageSnackbar}
+</DialogActions>
 
-  </DialogActions>
 </Dialog>
 
           </div>

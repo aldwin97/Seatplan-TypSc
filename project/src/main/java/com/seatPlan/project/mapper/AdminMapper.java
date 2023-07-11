@@ -48,8 +48,8 @@ public interface AdminMapper {
     void deleteUserById(@Param("user_id") Long user_id);
 
 
-    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, project_id, usertype_id, position_id, created_time) " +
-        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time})")
+    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, usertype_id, position_id) " +
+        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id},#{usertype_id}, #{position_id})")
 @Options(useGeneratedKeys = true, keyProperty = "user_id")
 void insertUser(UserModel userModel);
 

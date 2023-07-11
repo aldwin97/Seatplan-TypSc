@@ -73,6 +73,7 @@ public class AdminController {
 
      @PostMapping("/insert")
     public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
+        
           try {
              adminService.insertUser(userModel);
            return ResponseEntity.ok("User inserted successfully");
@@ -127,6 +128,10 @@ public class AdminController {
             if (userModel.getLast_name() != null) {
                 existingUser.setLast_name(userModel.getLast_name());
             }
+
+
+
+
 
             adminService.updateUser(existingUser);
             return ResponseEntity.ok("User updated successfully");

@@ -46,6 +46,27 @@ public interface UserMapper {
 
     @Select("SELECT * FROM table_user WHERE username = #{username}")
     UserModel findByUsername(String username);
+
+
+
+    @Update({
+        "<script>",
+        "UPDATE table_user",
+        "<set>",
+        "<if test='first_name != null'>first_name = #{first_name},</if>",
+        "<if test='last_name != null'>last_name = #{last_name},</if>",
+        "<if test='email != null'>email = #{email},</if>",
+        "<if test='mobile_num != null'>mobile_num = #{mobile_num},</if>",
+        "<if test='password != null'>password = #{password},</if>",
+        "<if test='updated_by != null'>updated_by = #{updated_by},</if>",
+        "</set>",
+        "WHERE user_id = #{user_id}",
+        "</script>"
+    })
+    void updateUser(UserModel userModel);
+    
+
+
     
 
 

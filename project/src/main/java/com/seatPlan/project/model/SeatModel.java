@@ -13,14 +13,20 @@ import lombok.NoArgsConstructor;
 public class SeatModel {
     private  Long  seat_id;
     private Long user_id;
-    private Long project_id;
     private Long seatstatus_id;
     private Long areaId;
-    private int seatNumber;
+    private int seat_num;
     private int isDeleted;
     private LocalDateTime createdTime;
     private String createdBy;
     private LocalDateTime updatedTime;
     private String updatedBy;
 
+
+
+    private String project_name;
+    private String first_name;
+    private String last_name;
+    private String area_name;
+    private String seat_status;
 }

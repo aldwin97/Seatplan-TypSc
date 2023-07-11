@@ -2,9 +2,9 @@ package com.seatPlan.project.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Insert;
+
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -20,23 +20,12 @@ public interface UserMapper {
     List<UserModel> getAllUsers();
 
 
-    // // user authetication
-    // @Select("SELECT username, password FROM table_user WHERE username = #{username} AND is_deleted = 0")
-    // UserModel getUserByUsername(String username);
-
-    // user authentication
-    // @Select("SELECT username, password, usertype_id FROM table_user WHERE username = #{username} AND is_deleted = 0")
-    // UserModel getUserByUsername(String username);
-
     @Select("SELECT user_id, username, password, usertype_id FROM table_user WHERE username = #{username} AND is_deleted = 0")
     UserModel getUserByUsername(String username);
 
 
     // add user
-   @Insert("INSERT INTO table_user ( first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, user_picture,  created_time, created_by) "
-            + "VALUES #{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id}, #{user_picture}, #{created_time}, #{created_by})")
-    @Options(useGeneratedKeys = true, keyProperty = "user_id")
-    void insertUser(UserModel userModel);
+ 
 
     // count the row of the table
     @Select("SELECT COUNT(*) FROM table_user WHERE is_deleted = 0")
@@ -47,11 +36,33 @@ public interface UserMapper {
     void deleteUserByUsername(@Param("username") String username);
 
 
-
-
-
     @Select("SELECT * FROM table_user WHERE username = #{username}")
     UserModel findByUsername(String username);
+
+
+    @Update({
+        "<script>",
+        "UPDATE table_user",
+        "<set>",
+        "<if test='first_name != null'>first_name = #{first_name},</if>",
+        "<if test='last_name != null'>last_name = #{last_name},</if>",
+        "<if test='email != null'>email = #{email},</if>",
+        "<if test='mobile_num != null'>mobile_num = #{mobile_num},</if>",
+        "<if test='password != null'>password = #{password},</if>",
+        "</set>",
+        "WHERE user_id = #{user_id}",
+        "</script>"
+    })
+    void updateUser(UserModel userModel);
+
+    @Select("SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0")
+    UserModel getUserById(Long user_id);
+
+    @Select("SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0")
+    Object getUserByEmail(String email);
+    
+
+
     
 
 

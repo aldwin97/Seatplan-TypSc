@@ -48,10 +48,11 @@ public interface AdminMapper {
     void deleteUserById(@Param("user_id") Long user_id);
 
 
-    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, created_time) " +
-        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id}, #{created_time})")
+    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, project_id, usertype_id, position_id, created_time, created_by) " +
+        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time}, #{created_by})")
 @Options(useGeneratedKeys = true, keyProperty = "user_id")
 void insertUser(UserModel userModel);
+
 
 
 
@@ -83,7 +84,10 @@ void insertUser(UserModel userModel);
     @Select("SELECT * FROM table_user WHERE username = #{user_id} AND is_deleted = 0")
     UserModel getUserByUsername(String username);
 
-    
+    @Select("SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0")
+    UserModel getUserByEmail(String email);
+
+
     
     
 }

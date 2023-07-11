@@ -77,6 +77,10 @@ public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
         if (adminService.isUsernameExists(userModel.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
         }
+
+        if(adminService.isUserEmailExists(userModel.getEmail())){
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+        }
         
         adminService.insertUser(userModel);
         return ResponseEntity.ok("User inserted successfully");

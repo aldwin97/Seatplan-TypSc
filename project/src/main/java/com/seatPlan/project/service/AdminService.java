@@ -116,6 +116,10 @@ public class AdminService {
         return adminMapper.getUserByUsername(username) != null;
     }
 
+     public boolean isUserEmailExists(String email) {
+        return adminMapper.getUserByEmail(email) != null;
+    }
+
     public void insertUser(UserModel userModel) {
         adminMapper.insertUser(userModel);
     }

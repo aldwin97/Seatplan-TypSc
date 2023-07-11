@@ -15,7 +15,7 @@ const LogInPage: React.FC = () => {
   };
 
   return (
-    <body className={styles.body1}>
+    <body className={styles.body}>
       <div className={styles.container1}>
         <div className={styles.signInContainer}>
           <button onClick={dashboardPageHandleClick} className={styles.sub} type="submit">

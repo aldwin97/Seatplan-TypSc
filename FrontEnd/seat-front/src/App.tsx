@@ -7,6 +7,7 @@ import AdminMembersPage from './admin_component/adminMembersPage';
 import SeatplanPage from './seatplan_component/seatplanPage'
 import './App.css';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import ProfilePage from './profile_component/profilePage';
 
 function App(): JSX.Element {
 
@@ -20,6 +21,7 @@ function App(): JSX.Element {
           <Route path="/helpPage" element={<HelpPage />} />
           <Route path="/seatPlanPage" element={<SeatplanPage />} />
           <Route path="/adminPage" element={<AdminMembersPage />} />
+          <Route path="/profilePage" element={<ProfilePage />} />
           <Route path="*" element={<Navigate to="/" />} /> // Redirect to the homepage for unknown routes
         </Routes>
       </BrowserRouter>

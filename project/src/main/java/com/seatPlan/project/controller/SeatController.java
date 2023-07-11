@@ -15,8 +15,8 @@ import com.seatPlan.project.service.SeatService;
 public class SeatController {
      private final SeatService seatService;
 
-    @Autowired
-    public SeatController(SeatService seatService) {
+   
+    public SeatController( @Autowired SeatService seatService) {
         this.seatService = seatService;
     }
 

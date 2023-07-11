@@ -27,6 +27,15 @@ interface User {
   updated_time: string;
   updated_by: number;
 }
+interface UserType {
+  usertype_id: number;
+  usertype_name: string;
+}
+
+interface Position {
+  position_id: number;
+  position_name: string;
+}
 
 const AdminMembersPage: React.FC = () => {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
@@ -44,7 +53,7 @@ const AdminMembersPage: React.FC = () => {
     username: '',
     password: '',
     staffstatus_id: 0,
-    usertype_name:'',
+    usertype_name: '',
     position_name: '',
     usertype_id: 0,
     position_id: 0,
@@ -135,7 +144,6 @@ const AdminMembersPage: React.FC = () => {
       },
       body: JSON.stringify(updatedUser),
     })
-    
       .then((response) => {
         if (response.ok) {
           console.log('User inserted successfully');
@@ -149,7 +157,7 @@ const AdminMembersPage: React.FC = () => {
             username: '',
             password: '',
             staffstatus_id: 0,
-            usertype_name:'',
+            usertype_name: '',
             position_name: '',
             usertype_id: 0,
             position_id: 0,
@@ -258,7 +266,6 @@ const AdminMembersPage: React.FC = () => {
         console.log('Error while fetching users data', error);
       });
   }, []);
-  
 
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
@@ -299,56 +306,77 @@ const AdminMembersPage: React.FC = () => {
       clearInterval(timerID);
     };
   }, []);
+  const [usertypes, setUserTypes] = useState<UserType[]>([]);
+  const [positions, setPositions] = useState<Position[]>([]);
   
-
+  
+  // Fetch position and usertype data from the server
+  useEffect(() => {
+    // Fetch positions
+    fetch('http://localhost:8080/admin/showAllPosition')
+      .then((response) => response.json())
+      .then((data) => {
+        setPositions(data);
+      })
+      .catch((error) => {
+        console.log('Error while fetching positions', error);
+      });
+  
+    // Fetch usertypes
+    fetch('http://localhost:8080/admin/showAllUserType')
+      .then((response) => response.json())
+      .then((data) => {
+        setUserTypes(data);
+      })
+      .catch((error) => {
+        console.log('Error while fetching usertypes', error);
+      });
+  }, []);
   return (
-    
     <div className="container">
+      <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
+        <div className="burgerIcon"></div>
+        <div className="burgerIcon"></div>
+        <div className="burgerIcon"></div>
+      </button>
 
-<button className={`burgerButton ${isDropdownOpen ? "open" : ""}`} onClick={toggleDropdown}>
-  <div className="burgerIcon"></div>
-  <div className="burgerIcon"></div>
-  <div className="burgerIcon"></div>
-</button>
+      {isDropdownOpen && (
+        <div className="dropdownMenu dropdownRows">
+          <button onClick={dashboardPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faChartBar} className="icon" />
+            Dashboard
+          </button>
+          <button onClick={adminPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faUsers} className="icon" />
+            Members
+          </button>
+          <button onClick={seatplanPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
+            Projects
+          </button>
+        </div>
+      )}
 
+      <button className={`profile ${isProfileDropdownOpen ? 'open2' : ''}`} onClick={toggleProfileDropdown}>
+        <FontAwesomeIcon icon={faUser} />
+      </button>
 
-{isDropdownOpen && (
-  <div className="dropdownMenu dropdownRows">
-    <button onClick={dashboardPageHandleClick} className="sub">
-      <FontAwesomeIcon icon={faChartBar} className="icon" />
-      Dashboard
-    </button>
-    <button onClick={adminPageHandleClick} className="sub">
-      <FontAwesomeIcon icon={faUsers} className="icon" />
-      Members
-    </button>
-    <button onClick={seatplanPageHandleClick} className="sub">
-      <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
-      Projects
-    </button>
-  </div>
-)}
+      {isProfileDropdownOpen && (
+        <div className="dropdownMenu2">
+          <button className="sub">
+            <FontAwesomeIcon icon={faFaceSmile} className="icon" />
+            Profile
+          </button>
+          <button onClick={logInPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faPowerOff} className="icon" />
+            Logout
+          </button>
+        </div>
+      )}
 
-<button className={`profile ${isProfileDropdownOpen ? "open2" : ""}`} onClick={toggleProfileDropdown}>
-  <FontAwesomeIcon icon={faUser} />
-</button>
-
-{isProfileDropdownOpen && (
-  <div className="dropdownMenu2">
-    <button className="sub">
-      <FontAwesomeIcon icon={faFaceSmile} className="icon" />
-      Profile
-    </button>
-    <button onClick={logInPageHandleClick} className="sub">
-      <FontAwesomeIcon icon={faPowerOff} className="icon" />
-      Logout
-    </button>
-  </div>
-)}
-
-<button className="notif">
-  <FontAwesomeIcon icon={faBell} />
-</button>
+      <button className="notif">
+        <FontAwesomeIcon icon={faBell} />
+      </button>
 
       <Box className="action-buttons" display="flex" justifyContent="flex-end">
         <IconButton
@@ -363,6 +391,7 @@ const AdminMembersPage: React.FC = () => {
           Add User
         </Button>
       </Box>
+
       <div className="title">
         <Typography className="title-main" variant="h5" gutterBottom>
           USER INFORMATION
@@ -371,305 +400,289 @@ const AdminMembersPage: React.FC = () => {
         <Select className="select-container" value={perPage} onChange={handlePerPageChange}>
           {perPageOptions.map((option) => (
             <MenuItem className="menu-container" key={option} value={option}>
-            {option}
-          </MenuItem>
+              {option}
+            </MenuItem>
           ))}
+        </Select>
+        <div className="search-bar">
+          <TextField className="search-bar" label="Search" variant="outlined" value={searchText} onChange={handleSearch} />
+        </div>
+      </div>
+
+      <TableContainer className="table-container" component={Paper}>
+        <Table>
+          <TableHead className="table-header">
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Username</TableCell>
+              <TableCell>Email</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {currentUsers.map((user) => (
+              <TableRow key={user.user_id} hover>
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={selectedUsers.includes(user.user_id)}
+                    onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
+                    {`${user.first_name} ${user.last_name}`}
+                  </a>
+                </TableCell>
+                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.email}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
+        <Pagination count={Math.ceil(filteredUsers.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
+      </Box>
+
+      <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
+  <div className="user-info-page">
+    <Typography variant="h5" className="user-info-title">
+      {editMode ? 'EDIT USER INFORMATION' : 'USER INFORMATION'}
+    </Typography>
+    {selectedUser && (
+      <div className="user-info-content">
+        <strong className="user-info-label">Name:</strong>
+        {editMode ? (
+          <>
+            <div className="name-label">First Name:</div>
+            <TextField
+              className="user-info-value"
+              value={editedUser?.first_name || ''}
+              onChange={(e) => {
+                const firstName = e.target.value;
+                setEditedUser((prevEditedUser: User | null) => ({
+                  ...prevEditedUser!,
+                  first_name: firstName || '',
+                }));
+              }}
+            />
+            <div className="name-label">Last Name:</div>
+            <TextField
+              className="user-info-value"
+              value={editedUser?.last_name || ''}
+              onChange={(e) => {
+                const lastName = e.target.value;
+                setEditedUser((prevEditedUser: User | null) => ({
+                  ...prevEditedUser!,
+                  last_name: lastName || '',
+                }));
+              }}
+            />
+          </>
+        ) : (
+          <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
+        )}
+        <br />
+
+        <strong className="user-info-label">Username:</strong>
+        {editMode ? (
+          <TextField
+            className="user-info-value"
+            value={editedUser?.username || ''}
+            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, username: e.target.value }))}
+          />
+        ) : (
+          <span className="user-info-value">{selectedUser.username}</span>
+        )}
+        <br />
+
+        <strong className="user-info-label">Email:</strong>
+        {editMode ? (
+          <TextField
+            className="user-info-value"
+            value={editedUser?.email || ''}
+            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, email: e.target.value }))}
+          />
+        ) : (
+          <span className="user-info-value">{selectedUser.email}</span>
+        )}
+        <br />
+
+        <strong className="user-info-label">Contact:</strong>{" "}
+        {editMode ? (
+          <TextField
+            className="user-info-value"
+            value={editedUser?.mobile_num || ''}
+            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, mobile_num: parseInt(e.target.value) }))}
+          />
+        ) : (
+          <span className="user-info-value">{selectedUser.mobile_num}</span>
+        )}
+        <br />
+
+        <strong className="user-info-label">Password:</strong>{" "}
+        {editMode ? (
+          <TextField
+            className="user-info-value"
+            type="password"
+            value={editedUser?.password || ''}
+            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, password: e.target.value }))}
+          />
+        ) : (
+          <span className="user-info-value">{selectedUser.password ? "********" : ""}</span>
+        )}
+        <br />
+
+        <strong className="user-info-label">UserType:</strong>{" "}
+        <span className="user-info-value">{selectedUser.usertype_name}</span>
+        <br />
+
+        <strong className="user-info-label">Position:</strong>{" "}
+        {editMode ? (
+          <Select
+            className="user-info-value"
+            value={editedUser?.position_id || ''}
+            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, position_id: Number(e.target.value) }))}
+          >
+            {positions.map((position) => (
+              <MenuItem key={position.position_id} value={position.position_id}>
+                {position.position_name}
+              </MenuItem>
+            ))}
           </Select>
-          <div className="search-bar">
-            <TextField className="search-bar" label="Search" variant="outlined" value={searchText} onChange={handleSearch} />
-          </div>
-          </div>
-          <TableContainer className="table-container" component={Paper}>
-          <Table>
-              <TableHead className="table-header">
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Username</TableCell>
-                  <TableCell>Email</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {currentUsers.map((user) => (
-                  <TableRow key={user.user_id} hover>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedUsers.includes(user.user_id)}
-                        onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
-                        {`${user.first_name} ${user.last_name}`}
-                      </a>
-                    </TableCell>
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+        ) : (
+          <span className="user-info-value">{selectedUser.position_name}</span>
+        )}
+        <br />
 
-            </Table>
+        <strong className="user-info-label">Created At:</strong>{" "}
+        <span className="user-info-value">{selectedUser.created_time}</span>
+        <br />
 
-          </TableContainer>
-          <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
-          <Pagination count={Math.ceil(filteredUsers.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
+        <strong className="user-info-label">Created By:</strong>{" "}
+        <span className="user-info-value">{selectedUser.created_by}</span>
+        <br />
 
-          </Box>
-
-          <Dialog
-  open={userInfoDialogOpen}
-  onClose={handleCloseDialog}
-  fullScreen
-  className="user-info-dialog"
->
-          <div className="user-info-page">
-    
-  <Typography variant="h5" className="user-info-title">
-    {editMode ? 'EDIT USER INFORMATION' : 'USER INFORMATION'}
-  </Typography>
-  {selectedUser && (
-    <div className="user-info-content">
-      <strong className="user-info-label">Name:</strong>
-      {editMode ? (
-        <React.Fragment>
-          <div className="name-label">First Name:</div>
-          <TextField
-            className="user-info-value"
-            value={editedUser?.first_name || ''}
-            onChange={(e) => {
-              const firstName = e.target.value;
-              setEditedUser((prevEditedUser: User | null) => ({
-                ...prevEditedUser!,
-                firstName: firstName || '',
-              }));
-            }}
-          />
-          <div className="name-label">Last Name:</div>
-          <TextField
-            className="user-info-value"
-            value={editedUser?.last_name || ''}
-            onChange={(e) => {
-              const lastName = e.target.value;
-              setEditedUser((prevEditedUser: User | null) => ({
-                ...prevEditedUser!,
-                lastName: lastName || '',
-              }));
-            }}
-          />
-        </React.Fragment>
-      ) : (
-        <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
-      )}
-      <br />
-
-      <strong className="user-info-label">Username:</strong>
-      {editMode ? (
-        <TextField
-          className="user-info-value"
-          value={editedUser?.username}
-          onChange={(e) =>
-            setEditedUser((prevEditedUser: User | null) => ({
-              ...prevEditedUser!,
-              username: e.target.value
-            }))
-          }
-        />
-      ) : (
-        <span className="user-info-value">{selectedUser.username}</span>
-      )}
-      <br />
-
-      <strong className="user-info-label">Email:</strong>
-      {editMode ? (
-        <TextField
-          className="user-info-value"
-          value={editedUser?.email}
-          onChange={(e) =>
-            setEditedUser((prevEditedUser: User | null) => ({
-              ...prevEditedUser!,
-              email: e.target.value
-            }))
-          }
-        />
-      ) : (
-        <span className="user-info-value">{selectedUser.email}</span>
-      )}
-      <br />
-
-      <strong className="user-info-label">Contact:</strong>{" "}
-      {editMode ? (
-        <TextField
-          className="user-info-value"
-          value={editedUser?.mobile_num}
-          onChange={(e) =>
-            setEditedUser((prevEditedUser: User | null) => ({
-              ...prevEditedUser!,
-              contact: parseInt(e.target.value)
-            }))
-          }
-        />
-      ) : (
-        <span className="user-info-value">{selectedUser.mobile_num}</span>
-      )}
-      <br />
-
-      <strong className="user-info-label">Password:</strong>{" "}
-      {editMode ? (
-        <TextField
-          className="user-info-value"
-          type="password"
-          value={editedUser?.password || ''}
-          onChange={(e) =>
-            setEditedUser((prevEditedUser: User | null) => ({
-              ...prevEditedUser!,
-              password: e.target.value
-            }))
-          }
-        />
-      ) : (
-        <span className="user-info-value">{selectedUser.password ? "********" : ""}</span>
-      )}
-      <br />
-
-      <strong className="user-info-label">UserType:</strong>{" "}
-      <span className="user-info-value">{selectedUser.usertype_id}</span> <br />
-
-      <strong className="user-info-label">Position:</strong>{" "}
-      {editMode ? (
-        <TextField
-          className="user-info-value"
-          value={editedUser?.position_id}
-          onChange={(e) =>
-            setEditedUser((prevEditedUser: User | null) => ({
-              ...prevEditedUser!,
-              position: e.target.value
-            }))
-          }
-        />
-      ) : (
-        <span className="user-info-value">{selectedUser.position_id}</span>
-      )}
-      <br />
-
-      <strong className="user-info-label">Created At:</strong>{" "}
-      <span className="user-info-value">{selectedUser.created_time}</span> <br />
-
-      <strong className="user-info-label">Created By:</strong>{" "}
-      <span className="user-info-value">{selectedUser.created_by}</span> <br />
-
-      <strong className="user-info-label">Updated At:</strong>{" "}
-      {editMode ? (
-        <span className="user-info-value">{selectedUser.updated_time}</span>
-      ) : (
-        <span className="user-info-value">{editedUser?.updated_time || selectedUser.updated_time}</span>
-      )}
-      {/* Display the updated date */}
-    </div>
-  )}
-
-  <div className="user-info-actions">
-    {editMode ? (
-      <Button onClick={handleSaveUser} color="primary" className="user-info-dialog-save-button">
-        Save
-      </Button>
-    ) : (
-      <Button onClick={handleEditUser} color="primary" className="user-info-dialog-edit-button">
-        Edit
-      </Button>
+        <strong className="user-info-label">Updated At:</strong>{" "}
+        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span>
+      </div>
     )}
-    <Button onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
-      Close
-    </Button>
+
+    <div className="user-info-actions">
+      {editMode ? (
+        <Button onClick={handleSaveUser} color="primary" className="user-info-dialog-save-button">
+          Save
+        </Button>
+      ) : (
+        <Button onClick={handleEditUser} color="primary" className="user-info-dialog-edit-button">
+          Edit
+        </Button>
+      )}
+      <Button onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
+        Close
+      </Button>
+    </div>
   </div>
-</div>
 </Dialog>
-          <Dialog open={addUserDialogOpen || newUser.user_id !== 0} onClose={() => setNewUser({ ...newUser, user_id: 0 })} className="add-user-dialog">
-          <DialogTitle>Add User</DialogTitle>
-          <DialogContent className="add-user-dialog-content">
-            <DialogContentText>Please enter the user details:</DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="First Name"
-              type="text"
-              fullWidth
-              value={newUser.first_name}
-              onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
-            />
-            <TextField
-              margin="dense"
-              label="Last Name"
-              type="text"
-              fullWidth
-              value={newUser.last_name}
-              onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
-            />
-            <TextField
-              margin="dense"
-              label="Username"
-              type="text"
-              fullWidth
-              value={newUser.username}
-              onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-            />
-            <TextField
-              margin="dense"
-              label="Email"
-              type="email"
-              fullWidth
-              value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-            />
-            <TextField
-              margin="dense"
-              label="Contact"
-              type="number"
-              fullWidth
-              value={newUser.mobile_num}
-              onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value) })}
-            />
-            <TextField
-              margin="dense"
-              label="Password"
-              type="password"
-              fullWidth
-              value={newUser.password}
-              onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-            />
-            <Select
-              margin="dense"
-              label="Position ID"
-              type="number"
-              fullWidth
-              value={newUser.position_id}
-              onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
-            >
-              <MenuItem value={1}>Design Engineer</MenuItem>
-              <MenuItem value={2}>OJT</MenuItem>
-              
-            </Select>
-            <Select
-              margin="dense"
-              label="UserType ID"
-              value={newUser.usertype_id}
-              onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
-              fullWidth
-            >
-              <MenuItem value={1}>Viewer</MenuItem>
-              <MenuItem value={2}>Editor</MenuItem>
-              <MenuItem value={3}>Admin</MenuItem>
-            </Select>
-          </DialogContent>
-          <DialogActions className="add-user-dialog-actions">
-            <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleAddUsers} color="primary">
-              Add
-            </Button>
-          </DialogActions>
-          </Dialog>
+
+<Dialog
+  open={addUserDialogOpen || newUser.user_id !== 0}
+  onClose={() => setNewUser({ ...newUser, user_id: 0 })}
+  className="add-user-dialog"
+>
+  <DialogTitle>Add User</DialogTitle>
+  <DialogContent className="add-user-dialog-content">
+    <DialogContentText>Please enter the user details:</DialogContentText>
+    <TextField
+      autoFocus
+      margin="dense"
+      label="First Name"
+      type="text"
+      fullWidth
+      value={newUser.first_name}
+      onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Last Name"
+      type="text"
+      fullWidth
+      value={newUser.last_name}
+      onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Username"
+      type="text"
+      fullWidth
+      value={newUser.username}
+      onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Email"
+      type="email"
+      fullWidth
+      value={newUser.email}
+      onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+    />
+    <TextField
+      margin="dense"
+      label="Contact"
+      type="number"
+      fullWidth
+      value={newUser.mobile_num}
+      onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value) })}
+    />
+    <TextField
+      margin="dense"
+      label="Password"
+      type="password"
+      fullWidth
+      value={newUser.password}
+      onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+    />
+    <Select
+  margin="dense"
+  label="Position ID"
+  value={newUser.position_id}
+  onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
+  fullWidth
+>
+  {positions.map((position) => (
+    <MenuItem key={position.position_id} value={position.position_id}>
+      {position.position_name}
+    </MenuItem>
+  ))}
+</Select>
+
+<Select
+  margin="dense"
+  label="UserType ID"
+  value={newUser.usertype_id}
+  onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
+  fullWidth
+>
+  {usertypes.map((usertype) => (
+    <MenuItem key={usertype.usertype_id} value={usertype.usertype_id}>
+      {usertype.usertype_name}
+    </MenuItem>
+  ))}
+</Select>
+
+
+  </DialogContent>
+  <DialogActions className="add-user-dialog-actions">
+    <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleAddUsers} color="primary">
+      Add
+    </Button>
+  </DialogActions>
+</Dialog>
+
           </div>
           );
           };

@@ -6,22 +6,24 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 
 function ProfilePage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const navigate = useNavigate();
 
-  const toggleoldPasswordVisibility= () => {
-    setShowPassword(!showPassword);
+  const toggleOldPasswordVisibility = () => {
+    setShowOldPassword(!showOldPassword);
   };
 
-  const togglenewPasswordVisibility= () => {
-    setShowPassword(!showPassword);
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
   };
 
-  const toggleconfirmPasswordVisibility= () => {
-    setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const dashboardPageHandleClick = () => {
@@ -74,15 +76,14 @@ function ProfilePage() {
     console.log('Saving changes...');
   };
 
+  const handleAccountCancelChanges = () => {
+    // Reset the form fields to their initial values or clear them
+    setNewPassword('');
+    setConfirmPassword('');
 
-const handleAccountCancelChanges = () => {
-  // Reset the form fields to their initial values or clear them
-  setNewPassword('');
-  setConfirmPassword('');
-
-  // Perform any other actions needed when canceling changes
-  console.log('Canceling changes...');
-};
+    // Perform any other actions needed when canceling changes
+    console.log('Canceling changes...');
+  };
 
   return (
     <>
@@ -203,75 +204,76 @@ const handleAccountCancelChanges = () => {
         </div>
 
         <div className={styles['input-group']}>
-            <input
-              required
-              type={showPassword ? 'text' : 'oldPassword'}
-              name="oldPassword"
-              autoComplete="off"
-              className={styles.input}
-            />
-            <label className={styles['user-label']}>Old Password</label>
-            <span
-              className={`${styles['toggle-oldPassword']} ${showPassword ? styles.active : ''}`}
-              onClick={toggleoldPasswordVisibility}
-            >
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
-            </span>
-          </div>
+              <input
+                required
+                type={showOldPassword ? 'text' : 'password'}
+                name="oldPassword"
+                autoComplete="off"
+                className={styles.input}
+              />
+              <label className={styles['user-label']}>Old Password</label>
+              <span
+                className={`${styles['toggle-password']} ${showOldPassword ? styles.active : ''}`}
+                onClick={toggleOldPasswordVisibility}
+              >
+                {showOldPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
+            </div>
 
-          <div className={styles['input-group']}>
-            <input
-              required
-              type={showPassword ? 'text' : 'password'}
-              name="newPassword"
-              autoComplete="off"
-              className={styles.input}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <label className={styles['user-label']}>New Password</label>
-            <span
-              className={`${styles['toggle-password']} ${showPassword ? styles.active : ''}`}
-              onClick={togglenewPasswordVisibility}
-            >
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
-            </span>
-          </div>
+            <div className={styles['input-group']}>
+              <input
+                required
+                type={showNewPassword ? 'text' : 'password'}
+                name="newPassword"
+                autoComplete="off"
+                className={styles.input}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <label className={styles['user-label']}>New Password</label>
+              <span
+                className={`${styles['toggle-password']} ${showNewPassword ? styles.active : ''}`}
+                onClick={toggleNewPasswordVisibility}
+              >
+                {showNewPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
+            </div>
 
-          <div className={styles['input-group']}>
-            <input
-              required
-              type={showPassword ? 'text' : 'password'}
-              name="confirmPassword"
-              autoComplete="off"
-              className={styles.input}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <label className={styles['user-label']}>Confirm Password</label>
-            <span
-              className={`${styles['toggle-password']} ${showPassword ? styles.active : ''}`}
-              onClick={toggleconfirmPasswordVisibility}
-            >
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
-            </span>
-          </div>
+            <div className={styles['input-group']}>
+              <input
+                required
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                autoComplete="off"
+                className={styles.input}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <label className={styles['user-label']}>Confirm Password</label>
+              <span
+                className={`${styles['toggle-password']} ${showConfirmPassword ? styles.active : ''}`}
+                onClick={toggleConfirmPasswordVisibility}
+              >
+                {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
+            </div>
 
-          {!passwordsMatch && <p className={styles.error}>Passwords do not match.</p>}
+            {!passwordsMatch && <p className={styles.error}>Passwords do not match.</p>}
 
-          <div className={styles['button-group']}>
-            <button type="button" className={styles.saveButton} onClick={handleAccountSaveChanges}>
-              Save Changes
-            </button>
-            <button type="button" className={styles.cancelButton} onClick={handleAccountCancelChanges}>
-              Cancel
-            </button>
-          </div>
-      </form>
-    </div>
-    </body>
+            <div className={styles['button-group']}>
+              <button type="button" className={styles.saveButton} onClick={handleAccountSaveChanges}>
+                Save Changes
+              </button>
+              <button type="button" className={styles.cancelButton} onClick={handleAccountCancelChanges}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </body>
     </>
   );
+
 }
 
 export default ProfilePage;

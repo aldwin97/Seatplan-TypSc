@@ -17,6 +17,8 @@ interface User {
   password: string;
   staffstatus_id: number;
   usertype_id: number;
+  usertype_name: string;
+  position_name: string;
   position_id: number;
   user_picture: string;
   is_deleted: boolean;
@@ -42,6 +44,8 @@ const AdminMembersPage: React.FC = () => {
     username: '',
     password: '',
     staffstatus_id: 0,
+    usertype_name:'',
+    position_name: '',
     usertype_id: 0,
     position_id: 0,
     user_picture: '',
@@ -145,6 +149,8 @@ const AdminMembersPage: React.FC = () => {
             username: '',
             password: '',
             staffstatus_id: 0,
+            usertype_name:'',
+            position_name: '',
             usertype_id: 0,
             position_id: 0,
             user_picture: '',
@@ -384,7 +390,7 @@ const AdminMembersPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((user) => (
+                {currentUsers.map((user) => (
                   <TableRow key={user.user_id} hover>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -402,11 +408,13 @@ const AdminMembersPage: React.FC = () => {
                   </TableRow>
                 ))}
               </TableBody>
+
             </Table>
 
           </TableContainer>
           <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
           <Pagination count={Math.ceil(filteredUsers.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
+
           </Box>
 
           <Dialog

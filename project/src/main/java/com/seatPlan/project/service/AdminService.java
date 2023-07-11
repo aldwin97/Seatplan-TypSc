@@ -84,10 +84,6 @@ public class AdminService {
                     userMap.put("usertype_name",user.getUsertype_name());
                     userMap.put("project_name",user.getProject_name());
                     userMap.put("staffstatus_name", user.getStaffstatus_name());
-                    userMap.put("created_by",user.getCreated_by());
-                    userMap.put("created_time",user.getCreated_time());
-                    userMap.put("updated_by", user.getUpdated_by());
-                    userMap.put("updated_time",user.getUpdated_time());
                     return userMap;
                 }).collect(Collectors.toList());
         return filteredUserType;

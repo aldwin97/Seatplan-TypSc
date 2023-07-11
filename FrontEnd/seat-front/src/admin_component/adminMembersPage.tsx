@@ -16,6 +16,7 @@ interface User {
   username: string;
   password: string;
   staffstatus_id: number;
+  staffstatus_name: string;
   usertype_id: number;
   usertype_name: string;
   position_name: string;
@@ -27,6 +28,7 @@ interface User {
   updated_time: string;
   updated_by: number;
 }
+
 interface UserType {
   usertype_id: number;
   usertype_name: string;
@@ -35,6 +37,11 @@ interface UserType {
 interface Position {
   position_id: number;
   position_name: string;
+}
+
+interface StaffStatus {
+  staffstatus_id: number;
+  staffstatus_name: string;
 }
 
 const AdminMembersPage: React.FC = () => {
@@ -53,6 +60,7 @@ const AdminMembersPage: React.FC = () => {
     username: '',
     password: '',
     staffstatus_id: 0,
+    staffstatus_name: '',
     usertype_name: '',
     position_name: '',
     usertype_id: 0,
@@ -125,8 +133,9 @@ const AdminMembersPage: React.FC = () => {
   };
 
   const handleAddUsers = () => {
-    const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  
+    const currentTime = new Date().toISOString();
+
+
     const updatedUser: Omit<User, 'user_id'> = {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
@@ -138,6 +147,7 @@ const AdminMembersPage: React.FC = () => {
       usertype_name: newUser.usertype_name,
       position_name: newUser.position_name,
       usertype_id: newUser.usertype_id,
+      staffstatus_name: newUser.staffstatus_name,
       position_id: newUser.position_id,
       user_picture: newUser.user_picture,
       is_deleted: newUser.is_deleted,
@@ -146,7 +156,7 @@ const AdminMembersPage: React.FC = () => {
       updated_time: '',
       updated_by: 0,
     };
-  
+
     // Make the POST request to insert a new user
     fetch('http://localhost:8080/admin/insert', {
       method: 'POST',
@@ -176,8 +186,8 @@ const AdminMembersPage: React.FC = () => {
               position_id: 0,
               user_picture: '',
               is_deleted: false,
-              created_time: '',
-              created_by: 0,
+              created_time: currentTime ,
+              created_by: 1,
               updated_time: '',
               updated_by: 0,
             });
@@ -191,10 +201,7 @@ const AdminMembersPage: React.FC = () => {
         console.log('Error while inserting user', error);
       });
   };
-  
-  
-  
-  
+
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
@@ -323,10 +330,25 @@ const AdminMembersPage: React.FC = () => {
       clearInterval(timerID);
     };
   }, []);
+
   const [usertypes, setUserTypes] = useState<UserType[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
-  
-  
+  const [staffStatuses, setStaffStatuses] = useState<StaffStatus[]>([]);
+
+  useEffect(() => {
+    const fetchStaffStatuses = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/admin/showAllStaffStatus');
+        const data = await response.json();
+        setStaffStatuses(data);
+      } catch (error) {
+        console.error('Error fetching staff statuses:', error);
+      }
+    };
+
+    fetchStaffStatuses();
+  }, []);
+
   // Fetch position and usertype data from the server
   useEffect(() => {
     // Fetch positions
@@ -338,7 +360,7 @@ const AdminMembersPage: React.FC = () => {
       .catch((error) => {
         console.log('Error while fetching positions', error);
       });
-  
+
     // Fetch usertypes
     fetch('http://localhost:8080/admin/showAllUserType')
       .then((response) => response.json())
@@ -349,6 +371,8 @@ const AdminMembersPage: React.FC = () => {
         console.log('Error while fetching usertypes', error);
       });
   }, []);
+
+  
   return (
     <div className="container">
       <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
@@ -454,7 +478,7 @@ const AdminMembersPage: React.FC = () => {
                 <TableCell>{user.email}</TableCell>
               </TableRow>
             ))}
-          </TableBody>
+          </TableBody> 
         </Table>
       </TableContainer>
 
@@ -577,9 +601,6 @@ const AdminMembersPage: React.FC = () => {
         <span className="user-info-value">{selectedUser.created_time}</span>
         <br />
 
-        <strong className="user-info-label">Created By:</strong>{" "}
-        <span className="user-info-value">{selectedUser.created_by}</span>
-        <br />
 
         <strong className="user-info-label">Updated At:</strong>{" "}
         <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span>
@@ -660,9 +681,11 @@ const AdminMembersPage: React.FC = () => {
       value={newUser.password}
       onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
     />
-    <Select
+ <Typography variant="subtitle1" gutterBottom>
+  Position
+</Typography>
+<Select
   margin="dense"
-  label="Position ID"
   value={newUser.position_id}
   onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
   fullWidth
@@ -674,9 +697,27 @@ const AdminMembersPage: React.FC = () => {
   ))}
 </Select>
 
+<Typography variant="subtitle1" gutterBottom>
+  Staff Status
+</Typography>
 <Select
   margin="dense"
-  label="UserType ID"
+  value={newUser.staffstatus_id}
+  onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
+  fullWidth
+>
+  {staffStatuses.map((status) => (
+    <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
+      {status.staffstatus_name}
+    </MenuItem>
+  ))}
+</Select>
+
+<Typography variant="subtitle1" gutterBottom>
+  UserType
+</Typography>
+<Select
+  margin="dense"
   value={newUser.usertype_id}
   onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
   fullWidth
@@ -695,8 +736,9 @@ const AdminMembersPage: React.FC = () => {
       Cancel
     </Button>
     <Button onClick={handleAddUsers} color="primary">
-      Add
-    </Button>
+  Add
+</Button>
+
   </DialogActions>
 </Dialog>
 

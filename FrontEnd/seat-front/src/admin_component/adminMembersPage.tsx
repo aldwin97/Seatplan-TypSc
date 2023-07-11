@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Select, MenuItem, SelectChangeEvent, Snackbar, Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField, Snackbar  } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import './adminMembersPage.css';
@@ -133,58 +133,62 @@ const AdminMembersPage: React.FC = () => {
     setAddUserDialogOpen(true); // Set the flag to open the dialog
   };
 
-const handleAddUsers = () => {
-  const currentTime = new Date().toISOString();
-  
-  const newUserModel = {
-    first_name: newUser.first_name,
-    last_name: newUser.last_name,
-    email: newUser.email,
-    mobile_num: newUser.mobile_num,
-    username: newUser.username,
-    password: newUser.password,
-    staffstatus_id: newUser.staffstatus_id,
-    usertype_id: newUser.usertype_id,
-    position_id: newUser.position_id,
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+    setSnackbarMessage('');
   };
 
-  // Make the POST request to insert a new user
-  fetch('http://localhost:8080/admin/insert', {
-    // request configuration
-  })
-    .then((response) => {
-      if (response.ok) {
-        console.log('User inserted successfully');
-        // Refresh the page to reflect the changes
-        window.location.reload();
-      } else if (response.status === 400) {
-        response.text().then((errorMessage) => {
-          console.log('Failed to insert user:', errorMessage);
-          // Set the error message state
-          setErrorMessage(errorMessage);
-        });
-      } else {
-        console.log('Failed to insert user');
-      }
+  const handleAddUsers = () => {
+    const currentTime = new Date().toISOString();
+    const newUserModel = {
+      first_name: newUser.first_name,
+      last_name: newUser.last_name,
+      email: newUser.email,
+      mobile_num: newUser.mobile_num,
+      username: newUser.username,
+      password: newUser.password,
+      staffstatus_id: newUser.staffstatus_id,
+      usertype_id: newUser.usertype_id,
+      position_id: newUser.position_id,
+    };
+
+    // Make the POST request to insert a new user
+    fetch('http://localhost:8080/admin/insert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUserModel),
     })
-    .catch((error) => {
-      console.log('Error while inserting user', error);
-    });
-};
-
-const handleCloseSnackbar = () => {
-  setErrorMessage('');
-};
-
-const errorMessageSnackbar = (
-  <Snackbar
-    open={Boolean(errorMessage)}
-    autoHideDuration={6000}
-    onClose={handleCloseSnackbar}
-    message={errorMessage}
-  />
-);
-
+      .then((response) => {
+        if (response.ok) {
+          console.log('User inserted successfully');
+          setSnackbarMessage('User added successfully');
+          setSnackbarOpen(true);
+          setAddUserDialogOpen(false);
+          // Refresh the page to reflect the changes
+          window.location.reload();
+        } else if (response.status === 400) {
+          response.json().then((data) => {
+            console.log('Failed to insert user:', data.message);
+            setSnackbarMessage(`Failed to add user: ${data.message}`);
+            setSnackbarOpen(true);
+          });
+        } else {
+          console.log('Failed to insert user');
+          setSnackbarMessage('Failed to add user');
+          setSnackbarOpen(true);
+        }
+      })
+      .catch((error) => {
+        console.log('Error while inserting user', error);
+        setSnackbarMessage('Error while adding user');
+        setSnackbarOpen(true);
+      });
+  };
 
   
 
@@ -224,18 +228,26 @@ const errorMessageSnackbar = (
     setEditMode(true);
     setEditedUser(selectedUser);
   };
-
+  
   const handleSaveUser = () => {
     if (!editedUser) {
       return;
     }
   
+    const hasEditedFields = Object.keys(editedUser).some(
+      (field) => selectedUser && editedUser[field as keyof User] !== selectedUser[field as keyof User]
+    );
+  
+    if (!hasEditedFields) {
+      console.log('No fields were edited');
+      return;
+    }
+  
     // Prepare the updated user data
-    const updatedUserModel = {
+    const updatedUserModel: Partial<User> = {
       user_id: selectedUser?.user_id,
       first_name: editedUser.first_name || '',
       last_name: editedUser.last_name || '',
-      email: editedUser.email || '',
       mobile_num: editedUser.mobile_num || 0,
       username: editedUser.username || '',
       password: editedUser.password || '',
@@ -244,27 +256,69 @@ const errorMessageSnackbar = (
       position_id: selectedUser?.position_id,
     };
   
-    // Make the PUT request to update the user
-    fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedUserModel),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log('User updated successfully');
-          window.location.reload(); // Refresh the page
-          // Refresh the page or update the user in the user list if needed
-        } else {
-          console.log('Failed to update user');
-        }
-      })
-      .catch((error) => {
-        console.log('Error while updating user', error);
+    // Conditionally include the email field if it has been edited
+    if (editedUser.email !== selectedUser?.email) {
+      updatedUserModel.email = editedUser.email;
+    }
+  
+    if (editMode) {
+      // Make the PUT request to update the user
+      fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(updatedUserModel),
+})
+  .then((response) => {
+    if (response.ok) {
+      console.log('User updated successfully');
+      // Refresh the page to reflect the changes
+      window.location.reload();
+      // Alternatively, update the user in the user list if needed
+    } else {
+      response.text().then((errorMessage) => {
+        console.log('Failed to update user:', errorMessage);
+        // Set the error message state
+        setErrorMessage(errorMessage);
       });
+    }
+  })
+  .catch((error) => {
+    console.log('Error while updating user', error);
+  });
+    } else {
+      // Make the POST request to insert a new user
+      fetch('http://localhost:8080/admin/insert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUserModel),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('User inserted successfully');
+            // Refresh the page to reflect the changes
+            window.location.reload();
+          } else if (response.status === 400) {
+            response.json().then((data) => {
+              console.log('Failed to insert user:', data.message);
+              // Set the error message state
+              setErrorMessage(data.message);
+            });
+          } else {
+            console.log('Failed to insert user');
+          }
+        })
+        .catch((error) => {
+          console.log('Error while inserting user', error);
+        });
+    }
   };
+  
+  
+  
   
 
   useEffect(() => {
@@ -600,13 +654,13 @@ const errorMessageSnackbar = (
         )}
         <br />
 
-        <strong className="user-info-label">Created At:</strong>{" "}
+        {/* <strong className="user-info-label">Created At:</strong>{" "}
         <span className="user-info-value">{selectedUser.created_time}</span>
         <br />
 
 
         <strong className="user-info-label">Updated At:</strong>{" "}
-        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span>
+        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span> */}
       </div>
     )}
 
@@ -741,11 +795,14 @@ const errorMessageSnackbar = (
   <Button onClick={handleAddUsers} color="primary">
     Add
   </Button>
-  {errorMessageSnackbar}
 </DialogActions>
 
 </Dialog>
-
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> 
           </div>
           );
           };

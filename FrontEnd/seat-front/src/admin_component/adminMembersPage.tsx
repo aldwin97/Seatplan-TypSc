@@ -126,16 +126,27 @@ const AdminMembersPage: React.FC = () => {
 
   const handleAddUsers = () => {
     const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-    const updatedUser: User = {
-      ...newUser,
-      user_id: users.length + 1,
+  
+    const updatedUser: Omit<User, 'user_id'> = {
+      first_name: newUser.first_name,
+      last_name: newUser.last_name,
+      email: newUser.email,
+      mobile_num: newUser.mobile_num,
+      username: newUser.username,
+      password: newUser.password,
+      staffstatus_id: newUser.staffstatus_id,
+      usertype_name: newUser.usertype_name,
+      position_name: newUser.position_name,
+      usertype_id: newUser.usertype_id,
+      position_id: newUser.position_id,
+      user_picture: newUser.user_picture,
+      is_deleted: newUser.is_deleted,
       created_time: currentTime,
       created_by: 1,
       updated_time: '',
       updated_by: 0,
     };
-
+  
     // Make the POST request to insert a new user
     fetch('http://localhost:8080/admin/insert', {
       method: 'POST',
@@ -147,28 +158,31 @@ const AdminMembersPage: React.FC = () => {
       .then((response) => {
         if (response.ok) {
           console.log('User inserted successfully');
-          setUsers([...users, updatedUser]);
-          setNewUser({
-            user_id: 0,
-            first_name: '',
-            last_name: '',
-            email: '',
-            mobile_num: 0,
-            username: '',
-            password: '',
-            staffstatus_id: 0,
-            usertype_name: '',
-            position_name: '',
-            usertype_id: 0,
-            position_id: 0,
-            user_picture: '',
-            is_deleted: false,
-            created_time: '',
-            created_by: 0,
-            updated_time: '',
-            updated_by: 0,
+          response.json().then((insertedUser) => {
+            setUsers([...users, insertedUser]);
+            setNewUser({
+              ...newUser,
+              user_id: 0,
+              first_name: '',
+              last_name: '',
+              email: '',
+              mobile_num: 0,
+              username: '',
+              password: '',
+              staffstatus_id: 0,
+              usertype_name: '',
+              position_name: '',
+              usertype_id: 0,
+              position_id: 0,
+              user_picture: '',
+              is_deleted: false,
+              created_time: '',
+              created_by: 0,
+              updated_time: '',
+              updated_by: 0,
+            });
+            setAddUserDialogOpen(false); // Set the flag to close the dialog
           });
-          setAddUserDialogOpen(false); // Set the flag to close the dialog
         } else {
           console.log('Failed to insert user');
         }
@@ -177,7 +191,10 @@ const AdminMembersPage: React.FC = () => {
         console.log('Error while inserting user', error);
       });
   };
-
+  
+  
+  
+  
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };

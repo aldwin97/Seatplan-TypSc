@@ -48,10 +48,11 @@ public interface AdminMapper {
     void deleteUserById(@Param("user_id") Long user_id);
 
 
-     @Insert("INSERT INTO table_user ( first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, created_time) " +
-            "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id},#{created_time})")
-    @Options(useGeneratedKeys = true, keyProperty = "user_id")
-    void insertUser(UserModel userModel);
+    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, usertype_id, position_id, created_time) " +
+        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{usertype_id}, #{position_id}, #{created_time})")
+@Options(useGeneratedKeys = true, keyProperty = "user_id")
+void insertUser(UserModel userModel);
+
 
 
     @Select("SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0")

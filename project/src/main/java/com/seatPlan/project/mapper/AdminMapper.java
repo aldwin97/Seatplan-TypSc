@@ -76,6 +76,11 @@ public interface AdminMapper {
         "</script>"
     })
     void updateUser(UserModel userModel);
+
+
+
+    @Select("SELECT * FROM table_user WHERE username = #{user_id} AND is_deleted = 0")
+    UserModel getUserByUsername(String username);
     
     
 }

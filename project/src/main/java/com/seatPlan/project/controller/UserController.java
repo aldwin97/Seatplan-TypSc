@@ -19,7 +19,7 @@ import com.seatPlan.project.service.UserService;
 
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
     
     private final UserService userService;
@@ -49,7 +49,7 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
 
     
     // display all users
-     @GetMapping("/all")
+     @GetMapping("/show/AllUser")
     public List<UserModel> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -65,11 +65,4 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
     userService.deleteUserByUsername(username);
         return ResponseEntity.ok("User deleted successfully");
     }
-
-
-
-
-
-
-
 }

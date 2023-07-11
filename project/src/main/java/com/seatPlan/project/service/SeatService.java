@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.mapper.SeatMapper;
 import com.seatPlan.project.model.SeatModel;
-import com.seatPlan.project.model.StaffStatusModel;
 
 @Service
 public class SeatService {

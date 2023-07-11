@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.seatPlan.project.model.SeatModel;
-import com.seatPlan.project.model.StaffStatusModel;
 
 @Mapper
 public interface SeatMapper {

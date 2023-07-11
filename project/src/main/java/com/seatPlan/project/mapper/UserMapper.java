@@ -40,7 +40,6 @@ public interface UserMapper {
     UserModel findByUsername(String username);
 
 
-
     @Update({
         "<script>",
         "UPDATE table_user",
@@ -50,12 +49,17 @@ public interface UserMapper {
         "<if test='email != null'>email = #{email},</if>",
         "<if test='mobile_num != null'>mobile_num = #{mobile_num},</if>",
         "<if test='password != null'>password = #{password},</if>",
-        "<if test='updated_by != null'>updated_by = #{updated_by},</if>",
         "</set>",
         "WHERE user_id = #{user_id}",
         "</script>"
     })
     void updateUser(UserModel userModel);
+
+    @Select("SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0")
+    UserModel getUserById(Long user_id);
+
+    @Select("SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0")
+    Object getUserByEmail(String email);
     
 
 

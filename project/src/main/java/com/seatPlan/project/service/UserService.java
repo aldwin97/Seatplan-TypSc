@@ -48,4 +48,24 @@ public class UserService{
      public void deleteUserByUsername(String username) {
         userMapper.deleteUserByUsername(username);
     }
+
+
+
+    public void updateUser(UserModel userModel) {
+        userMapper.updateUser(userModel);
+    }
+
+    public UserModel getUserById(Long user_id) {
+        return userMapper.getUserById(user_id);
+    }
+
+    public boolean isUsernameExists(String username) {
+        return userMapper.getUserByUsername(username) != null;
+    }
+
+     public boolean isUserEmailExists(String email) {
+        return userMapper.getUserByEmail(email) != null;
+    }
+
+
 }

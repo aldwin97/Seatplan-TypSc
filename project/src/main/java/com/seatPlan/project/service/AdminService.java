@@ -108,8 +108,9 @@ public class AdminService {
         
     }
 
-    public void insertUser(UserModel userModel) {
-        adminMapper.insertUser(userModel);
+    public void insertUser(UserModel userModel) { 
+         adminMapper.insertUser(userModel);
+        
     }
 
     public void updateUser(UserModel userModel) {

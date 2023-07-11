@@ -51,8 +51,4 @@ public class DashBoardController {
         return ResponseEntity.ok(data);
        
     }
-
-
-
-
 }

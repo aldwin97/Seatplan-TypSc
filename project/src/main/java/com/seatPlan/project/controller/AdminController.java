@@ -97,6 +97,11 @@ public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
+
+            if(adminService.isUserEmailExists(userModel.getEmail())){
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+        }
+            
             if (userModel.getFirst_name() != null) {
                 existingUser.setFirst_name(userModel.getFirst_name());
             }

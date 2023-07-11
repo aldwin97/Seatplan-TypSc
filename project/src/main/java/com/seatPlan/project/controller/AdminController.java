@@ -71,16 +71,19 @@ public class AdminController {
         }    
     }
 
-     @PostMapping("/insert")
-    public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
+    @PostMapping("/insert")
+public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
+    try {
+        if (adminService.isUsernameExists(userModel.getUsername())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+        }
         
-          try {
-             adminService.insertUser(userModel);
-           return ResponseEntity.ok("User inserted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
-        }   
-    }
+        adminService.insertUser(userModel);
+        return ResponseEntity.ok("User inserted successfully");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
+    }   
+}
 
 
     @PutMapping("/update/{user_id}")
@@ -128,10 +131,6 @@ public class AdminController {
             if (userModel.getLast_name() != null) {
                 existingUser.setLast_name(userModel.getLast_name());
             }
-
-
-
-
 
             adminService.updateUser(existingUser);
             return ResponseEntity.ok("User updated successfully");

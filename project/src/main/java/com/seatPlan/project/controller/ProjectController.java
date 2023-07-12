@@ -38,7 +38,6 @@ public class ProjectController {
 
         projectModel.setCreated_by(creatorId);
 
-
         try {
             projectService.insertProject(projectModel);
             return ResponseEntity.ok("Project created successfully");

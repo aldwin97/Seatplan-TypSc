@@ -48,8 +48,8 @@ public interface AdminMapper {
     void deleteUserById(@Param("user_id") Long user_id);
 
 
-    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, usertype_id, position_id) " +
-        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id},#{usertype_id}, #{position_id})")
+    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, project_id, usertype_id, position_id, created_time) " +
+        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time})")
 @Options(useGeneratedKeys = true, keyProperty = "user_id")
 void insertUser(UserModel userModel);
 
@@ -61,23 +61,23 @@ void insertUser(UserModel userModel);
     
 
     @Update({
-  "<script>",
-  "UPDATE table_user",
-  "<set>",
-  "<if test='first_name != null'>first_name = #{first_name},</if>",
-  "<if test='last_name != null'>last_name = #{last_name},</if>",
-  "<if test='email != null'>email = #{email},</if>",
-  "<if test='mobile_num != null'>mobile_num = #{mobile_num},</if>",
-  "<if test='project_id != null'>project_id = #{project_id},</if>",
-  "<if test='password != null'>password = #{password},</if>",
-  "<if test='staffstatus_id != null'>staffstatus_id = #{staffstatus_id},</if>",
-  "<if test='usertype_id != null'>usertype_id = #{usertype_id},</if>",
-  "<if test='position_id != null'>position_id = #{position_id},</if>",
-  "</set>",
-  "WHERE user_id = #{user_id}",
-  "</script>"
-})
-void updateUser(UserModel userModel);
+        "<script>",
+        "UPDATE table_user",
+        "<set>",
+        "<if test='first_name != null'>first_name = #{first_name},</if>",
+        "<if test='last_name != null'>last_name = #{last_name},</if>",
+        "<if test='email != null'>email = #{email},</if>",
+        "<if test='mobile_num != null'>mobile_num = #{mobile_num},</if>",
+        "<if test='project_id != null'>project_id = #{project_id},</if>",
+        "<if test='password != null'>password = #{password},</if>",
+        "<if test='staffstatus_id != null'>staffstatus_id = #{staffstatus_id},</if>",
+        "<if test='usertype_id != null'>usertype_id = #{usertype_id},</if>",
+        "<if test='position_id != null'>position_id = #{position_id},</if>",
+        "</set>",
+        "WHERE user_id = #{user_id}",
+        "</script>"
+    })
+    void updateUser(UserModel userModel);
 
 
 

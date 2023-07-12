@@ -21,17 +21,19 @@ import javax.crypto.SecretKey;
 @Service
 public class JwtUtil {
 
-public String extractUsername(String token){
-    return null;
-}
+    private static final String SECRET_KEY ="bc3ab580db4a24f0ce4ca7a175b16cc4644a887fe5c4e69946cfd5668e436f0e";
 
-Private Claims extractAllClaims(String token){
-    return Jwts.parserBuilder()
-    .setSigningKey(getSignInkey())
-    .build()
-    .parseClaimsJws(token)
-    .getBody();
-}
+    public String extractUsername(String token){
+        return null;
+    }
+
+    Private Claims extractAllClaims(String token){
+        return Jwts.parserBuilder()
+        .setSigningKey(getSignInkey())
+        .build()
+        .parseClaimsJws(token)
+        .getBody();
+    }
 
 //     SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 

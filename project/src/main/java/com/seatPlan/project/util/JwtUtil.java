@@ -1,22 +1,37 @@
-// package com.seatPlan.project.util;
-// import io.jsonwebtoken.Claims;
-// import io.jsonwebtoken.Jws;
-// import io.jsonwebtoken.Jwts;
-// import io.jsonwebtoken.SignatureAlgorithm;
-// import io.jsonwebtoken.security.Keys;
+package com.seatPlan.project.util;
 
-// import org.springframework.beans.factory.annotation.Value;
-// import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
-// import com.seatPlan.project.model.UserModel;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-// import java.util.Date;
-// import java.util.HashMap;
-// import java.util.Map;
-// import javax.crypto.SecretKey;
+import com.seatPlan.project.model.UserModel;
 
-// @Component
-// public class JwtUtil {
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.SecretKey;
+
+@Service
+public class JwtUtil {
+
+public String extractUsername(String token){
+    return null;
+}
+
+Private Claims extractAllClaims(String token){
+    return Jwts.parserBuilder()
+    .setSigningKey(getSignInkey())
+    .build()
+    .parseClaimsJws(token)
+    .getBody();
+}
 
 //     SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -70,4 +85,4 @@
 //             return false;
 //         }
 //     }
-// }
+}

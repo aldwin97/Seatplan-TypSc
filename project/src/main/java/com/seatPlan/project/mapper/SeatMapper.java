@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
+import com.seatPlan.project.model.UserTypeModel;
 
 @Mapper
 public interface SeatMapper {
@@ -29,8 +30,8 @@ public interface SeatMapper {
 
 
     @Insert("INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by) " +
-    "VALUES (#{userId}, #{seatId}, #{comment}, #{createdTime}, #{createdBy})")
-    @Options(useGeneratedKeys = true, keyProperty = "commentId")
+    "VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by})")
+    @Options(useGeneratedKeys = true, keyProperty = "comment_id")
     void insertComment(CommentModel comment);
 
 
@@ -41,5 +42,16 @@ public interface SeatMapper {
     "WHERE c.user_id = #{user_id} " +
     "ORDER BY c.created_time")
     List<CommentModel> getCommentByUserId(Long user_id);
+
+
+
+    @Select("SELECT c.*, u.first_name, u.last_name " +
+    "FROM table_comment c " +
+    "JOIN table_user u ON c.user_id = u.user_id " +
+    "ORDER BY c.created_time")
+    List<CommentModel> getAllComment();
+
+
+   
 
 }

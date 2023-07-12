@@ -14,6 +14,7 @@ import com.seatPlan.project.mapper.SeatMapper;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
 import com.seatPlan.project.model.StaffStatusModel;
+import com.seatPlan.project.model.UserTypeModel;
 
 @Service
 public class SeatService {
@@ -61,6 +62,23 @@ public class SeatService {
             }).collect(Collectors.toList());
     
         return filteredComment;
+    }
+
+
+    public List<Map<String, Object>> getAllComment() {
+       List<CommentModel> comments = seatMapper.getAllComment();
+        List<Map<String, Object>> filteredComments = comments.stream()
+        .map(comment ->{
+            Map<String, Object> commentMap = new HashMap<>();
+            commentMap.put("seat_id",comment.getSeat_id());
+            commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));
+            commentMap.put("comment", comment.getComment());
+            commentMap.put("created_time", comment.getCreated_time());
+            return commentMap;
+
+        }).collect(Collectors.toList());
+
+        return filteredComments;
     }
     
 

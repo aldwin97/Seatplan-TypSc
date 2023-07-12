@@ -30,15 +30,15 @@ public class SeatController {
     
 
 
-    @GetMapping("/showAllSeat")
-    public List<Map<String, Object>> allSeat(){
+@GetMapping("/showAllSeat")
+public List<Map<String, Object>> allSeat(){
         List<Map<String, Object>> seats = seatService.getAllSeat();
         return seats;
     }
 
     
-    @PostMapping("/insertComment")
-    public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
+@PostMapping("/insertComment")
+public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
     try {
         UserModel creatorId = (UserModel) session.getAttribute("userSession");
         comment.setCreated_by(creatorId.getUser_id());
@@ -50,7 +50,7 @@ public class SeatController {
     }
 }
 
-    @GetMapping("/showAllCommentByUser_id")
+@GetMapping("/showAllCommentByUser_id")
 public List<Map<String, Object>> getCommentByUserId(HttpSession session) {
     UserModel user = (UserModel) session.getAttribute("userSession");
     Long user_id = user.getUser_id();
@@ -64,6 +64,9 @@ public List<Map<String, Object>> allProject(){
     List<Map<String, Object>> comments = seatService.getAllComment();
     return comments;
 }
+
+
+
 
 
 

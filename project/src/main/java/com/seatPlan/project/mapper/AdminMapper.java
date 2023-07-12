@@ -54,8 +54,6 @@ public interface AdminMapper {
     void insertUser(UserModel userModel);
 
 
-
-
     @Select("SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0")
     UserModel getUserById(Long user_id);
     

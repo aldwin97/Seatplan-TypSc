@@ -4,11 +4,14 @@ package com.seatPlan.project.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 
 import com.seatPlan.project.mapper.UserMapper;
 import com.seatPlan.project.model.UserModel;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @Service
@@ -23,9 +26,10 @@ public class UserService{
 
 
 
-    public UserModel authenticateUser(String username, String password) {
+    public UserModel authenticateUser(String username, String password, HttpSession session) {
         UserModel user = userMapper.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
+            session.setAttribute("userSession", user);
             return user;
         } else {
             return null;
@@ -65,6 +69,10 @@ public class UserService{
 
      public boolean isUserEmailExists(String email) {
         return userMapper.getUserByEmail(email) != null;
+    }
+
+    public UserModel getUserByUsername(String username) {
+        return userMapper.getUserByUsername(username);
     }
 
 

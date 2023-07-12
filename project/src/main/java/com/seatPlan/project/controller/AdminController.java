@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.AdminService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/admin")
@@ -72,7 +75,11 @@ public class AdminController {
     }
 
     @PostMapping("/insert")
-public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
+public ResponseEntity<String> insertUser(HttpSession session ,@RequestBody UserModel userModel) {
+        UserModel user = (UserModel) session.getAttribute("userSession");
+        Long creatorId = user.getUser_id();
+        userModel.setCreated_by(creatorId);
+
     try {
         if (adminService.isUsernameExists(userModel.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
@@ -91,8 +98,11 @@ public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
 
 
     @PutMapping("/update/{user_id}")
-    public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
+    public ResponseEntity<String> updateUser(HttpSession session ,@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
         try {
+            UserModel user = (UserModel) session.getAttribute("userSession");
+            Long updatedBy = user.getUser_id();
+
             UserModel existingUser = adminService.getUserById(user_id);
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -139,6 +149,10 @@ public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
 
             if (userModel.getLast_name() != null) {
                 existingUser.setLast_name(userModel.getLast_name());
+            }
+
+            if(updatedBy != null){
+                existingUser.setUpdated_by(updatedBy);
             }
 
             adminService.updateUser(existingUser);

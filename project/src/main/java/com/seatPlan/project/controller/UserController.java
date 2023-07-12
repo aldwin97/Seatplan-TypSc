@@ -1,7 +1,8 @@
 package com.seatPlan.project.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @RestController
@@ -34,21 +37,20 @@ public class UserController {
 
 // Authentication of user log in
 @PostMapping("/login")
-public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel) {
+public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel, HttpSession session) {
     String username = userModel.getUsername();
     String password = userModel.getPassword();
 
-    UserModel authenticatedUser = userService.authenticateUser(username, password);
+    UserModel authenticatedUser = userService.authenticateUser(username, password, session);
 
     if (authenticatedUser != null) {
         return ResponseEntity.ok(authenticatedUser);
     } else {
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 }   
 
-    
+
     // display all users
      @GetMapping("/show/AllUser")
     public List<UserModel> getAllUsers() {
@@ -68,9 +70,11 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
     }
 
 
-    @PutMapping("/updatePofile/{user_id}")
-    public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
+    @PutMapping("/updateProfile")
+    public ResponseEntity<String> updateUser(HttpSession session, @RequestBody UserModel userModel ) {
+        UserModel user = (UserModel) session.getAttribute("userSession");
         try {
+            Long user_id = user.getUser_id();
             UserModel existingUser = userService.getUserById(user_id);
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -107,6 +111,12 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
                 existingUser.setLast_name(userModel.getLast_name());
             }
 
+            if(user != null){
+                existingUser.setUpdated_by(user_id);
+            }
+
+
+
             userService.updateUser(existingUser);
             return ResponseEntity.ok("User updated successfully");
 
@@ -115,6 +125,19 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
         }
     }
 
+
+         // Check httpsession
+    @GetMapping("/checkSession")
+    public Map<String, String> checkSession(HttpSession session) {
+        Map<String, String> response = new HashMap<>();
+        UserModel userSession = (UserModel) session.getAttribute("userSession");
+        if (userSession != null) {
+            response.put("status", "success");
+        } else {
+            response.put("status", "error");
+        }
+        return response;
+    }
 
 
 

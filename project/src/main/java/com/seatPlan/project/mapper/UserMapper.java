@@ -20,7 +20,7 @@ public interface UserMapper {
     List<UserModel> getAllUsers();
 
 
-    @Select("SELECT user_id, username, password, usertype_id FROM table_user WHERE username = #{username} AND is_deleted = 0")
+    @Select("SELECT * FROM table_user WHERE username = #{username} AND is_deleted = 0")
     UserModel getUserByUsername(String username);
 
 
@@ -49,6 +49,7 @@ public interface UserMapper {
         "<if test='email != null'>email = #{email},</if>",
         "<if test='mobile_num != null'>mobile_num = #{mobile_num},</if>",
         "<if test='password != null'>password = #{password},</if>",
+        "<if test='updated_by != null'>updated_by = #{updated_by},</if>",
         "</set>",
         "WHERE user_id = #{user_id}",
         "</script>"

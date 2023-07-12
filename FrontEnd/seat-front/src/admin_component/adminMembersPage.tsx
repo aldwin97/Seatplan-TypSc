@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Select, MenuItem, SelectChangeEvent, Snackbar, Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
@@ -45,6 +45,79 @@ interface StaffStatus {
 }
 
 const AdminMembersPage: React.FC = () => {
+
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080/admin'); // Replace with your WebSocket server URL
+
+    // Event listener for WebSocket connection open
+    socket.addEventListener('open', () => {
+      console.log('WebSocket connection established');
+
+      // Send a message to the server to subscribe to user updates
+      const message = { type: 'subscribe' };
+      socket.send(JSON.stringify(message));
+    });
+
+    // Event listener for WebSocket connection close
+    socket.addEventListener('close', () => {
+      console.log('WebSocket connection closed');
+    });
+
+    // Event listener for WebSocket messages
+    socket.addEventListener('message', (event) => {
+      const message = JSON.parse(event.data);
+
+      // Handle different message types
+      switch (message.type) {
+        case 'userUpdated':
+          handleUserUpdated(message.data);
+          break;
+        case 'userInserted':
+          handleUserInserted(message.data);
+          break;
+        case 'userDeleted':
+          handleUserDeleted(message.data);
+          break;
+        default:
+          break;
+      }
+    });
+
+    // Cleanup function to close the WebSocket connection
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  // Function to handle user updated event
+  const handleUserUpdated = (updatedUser: User) => {
+    // Update the user in the users state
+    setUsers((prevUsers) => {
+      const updatedUsers = prevUsers.map((user) => {
+        if (user.user_id === updatedUser.user_id) {
+          return updatedUser;
+        }
+        return user;
+      });
+      return updatedUsers;
+    });
+  };
+
+  // Function to handle user inserted event
+  const handleUserInserted = (insertedUser: User) => {
+    // Add the inserted user to the users state
+    setUsers((prevUsers) => [...prevUsers, insertedUser]);
+  };
+
+  // Function to handle user deleted event
+  const handleUserDeleted = (deletedUserId: number) => {
+    // Remove the deleted user from the users state
+    setUsers((prevUsers) => prevUsers.filter((user) => user.user_id !== deletedUserId));
+  };
+
+  
+  const [errorMessage, setErrorMessage] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [addUserDialogOpen, setAddUserDialogOpen] = useState(false);
@@ -132,11 +205,17 @@ const AdminMembersPage: React.FC = () => {
     setAddUserDialogOpen(true); // Set the flag to open the dialog
   };
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+    setSnackbarMessage('');
+  };
+
   const handleAddUsers = () => {
     const currentTime = new Date().toISOString();
-
-
-    const updatedUser: Omit<User, 'user_id'> = {
+    const newUserModel = {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
       email: newUser.email,
@@ -144,17 +223,8 @@ const AdminMembersPage: React.FC = () => {
       username: newUser.username,
       password: newUser.password,
       staffstatus_id: newUser.staffstatus_id,
-      usertype_name: newUser.usertype_name,
-      position_name: newUser.position_name,
       usertype_id: newUser.usertype_id,
-      staffstatus_name: newUser.staffstatus_name,
       position_id: newUser.position_id,
-      user_picture: newUser.user_picture,
-      is_deleted: newUser.is_deleted,
-      created_time: currentTime,
-      created_by: 1,
-      updated_time: '',
-      updated_by: 0,
     };
 
     // Make the POST request to insert a new user
@@ -163,44 +233,36 @@ const AdminMembersPage: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedUser),
+      body: JSON.stringify(newUserModel),
     })
       .then((response) => {
         if (response.ok) {
           console.log('User inserted successfully');
-          response.json().then((insertedUser) => {
-            setUsers([...users, insertedUser]);
-            setNewUser({
-              ...newUser,
-              user_id: 0,
-              first_name: '',
-              last_name: '',
-              email: '',
-              mobile_num: 0,
-              username: '',
-              password: '',
-              staffstatus_id: 0,
-              usertype_name: '',
-              position_name: '',
-              usertype_id: 0,
-              position_id: 0,
-              user_picture: '',
-              is_deleted: false,
-              created_time: currentTime ,
-              created_by: 1,
-              updated_time: '',
-              updated_by: 0,
-            });
-            setAddUserDialogOpen(false); // Set the flag to close the dialog
+          setSnackbarMessage('User added successfully');
+          setSnackbarOpen(true);
+          setAddUserDialogOpen(false);
+          // Refresh the page to reflect the changes
+          window.location.reload();
+        } else if (response.status === 400) {
+          response.json().then((data) => {
+            console.log('Failed to insert user:', data.message);
+            setSnackbarMessage(`Failed to add user: ${data.message}`);
+            setSnackbarOpen(true);
           });
         } else {
           console.log('Failed to insert user');
+          setSnackbarMessage('Failed to add user');
+          setSnackbarOpen(true);
         }
       })
       .catch((error) => {
         console.log('Error while inserting user', error);
+        setSnackbarMessage('Error while adding user');
+        setSnackbarOpen(true);
       });
   };
+
+  
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
@@ -238,45 +300,96 @@ const AdminMembersPage: React.FC = () => {
     setEditMode(true);
     setEditedUser(selectedUser);
   };
-
+  
   const handleSaveUser = () => {
-    if (editedUser) {
-      const currentTime = new Date().toISOString().replace('T', ' ').slice(0, 19);
-      const updatedUser: User = {
-        ...editedUser,
-        updated_time: currentTime,
-      };
-
+    if (!editedUser) {
+      return;
+    }
+  
+    const hasEditedFields = Object.keys(editedUser).some(
+      (field) =>
+        selectedUser &&
+        editedUser[field as keyof User] !== selectedUser[field as keyof User]
+    );
+  
+    // Prepare the updated user data
+    const updatedUserModel: Partial<User> = {
+      user_id: selectedUser?.user_id,
+      first_name: editedUser.first_name || '',
+      last_name: editedUser.last_name || '',
+      mobile_num: editedUser.mobile_num || 0,
+      username: editedUser.username || '',
+      password: editedUser.password || '',
+      staffstatus_id: selectedUser?.staffstatus_id,
+      usertype_id: selectedUser?.usertype_id,
+      position_id: selectedUser?.position_id,
+    };
+  
+    // Conditionally include the email field if it has been edited
+    if (editedUser.email !== selectedUser?.email) {
+      updatedUserModel.email = editedUser.email;
+    }
+  
+    if (editMode) {
       // Make the PUT request to update the user
-      fetch(`http://localhost:8080/admin/update/${updatedUser.user_id}`, {
+      fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updatedUser),
+        body: JSON.stringify(updatedUserModel),
       })
         .then((response) => {
           if (response.ok) {
             console.log('User updated successfully');
-            const updatedUsers = users.map((user) => {
-              if (user.user_id === updatedUser.user_id) {
-                return updatedUser;
-              } else {
-                return user;
-              }
-            });
-            setUsers(updatedUsers);
-            setEditMode(false);
-            setSelectedUser(updatedUser);
+            // Refresh the page to reflect the changes
+            window.location.reload();
+            // Alternatively, update the user in the user list if needed
           } else {
-            console.log('Failed to update user');
+            response.text().then((errorMessage) => {
+              console.log('Failed to update user:', errorMessage);
+              // Set the error message state
+              setErrorMessage(errorMessage);
+            });
           }
         })
         .catch((error) => {
           console.log('Error while updating user', error);
         });
+    } else {
+      // Make the POST request to insert a new user
+      fetch('http://localhost:8080/admin/insert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUserModel),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log('User inserted successfully');
+            // Refresh the page to reflect the changes
+            window.location.reload();
+          } else if (response.status === 400) {
+            response.json().then((data) => {
+              console.log('Failed to insert user:', data.message);
+              // Set the error message state
+              setErrorMessage(data.message);
+            });
+          } else {
+            console.log('Failed to insert user');
+          }
+        })
+        .catch((error) => {
+          console.log('Error while inserting user', error);
+        });
     }
   };
+  
+  
+  
+  
+  
 
   useEffect(() => {
     // Make the GET request to fetch users data
@@ -526,7 +639,7 @@ const AdminMembersPage: React.FC = () => {
         )}
         <br />
 
-        <strong className="user-info-label">Username:</strong>
+        {/* <strong className="user-info-label">Username:</strong>
         {editMode ? (
           <TextField
             className="user-info-value"
@@ -536,7 +649,7 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.username}</span>
         )}
-        <br />
+        <br /> */}
 
         <strong className="user-info-label">Email:</strong>
         {editMode ? (
@@ -576,8 +689,22 @@ const AdminMembersPage: React.FC = () => {
         <br />
 
         <strong className="user-info-label">UserType:</strong>{" "}
-        <span className="user-info-value">{selectedUser.usertype_name}</span>
-        <br />
+{editMode ? (
+  <Select
+    className="user-info-value"
+    value={editedUser?.usertype_id || ''}
+    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, usertype_id: Number(e.target.value) }))}
+  >
+    {usertypes.map((userType) => (
+      <MenuItem key={userType.usertype_id} value={userType.usertype_id}>
+        {userType.usertype_name}
+      </MenuItem>
+    ))}
+  </Select>
+) : (
+  <span className="user-info-value">{selectedUser.usertype_name}</span>
+)}
+
 
         <strong className="user-info-label">Position:</strong>{" "}
         {editMode ? (
@@ -597,13 +724,13 @@ const AdminMembersPage: React.FC = () => {
         )}
         <br />
 
-        <strong className="user-info-label">Created At:</strong>{" "}
+        {/* <strong className="user-info-label">Created At:</strong>{" "}
         <span className="user-info-value">{selectedUser.created_time}</span>
         <br />
 
 
         <strong className="user-info-label">Updated At:</strong>{" "}
-        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span>
+        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span> */}
       </div>
     )}
 
@@ -732,16 +859,20 @@ const AdminMembersPage: React.FC = () => {
 
   </DialogContent>
   <DialogActions className="add-user-dialog-actions">
-    <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
-      Cancel
-    </Button>
-    <Button onClick={handleAddUsers} color="primary">
-  Add
-</Button>
+  <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
+    Cancel
+  </Button>
+  <Button onClick={handleAddUsers} color="primary">
+    Add
+  </Button>
+</DialogActions>
 
-  </DialogActions>
 </Dialog>
-
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> 
           </div>
           );
           };

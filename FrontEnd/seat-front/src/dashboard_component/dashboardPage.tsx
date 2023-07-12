@@ -21,6 +21,10 @@ function DashboardPage() {
     navigate('/');
   };
 
+  const profilePageHandleClick = () => {
+    navigate('/ProfilePage');
+  }
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [currDate, setCurrDate] = useState('');
@@ -81,7 +85,7 @@ function DashboardPage() {
 
       {isProfileDropdownOpen && (
         <div className={styles.dropdownMenu2}>
-          <button className={styles.sub}>
+          <button onClick={profilePageHandleClick} className={styles.sub}>
             <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
             Profile
           </button>

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +31,7 @@ public class AdminController {
     }
 
     @GetMapping("/showAllPosition")
-    public List<Map<String, Object>> allPosition(){
+    public List<Map<String, Object>> allPosition(HttpSession session){
        List<Map<String, Object>> positions = adminService.getAllPosition();
        return positions;
     }

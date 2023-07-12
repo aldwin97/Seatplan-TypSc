@@ -115,8 +115,6 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
                 existingUser.setUpdated_by(user_id);
             }
 
-
-
             userService.updateUser(existingUser);
             return ResponseEntity.ok("User updated successfully");
 
@@ -139,7 +137,14 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
         return response;
     }
 
-
+     // Logout remove httpsession
+     @GetMapping("/logout")
+     public String logout(HttpSession session) {
+         if (session != null) {
+         session.invalidate();
+         }
+         return "{\"status\":\"success\"}";
+     }
 
 
 

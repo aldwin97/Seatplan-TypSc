@@ -12,7 +12,6 @@ interface Seat {
   color: string;
   occupant: string;
   project: string;
-  originalIndex?: number; // Add the originalIndex property
 }
 
 interface SeatPopupProps {
@@ -226,133 +225,94 @@ function SeatplanPage() {
   };
 
   const lastClickTimeRef = useRef<number>(0);
+  const [doubleClickFlag, setDoubleClickFlag] = useState(false);
   const [draggingSeatIndex, setDraggingSeatIndex] = useState(-1);
+  
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (event.target instanceof HTMLElement && event.target.closest('.zoomButtons')) {
+      return;
+    }
+  
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
+    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
+  
+    const clickedSeatIndex = seats.findIndex((seat) => {
+      const { x, y } = seat.position;
+      const seatWidth = 50 / zoomLevel;
+      const seatHeight = 50 / zoomLevel;
+      const seatRight = x + seatWidth;
+      const seatBottom = y + seatHeight;
+  
+      return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
+    });
+  
+    if (clickedSeatIndex > -1) {
+      const now = new Date().getTime();
+      const doubleClickThreshold = 300;
+  
+      if (now - lastClickTimeRef.current <= doubleClickThreshold) {
+        const clickedSeat = seats[clickedSeatIndex];
+        setSelectedSeat(clickedSeat);
+        setDoubleClickFlag(true); // Set the double-click flag
+      } else {
+        lastClickTimeRef.current = now;
+  
+        const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
 
-const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-  if (event.target instanceof HTMLElement && event.target.closest('.zoomButtons')) {
-    return;
-  }
-
-  const rect = event.currentTarget.getBoundingClientRect();
-  const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
-  const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
-
-  const clickedSeatIndex = seats.findIndex((seat) => {
-    const { x, y } = seat.position;
-    const seatWidth = 50 / zoomLevel;
-    const seatHeight = 50 / zoomLevel;
-    const seatRight = x + seatWidth;
-    const seatBottom = y + seatHeight;
-
-    return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
-  });
-
-  if (clickedSeatIndex > -1) {
-    const now = new Date().getTime();
-    const doubleClickThreshold = 300;
-
-    if (now - lastClickTimeRef.current <= doubleClickThreshold) {
-      const clickedSeat = seats[clickedSeatIndex];
-      setSelectedSeat(clickedSeat);
-    } else {
-      lastClickTimeRef.current = now;
-      const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
-
-      if (!isAnySeatSwapping) {
-        setDraggingSeatIndex(clickedSeatIndex);
-      }
+    if (!isAnySeatSwapping) {
+      setDraggingSeatIndex(clickedSeatIndex);
+      const updatedSeats = seats.map((seat, index) => {
+        if (index === clickedSeatIndex) {
+          return { ...seat, isSwapping: true };
+        }
+        return seat;
+      });
+      setSeats(updatedSeats);
+      
     }
   }
 };
-const seatWidth = 50; // Replace with the actual width of your seats
-const seatHeight = 50; // Replace with the actual height of your seats
-
-const handleMouseMove = (event: MouseEvent) => {
-  if (draggingSeatIndex > -1 && canvasRef.current) {
-    const rect = canvasRef.current.getBoundingClientRect();
-    const offsetX = Math.round((event.clientX - rect.left) / zoomLevel - canvasOffset.x);
-    const offsetY = Math.round((event.clientY - rect.top) / zoomLevel - canvasOffset.y);
-
-    let updatedSeats = seats.map((seat, index) => {
-      if (index === draggingSeatIndex) {
-        return { ...seat, position: { x: offsetX, y: offsetY } };
-      }
-      return seat;
-    });
-
-    const draggingSeat = updatedSeats[draggingSeatIndex];
-
-    // Calculate distance between dragging seat and other seats
-    updatedSeats.forEach((seat, index) => {
-      if (index !== draggingSeatIndex) {
-        const { x: draggingX, y: draggingY } = draggingSeat.position;
-        const { x: seatX, y: seatY } = seat.position;
-        const distanceX = Math.abs(seatX - draggingX);
-        const distanceY = Math.abs(seatY - draggingY);
-
-        // Set snapping threshold (adjust as needed)
-        const snappingThreshold = 20;
-
-        // Set magnetic force (adjust as needed)
-        const magneticForce = 2;
-
-        // Apply magnetic snap effect
-        if (distanceY < snappingThreshold && distanceX < seatWidth) {
-          const alignedY = seatY + (draggingY - seatY) * magneticForce;
-
-          // Snap to top or bottom side based on relative position
-          if (draggingY < seatY) {
-            const snappedY = Math.round(alignedY / seatHeight) * seatHeight;
-            updatedSeats[draggingSeatIndex] = { ...draggingSeat, position: { x: draggingX, y: snappedY } };
-          } else {
-            const snappedY = Math.round((alignedY - seatHeight) / seatHeight) * seatHeight;
-            updatedSeats[draggingSeatIndex] = { ...draggingSeat, position: { x: draggingX, y: snappedY } };
-          }
-        }
-      }
-    });
-
-    setSeats(updatedSeats);
-  }
-};
-
-
-
-
-
-
-const handleMouseUp = () => {
-  if (draggingSeatIndex > -1) {
-    const updatedSeats = seats.map((seat, index) => {
-      if (index === draggingSeatIndex) {
-        return { ...seat, isSwapping: false };
-      }
-      return seat;
-    });
-
-    setSeats(updatedSeats);
-    setDraggingSeatIndex(-1);
-  }
-};
-
-// Attach event listeners to the document
-React.useEffect(() => {
-  document.addEventListener('mousemove', handleMouseMove);
-  document.addEventListener('mouseup', handleMouseUp);
-
-  return () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
   };
-}, [handleMouseMove, handleMouseUp]);
-
-
+  
+  const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
+    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
+  
+    const clickedSeatIndex = seats.findIndex((seat) => {
+      const { x, y } = seat.position;
+      const seatWidth = 50 / zoomLevel;
+      const seatHeight = 50 / zoomLevel;
+      const seatRight = x + seatWidth;
+      const seatBottom = y + seatHeight;
+  
+      return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
+    });
+  
+    if (draggingSeatIndex > -1 && clickedSeatIndex > -1) {
+      const draggingSeat = seats[draggingSeatIndex];
+const clickedSeat = seats[clickedSeatIndex];
+const updatedSeats = seats.map((seat, index) => {
+  if (index === draggingSeatIndex) {
+    return { ...clickedSeat, isSwapping: false };
+  }
+  if (index === clickedSeatIndex) {
+    return { ...draggingSeat, isSwapping: false };
+  }
+  return seat;
+});
+setSeats(updatedSeats);
 
   
-
-  const handleSeatPopupClose = () => {
-    setSelectedSeat(null);
+    if (!doubleClickFlag) {
+      setSelectedSeat(null);
+    }
+  
+    setDoubleClickFlag(false); // Reset the double-click flag
+    setDraggingSeatIndex(-1); // Reset the dragging seat index
   };
+};
   
   return (
     <div className={styles.container}>
@@ -396,7 +356,7 @@ React.useEffect(() => {
         </div>
       )}
       {selectedSeat && (
-        <SeatPopup seat={selectedSeat} onClose={handleSeatPopupClose} />
+        <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} />
       )}
        <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>

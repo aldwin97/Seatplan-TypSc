@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
@@ -48,12 +49,10 @@ public interface AdminMapper {
     void deleteUserById(@Param("user_id") Long user_id);
 
 
-    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, usertype_id, position_id) " +
-        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id},#{usertype_id}, #{position_id})")
-@Options(useGeneratedKeys = true, keyProperty = "user_id")
-void insertUser(UserModel userModel);
-
-
+    @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, project_id, usertype_id, position_id, created_time, created_by) " +
+        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time}, #{created_by})")
+    @Options(useGeneratedKeys = true, keyProperty = "user_id")
+    void insertUser(UserModel userModel);
 
 
     @Select("SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0")
@@ -73,6 +72,7 @@ void insertUser(UserModel userModel);
         "<if test='staffstatus_id != null'>staffstatus_id = #{staffstatus_id},</if>",
         "<if test='usertype_id != null'>usertype_id = #{usertype_id},</if>",
         "<if test='position_id != null'>position_id = #{position_id},</if>",
+         "<if test='updated_by != null'>updated_by = #{updated_by},</if>",
         "</set>",
         "WHERE user_id = #{user_id}",
         "</script>"
@@ -88,6 +88,8 @@ void insertUser(UserModel userModel);
     UserModel getUserByEmail(String email);
 
 
-    
-    
+    @Insert("INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by, recipient_id ) " +
+    "VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by}, #{recipient_id})")
+    @Options(useGeneratedKeys = true, keyProperty = "comment_id")
+    void insertComment(CommentModel comment);
 }

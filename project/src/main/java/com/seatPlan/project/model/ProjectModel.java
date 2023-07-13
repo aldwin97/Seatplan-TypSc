@@ -20,4 +20,7 @@ private LocalDateTime created_time;
 private Long created_by;
 private LocalDateTime updated_time;
 private Long updated_by;
+
+
+private String color_code;
 }

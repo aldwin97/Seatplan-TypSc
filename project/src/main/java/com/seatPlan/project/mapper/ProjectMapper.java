@@ -8,13 +8,14 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 
 @Mapper
 public interface ProjectMapper {
     
-   @Insert("INSERT INTO table_project (project_name, color_id, is_deleted, created_by , created_time, updated_by) " +
-            "VALUES (#{project_name}, #{color_id}, #{is_deleted}, #{created_by}, #{created_time}, #{updated_by})")
+   @Insert("INSERT INTO table_project (project_name, color_id, is_deleted, created_by , created_time,) " +
+            "VALUES (#{project_name}, #{color_id}, #{is_deleted}, #{created_by}, #{created_time})")
     @Options(useGeneratedKeys = true, keyProperty = "project_id")
     void insertProject(ProjectModel projectModel);
 
@@ -30,4 +31,10 @@ public interface ProjectMapper {
 
     @Update("UPDATE table_project SET is_deleted = 1 WHERE project_id = #{project_id}")
     void deleteProjectById(Long project_id);
+
+
+    @Select("SELECT * FROM table_color")
+    List<ColorModel> getAllColors();
+
+
 }

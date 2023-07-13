@@ -1,3 +1,5 @@
+
+
 .backg
 {
   margin: 0;
@@ -151,7 +153,7 @@
         background-color: #fff;
         color: #a7a7a7;
       }
-      .container {
+      .container{
         width: 100vw;
         height: 105vh;
         display: flex;
@@ -160,22 +162,16 @@
         align-items: center;
       }
       
-      .root {
-        position: relative;
-       
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: calc(100vh - 60px);
+      .canvasWrapper {
+        background-color: #fff;
+        width: 100%;
+        height: 100%; /* Adjust the height as needed */
+        overflow: auto;
       }
       
-      canvas {
-        border: 1px solid #cccccc;
-        width: 90vw;
-        height: 90vh;
-        background-color: white;
-        display: block;
-        margin: 0 auto;
+      .scrollableCanvas {
+        width: 100%;
+        height: 100%;
       }
       
       
@@ -298,4 +294,167 @@
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
       }
-      
+      /* seatplanPage.module.css */
+
+     /* Blur the page when the popup is open */
+     body.popupOpen {
+      filter: blur(4px);
+      pointer-events: none;
+    }
+/* Popup container */
+
+
+/* Popup content */
+.seatPopupContent {
+  display: flex;
+  background-color: white;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  padding: 30px; /* Add padding to create some space between the border and content */
+}
+
+.seatPopupContent h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.seatPopupContent form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seatPopupContent label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.seatPopupContent input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.seatPopupContent input[type="color"] {
+  padding: 2px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.seatPopupContent button {
+  padding: 5px 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.seatPopupContent button[type="submit"] {
+  background-color: #28a745;
+}
+.seatPopupContent button:hover[type="submit"] {
+  background-color: #0056b3;
+}
+.swapButton {
+  background-color: #28a745 !important;
+  margin-left: 10px;
+}
+.swapButton:hover {
+  background-color: #0056b3 !important;
+}
+.editButton
+{
+  background-color: #28a745 !important;
+}
+.editButton:hover {
+  background-color: #0056b3 !important;
+}
+.seatPopupContent select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  appearance: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Close button */
+.seatPopupContent .closeButton {
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-size: 12px;
+}
+
+.seatPopupContent .closeButton:hover {
+  color: #777;
+}
+
+.seatPopupContainer:not(seatPopupContent){
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(223, 223, 223, 0.9); /* Set the background color with transparency */
+  z-index: 999; /* Ensure the popup appears on top of other elements */
+}/* Common styles */
+
+/* ... existing styles ... */
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .seatPopupContent {
+    width: 80%; /* Adjust the width as needed */
+    padding: 20px; /* Adjust the padding as needed */
+  }
+  
+  .seatPopupContent input[type="text"],
+  .seatPopupContent input[type="color"],
+  .seatPopupContent select {
+    width: 100%; /* Make the inputs and select full width */
+  }
+
+  .seatPopupContent button {
+    width: 100%; /* Make the buttons full width */
+  }
+
+  .seatPopupContent .closeButton {
+    font-size: 14px; /* Adjust the font size as needed */
+  }
+
+  .seatPopupContainer:not(.seatPopupContent) {
+    background-color: rgba(223, 223, 223, 0.9); /* Adjust the background color as needed */
+  }
+  .container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .canvasWrapper {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+  
+
+}

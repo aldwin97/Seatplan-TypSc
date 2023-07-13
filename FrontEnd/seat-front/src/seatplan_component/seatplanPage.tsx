@@ -209,7 +209,6 @@ function SeatplanPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [seats, setSeats] = useState<Seat[]>([
@@ -316,6 +315,8 @@ function SeatplanPage() {
     { id: 'seat83', label: 'Seat 83', position: { x: 50, y: 500 }, isSwapping: false, color: '#FFFF66', occupant: 'IKEDA, Kazuki', project: 'Hitachi'  },
     { id: 'seat82', label: 'Seat 82', position: { x: 50, y: 550 }, isSwapping: false, color: '#F0FFF1' , occupant: 'HINTO, Cristina', project: 'NRI' },
   ]);
+
+  
   const [zoomLevel, setZoomLevel] = useState(1);
   const [canvasOffset, setCanvasOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
@@ -339,7 +340,7 @@ function SeatplanPage() {
         const seatSize = 50 / zoomLevel;
         const textOffsetX = 10 / zoomLevel;
         const textOffsetY = 30 / zoomLevel;
-  
+        canvas.style.cursor = 'pointer';
         ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9'; // Set default color to light gray
         ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
         ctx.strokeStyle = '#000000'; // Set the border color to black

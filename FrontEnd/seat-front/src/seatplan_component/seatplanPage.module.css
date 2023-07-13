@@ -170,11 +170,34 @@
       }
       
       .scrollableCanvas {
-        width: 100%;
-        height: 100%;
+        width: 130%;
+        height: 110vh;
+        background-image: url('../assets/BG1.jpg');
+        background-size: cover;
+        border-radius: 8px;
+        padding: 20px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       }
       
+      .scrollableCanvas::-webkit-scrollbar {
+        width: 8px;
+        background-color: #f2f2f2;
+      }
       
+      .scrollableCanvas::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-track {
+        background-color: #f2f2f2;
+      }
+        
       
       
       .addSeatForm {
@@ -190,11 +213,14 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        transition:0.3s .4s ease-in-out;
       }
       
       .addSeatForm:hover {
         background-color: #dcdcdc;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+        scale: 0.99;
       }
       
       
@@ -312,9 +338,14 @@
   align-items: center;
   border-radius: 10px;
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   padding: 30px; /* Add padding to create some space between the border and content */
+  transition: 0.2s .3s ease-in-out;
 }
-
+.seatPopupContent:hover {
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  scale: 0.99;
+}
 .seatPopupContent h3 {
   margin-top: 0;
   margin-bottom: 10px;

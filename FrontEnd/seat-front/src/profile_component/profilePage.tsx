@@ -3,66 +3,70 @@ import { useNavigate } from 'react-router-dom';
 import styles from './profilePage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 
-function ProfilePage() {
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
+const ProfilePage: React.FC = () => {
+  const [showOldPassword, setShowOldPassword] = useState<boolean>(false);
+  const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const toggleOldPasswordVisibility = () => {
+  const toggleOldPasswordVisibility = (): void => {
     setShowOldPassword(!showOldPassword);
   };
 
-  const toggleNewPasswordVisibility = () => {
+  const toggleNewPasswordVisibility = (): void => {
     setShowNewPassword(!showNewPassword);
   };
 
-  const toggleConfirmPasswordVisibility = () => {
+  const toggleConfirmPasswordVisibility = (): void => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const dashboardPageHandleClick = () => {
+  const dashboardPageHandleClick = (): void => {
     navigate('/DashboardPage');
   };
-  const adminPageHandleClick = () => {
+
+  const adminPageHandleClick = (): void => {
     navigate('/AdminPage');
   };
-  const seatplanPageHandleClick = () => {
+
+  const seatplanPageHandleClick = (): void => {
     navigate('/SeatplanPage');
   };
-  const logInPageHandleClick = () => {
+
+  const logInPageHandleClick = (): void => {
     navigate('/');
   };
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (): void => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-  const toggleProfileDropdown = () => {
+  const toggleProfileDropdown = (): void => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const handlePersonalSaveChanges = () => {
+  const handlePersonalSaveChanges = (): void => {
     // Perform actions to save the changes
     // This can include sending the form data to the server or updating the state
     console.log('Saving changes...');
   };
 
-  const handlePersonalCancelChanges = () => {
+  const handlePersonalCancelChanges = (): void => {
     // Reset the form fields to their initial values or clear them
     // Perform any other necessary actions when canceling changes
     console.log('Canceling changes...');
   };
 
-  const handleAccountSaveChanges = () => {
+  const handleAccountSaveChanges = (): void => {
     if (newPassword !== confirmPassword) {
       setPasswordsMatch(false);
       return; // Stop further execution
@@ -76,7 +80,7 @@ function ProfilePage() {
     console.log('Saving changes...');
   };
 
-  const handleAccountCancelChanges = () => {
+  const handleAccountCancelChanges = (): void => {
     // Reset the form fields to their initial values or clear them
     setNewPassword('');
     setConfirmPassword('');
@@ -87,123 +91,115 @@ function ProfilePage() {
 
   return (
     <>
-    <body className={styles.backg}>
-    <div className={styles.container}>
-      <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-      </button>
+      <body className={styles.backg}>
+        <div className={styles.container}>
 
-      {isDropdownOpen && (
-        <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
-          <button onClick={dashboardPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
-            Dashboard
+          <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
+            <div className={styles.burgerIcon}></div>
+            <div className={styles.burgerIcon}></div>
+            <div className={styles.burgerIcon}></div>
           </button>
-          <button onClick={adminPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
-            Members
+
+          {isDropdownOpen && (
+
+            <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
+
+              <button onClick={dashboardPageHandleClick} className={styles.sub}>
+                <FontAwesomeIcon icon={faChartBar as IconProp} className={styles.icon} />
+                Dashboard
+              </button>
+
+              <button onClick={adminPageHandleClick} className={styles.sub}>
+                <FontAwesomeIcon icon={faUsers as IconProp} className={styles.icon} />
+                Members
+              </button>
+
+              <button onClick={seatplanPageHandleClick} className={styles.sub}>
+                <FontAwesomeIcon icon={faProjectDiagram as IconProp} className={styles.icon} />
+                Projects
+              </button>
+
+            </div>
+          )}
+
+          <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
+            <FontAwesomeIcon icon={faUser as IconProp} />
           </button>
-          <button onClick={seatplanPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faProjectDiagram} className={styles.icon} />
-            Projects
+
+          {isProfileDropdownOpen && (
+            <div className={styles.dropdownMenu2}>
+
+              <button className={styles.sub}>
+                <FontAwesomeIcon icon={faFaceSmile as IconProp} className={styles.icon} />
+                Profile
+              </button>
+
+              <button onClick={logInPageHandleClick} className={styles.sub}>
+                <FontAwesomeIcon icon={faPowerOff as IconProp} className={styles.icon} />
+                Logout
+              </button>
+
+            </div>
+          )}
+
+          <button className={styles.notif}>
+            <FontAwesomeIcon icon={faBell as IconProp} />
           </button>
         </div>
-      )}
 
-      <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
-      </button>
-
-      {isProfileDropdownOpen && (
-        <div className={styles.dropdownMenu2}>
-          <button className={styles.sub}>
-            <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
-            Profile
-          </button>
-          <button onClick={logInPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
-            Logout
-          </button>
-          
-        </div>
-      )}
-
-      <button className={styles.notif}>
-        <FontAwesomeIcon icon={faBell} />
-      </button>
-    </div>
-
-
-    <div className = {styles.prof}>
-      <form className={styles.form1}>
-
-        <h1>PERSONAL INFORMATION</h1>
-        <div className={styles['input-group']}>
-          <input required
-          type="text"
-          name = "firstName"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>First Name</label>
-        </div>
-
-        <div className={styles['input-group']}>
-          <input required
-          type="text"
-          name = "lastName"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>Last Name</label>
-        </div>
-
-        <div className={styles['input-group']}>
-          <input required
-          type="text"
-          name = "emailAddress"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>Email Address</label>
-        </div>
-
-        <div className={styles['input-group']}>
-          <input required
-          type="number"
-          name = "contactNumber"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>Contact Number</label>
-        </div>
-
-        <div className={styles['button-group']}>
-            <button type="button" className={styles.saveButton} onClick={handlePersonalSaveChanges}>
-              Save Changes
-            </button>
-            <button type="button" className={styles.cancelButton} onClick={handlePersonalCancelChanges}>
-              Cancel
-            </button>
-          </div>
+        <div className={styles.prof}>
+          <form className={styles.form1}>
 
 
 
-        <h2>ACCOUNT SETTINGS</h2>
-        <div className={styles['input-group']}>
-            <input
-              required
-              type="text"
-              name="username"
-              autoComplete="off"
-              className={styles.input}
-            />
-            <label className={styles['user-label']}>Username</label>
-        </div>
+            <h1>PERSONAL INFORMATION</h1>
 
-        <div className={styles['input-group']}>
+
+            <div className={styles['input-group']}>
+              <input required type="text" name="firstName" autoComplete="off" className={styles.input} />
+              <label className={styles['user-label']}>First Name</label>
+            </div>
+
+            <div className={styles['input-group']}>
+              <input required type="text" name="lastName" autoComplete="off" className={styles.input} />
+              <label className={styles['user-label']}>Last Name</label>
+            </div>
+
+            <div className={styles['input-group']}>
+              <input required type="text" name="emailAddress" autoComplete="off" className={styles.input} />
+              <label className={styles['user-label']}>Email Address</label>
+            </div>
+
+
+            <div className={styles['input-group']}>
+              <input required type="number" name="contactNumber" autoComplete="off" className={styles.input} />
+              <label className={styles['user-label']}>Contact Number</label>
+            </div>
+
+
+
+            <div className={styles['button-group']}>
+ 
+              <button type="button" className={styles.saveButton} onClick={handlePersonalSaveChanges}>
+                Save Changes
+              </button>
+              <button type="button" className={styles.cancelButton} onClick={handlePersonalCancelChanges}>
+                Cancel
+              </button>
+            </div>
+
+
+            <h1>ACCOUNT SETTINGS</h1>
+
+
+
+            <div className={styles['input-group']}>
+              <input required type="text" name="username" autoComplete="off" className={styles.input} />
+              <label className={styles['user-label']}>Username</label>
+            </div>
+
+
+            <div className={styles['input-group']}>
               <input
                 required
                 type={showOldPassword ? 'text' : 'password'}
@@ -219,6 +215,7 @@ function ProfilePage() {
                 {showOldPassword ? <FaEye /> : <FaEyeSlash />}
               </span>
             </div>
+
 
             <div className={styles['input-group']}>
               <input
@@ -239,6 +236,7 @@ function ProfilePage() {
               </span>
             </div>
 
+
             <div className={styles['input-group']}>
               <input
                 required
@@ -258,6 +256,7 @@ function ProfilePage() {
               </span>
             </div>
 
+
             {!passwordsMatch && <p className={styles.error}>Passwords do not match.</p>}
 
             <div className={styles['button-group']}>
@@ -268,12 +267,37 @@ function ProfilePage() {
                 Cancel
               </button>
             </div>
+
           </form>
         </div>
+        
+
+
+        <div className={styles.card}>
+          <form className={styles.form2}>
+
+          <div className="card__img"></div>
+          <div className="card__avatar"></div>
+          <div className="card__name">FULL NAME</div>
+          <div className="card__username">username</div>
+          <div className="card__position">position</div>
+
+          <div className="card__wrapper">
+
+          <button className="card__btn">Button</button>
+          <button className="card__btn card__btn-solid">Button</button>
+
+          </div>
+
+          </form>
+        </div>
+
+
+
       </body>
     </>
   );
-
-}
+};
 
 export default ProfilePage;
+

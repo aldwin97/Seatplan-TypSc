@@ -170,11 +170,31 @@
       }
       
       .scrollableCanvas {
-        width: 100%;
-        height: 100%;
+        width: 130%;
+        height: 110vh;
+        background-size: cover;
+        border-radius: 8px;
+        padding: 20px;
       }
       
+      .scrollableCanvas::-webkit-scrollbar {
+        width: 8px;
+        background-color: #f2f2f2;
+      }
       
+      .scrollableCanvas::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-track {
+        background-color: #f2f2f2;
+      }
+        
       
       
       .addSeatForm {
@@ -190,11 +210,14 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        transition:0.3s .4s ease-in-out;
       }
       
       .addSeatForm:hover {
         background-color: #dcdcdc;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+        scale: 0.99;
       }
       
       
@@ -312,9 +335,14 @@
   align-items: center;
   border-radius: 10px;
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
   padding: 30px; /* Add padding to create some space between the border and content */
+  transition: 0.2s .3s ease-in-out;
 }
-
+.seatPopupContent:hover {
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  scale: 0.99;
+}
 .seatPopupContent h3 {
   margin-top: 0;
   margin-bottom: 10px;
@@ -336,6 +364,8 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 3px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
 }
 
 .seatPopupContent input[type="color"] {
@@ -343,6 +373,8 @@
   border: none;
   outline: none;
   cursor: pointer;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
 }
 
 .seatPopupContent button {
@@ -353,21 +385,38 @@
   background-color: #007bff;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
 }
 
 .seatPopupContent button[type="submit"] {
   background-color: #28a745;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
 }
 .seatPopupContent button:hover[type="submit"] {
   background-color: #0056b3;
 }
 .swapButton {
   background-color: #28a745 !important;
-  margin-left: 10px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  margin-left: 23%;
 }
 .swapButton:hover {
   background-color: #0056b3 !important;
+}
+.editButton
+{
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  background-color: #28a745 !important;
+}
+.editButton:hover {
+  background-color: #0056b3 !important;
+  color: white;
 }
 
 .seatPopupContent select {
@@ -406,4 +455,101 @@
   justify-content: center;
   background-color: rgba(223, 223, 223, 0.9); /* Set the background color with transparency */
   z-index: 999; /* Ensure the popup appears on top of other elements */
+}/* Common styles */
+
+/* ... existing styles ... */
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+
+  .scrollableCanvas
+  {
+    width: 120vh;
+  }
+  .seatPopupContent {
+    width: 80%; /* Adjust the width as needed */
+    padding: 20px; /* Adjust the padding as needed */
+  }
+  .swapButton {
+    margin-left: -1%;
+    width: 20%;
+  }
+  .seatPopupContent input[type="text"],
+  .seatPopupContent input[type="color"],
+  .seatPopupContent select {
+    width: 100%; /* Make the inputs and select full width */
+  }
+
+  .seatPopupContent button {
+    width: 100%; /* Make the buttons full width */
+  }
+
+  .seatPopupContent .closeButton {
+    font-size: 14px; /* Adjust the font size as needed */
+  }
+
+  .seatPopupContainer:not(.seatPopupContent) {
+    background-color: rgba(223, 223, 223, 0.9); /* Adjust the background color as needed */
+  }
+  .container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .canvasWrapper {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+  
+
+}
+.value {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.value:not(:active):hover,
+.value:focus {
+  background-color: #21262C;
+}
+
+.value:focus,
+.value:active {
+  background-color: #1A1F24;
+  outline: none;
+}
+
+.value::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -10px;
+  width: 5px;
+  height: 80%;
+  background-color: #2F81F7;
+  border-radius: 5px;
+  opacity: 0;
+}
+
+.value:focus::before,
+.value:active::before {
+  opacity: 1;
+}
+
+.value svg {
+  width: 15px
 }

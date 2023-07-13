@@ -147,9 +147,16 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
      }
 
 
+     
 
-
-
+     
+    @GetMapping("/showLogedUserInfo")
+    public List<Map<String, Object>> showUserById(HttpSession session){
+        UserModel user = (UserModel) session.getAttribute("userSession");
+        Long user_id = user.getUser_id();
+        List<Map<String, Object>> userInfo = userService.showUserById(user_id);
+        return userInfo;
+    }
 
 
 

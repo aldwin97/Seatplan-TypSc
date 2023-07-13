@@ -61,6 +61,18 @@ public interface UserMapper {
 
     @Select("SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0")
     Object getUserByEmail(String email);
+
+
+
+    @Select("SELECT u.*, p.position_name, s.staffstatus_name, pr.project_name, ut.usertype_name " +
+        "FROM table_user u " +
+        "LEFT JOIN table_position p ON u.position_id = p.position_id " +
+        "LEFT JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id " +
+        "LEFT JOIN table_project pr ON u.project_id = pr.project_id " +
+        "LEFT JOIN table_usertype ut ON u.usertype_id = ut.usertype_id " +
+        "WHERE u.user_id = #{user_id}")
+    List<UserModel> showUserById(Long user_id);
+    
     
 
 

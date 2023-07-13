@@ -6,10 +6,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
-
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
-import com.seatPlan.project.model.UserTypeModel;
 
 @Mapper
 public interface SeatMapper {

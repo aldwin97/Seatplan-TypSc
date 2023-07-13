@@ -1,3 +1,4 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.controller;
 
 import java.util.Collections;
@@ -156,7 +157,7 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
     // }
 
     @GetMapping("/showLogedUserInfo")
-public List<Map<String, Object>> showUserById(HttpSession session) {
+    public List<Map<String, Object>> showUserById(HttpSession session) {
     if (session != null && session.getAttribute("userSession") != null) {
         UserModel user = (UserModel) session.getAttribute("userSession");
         Long user_id = user.getUser_id();

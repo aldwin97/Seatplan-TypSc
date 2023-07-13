@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
+import { faUser,faFaceSmile, faTimes, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 
 interface Seat {
@@ -17,11 +17,21 @@ interface Seat {
 interface SeatPopupProps {
   seat: Seat;
   onClose: () => void;
+  setSeats: (seats: Seat[]) => void;
+  seats: Seat[];
 }
 
-function SeatPopup({ seat, onClose }: SeatPopupProps) {
+function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [occupant, setOccupant] = useState(seat.occupant);
   const [project, setProject] = useState(seat.project);
+  const [selectedSeatId, setSelectedSeatId] = useState('');
+  const [color, setColor] = useState(seat.color); // New state for seat color
+  useEffect(() => {
+    document.body.classList.toggle('popupOpen', true);
+    return () => {
+      document.body.classList.toggle('popupOpen', false);
+    };
+  }, []);
 
   const handleOccupantChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOccupant(event.target.value);
@@ -31,32 +41,109 @@ function SeatPopup({ seat, onClose }: SeatPopupProps) {
     setProject(event.target.value);
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const updatedSeat = { ...seat, occupant, project };
-    console.log('Updated seat:', updatedSeat);
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setColor(event.target.value);
   };
 
+  const handleSeatSelect = (selectedSeatId: string) => {
+    setSelectedSeatId(selectedSeatId);
+  };
+
+  const handleSwapSeats = () => {
+    if (selectedSeatId) {
+      const currentSeatId = seat.id;
+      const currentSeat = seats.find((seat) => seat.id === currentSeatId);
+      const swapSeat = seats.find((seat) => seat.id === selectedSeatId);
+
+      if (currentSeat && swapSeat && currentSeatId !== selectedSeatId) {
+        const updatedCurrentSeat = {
+          ...currentSeat,
+          occupant: swapSeat.occupant,
+          project: swapSeat.project,
+          label: swapSeat.label,
+          color: swapSeat.color, // Update the color of the current seat
+        };
+        const updatedSwapSeat = {
+          ...swapSeat,
+          occupant: currentSeat.occupant,
+          project: currentSeat.project,
+          label: currentSeat.label,
+          color: currentSeat.color, // Update the color of the swap seat
+        };
+
+        const updatedSeats = seats.map((seat) => {
+          if (seat.id === updatedCurrentSeat.id) {
+            return updatedCurrentSeat;
+          } else if (seat.id === updatedSwapSeat.id) {
+            return updatedSwapSeat;
+          }
+          return seat;
+        });
+
+        setSeats(updatedSeats);
+      }
+    }
+    onClose();
+  };
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const updatedSeats = seats.map((s) => {
+      if (s.id === seat.id) {
+        return { ...s, occupant, project, color };
+      }
+      if (s.project === project) {
+        return { ...s, color }; // Assign the same color to seats with the same project
+      }
+      return s;
+    });
+    setSeats(updatedSeats);
+    onClose();
+  };
+  
+  
+
   return (
-    <div className={styles.seatPopup}>
-      <div className={styles.seatPopupContent}>
-        <h3>{seat.label}</h3>
-        <form onSubmit={handleFormSubmit}>
-          <label>
-            Occupant:
-            <input type="text" value={occupant} onChange={handleOccupantChange} />
-          </label>
-          <label>
-            Project:
-            <input type="text" value={project} onChange={handleProjectChange} />
-          </label>
-          <button type="submit">Save</button>
-          <button type="button" onClick={onClose}>Close</button>
-        </form>
-      </div>
+    <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
+    <div className={styles.seatPopupContent}>
+      <h3>{seat.label}</h3>
+      <form onSubmit={handleFormSubmit}>
+        <label>
+          Occupant:
+          <input type="text" value={occupant} onChange={handleOccupantChange} />
+        </label>
+        <label>
+          Project:
+          <input type="text" value={project} onChange={handleProjectChange} />
+        </label>
+        <label>
+          Color:
+          <input type="color" value={color} onChange={handleColorChange} /> {/* Input field for seat color */}
+        </label>
+        <button type="submit">Save</button>
+        <div>
+          <p>Select a seat to swap:</p>
+          <select value={selectedSeatId} onChange={(e) => handleSeatSelect(e.target.value)}>
+            <option value="">Select a seat</option>
+            {seats.map((seat) => (
+              <option key={seat.id} value={seat.id}>
+                {seat.label}
+              </option>
+            ))}
+          </select>
+          <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
+            Swap Now
+          </button>
+        </div>
+        <button type="button" className={styles.closeButton} onClick={onClose}>
+        close
+        </button>
+      </form>
     </div>
-  );
+  </div>
+);
 }
+
 
 function SeatplanPage() {
   const navigate = useNavigate();
@@ -182,30 +269,39 @@ function SeatplanPage() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-
+  
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
       ctx.scale(zoomLevel, zoomLevel);
-
+  
       seats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-
+  
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 50 / zoomLevel;
         const textOffsetX = 10 / zoomLevel;
         const textOffsetY = 30 / zoomLevel;
-
-        ctx.fillStyle = seat.isSwapping ? '#ff0000' : color;
+  
+        ctx.fillStyle = seat.isSwapping ? '#28a745' : color;
         ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
         ctx.strokeStyle = '#000000'; // Set the border color to black
         ctx.lineWidth = 2 / zoomLevel; // Adjust the border width as needed
         ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
         ctx.fillStyle = '#000000'; // Set the text color to black
-        ctx.fillText(seat.label, scaledX + textOffsetX, scaledY + textOffsetY);
-
+        
+        if (seat.isSwapping) {
+          // Get the swapped seat
+          const swappedSeat = seats.find((s) => s.id === seat.occupant);
+          if (swappedSeat) {
+            ctx.fillText(swappedSeat.label, scaledX + textOffsetX, scaledY + textOffsetY);
+          }
+        } else {
+          ctx.fillText(seat.label, scaledX + textOffsetX, scaledY + textOffsetY);
+        }
+  
         if (selectedSeat && seat.id === selectedSeat.id) {
           ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Set the button background color
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
@@ -215,6 +311,7 @@ function SeatplanPage() {
       });
     }
   }, [seats, zoomLevel, selectedSeat]);
+  
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -229,10 +326,6 @@ function SeatplanPage() {
   const [draggingSeatIndex, setDraggingSeatIndex] = useState(-1);
   
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (event.target instanceof HTMLElement && event.target.closest('.zoomButtons')) {
-      return;
-    }
-  
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
     const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
@@ -259,21 +352,21 @@ function SeatplanPage() {
         lastClickTimeRef.current = now;
   
         const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
-
-    if (!isAnySeatSwapping) {
-      setDraggingSeatIndex(clickedSeatIndex);
-      const updatedSeats = seats.map((seat, index) => {
-        if (index === clickedSeatIndex) {
-          return { ...seat, isSwapping: true };
+  
+        if (!isAnySeatSwapping) {
+          setDraggingSeatIndex(clickedSeatIndex);
+          const updatedSeats = seats.map((seat, index) => {
+            if (index === clickedSeatIndex) {
+              return { ...seat, isSwapping: true };
+            }
+            return seat;
+          });
+          setSeats(updatedSeats);
         }
-        return seat;
-      });
-      setSeats(updatedSeats);
-      
+      }
     }
-  }
-};
   };
+  
   
   const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -292,18 +385,18 @@ function SeatplanPage() {
   
     if (draggingSeatIndex > -1 && clickedSeatIndex > -1) {
       const draggingSeat = seats[draggingSeatIndex];
-const clickedSeat = seats[clickedSeatIndex];
-const updatedSeats = seats.map((seat, index) => {
-  if (index === draggingSeatIndex) {
-    return { ...clickedSeat, isSwapping: false };
-  }
-  if (index === clickedSeatIndex) {
-    return { ...draggingSeat, isSwapping: false };
-  }
-  return seat;
-});
-setSeats(updatedSeats);
-
+      const clickedSeat = seats[clickedSeatIndex];
+      const updatedSeats = seats.map((seat, index) => {
+        if (index === draggingSeatIndex) {
+          return { ...clickedSeat, isSwapping: false };
+        }
+        if (index === clickedSeatIndex) {
+          return { ...draggingSeat, isSwapping: false };
+        }
+        return seat;
+      });
+      setSeats(updatedSeats);
+    }
   
     if (!doubleClickFlag) {
       setSelectedSeat(null);
@@ -312,10 +405,11 @@ setSeats(updatedSeats);
     setDoubleClickFlag(false); // Reset the double-click flag
     setDraggingSeatIndex(-1); // Reset the dragging seat index
   };
-};
+  
+
   
   return (
-    <div className={styles.container}>
+   <body className={styles.body}> <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
         <div className={styles.burgerIcon}></div>
         <div className={styles.burgerIcon}></div>
@@ -356,8 +450,9 @@ setSeats(updatedSeats);
         </div>
       )}
       {selectedSeat && (
-        <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} />
+        <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} setSeats={setSeats} seats={seats} />
       )}
+
        <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>
     <div className={styles.scrollableCanvas}>
@@ -373,6 +468,7 @@ setSeats(updatedSeats);
 </div>
 </div>
 </div>
+</body>
 );
 }
 

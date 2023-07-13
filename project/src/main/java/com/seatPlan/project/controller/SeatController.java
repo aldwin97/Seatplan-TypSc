@@ -1,3 +1,4 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.controller;
 
 import java.util.List;
@@ -27,42 +28,41 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-    
-@GetMapping("/showAllSeat")
-public List<Map<String, Object>> allSeat(){
-        List<Map<String, Object>> seats = seatService.getAllSeat();
-        return seats;
+        
+    @GetMapping("/showAllSeat")
+    public List<Map<String, Object>> allSeat(){
+            List<Map<String, Object>> seats = seatService.getAllSeat();
+            return seats;
+        }
+
+        
+    @PostMapping("/insertComment")
+    public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
+        try {
+            UserModel creatorId = (UserModel) session.getAttribute("userSession");
+            comment.setCreated_by(creatorId.getUser_id());
+            comment.setUser_id(creatorId.getUser_id());
+            seatService.saveComment(comment);
+            return ResponseEntity.ok("Comment inserted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert comment");
+        }
     }
 
-    
-@PostMapping("/insertComment")
-public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
-    try {
-        UserModel creatorId = (UserModel) session.getAttribute("userSession");
-        comment.setCreated_by(creatorId.getUser_id());
-        comment.setUser_id(creatorId.getUser_id());
-        seatService.saveComment(comment);
-        return ResponseEntity.ok("Comment inserted successfully");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert comment");
+    @GetMapping("/showAllCommentByUserId")
+    public List<Map<String, Object>> getCommentByUserId(HttpSession session) {
+        UserModel user = (UserModel) session.getAttribute("userSession");
+        Long user_id = user.getUser_id();
+        List<Map<String, Object>> comments = seatService.getCommentByUserId(user_id);
+        return comments;
     }
-}
-
-@GetMapping("/showAllCommentByUserId")
-public List<Map<String, Object>> getCommentByUserId(HttpSession session) {
-    UserModel user = (UserModel) session.getAttribute("userSession");
-    Long user_id = user.getUser_id();
-    List<Map<String, Object>> comments = seatService.getCommentByUserId(user_id);
-    return comments;
-}
 
 
-@GetMapping("/showAllComment")
-public List<Map<String, Object>> allProject(){
-    List<Map<String, Object>> comments = seatService.getAllComment();
-    return comments;
-}
-
+    @GetMapping("/showAllComment")
+    public List<Map<String, Object>> allProject(){
+        List<Map<String, Object>> comments = seatService.getAllComment();
+        return comments;
+    }
 
 
 }

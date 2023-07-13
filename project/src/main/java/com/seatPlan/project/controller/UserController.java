@@ -1,5 +1,7 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,18 +147,28 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
          }
          return "{\"status\":\"success\"}";
      }
-
-
      
+    // @GetMapping("/showLogedUserInfo")
+    // public List<Map<String, Object>> showUserById(HttpSession session){
+    //     UserModel user = (UserModel) session.getAttribute("userSession");
+    //     Long user_id = user.getUser_id();
+    //     List<Map<String, Object>> userInfo = userService.showUserById(user_id);
+    //     return userInfo;
+    // }
 
-     
     @GetMapping("/showLogedUserInfo")
-    public List<Map<String, Object>> showUserById(HttpSession session){
+    public List<Map<String, Object>> showUserById(HttpSession session) {
+    if (session != null && session.getAttribute("userSession") != null) {
         UserModel user = (UserModel) session.getAttribute("userSession");
         Long user_id = user.getUser_id();
         List<Map<String, Object>> userInfo = userService.showUserById(user_id);
         return userInfo;
+    } else {
+        Map<String, Object> message = new HashMap<>();
+        message.put("message", "No user logged");
+        return Collections.singletonList(message);
     }
+}
 
 
 

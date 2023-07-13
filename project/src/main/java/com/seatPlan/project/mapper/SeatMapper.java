@@ -37,8 +37,8 @@ public interface SeatMapper {
     @Select("SELECT c.*, u.first_name, u.last_name " +
     "FROM table_comment c " +
     "JOIN table_user u ON c.user_id = u.user_id " +
-    "WHERE c.user_id = #{user_id} " +
-    "ORDER BY c.created_time")
+    "WHERE c.user_id = #{user_id} OR recipient_id = #{user_id} " +
+    "ORDER BY c.created_time DESC")
     List<CommentModel> getCommentByUserId(Long user_id);
 
 
@@ -46,7 +46,7 @@ public interface SeatMapper {
     @Select("SELECT c.*, u.first_name, u.last_name " +
     "FROM table_comment c " +
     "JOIN table_user u ON c.user_id = u.user_id " +
-    "ORDER BY c.created_time")
+    "ORDER BY c.created_time DESC")
     List<CommentModel> getAllComment();
 
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProjectService;
@@ -56,6 +57,8 @@ public class ProjectController {
         return projectService.countProject();
     }
 
+
+
     @PostMapping("/delete/{project_id}")
     public ResponseEntity<String> deleteProjectById(@PathVariable Long project_id) {
           try {
@@ -65,4 +68,15 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete project");
         }    
     }
+
+
+    @GetMapping("/allColor")
+    public ResponseEntity<List<ColorModel>> getAllColors() {
+        List<ColorModel> colors = projectService.getAllColors();
+        return ResponseEntity.ok(colors);
+    }
+
+
+
+
 }

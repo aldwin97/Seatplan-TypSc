@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.mapper.ProjectMapper;
+import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 
 
@@ -38,5 +39,10 @@ public class ProjectService {
     public void deleteProjectById(Long project_id) {
         projectMapper.deleteProjectById(project_id);
 
+    }
+
+
+     public List<ColorModel> getAllColors() {
+        return projectMapper.getAllColors();
     }
 }

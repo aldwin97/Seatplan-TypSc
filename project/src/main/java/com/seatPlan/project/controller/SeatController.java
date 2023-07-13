@@ -28,8 +28,6 @@ public class SeatController {
     }
 
     
-
-
 @GetMapping("/showAllSeat")
 public List<Map<String, Object>> allSeat(){
         List<Map<String, Object>> seats = seatService.getAllSeat();
@@ -50,7 +48,7 @@ public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, Htt
     }
 }
 
-@GetMapping("/showAllCommentByUser_id")
+@GetMapping("/showAllCommentByUserId")
 public List<Map<String, Object>> getCommentByUserId(HttpSession session) {
     UserModel user = (UserModel) session.getAttribute("userSession");
     Long user_id = user.getUser_id();

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.AdminService;
 
@@ -161,6 +162,21 @@ public ResponseEntity<String> insertUser(HttpSession session ,@RequestBody UserM
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
         }
     }
+
+
+
+    @PostMapping("/replyComment/{recipient_id}")
+    public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
+    try {
+        UserModel creatorId = (UserModel) session.getAttribute("userSession");
+        comment.setCreated_by(creatorId.getUser_id());
+        comment.setUser_id(creatorId.getUser_id());
+        adminService.saveComment(comment);
+        return ResponseEntity.ok("Comment inserted successfully");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert comment");
+    }
+}
 
 
 }

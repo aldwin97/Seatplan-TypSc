@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
@@ -87,6 +88,8 @@ public interface AdminMapper {
     UserModel getUserByEmail(String email);
 
 
-    
-    
+    @Insert("INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by, recipient_id ) " +
+    "VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by}, #{recipient_id})")
+    @Options(useGeneratedKeys = true, keyProperty = "comment_id")
+    void insertComment(CommentModel comment);
 }

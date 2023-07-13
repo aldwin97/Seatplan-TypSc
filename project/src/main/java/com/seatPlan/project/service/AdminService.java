@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.mapper.AdminMapper;
+import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
@@ -126,6 +127,10 @@ public class AdminService {
 
     public UserModel getUserById(Long user_id) {
         return adminMapper.getUserById(user_id);
+    }
+
+    public void saveComment(CommentModel comment) {
+        adminMapper.insertComment(comment);
     }
     
     

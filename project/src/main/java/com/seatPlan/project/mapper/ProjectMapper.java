@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 
 @Mapper
@@ -30,4 +31,10 @@ public interface ProjectMapper {
 
     @Update("UPDATE table_project SET is_deleted = 1 WHERE project_id = #{project_id}")
     void deleteProjectById(Long project_id);
+
+
+    @Select("SELECT * FROM table_color")
+    List<ColorModel> getAllColors();
+
+
 }

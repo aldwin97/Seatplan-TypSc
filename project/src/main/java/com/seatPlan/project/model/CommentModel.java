@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class CommentModel {
     private Long comment_id;
     private Long user_id;
+    private Long recipient_id;
     private Long seat_id;
     private String comment;
     private int is_deleted;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './logInPage.module.css';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
@@ -11,6 +11,13 @@ const LogInPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  const [redirectToDashboard, setRedirectToDashboard] = useState(false);
+
+  useEffect(() => {
+    if (redirectToDashboard) {
+      navigate('/dashboardPage');
+    }
+  }, [redirectToDashboard, navigate]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -23,15 +30,6 @@ const LogInPage: React.FC = () => {
 
   const helpPageHandleClick = () => {
     navigate('/helpPage');
-  };
-
-  const dashboardPageHandleClick = () => {
-    if (!username || !password) {
-      setError(true);
-    } else {
-      setError(false);
-      navigate('/dashboardPage');
-    }
   };
 
   const viewSeatPageHandleClick = () => {
@@ -48,6 +46,15 @@ const LogInPage: React.FC = () => {
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+  };
+
+  const dashboardPageHandleClick = () => {
+    if (!username || !password) {
+      setError(true);
+    } else {
+      setError(false);
+      setRedirectToDashboard(true);
+    }
   };
 
   return (

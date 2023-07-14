@@ -81,6 +81,8 @@ const DashboardPage: React.FC = () => {
                              className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}
                            >
                              <Work />
+
+                             
                            </i>
                            Project
                          </a>

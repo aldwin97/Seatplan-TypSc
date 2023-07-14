@@ -1,3 +1,4 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.model;
 
 

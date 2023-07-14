@@ -1,3 +1,4 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.mapper;
 
 import java.util.List;
@@ -6,6 +7,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
 
@@ -49,6 +52,26 @@ public interface SeatMapper {
     "ORDER BY c.created_time DESC")
     List<CommentModel> getAllComment();
 
+
+
+    @Update("<script>" +
+            "UPDATE table_seat" +
+            "<set>" +
+            "<if test='user_id != null'>user_id = #{user_id},</if>" +
+            "<if test='seatstatus_id != null'>seatstatus_id = #{seatstatus_id},</if>" +
+            "<if test='area_id != null'>area_id = #{area_id},</if>" +
+            "<if test='updated_by != null'>updated_by = #{updated_by},</if>" +
+            "</set>" +
+            "WHERE seat_id = #{seat_id}" +
+            "</script>")
+    void updateSeat(SeatModel seat);
+
+
+
+
+
+    @Select("SELECT * FROM table_seat WHERE seat_id = #{seat_id} AND is_deleted = 0")
+    SeatModel getSeatById(Long seat_id);
 
    
 

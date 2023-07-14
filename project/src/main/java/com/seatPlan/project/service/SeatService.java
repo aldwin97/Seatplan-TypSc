@@ -1,3 +1,4 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.service;
 
 import java.util.HashMap;
@@ -77,7 +78,15 @@ public class SeatService {
 
         return filteredComments;
     }
+
+
+    public void updateSeat(SeatModel seat) {
+        seatMapper.updateSeat(seat);
+    }
     
+    public SeatModel getSeatById(Long seat_id) {
+        return seatMapper.getSeatById(seat_id);
+    }
 
 
 

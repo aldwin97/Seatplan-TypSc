@@ -8,6 +8,12 @@
   background-position: center;
   height: 100vh;
 }
+/* logInPage.module.css */
+.errorMessage {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
 
 
 @font-face {

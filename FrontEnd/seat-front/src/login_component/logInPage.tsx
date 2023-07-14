@@ -48,12 +48,33 @@ const LogInPage: React.FC = () => {
     setPassword(event.target.value);
   };
 
-  const dashboardPageHandleClick = () => {
+  const dashboardPageHandleClick = async () => {
     if (!username || !password) {
       setError(true);
-    } else {
-      setError(false);
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://localhost:8080/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (!response.ok) {
+        setError(true);
+        return;
+      }
+  
+      const responseData = await response.json();
+      // Handle the authenticated user data
+      console.log(responseData);
       setRedirectToDashboard(true);
+    } catch (error) {
+      console.log(error);
+      setError(true);
     }
   };
 
@@ -97,19 +118,18 @@ const LogInPage: React.FC = () => {
               />
               <label className={styles['user-label']}>Password</label>
               <span
-                className={`${styles['toggle-password']} ${
-                  showPassword ? styles.active : ''
-                }`}
+                className={`${styles['toggle-password']} ${showPassword ? styles.active : ''}`}
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </span>
             </div>
-            <button
-              onClick={dashboardPageHandleClick}
-              className={styles.sub2}
-              type="submit"
-            >
+
+            {error && (
+              <div className={styles.errorMessage}>Incorrect email or password.</div>
+            )}
+
+            <button onClick={dashboardPageHandleClick} className={styles.sub2} type="submit">
               SIGN IN
             </button>
           </div>
@@ -129,11 +149,7 @@ const LogInPage: React.FC = () => {
           <div className={`${styles.text3} ${styles.line}`}>MANAGEMENT</div>
         </div>
         <div className={styles.viewButton}>
-          <button
-            onClick={viewSeatPageHandleClick}
-            className={styles.button}
-            type="button"
-          >
+          <button onClick={viewSeatPageHandleClick} className={styles.button} type="button">
             View Seatplan
           </button>
         </div>

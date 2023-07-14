@@ -639,7 +639,7 @@ const AdminMembersPage: React.FC = () => {
         )}
         <br />
 
-        {/* <strong className="user-info-label">Username:</strong>
+        <strong className="user-info-label">Username:</strong>
         {editMode ? (
           <TextField
             className="user-info-value"
@@ -649,7 +649,7 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.username}</span>
         )}
-        <br /> */}
+        <br /> 
 
         <strong className="user-info-label">Email:</strong>
         {editMode ? (
@@ -724,13 +724,13 @@ const AdminMembersPage: React.FC = () => {
         )}
         <br />
 
-        {/* <strong className="user-info-label">Created At:</strong>{" "}
+       <strong className="user-info-label">Created At:</strong>{" "}
         <span className="user-info-value">{selectedUser.created_time}</span>
         <br />
 
 
         <strong className="user-info-label">Updated At:</strong>{" "}
-        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span> */}
+        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span>
       </div>
     )}
 

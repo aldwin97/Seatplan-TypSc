@@ -114,13 +114,13 @@ const DashboardPage: React.FC = () => {
               </button>
 
               {isProfileDropdownOpen && (
-                <div className={styles.dropdownMenu2}>
-                  <button className={styles.sub}>
+                <div className={styles.dropdownMenu}>
+                  <button className={styles.dropdownItem}>
                     <FontAwesomeIcon icon={faSmile} className={styles.icon} />
                     Profile
                   </button>
 
-                  <button onClick={logInPageHandleClick} className={styles.sub}>
+                  <button onClick={logInPageHandleClick} className={styles.dropdownItem}>
                     <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
                     Logout
                   </button>

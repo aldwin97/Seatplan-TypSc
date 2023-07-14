@@ -153,15 +153,15 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
             <>
               <label>
                 Occupant:
-                <input type="text" value={occupant} onChange={handleOccupantChange} />
+                <input type="text" value={occupant} onChange={handleOccupantChange} required/>
               </label>
               <label>
                 Project:
-                <input type="text" value={project} onChange={handleProjectChange} />
+                <input type="text" value={project} onChange={handleProjectChange} required/>
               </label>
               <label>
                 Color:
-                <input type="color" value={color} onChange={handleColorChange} />
+                <input type="color" value={color} onChange={handleColorChange} required/>
               </label>
               {isSeatOccupied ? (
                 <>

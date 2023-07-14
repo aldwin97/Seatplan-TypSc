@@ -41,13 +41,18 @@ body {
   display: block;
   padding: 15px 20px;
 }
-
-.logo-box a.logo-text {
-  color: #5fd0a5;
+@font-face {
+  font-family: 'CustomFont';
+  src: url('./asset/Montserrat-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.logo-box span.logo-text {
+  color: #2FA73A;
   text-transform: capitalize;
   font-weight: bold;
   font-size: 22px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat';
   -webkit-transition: all .2s ease-in-out;
   -moz-transition: all .2s ease-in-out;
   -o-transition: all .2s ease-in-out;
@@ -128,7 +133,7 @@ body {
 }
 
 .accordion-menu li.active-page > a:only-child {
-  background: linear-gradient(90deg, rgba(85, 195, 183, 1) 0%, rgba(95, 208, 165, 1) 48%, rgba(102, 218, 144, 1) 100%);
+  background: linear-gradient(90deg, #74C20A, 0%,#2FA73A 100%);
   color: #fff;
 }
 
@@ -143,7 +148,9 @@ body {
 }
 
 .menu {
-  color: #5fd0a5;
+  width: 100%;
+  height: 3px;
+  color: #308a38;
   margin-left: 170px;
   text-transform: capitalize;
   font-weight: bold;
@@ -156,7 +163,9 @@ body {
 }
 
 .menu-out {
-  color: #5fd0a5;
+  width: 100%;
+  height: 3px;
+  color: #308a38;
   text-transform: capitalize;
   font-weight: bold;
   font-size: 22px;
@@ -168,13 +177,19 @@ body {
   z-index: 2;
 }
 
+.dropdown{
+ margin-left: 1450px;
+}
+
 .page-header {
   width: 100%;
   height: 30px; /* Adjust the height according to your needs */
   position: fixed;
-  background: #d9f2efa9;
+  background: #fff;
   top: 0;
   bottom: 0;
   padding: 30px;
   z-index: 1;
+  box-shadow: 0 0 1.25rem rgba(31,45,61,.04);
+
 }

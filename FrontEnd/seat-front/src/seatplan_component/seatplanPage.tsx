@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser,faFaceSmile, faTimes, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 
 interface Seat {
   id: string;
@@ -300,13 +302,13 @@ function SeatplanPage() {
     { id: 'seat74', label: 'Seat 74', position: { x: 2260, y: 300 }, isSwapping: false, color: '#e6e6e6', occupant: 'BALACUTAN, Jose Antonio', project: 'VSBU' },
     { id: 'seat75', label: 'Seat 75', position: { x: 2260, y: 400 }, isSwapping: false, color: '#e6e6e6', occupant: 'FAMILARA, Aedan Kim', project: 'VSBU' },
 
-    { id: 'seat76', label: 'Seat 76', position: { x: 2390, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: '', project: 'S2BU' },
-    { id: 'seat77', label: 'Seat 77', position: { x: 2390, y: 200 }, isSwapping: false, color: '#ffffe6', occupant: '', project: 'S2BU' },
-    { id: 'seat78', label: 'Seat 78', position: { x: 2390, y: 300 }, isSwapping: false, color: '#ffffe6', occupant: '', project: 'S2BU' },
-    { id: 'seat79', label: 'Seat 79', position: { x: 2390, y: 400 }, isSwapping: false, color: '#ffffe6', occupant: '', project: 'S2BU' },
+    { id: 'seat76', label: 'Seat 76', position: { x: 2390, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU' },
+    { id: 'seat77', label: 'Seat 77', position: { x: 2390, y: 200 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU' },
+    { id: 'seat78', label: 'Seat 78', position: { x: 2390, y: 300 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU' },
+    { id: 'seat79', label: 'Seat 79', position: { x: 2390, y: 400 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU' },
 
-    { id: 'seat80', label: 'Seat 80', position: { x: 2620, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: '', project: 'DTR-NOC' },
-    { id: 'seat81', label: 'Seat 81', position: { x: 2620, y: 200 }, isSwapping: false, color: '#ff0000', occupant: '', project: '' },
+    { id: 'seat80', label: 'Seat 80', position: { x: 2620, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: 'DTR-NOC', project: 'DTR-NOC' },
+    { id: 'seat81', label: 'Seat 81', position: { x: 2620, y: 200 }, isSwapping: false, color: '#ff0000', occupant: 'EMPTY', project: '' },
 
     { id: 'seat85', label: 'Seat 85', position: { x: 100, y: 800 }, isSwapping: false, color: '#FFFF66', occupant: 'MAGSAMBOL, Jonathan', project: 'HSC/Shell' },
     { id: 'seat84', label: 'Seat 84', position: { x: 100, y: 1000 }, isSwapping: false, color: '#FF6666', occupant: 'OMIYA, Yuichiro', project: 'JTS' },
@@ -334,7 +336,7 @@ function SeatplanPage() {
   
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
-        const seatSize = 110 / zoomLevel;
+        const seatSize = 100 / zoomLevel;
         const textOffsetX = 2 / zoomLevel;
         const textOffsetY = 50 / zoomLevel;
         const numberBoxSize = 20 / zoomLevel;
@@ -404,33 +406,6 @@ function SeatplanPage() {
   }, [seats, zoomLevel, selectedSeat]);
   
   
-  
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-
-    if (canvas && ctx) {
-      // Define the legend configuration
-      const legendConfig = [
-        { label: 'Available Seats', color: '#e9e9e9' },
-        { label: 'Unavailable/Maintained Seats', color: '#ff0000' },
-      ];
-
-      const legendX = 20;
-      const legendY = 1350;
-
-      legendConfig.forEach((item, index) => {
-        const itemX = legendX;
-        const itemY = legendY + index * 20 + 15;
-
-        ctx.fillStyle = item.color;
-        ctx.fillRect(itemX, itemY - 8, 10, 10);
-
-        ctx.fillStyle = '#000000';
-        ctx.fillText(item.label, itemX + 20, itemY);
-      });
-    }
-  }, []);
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -525,7 +500,102 @@ function SeatplanPage() {
     setDraggingSeatIndex(-1); // Reset the dragging seat index
   };
   
+  const [searchQuery, setSearchQuery] = useState('');
 
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const target = event.target as typeof event.target & {
+      search: { value: string };
+    };
+    setSearchQuery(target.search.value);
+  };
+  
+  const filteredSeats = seats.filter((seat) => {
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
+    return (
+      seat.occupant.toLowerCase().includes(lowerCaseSearchQuery) ||
+      seat.label.toLowerCase().includes(lowerCaseSearchQuery)
+    );
+  });
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+  
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      ctx.scale(zoomLevel, zoomLevel);
+  
+      filteredSeats.forEach((seat) => {
+        const { x, y } = seat.position;
+        const { color } = seat;
+  
+        const scaledX = x / zoomLevel;
+        const scaledY = y / zoomLevel;
+        const seatSize = 100 / zoomLevel;
+        const textOffsetX = 2 / zoomLevel;
+        const textOffsetY = 50 / zoomLevel;
+        const numberBoxSize = 20 / zoomLevel;
+  
+        canvas.style.cursor = 'pointer';
+        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+        ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2 / zoomLevel;
+        ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+  
+        ctx.fillStyle = '#28a745';
+        ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
+        ctx.fillStyle = '#000000';
+        ctx.font = `${11 / zoomLevel}px Arial`;
+        ctx.fillText(seat.label, scaledX + numberBoxSize / 2, scaledY + numberBoxSize / 2 + 1);
+  
+        const seatBoxY = scaledY + numberBoxSize;
+        const seatBoxHeight = seatSize - numberBoxSize;
+        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+        ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2 / zoomLevel;
+        ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+        ctx.fillStyle = '#000000';
+  
+        if (seat.isSwapping) {
+          const swappedSeat = filteredSeats.find((s) => s.id === seat.occupant);
+          if (swappedSeat) {
+            const maxTextWidth = seatSize - textOffsetX * 2;
+            const text = swappedSeat.occupant;
+            let fontSize = 11 / zoomLevel;
+  
+            while (ctx.measureText(text).width > maxTextWidth) {
+              fontSize -= 1 / zoomLevel;
+              ctx.font = `${fontSize}px Arial`;
+            }
+  
+            ctx.fillText(swappedSeat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+          }
+        } else {
+          const maxTextWidth = seatSize - textOffsetX * 2;
+          const text = seat.occupant;
+          let fontSize = 11 / zoomLevel;
+  
+          while (ctx.measureText(text).width > maxTextWidth) {
+            fontSize -= 1 / zoomLevel;
+            ctx.font = `${fontSize}px Arial`;
+          }
+  
+          ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+        }
+  
+        if (selectedSeat && seat.id === selectedSeat.id) {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
+        }
+      });
+    }
+  }, [filteredSeats, zoomLevel, selectedSeat]);
+  
   
   return (
    <body className={styles.body}> <div className={styles.container}>
@@ -534,7 +604,7 @@ function SeatplanPage() {
         <div className={styles.burgerIcon}></div>
         <div className={styles.burgerIcon}></div>
       </button>
-
+     
       {isDropdownOpen && (
         <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
           <button onClick={dashboardPageHandleClick} className={styles.sub}>
@@ -571,7 +641,7 @@ function SeatplanPage() {
       {selectedSeat && (
         <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} setSeats={setSeats} seats={seats} />
       )}
-
+<div className={styles.title}>SEAT PLAN MANAGEMENT</div>
        <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>
     <div className={styles.scrollableCanvas}>
@@ -585,7 +655,36 @@ function SeatplanPage() {
           </canvas>
 </div>
 </div>
+
+<form onSubmit={handleFormSubmit} className={styles.searchForm}>
+  <input
+    type="text"
+    name="search"
+    placeholder="Search seat"
+    className={styles.searchInput}
+  />
+  <button type="submit" className={styles.searchButton}>
+    <FontAwesomeIcon icon={faSearch} />
+  </button>
+</form>
+
+
+
+
 </div>
+
+<div className={styles.legend}>
+  <div className={styles.legendItem}>
+    <div className={`${styles.colorBox} ${styles.available}`}></div>
+    <span className={styles.label}>Available Seats</span>
+  </div>
+  <div className={styles.legendItem}>
+    <div className={`${styles.colorBox} ${styles.unavailable}`}></div>
+    <span className={styles.label}>Unavailable/Maintained Seats</span>
+  </div>
+</div>
+
+
 </div>
 </body>
 );

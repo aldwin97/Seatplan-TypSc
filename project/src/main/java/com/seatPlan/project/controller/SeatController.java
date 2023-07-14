@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seatPlan.project.model.CommentModel;
+import com.seatPlan.project.model.SeatModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.SeatService;
 
@@ -62,6 +65,39 @@ public class SeatController {
     public List<Map<String, Object>> allProject(){
         List<Map<String, Object>> comments = seatService.getAllComment();
         return comments;
+    }
+
+
+     @PutMapping("/swap/{seat_id}")
+    public ResponseEntity<String> updateSeat(HttpSession session ,@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
+        try {
+            UserModel user = (UserModel) session.getAttribute("userSession");
+            Long updator = user.getUser_id();
+            SeatModel existingSeat = seatService.getSeatById(seat_id);
+            if (existingSeat == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
+            }
+            
+            if (seat.getUser_id() != null) {
+                existingSeat.setUser_id(seat.getUser_id());
+            }
+            if (seat.getSeatstatus_id() != null) {
+                existingSeat.setSeatstatus_id(seat.getSeatstatus_id());
+            }
+            if (seat.getAreaId() != null) {
+                existingSeat.setAreaId(seat.getAreaId());
+            }
+            
+            if(updator != null){
+                seat.setUpdatedBy(updator);
+            }
+
+            seatService.updateSeat(existingSeat);
+            
+            return ResponseEntity.ok("Seat updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
+        }
     }
 
 

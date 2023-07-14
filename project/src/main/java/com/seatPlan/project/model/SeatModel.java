@@ -19,9 +19,9 @@ public class SeatModel {
     private int seat_num;
     private int isDeleted;
     private LocalDateTime createdTime;
-    private String createdBy;
+    private Long createdBy;
     private LocalDateTime updatedTime;
-    private String updatedBy;
+    private Long updatedBy;
 
 
 

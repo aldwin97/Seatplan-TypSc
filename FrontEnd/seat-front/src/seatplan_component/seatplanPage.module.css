@@ -647,3 +647,14 @@
   color: #28a745;
   font-weight: bold;
 }
+@media (max-width: 767px) {
+  .searchForm {
+margin-top: 40px;
+  }
+
+  .title {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}

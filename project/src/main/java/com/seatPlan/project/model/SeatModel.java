@@ -25,6 +25,7 @@ public class SeatModel {
 
 
 
+    //For joint table
     private String project_name;
     private String first_name;
     private String last_name;

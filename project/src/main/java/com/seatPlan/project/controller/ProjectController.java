@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProjectService;
-
 import jakarta.servlet.http.HttpSession;
 
 

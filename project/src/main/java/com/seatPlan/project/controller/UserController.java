@@ -9,7 +9,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +16,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.UserService;
-
 import jakarta.servlet.http.HttpSession;
 
 
@@ -158,7 +155,7 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
 
     @GetMapping("/showLogedUserInfo")
     public List<Map<String, Object>> showUserById(HttpSession session) {
-    if (session != null && session.getAttribute("userSession") != null) {
+    if (session.getAttribute("userSession") != null) {
         UserModel user = (UserModel) session.getAttribute("userSession");
         Long user_id = user.getUser_id();
         List<Map<String, Object>> userInfo = userService.showUserById(user_id);
@@ -169,10 +166,5 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
         return Collections.singletonList(message);
     }
 }
-
-
-
-
-
 
 }

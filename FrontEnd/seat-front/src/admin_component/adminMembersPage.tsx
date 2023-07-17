@@ -58,8 +58,8 @@ interface User {
   is_deleted: boolean;
   created_time: string; // Updated to string type
   updated_time: string;
-  created_by: string;
-  updated_by: string;
+  created_by: number;
+  updated_by: number;
 }
 
 interface UserType {
@@ -102,9 +102,9 @@ const AdminMembersPage: React.FC = () => {
     user_picture: '',
     is_deleted: false,
     created_time: '',
-    created_by: 'null',
+    created_by: 0,
     updated_time: '',
-    updated_by: 'null',
+    updated_by: 0,
   });
   
 
@@ -185,9 +185,13 @@ const AdminMembersPage: React.FC = () => {
       username: newUser.username,
       password: newUser.password,
       staffstatus_id: newUser.staffstatus_id,
+      project_id: null,
       usertype_id: newUser.usertype_id,
       position_id: newUser.position_id,
+      created_time: currentTime,
+      created_by: null,
     };
+  
 
     // Make the POST request to insert a new user
     fetch('http://localhost:8080/admin/insert', {
@@ -280,98 +284,64 @@ const indexOfFirstUser = indexOfLastUser - perPage;
 const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
 
-  const [editMode, setEditMode] = useState(false);
-  const [editedUser, setEditedUser] = useState<User | null>(null);
+const [editMode, setEditMode] = useState(false);
+const [editedUser, setEditedUser] = useState<User | null>(null);
 
-  const handleEditUser = () => {
-    setEditMode(true);
-    setEditedUser(selectedUser);
+const handleEditUser = () => {
+  setEditMode(true);
+  setEditedUser(selectedUser);
+};
+
+const handleSaveUser = () => {
+  if (!editedUser) {
+    return;
+  }
+
+  // Prepare the updated user data
+  const updatedUserModel: Partial<User> = {
+    user_id: selectedUser?.user_id,
+    first_name: editedUser.first_name || '',
+    last_name: editedUser.last_name || '',
+    mobile_num: editedUser.mobile_num || 0,
+    username: editedUser.username || '',
+    password: editedUser.password || '',
+    staffstatus_id: selectedUser?.staffstatus_id,
+    usertype_id: selectedUser?.usertype_id,
+    position_id: selectedUser?.position_id,
   };
-  
-  const handleSaveUser = () => {
-    if (!editedUser) {
-      return;
-    }
-  
-    const hasEditedFields = Object.keys(editedUser).some(
-      (field) =>
-        selectedUser &&
-        editedUser[field as keyof User] !== selectedUser[field as keyof User]
-    );
-  
-    // Prepare the updated user data
-    const updatedUserModel: Partial<User> = {
-      user_id: selectedUser?.user_id,
-      first_name: editedUser.first_name || '',
-      last_name: editedUser.last_name || '',
-      mobile_num: editedUser.mobile_num || 0,
-      username: editedUser.username || '',
-      password: editedUser.password || '',
-      staffstatus_id: selectedUser?.staffstatus_id,
-      usertype_id: selectedUser?.usertype_id,
-      position_id: selectedUser?.position_id,
-    };
-  
-    // Conditionally include the email field if it has been edited
-    if (editedUser.email !== selectedUser?.email) {
-      updatedUserModel.email = editedUser.email;
-    }
-  
-    if (editMode) {
-      // Make the PUT request to update the user
-      fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUserModel),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('User updated successfully');
-            // Refresh the page to reflect the changes
-            window.location.reload();
-            // Alternatively, update the user in the user list if needed
-          } else {
-            response.text().then((errorMessage) => {
-              console.log('Failed to update user:', errorMessage);
-              // Set the error message state
-              setErrorMessage(errorMessage);
-            });
-          }
-        })
-        .catch((error) => {
-          console.log('Error while updating user', error);
+
+  // Conditionally include the email field if it has been edited
+  if (editedUser.email !== selectedUser?.email) {
+    updatedUserModel.email = editedUser.email;
+  }
+
+  // Make the PUT request to update the user
+  fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedUserModel),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log('User updated successfully');
+        // Refresh the page to reflect the changes
+        window.location.reload();
+        // Alternatively, update the user in the user list if needed
+      } else {
+        response.text().then((errorMessage) => {
+          console.log('Failed to update user:', errorMessage);
+          // Set the error message state
+          setErrorMessage(errorMessage);
         });
-    } else {
-      // Make the POST request to insert a new user
-      fetch('http://localhost:8080/admin/insert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUserModel),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('User inserted successfully');
-            // Refresh the page to reflect the changes
-            window.location.reload();
-          } else if (response.status === 400) {
-            response.json().then((data) => {
-              console.log('Failed to insert user:', data.message);
-              // Set the error message state
-              setErrorMessage(data.message);
-            });
-          } else {
-            console.log('Failed to insert user');
-          }
-        })
-        .catch((error) => {
-          console.log('Error while inserting user', error);
-        });
-    }
-  };
+      }
+    })
+    .catch((error) => {
+      console.log('Error while updating user', error);
+    });
+};
+
   
   useEffect(() => {
     fetch('http://localhost:8080/admin/showAllUser')
@@ -403,8 +373,8 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [currDate, setCurrDate] = useState('');
-  const [currTime, setCurrTime] = useState('');
+  const [setCurrDate] = useState('');
+  const [setCurrTime] = useState('');
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -413,23 +383,6 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
-
-  useEffect(() => {
-    const timerID = setInterval(() => {
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString();
-      const formattedTime = currentDate.toLocaleTimeString();
-      setCurrDate(formattedDate);
-      setCurrTime(formattedTime);
-    }, 1000);
-
-    return () => {
-      clearInterval(timerID);
-    };
-  }, []);
-
-
-  
 
   const [usertypes, setUserTypes] = useState<UserType[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
@@ -558,8 +511,6 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
               <TableCell>Name</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Created Time</TableCell>
-              <TableCell>Updated Time</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -580,8 +531,6 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
         </TableCell>
         <TableCell>{user.username}</TableCell>
         <TableCell>{user.email}</TableCell>
-        <TableCell>{user.created_time}</TableCell>
-        <TableCell>{user.updated_time}</TableCell>
 
       </TableRow>
     );
@@ -636,16 +585,13 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
         <br />
 
         <strong className="user-info-label">Username:</strong>
-        {editMode ? (
-          <TextField
-            className="user-info-value"
-            value={editedUser?.username || ''}
-            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, username: e.target.value }))}
-          />
-        ) : (
-          <span className="user-info-value">{selectedUser.username}</span>
-        )}
-        <br /> 
+{editMode ? (
+  <span className="user-info-value">{editedUser?.username || ''}</span>
+) : (
+  <span className="user-info-value">{selectedUser.username}</span>
+)}
+<br />
+
 
         <strong className="user-info-label">Email:</strong>
         {editMode ? (
@@ -719,7 +665,10 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
         <br />
-        
+        <strong className="user-info-label">Updated By:</strong>{" "}
+<span className="user-info-value">{selectedUser.updated_by}</span>
+<br />
+
         <strong className="user-info-label">Created At:</strong>{" "}
 <span className="user-info-value">{selectedUser.created_time}</span>
 <br />
@@ -805,66 +754,65 @@ const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
       value={newUser.password}
       onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
     />
- <Typography variant="subtitle1" gutterBottom>
-  Position
-</Typography>
-<Select
-  margin="dense"
-  value={newUser.position_id}
-  onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
-  fullWidth
->
-  {positions.map((position) => (
-    <MenuItem key={position.position_id} value={position.position_id}>
-      {position.position_name}
-    </MenuItem>
-  ))}
-</Select>
 
-<Typography variant="subtitle1" gutterBottom>
-  Staff Status
-</Typography>
-<Select
-  margin="dense"
-  value={newUser.staffstatus_id}
-  onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
-  fullWidth
->
-  {staffStatuses.map((status) => (
-    <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
-      {status.staffstatus_name}
-    </MenuItem>
-  ))}
-</Select>
+    <Typography variant="subtitle1" gutterBottom>
+      Position
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.position_id}
+      onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {positions.map((position) => (
+        <MenuItem key={position.position_id} value={position.position_id}>
+          {position.position_name}
+        </MenuItem>
+      ))}
+    </Select>
 
-<Typography variant="subtitle1" gutterBottom>
-  UserType
-</Typography>
-<Select
-  margin="dense"
-  value={newUser.usertype_id}
-  onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
-  fullWidth
->
-  {usertypes.map((usertype) => (
-    <MenuItem key={usertype.usertype_id} value={usertype.usertype_id}>
-      {usertype.usertype_name}
-    </MenuItem>
-  ))}
-</Select>
+    <Typography variant="subtitle1" gutterBottom>
+      Staff Status
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.staffstatus_id}
+      onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {staffStatuses.map((status) => (
+        <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
+          {status.staffstatus_name}
+        </MenuItem>
+      ))}
+    </Select>
 
-
+    <Typography variant="subtitle1" gutterBottom>
+      UserType
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.usertype_id}
+      onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {usertypes.map((usertype) => (
+        <MenuItem key={usertype.usertype_id} value={usertype.usertype_id}>
+          {usertype.usertype_name}
+        </MenuItem>
+      ))}
+    </Select>
   </DialogContent>
   <DialogActions className="add-user-dialog-actions">
-  <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
-    Cancel
-  </Button>
-  <Button onClick={handleAddUsers} color="primary">
-    Add
-  </Button>
-</DialogActions>
-
+    <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleAddUsers} color="primary">
+      Add
+    </Button>
+  </DialogActions>
 </Dialog>
+
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success">
           {snackbarMessage}

@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.seatPlan.project.mapper.AdminMapper;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
@@ -39,7 +37,6 @@ public class AdminService {
         return filteredPositions;
     }
 
-
     public List<Map<String, Object>> getAllProject(){
         List<ProjectModel> projects = adminMapper.getAllProject();
         List<Map<String, Object>> filteredProjects = projects.stream()
@@ -53,8 +50,6 @@ public class AdminService {
 
         return filteredProjects;
     }
-
-
 
     public List<Map<String, Object>> getAllUserType(){
         List<UserTypeModel> userTypes = adminMapper.getAllUserTypeModels();
@@ -86,6 +81,8 @@ public class AdminService {
                     userMap.put("usertype_name",user.getUsertype_name());
                     userMap.put("project_name",user.getProject_name());
                     userMap.put("staffstatus_name", user.getStaffstatus_name());
+                    userMap.put("created_time",user.getCreated_time());
+                    userMap.put("updated_time",user.getUpdated_time());
                     return userMap;
                 }).collect(Collectors.toList());
         return filteredUserType;

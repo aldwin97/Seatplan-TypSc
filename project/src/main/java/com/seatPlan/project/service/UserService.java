@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.seatPlan.project.mapper.UserMapper;
 import com.seatPlan.project.model.UserModel;
-
 import jakarta.servlet.http.HttpSession;
 
 
@@ -25,8 +23,6 @@ public class UserService{
         this.userMapper = userMapper;
     }
 
-
-
     public UserModel authenticateUser(String username, String password, HttpSession session) {
         UserModel user = userMapper.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
@@ -36,7 +32,6 @@ public class UserService{
             return null;
         }
     }
-
 
     // displaying all the data in user table
      public List<UserModel> getAllUsers() {
@@ -48,19 +43,14 @@ public class UserService{
         return userMapper.countUsers();
     }
 
-
     // delete a user base on the username
      public void deleteUserByUsername(String username) {
         userMapper.deleteUserByUsername(username);
     }
 
-
-
     public void updateUser(UserModel userModel) {
         userMapper.updateUser(userModel);
     }
-
-    
 
     public boolean isUsernameExists(String username) {
         return userMapper.getUserByUsername(username) != null;
@@ -74,10 +64,7 @@ public class UserService{
         return userMapper.getUserByUsername(username);
     }
 
-
-
-
-      public List<Map<String, Object>>  showUserById(Long user_id){
+    public List<Map<String, Object>>  showUserById(Long user_id){
         List<UserModel> userInfos = userMapper. showUserById(user_id);
         List<Map<String, Object>> filteredUserInfo = userInfos.stream()
         .map(userInfo ->{
@@ -98,8 +85,6 @@ public class UserService{
 
         return filteredUserInfo;
     }
-
-
 
     public UserModel getUserById(Long user_id) {
        return userMapper.getUserById(user_id);

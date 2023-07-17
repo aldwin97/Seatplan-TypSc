@@ -30,25 +30,23 @@ public class UserController {
     
     public UserController(@Autowired UserService userService) {
         this.userService = userService;
-
     }
 
 
 // Authentication of user log in
-@PostMapping("/login")
-public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel, HttpSession session) {
-    String username = userModel.getUsername();
-    String password = userModel.getPassword();
+    @PostMapping("/login")
+    public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel, HttpSession session) {
+        String username = userModel.getUsername();
+        String password = userModel.getPassword();
 
-    UserModel authenticatedUser = userService.authenticateUser(username, password, session);
+        UserModel authenticatedUser = userService.authenticateUser(username, password, session);
 
-    if (authenticatedUser != null) {
-        return ResponseEntity.ok(null);
-    } else {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-    }
-}   
-
+        if (authenticatedUser != null) {
+            return ResponseEntity.ok(null);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }   
 
     // display all users
      @GetMapping("/show/AllUser")
@@ -62,13 +60,14 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
         return userService.countUsers();
     }
 
+    // Delete user by username
     @PostMapping("/delete/{username}")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
     userService.deleteUserByUsername(username);
         return ResponseEntity.ok("User deleted successfully");
     }
 
-
+    //Update logged user info.
     @PutMapping("/updateProfile")
     public ResponseEntity<String> updateUser(HttpSession session, @RequestBody UserModel userModel ) {
         UserModel user = (UserModel) session.getAttribute("userSession");
@@ -122,8 +121,7 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
         }
     }
 
-
-         // Check httpsession
+    // Check httpsession
     @GetMapping("/checkSession")
     public Map<String, String> checkSession(HttpSession session) {
         Map<String, String> response = new HashMap<>();
@@ -143,28 +141,21 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
          session.invalidate();
          }
          return "{\"status\":\"success\"}";
-     }
+    }
      
-    // @GetMapping("/showLogedUserInfo")
-    // public List<Map<String, Object>> showUserById(HttpSession session){
-    //     UserModel user = (UserModel) session.getAttribute("userSession");
-    //     Long user_id = user.getUser_id();
-    //     List<Map<String, Object>> userInfo = userService.showUserById(user_id);
-    //     return userInfo;
-    // }
-
+    //show the logged user Info
     @GetMapping("/showLogedUserInfo")
     public List<Map<String, Object>> showUserById(HttpSession session) {
-    if (session.getAttribute("userSession") != null) {
-        UserModel user = (UserModel) session.getAttribute("userSession");
-        Long user_id = user.getUser_id();
-        List<Map<String, Object>> userInfo = userService.showUserById(user_id);
-        return userInfo;
-    } else {
-        Map<String, Object> message = new HashMap<>();
-        message.put("message", "No user logged");
-        return Collections.singletonList(message);
+        if (session.getAttribute("userSession") != null) {
+            UserModel user = (UserModel) session.getAttribute("userSession");
+            Long user_id = user.getUser_id();
+            List<Map<String, Object>> userInfo = userService.showUserById(user_id);
+            return userInfo;
+        } else {
+            Map<String, Object> message = new HashMap<>();
+            message.put("message", "No user logged");
+            return Collections.singletonList(message);
+        }
     }
-}
 
 }

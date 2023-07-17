@@ -24,6 +24,7 @@ public class DashBoardController {
     }
 
 
+    //Count the specific data that needed in the dashboard
    @GetMapping("/display/count")
     public ResponseEntity<Map<String, Object>> dashboard() {
         

@@ -71,7 +71,7 @@ public class AdminController {
     //To delete a single user by ID.
     @PostMapping("/delete/{user_id}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long user_id) {
-          try {
+        try {
               adminService.deleteUserById(user_id);
            return ResponseEntity.ok("User deleted successfully");
         } catch (Exception e) {
@@ -85,21 +85,21 @@ public class AdminController {
         Long creatorId = user.getUser_id();
         userModel.setCreated_by(creatorId);
 
-    try {
-        if (adminService.isUsernameExists(userModel.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
-        }
+        try {
+            if (adminService.isUsernameExists(userModel.getUsername())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+            }
 
-        if(adminService.isUserEmailExists(userModel.getEmail())){
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-        }
-        
-        adminService.insertUser(userModel);
-        return ResponseEntity.ok("User inserted successfully");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
-    }   
-}
+            if(adminService.isUserEmailExists(userModel.getEmail())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+            }
+            
+            adminService.insertUser(userModel);
+            return ResponseEntity.ok("User inserted successfully");
+        } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
+            }   
+    }
 
     //To update the info of a user by ID.
     @PutMapping("/update/{user_id}")
@@ -169,19 +169,19 @@ public class AdminController {
     }
 
 
-
+    //Reply comment to the viewer
     @PostMapping("/replyComment/{recipient_id}/{seat_id}")
     public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
-    try {
-        UserModel creatorId = (UserModel) session.getAttribute("userSession");
-        comment.setCreated_by(creatorId.getUser_id());
-        comment.setUser_id(creatorId.getUser_id());
-        adminService.saveComment(comment);
-        return ResponseEntity.ok("Comment inserted successfully");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert comment");
+        try {
+            UserModel creatorId = (UserModel) session.getAttribute("userSession");
+            comment.setCreated_by(creatorId.getUser_id());
+            comment.setUser_id(creatorId.getUser_id());
+            adminService.saveComment(comment);
+            return ResponseEntity.ok("Comment inserted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert comment");
+        }
     }
-}
 
 
 }

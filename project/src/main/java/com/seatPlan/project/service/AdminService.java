@@ -83,6 +83,8 @@ public class AdminService {
                     userMap.put("staffstatus_name", user.getStaffstatus_name());
                     userMap.put("created_time",user.getCreated_time());
                     userMap.put("updated_time",user.getUpdated_time());
+                    userMap.put("updated_by",user.getUpdated_by());
+                    userMap.put("created_by",user.getCreated_by());
                     return userMap;
                 }).collect(Collectors.toList());
         return filteredUserType;

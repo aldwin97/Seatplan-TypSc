@@ -10,7 +10,7 @@ const LogInPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const [redirectToDashboard, setRedirectToDashboard] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const LogInPage: React.FC = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setError(false);
+    setError('');
   };
 
   const helpPageHandleClick = () => {
@@ -50,7 +50,7 @@ const LogInPage: React.FC = () => {
 
   const dashboardPageHandleClick = async () => {
     if (!username || !password) {
-      setError(true);
+      setError('Please provide both username and password.');
       return;
     }
   
@@ -64,19 +64,25 @@ const LogInPage: React.FC = () => {
       });
   
       if (!response.ok) {
-        setError(true);
+        const errorResponse = await response.json();
+        setError(errorResponse.message || 'An error occurred during login.');
         return;
       }
   
-      const responseData = await response.json();
-      // Handle the authenticated user data
-      console.log(responseData);
-      setRedirectToDashboard(true);
+      try {
+        const responseData = await response.json();
+        // Handle the authenticated user data
+        console.log(responseData);
+        setRedirectToDashboard(true);
+      } catch (error) {
+        setError('Invalid response received from the server.');
+      }
     } catch (error) {
       console.log(error);
-      setError(true);
+      setError('An error occurred during login. Please try again.');
     }
   };
+  
 
   return (
     <body className={styles.body}>
@@ -126,7 +132,7 @@ const LogInPage: React.FC = () => {
             </div>
 
             {error && (
-              <div className={styles.errorMessage}>Incorrect email or password.</div>
+              <div className={styles.errorMessage}>{error}</div>
             )}
 
             <button onClick={dashboardPageHandleClick} className={styles.sub2} type="submit">

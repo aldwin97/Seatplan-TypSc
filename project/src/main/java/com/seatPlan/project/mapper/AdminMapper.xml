@@ -1,0 +1,83 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.seatPlan.project.mapper.AdminMapper">
+
+    <select id="getAllPosition" resultType="com.seatPlan.project.model.PositionModel">
+        SELECT * FROM table_position WHERE is_deleted = 0
+    </select>
+
+    <select id="getAllProject" resultType="com.seatPlan.project.model.ProjectModel">
+        SELECT * FROM table_project WHERE is_deleted = 0
+    </select>
+
+    <select id="getAllUserTypeModels" resultType="com.seatPlan.project.model.UserTypeModel">
+        SELECT * FROM table_usertype WHERE is_deleted = 0
+    </select>
+
+    <select id="getAllStaffStatusModels" resultType="com.seatPlan.project.model.StaffStatusModel">
+        SELECT * FROM table_staffstatus
+    </select>
+
+    <select id="getAllUser" resultType="com.seatPlan.project.model.UserModel">
+        SELECT u.*, p.position_name, t.usertype_name, pr.project_name, s.staffstatus_name
+        FROM table_user u
+        JOIN table_position p ON u.position_id = p.position_id
+        JOIN table_usertype t ON u.usertype_id = t.usertype_id
+        JOIN table_project pr ON u.project_id = pr.project_id
+        JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        WHERE u.is_deleted = 0
+    </select>
+
+    <update id="deleteUserById">
+        UPDATE table_user SET is_deleted = 1 WHERE user_id = #{user_id}
+    </update>
+
+    <insert id="insertUser" parameterType="com.seatPlan.project.model.UserModel">
+        INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password,
+        staffstatus_id, project_id, usertype_id, position_id, created_time, created_by)
+        VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password},
+        #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time}, #{created_by})
+        <selectKey keyProperty="user_id" order="BEFORE">
+            SELECT LAST_INSERT_ID() AS user_id
+        </selectKey>
+    </insert>
+
+    <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
+        SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
+    </select>
+
+    <update id="updateUser" parameterType="com.seatPlan.project.model.UserModel">
+        UPDATE table_user
+        <set>
+            <if test="first_name != null">first_name = #{first_name},</if>
+            <if test="last_name != null">last_name = #{last_name},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="mobile_num != null">mobile_num = #{mobile_num},</if>
+            <if test="project_id != null">project_id = #{project_id},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="staffstatus_id != null">staffstatus_id = #{staffstatus_id},</if>
+            <if test="usertype_id != null">usertype_id = #{usertype_id},</if>
+            <if test="position_id != null">position_id = #{position_id},</if>
+            <if test="updated_by != null">updated_by = #{updated_by},</if>
+        </set>
+        WHERE user_id = #{user_id}
+    </update>
+
+    <select id="getUserByUsername" resultType="com.seatPlan.project.model.UserModel">
+        SELECT * FROM table_user WHERE username = #{username} AND is_deleted = 0
+    </select>
+
+    <select id="getUserByEmail" resultType="com.seatPlan.project.model.UserModel">
+        SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0
+    </select>
+
+    <insert id="insertComment" parameterType="com.seatPlan.project.model.CommentModel">
+        INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by, recipient_id)
+        VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by}, #{recipient_id})
+        <selectKey keyProperty="comment_id" order="BEFORE">
+            SELECT LAST_INSERT_ID() AS comment_id
+        </selectKey>
+    </insert>
+
+</mapper>

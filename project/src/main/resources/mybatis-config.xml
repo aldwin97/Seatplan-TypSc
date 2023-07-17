@@ -17,6 +17,7 @@
     <mapper resource="mapper/ProjectMapper.xml" />
     <mapper resource="mapper/SeatMapper.xml" />
     <mapper resource="mapper/UserMapper.xml" />
+    <mapper resource="mapper/AdminMapper.xml" />
   </mappers>
   
 </configuration>

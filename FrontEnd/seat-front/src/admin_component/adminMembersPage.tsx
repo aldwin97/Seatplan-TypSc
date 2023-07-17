@@ -1,10 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, SelectChangeEvent, Snackbar, Alert } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Snackbar,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Paper,
+  IconButton,
+  Button,
+  Typography,
+  Box,
+  Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
+} from '@mui/material';
+import { LocalDateTime, DateTimeFormatter } from 'js-joda';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser,
+  faBell,
+  faChartBar,
+  faUsers,
+  faProjectDiagram,
+  faPowerOff,
+  faFaceSmile,
+} from '@fortawesome/free-solid-svg-icons';
 import './adminMembersPage.css';
 
 interface User {
@@ -23,10 +56,10 @@ interface User {
   position_id: number;
   user_picture: string;
   is_deleted: boolean;
-  created_time: string;
-  created_by: number;
+  created_time: string; // Updated to string type
   updated_time: string;
-  updated_by: number;
+  created_by: string;
+  updated_by: string;
 }
 
 interface UserType {
@@ -45,78 +78,6 @@ interface StaffStatus {
 }
 
 const AdminMembersPage: React.FC = () => {
-
-
-  useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080/admin'); // Replace with your WebSocket server URL
-
-    // Event listener for WebSocket connection open
-    socket.addEventListener('open', () => {
-      console.log('WebSocket connection established');
-
-      // Send a message to the server to subscribe to user updates
-      const message = { type: 'subscribe' };
-      socket.send(JSON.stringify(message));
-    });
-
-    // Event listener for WebSocket connection close
-    socket.addEventListener('close', () => {
-      console.log('WebSocket connection closed');
-    });
-
-    // Event listener for WebSocket messages
-    socket.addEventListener('message', (event) => {
-      const message = JSON.parse(event.data);
-
-      // Handle different message types
-      switch (message.type) {
-        case 'userUpdated':
-          handleUserUpdated(message.data);
-          break;
-        case 'userInserted':
-          handleUserInserted(message.data);
-          break;
-        case 'userDeleted':
-          handleUserDeleted(message.data);
-          break;
-        default:
-          break;
-      }
-    });
-
-    // Cleanup function to close the WebSocket connection
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  // Function to handle user updated event
-  const handleUserUpdated = (updatedUser: User) => {
-    // Update the user in the users state
-    setUsers((prevUsers) => {
-      const updatedUsers = prevUsers.map((user) => {
-        if (user.user_id === updatedUser.user_id) {
-          return updatedUser;
-        }
-        return user;
-      });
-      return updatedUsers;
-    });
-  };
-
-  // Function to handle user inserted event
-  const handleUserInserted = (insertedUser: User) => {
-    // Add the inserted user to the users state
-    setUsers((prevUsers) => [...prevUsers, insertedUser]);
-  };
-
-  // Function to handle user deleted event
-  const handleUserDeleted = (deletedUserId: number) => {
-    // Remove the deleted user from the users state
-    setUsers((prevUsers) => prevUsers.filter((user) => user.user_id !== deletedUserId));
-  };
-
-  
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,10 +102,11 @@ const AdminMembersPage: React.FC = () => {
     user_picture: '',
     is_deleted: false,
     created_time: '',
-    created_by: 0,
+    created_by: 'null',
     updated_time: '',
-    updated_by: 0,
+    updated_by: 'null',
   });
+  
 
   const [perPage, setPerPage] = useState(8);
   const navigate = useNavigate();
@@ -282,16 +244,41 @@ const AdminMembersPage: React.FC = () => {
     setSearchText(event.target.value);
   };
 
-  const filteredUsers = users.filter(
+  const filteredUsers = users
+  .filter(
     (user) =>
       user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
       user.last_name.toLowerCase().includes(searchText.toLowerCase()) ||
       user.username.toLowerCase().includes(searchText.toLowerCase())
-  );
+  )
+  .map((user) => {
+    let formattedCreatedTime = 'Invalid date';
+    let formattedUpdatedTime = 'Invalid date';
 
-  const indexOfLastUser = currentPage * perPage;
-  const indexOfFirstUser = indexOfLastUser - perPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+    if (user.created_time && typeof user.created_time === 'string' && user.created_time.trim() !== '') {
+      formattedCreatedTime = user.created_time;
+    }
+
+    if (user.updated_time && typeof user.updated_time === 'string' && user.updated_time.trim() !== '') {
+      formattedUpdatedTime = user.updated_time;
+    }
+
+    return {
+      ...user,
+      created_time: formattedCreatedTime,
+      updated_time: formattedUpdatedTime,
+    };
+  });
+
+
+
+
+
+
+const indexOfLastUser = currentPage * perPage;
+const indexOfFirstUser = indexOfLastUser - perPage;
+const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
 
   const [editMode, setEditMode] = useState(false);
   const [editedUser, setEditedUser] = useState<User | null>(null);
@@ -386,13 +373,7 @@ const AdminMembersPage: React.FC = () => {
     }
   };
   
-  
-  
-  
-  
-
   useEffect(() => {
-    // Make the GET request to fetch users data
     fetch('http://localhost:8080/admin/showAllUser')
       .then((response) => response.json())
       .then((data) => {
@@ -400,9 +381,12 @@ const AdminMembersPage: React.FC = () => {
         setUsers(data);
       })
       .catch((error) => {
-        console.log('Error while fetching users data', error);
+        console.log('Error while fetching users data:', error);
       });
   }, []);
+  
+  
+  
 
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
@@ -443,6 +427,9 @@ const AdminMembersPage: React.FC = () => {
       clearInterval(timerID);
     };
   }, []);
+
+
+  
 
   const [usertypes, setUserTypes] = useState<UserType[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
@@ -485,7 +472,7 @@ const AdminMembersPage: React.FC = () => {
       });
   }, []);
 
-  
+
   return (
     <div className="container">
       <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
@@ -567,31 +554,40 @@ const AdminMembersPage: React.FC = () => {
         <Table>
           <TableHead className="table-header">
             <TableRow>
-              <TableCell></TableCell>
+            <TableCell></TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
+              <TableCell>Created Time</TableCell>
+              <TableCell>Updated Time</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentUsers.map((user) => (
-              <TableRow key={user.user_id} hover>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedUsers.includes(user.user_id)}
-                    onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
-                    {`${user.first_name} ${user.last_name}`}
-                  </a>
-                </TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.email}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody> 
+          {currentUsers.map((user) => {
+
+    return (
+      <TableRow key={user.user_id} hover>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={selectedUsers.includes(user.user_id)}
+            onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
+          />
+        </TableCell>
+        <TableCell>
+          <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
+            {`${user.first_name} ${user.last_name}`}
+          </a>
+        </TableCell>
+        <TableCell>{user.username}</TableCell>
+        <TableCell>{user.email}</TableCell>
+        <TableCell>{user.created_time}</TableCell>
+        <TableCell>{user.updated_time}</TableCell>
+
+      </TableRow>
+    );
+  })}
+</TableBody>
+
         </Table>
       </TableContainer>
 
@@ -723,14 +719,15 @@ const AdminMembersPage: React.FC = () => {
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
         <br />
+        
+        <strong className="user-info-label">Created At:</strong>{" "}
+<span className="user-info-value">{selectedUser.created_time}</span>
+<br />
 
-       <strong className="user-info-label">Created At:</strong>{" "}
-        <span className="user-info-value">{selectedUser.created_time}</span>
-        <br />
+<strong className="user-info-label">Updated At:</strong>{" "}
+<span className="user-info-value">{selectedUser.updated_time}</span>
 
 
-        <strong className="user-info-label">Updated At:</strong>{" "}
-        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span>
       </div>
     )}
 

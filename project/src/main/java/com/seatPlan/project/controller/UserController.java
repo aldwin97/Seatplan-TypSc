@@ -43,7 +43,7 @@ public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userMod
     UserModel authenticatedUser = userService.authenticateUser(username, password, session);
 
     if (authenticatedUser != null) {
-        return ResponseEntity.ok(authenticatedUser);
+        return ResponseEntity.ok(null);
     } else {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }

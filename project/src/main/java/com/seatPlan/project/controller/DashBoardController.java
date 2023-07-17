@@ -25,7 +25,7 @@ public class DashBoardController {
 
 
     //Count the specific data that needed in the dashboard
-   @GetMapping("/display/count")
+   @GetMapping("/display")
     public ResponseEntity<Map<String, Object>> dashboard() {
         
        int countUser = dashBoardService.countUser();

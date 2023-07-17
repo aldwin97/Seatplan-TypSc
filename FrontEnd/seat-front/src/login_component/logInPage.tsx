@@ -63,9 +63,13 @@ const LogInPage: React.FC = () => {
         body: JSON.stringify({ username, password }),
       });
   
+      if (response.status === 401) {
+        setError('Incorrect username or password.');
+        return;
+      }
+  
       if (!response.ok) {
-        const errorResponse = await response.json();
-        setError(errorResponse.message || 'An error occurred during login.');
+        setError('An error occurred during login.');
         return;
       }
   
@@ -82,6 +86,7 @@ const LogInPage: React.FC = () => {
       setError('An error occurred during login. Please try again.');
     }
   };
+  
   
 
   return (

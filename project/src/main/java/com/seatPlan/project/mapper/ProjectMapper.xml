@@ -1,0 +1,27 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seatPlan.project.mapper.ProjectMapper">
+
+    <insert id="insertProject" useGeneratedKeys="true" keyProperty="project_id">
+        INSERT INTO table_project (project_name, color_id, is_deleted, created_by, created_time)
+        VALUES (#{project_name}, #{color_id}, #{is_deleted}, #{created_by}, #{created_time})
+    </insert>
+
+    <select id="getAllProjects" resultType="com.seatPlan.project.model.ProjectModel">
+        SELECT * FROM table_project WHERE is_deleted = 0
+    </select>
+
+    <select id="countProject" resultType="int">
+        SELECT COUNT(*) FROM table_project
+    </select>
+
+    <update id="deleteProjectById">
+        UPDATE table_project SET is_deleted = 1 WHERE project_id = #{project_id}
+    </update>
+
+    <select id="getAllColors" resultType="com.seatPlan.project.model.ColorModel">
+        SELECT * FROM table_color
+    </select>
+
+</mapper>

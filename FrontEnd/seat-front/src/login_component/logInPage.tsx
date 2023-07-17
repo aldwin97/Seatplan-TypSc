@@ -69,7 +69,6 @@ const LogInPage: React.FC = () => {
       }
   
       const responseData = await response.json();
-      // Handle the authenticated user data
       console.log(responseData);
       setRedirectToDashboard(true);
     } catch (error) {
@@ -79,7 +78,7 @@ const LogInPage: React.FC = () => {
   };
 
   return (
-    <body className={styles.body}>
+    <div className={styles.body}>
       <div className={styles.signInContainer}>
         <button onClick={openModal} className={styles.sub} type="submit">
           SIGN IN
@@ -95,7 +94,7 @@ const LogInPage: React.FC = () => {
 
             <div className={`${styles['input-group']} ${error && !username && styles.errorInput}`}>
               <input
-                required
+                required 
                 type="text"
                 name="text"
                 autoComplete="off"
@@ -126,7 +125,7 @@ const LogInPage: React.FC = () => {
             </div>
 
             {error && (
-              <div className={styles.errorMessage}>Incorrect email or password.</div>
+              <div className={styles.errorMessage}>Incorrect username or password.</div>
             )}
 
             <button onClick={dashboardPageHandleClick} className={styles.sub2} type="submit">
@@ -154,16 +153,12 @@ const LogInPage: React.FC = () => {
           </button>
         </div>
         <div className={styles.supportContainer}>
-          <button
-            onClick={helpPageHandleClick}
-            className={styles.supportLink}
-            type="button"
-          >
-            Support
-          </button>
+        <a href="#" onClick={helpPageHandleClick} className={styles.supportLink}>
+        Support
+      </a>
         </div>
       </div>
-    </body>
+    </div>
   );
 };
 

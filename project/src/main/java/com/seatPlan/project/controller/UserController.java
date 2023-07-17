@@ -42,7 +42,7 @@ public class UserController {
         UserModel authenticatedUser = userService.authenticateUser(username, password, session);
 
         if (authenticatedUser != null) {
-            return ResponseEntity.ok(null);
+            return ResponseEntity.ok(authenticatedUser);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }

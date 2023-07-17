@@ -44,6 +44,7 @@ const LogInPage: React.FC = () => {
       <div className={styles.profileSum}>
       
       </div>
+      <div className={styles.set}>
       <div className={styles.personal}>
      
       <h1>Personal Information</h1>
@@ -157,6 +158,8 @@ const LogInPage: React.FC = () => {
           </span>
         </div>
       </div>
+      </div>
+
    </form>
 
 

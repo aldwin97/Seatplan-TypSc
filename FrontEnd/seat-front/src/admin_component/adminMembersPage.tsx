@@ -59,6 +59,8 @@ interface User {
   updated_time: string;
   created_by: number;
   updated_by: number;
+  project_id: number;
+  project_name: string;
 }
 
 interface UserType {
@@ -75,6 +77,10 @@ interface StaffStatus {
   staffstatus_id: number;
   staffstatus_name: string;
 }
+interface Project {
+  project_id: number;
+  project_name: string;
+}
 
 const AdminMembersPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -84,6 +90,7 @@ const AdminMembersPage: React.FC = () => {
   const [userInfoDialogOpen, setUserInfoDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]); // Specify the type as an array of Project objects
   const [newUser, setNewUser] = useState<User>({
     user_id: 0,
     first_name: '',
@@ -98,6 +105,8 @@ const AdminMembersPage: React.FC = () => {
     position_name: '',
     usertype_id: 0,
     position_id: 0,
+    project_id: 0,
+    project_name: '',
     user_picture: '',
     is_deleted: false,
     created_time: '',
@@ -184,7 +193,7 @@ const AdminMembersPage: React.FC = () => {
       username: newUser.username,
       password: newUser.password,
       staffstatus_id: newUser.staffstatus_id,
-      project_id: null,
+      project_id: newUser.project_id,
       usertype_id: newUser.usertype_id,
       position_id: newUser.position_id,
       created_time: currentTime,
@@ -307,6 +316,7 @@ const handleSaveUser = () => {
     staffstatus_id: selectedUser?.staffstatus_id,
     usertype_id: selectedUser?.usertype_id,
     position_id: selectedUser?.position_id,
+    project_id: selectedUser?.project_id,
   };
 
   // Conditionally include the email field if it has been edited
@@ -421,6 +431,19 @@ const handleSaveUser = () => {
         console.log('Error while fetching usertypes', error);
       });
   }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/admin/showAllProject')
+      .then((response) => response.json())
+      .then((data) => {
+        setProjects(data);
+      })
+      .catch((error) => {
+        console.log('Error while fetching projects:', error);
+      });
+  }, []);
+  
+
 
 
   return (
@@ -645,6 +668,29 @@ const handleSaveUser = () => {
 )}
 
 
+<strong className="user-info-label">Project:</strong>{" "}
+{editMode ? (
+  <Select
+    className="user-info-value"
+    value={editedUser?.project_id || ''}
+    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, project_id: Number(e.target.value) }))}
+  >
+    {projects.map((project) => (
+      <MenuItem key={project.project_id} value={project.project_id}>
+        {project.project_name}
+      </MenuItem>
+    ))}
+  </Select>
+) : (
+  <span className="user-info-value">{selectedUser?.project_name}</span>
+)}
+<br />
+
+
+
+
+
+
         <strong className="user-info-label">Position:</strong>{" "}
         {editMode ? (
           <Select
@@ -662,6 +708,9 @@ const handleSaveUser = () => {
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
         <br />
+
+
+        
         <strong className="user-info-label">Updated By:</strong>{" "}
 <span className="user-info-value">{selectedUser.updated_by}</span>
 <br />
@@ -783,6 +832,23 @@ const handleSaveUser = () => {
         </MenuItem>
       ))}
     </Select>
+
+    <Typography variant="subtitle1" gutterBottom>
+  Project
+</Typography>
+<Select
+  margin="dense"
+  value={newUser.project_id}
+  onChange={(e) => setNewUser({ ...newUser, project_id: Number(e.target.value) })}
+  fullWidth
+>
+  {projects.map((project) => (
+    <MenuItem key={project.project_id} value={project.project_id}>
+      {project.project_name}
+    </MenuItem>
+  ))}
+</Select>
+
 
     <Typography variant="subtitle1" gutterBottom>
       UserType

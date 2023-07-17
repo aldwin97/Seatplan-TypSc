@@ -71,11 +71,15 @@ const LogInPage: React.FC = () => {
       const responseData = await response.json();
       console.log(responseData);
       setRedirectToDashboard(true);
+  
+      // Save session data to Session Storage
+      window.sessionStorage.setItem('userSession', JSON.stringify(responseData));
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
+  
 
   return (
     <div className={styles.body}>

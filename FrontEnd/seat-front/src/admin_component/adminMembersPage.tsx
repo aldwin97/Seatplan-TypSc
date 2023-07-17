@@ -372,8 +372,6 @@ const handleSaveUser = () => {
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [setCurrDate] = useState('');
-  const [setCurrTime] = useState('');
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);

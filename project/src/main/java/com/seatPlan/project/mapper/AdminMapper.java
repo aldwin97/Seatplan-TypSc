@@ -51,9 +51,9 @@ public interface AdminMapper {
 
 
     @Insert("INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password, staffstatus_id, project_id, usertype_id, position_id, created_time, created_by) " +
-        "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time}, #{created_by})")
-    @Options(useGeneratedKeys = true, keyProperty = "user_id")
-    void insertUser(UserModel userModel);
+    "VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password}, #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time}, #{created_by})")
+@Options(useGeneratedKeys = true, keyProperty = "user_id")
+void insertUser(UserModel userModel);
 
 
     @Select("SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0")
@@ -73,7 +73,7 @@ public interface AdminMapper {
         "<if test='staffstatus_id != null'>staffstatus_id = #{staffstatus_id},</if>",
         "<if test='usertype_id != null'>usertype_id = #{usertype_id},</if>",
         "<if test='position_id != null'>position_id = #{position_id},</if>",
-         "<if test='updated_by != null'>updated_by = #{updated_by},</if>",
+        "<if test='updated_by != null'>updated_by = #{updated_by},</if>",
         "</set>",
         "WHERE user_id = #{user_id}",
         "</script>"

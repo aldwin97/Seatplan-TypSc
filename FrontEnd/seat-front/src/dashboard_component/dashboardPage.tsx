@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import {  Button } from '@mui/material';
 import styles from './dashboardPage.module.css';
 import { Dashboard, Work, Menu } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -12,27 +12,27 @@ import { useNavigate } from 'react-router-dom';
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
-  
-  const [state, setState] = useState({
-    left: false,
-  });
-  const logInPageHandleClick = (): void => {
-    navigate('/');
-  };
-  const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false);
+ 
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
 
-  const toggleDropdown = (): void => {
-    setDropdownOpen(!isDropdownOpen);
-  };
-
+ 
   const toggleProfileDropdown = (): void => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const toggleDrawer = (anchor: string, open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent
-  ) => {
+
+  
+
+  const logInPageHandleClick = (): void => {
+    navigate('/');
+  };
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!isDrawerOpen);
+  };
+
+  const handleSwipe = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
       event &&
       event.type === 'keydown' &&
@@ -41,71 +41,57 @@ const DashboardPage: React.FC = () => {
     ) {
       return;
     }
-    setState({ ...state, [anchor]: open });
+    setDrawerOpen(open);
   };
-
-  const closeDrawer = (anchor: string) => () => {
-    setState({ ...state, [anchor]: false });
-  };
-
   return (
     <>
       <body>
         
-          <div >
-            {(['left'] as const).map((anchor) => (
-              <React.Fragment key={anchor}>
-                <Button onClick={toggleDrawer(anchor, true)}>
-                  <i className={styles['menu-out']}>
-                    <Menu />
-                  </i>
-                </Button>
-                <SwipeableDrawer
-                  open={state[anchor]}
-                  onClose={toggleDrawer(anchor, false)}
-                  onOpen={toggleDrawer(anchor, true)}
-                >
-                  <div className={styles['page-sidebar']}>
-                    <div className={styles['logo-box']}>
-                      <span className={styles['logo-text']}>Seat</span>
-                      <i
-                        className={styles['menu']}
-                        onClick={toggleDrawer(anchor, false)}
-                      >
-                        <Menu />
-                      </i>
-                      <div
-                        className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}
-                      >
-                        <ul className={styles['accordion-menu']}>
-                          <li className={styles['sidebar-title']}>Apps</li>
-                          <li className={styles['active-page']}>
-                            <a href="index.html" className={styles['active']}>
-                              <i
-                                className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}
-                              >
-                                <Dashboard />
-                              </i>
-                              Dashboard
-                            </a>
-                          </li>
-                          <li>
-                            <a href="index.html" className={styles['active']}>
-                              <i
-                                className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}
-                              >
-                                <Work />
-                              </i>
-                              Project
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </SwipeableDrawer>
-              </React.Fragment>
-            ))}
+      <Button onClick={toggleDrawer}>
+        <i className={styles['menu-out']}>
+          <Menu />
+        </i>
+      </Button>
+      <SwipeableDrawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={handleSwipe(false)}
+        onOpen={handleSwipe(true)}
+        variant="persistent"
+        className={isDrawerOpen ? styles['sidebar-open'] : styles['sidebar-closed']}
+      >
+      
+        <div className={styles['page-sidebar']}>
+          <div className={styles['logo-box']}>
+            <span className={styles['logo-text']}>Seat</span>
+            <i className={styles['menu']} onClick={toggleDrawer}>
+              <Menu />
+            </i>
+            <div className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}>
+              {/* Replace the following with your actual sidebar content */}
+              <ul className={styles['accordion-menu']}>
+                <li className={styles['sidebar-title']}>Apps</li>
+                <li className={styles['active-page']}>
+                  <a href="index.html" className={styles['active']}>
+                    <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Dashboard/>
+                    </i>
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a href="index.html" className={styles['active']}>
+                    <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Work/>
+                    </i>
+                    Project
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </SwipeableDrawer>
             
             <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
         <FontAwesomeIcon icon={faUser} />
@@ -142,14 +128,13 @@ const DashboardPage: React.FC = () => {
 
 <div className={styles.card}>
   <svg className={styles.cardimg}></svg>
-  <div className={styles.cardtitle}>HELLO (USERNAME)</div>
-  <div className={styles.cardtext}>Welcome Back! Always check you Notifications!</div>
-  <div className={styles.date}>Today is</div>
-  <div className={styles.time}></div>
+  <div className={styles.cardtitle}>HELLO <br/>(USERNAME)</div>
+  <div className={styles.cardtext}>Welcome Back! You have 2 Notifications</div>
+  
 </div>
 </form>
           <div className={styles.card2}>
-            <svg className={styles.cardimg2}></svg>
+            <svg className={styles.cardimg2}><FontAwesomeIcon icon={faUser} /></svg>
             <div className={styles.cardtitle2}>TOTAL SEAT</div>
           </div>
 
@@ -198,7 +183,7 @@ const DashboardPage: React.FC = () => {
         </form>
  
         </div>
-        </div>
+  
        
       </body>
     </>
@@ -206,3 +191,5 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+
+

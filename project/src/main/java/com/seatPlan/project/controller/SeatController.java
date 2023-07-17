@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.SeatService;
-
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -31,14 +29,14 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-        
+    //Show all the seat in the database
     @GetMapping("/showAllSeat")
     public List<Map<String, Object>> allSeat(){
             List<Map<String, Object>> seats = seatService.getAllSeat();
             return seats;
         }
 
-        
+    // Create a comment
     @PostMapping("/insertComment")
     public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
         try {
@@ -52,6 +50,7 @@ public class SeatController {
         }
     }
 
+    //Show all the comment by logged user
     @GetMapping("/showAllCommentByUserId")
     public List<Map<String, Object>> getCommentByUserId(HttpSession session) {
         UserModel user = (UserModel) session.getAttribute("userSession");
@@ -60,15 +59,15 @@ public class SeatController {
         return comments;
     }
 
-
+    //show all the comment in the database
     @GetMapping("/showAllComment")
     public List<Map<String, Object>> allProject(){
         List<Map<String, Object>> comments = seatService.getAllComment();
         return comments;
     }
 
-
-     @PutMapping("/swap/{seat_id}")
+    //swap seat
+    @PutMapping("/swap/{seat_id}")
     public ResponseEntity<String> updateSeat(HttpSession session ,@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
         try {
             UserModel user = (UserModel) session.getAttribute("userSession");

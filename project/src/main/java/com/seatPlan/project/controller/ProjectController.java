@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProjectService;
-
 import jakarta.servlet.http.HttpSession;
 
 
@@ -33,7 +31,9 @@ public class ProjectController {
         this.projectService = projectService;
 
     }
-      @PostMapping("/add")
+
+    //Add project in the database
+    @PostMapping("/add")
     public ResponseEntity<String> createProject(HttpSession session,@RequestBody ProjectModel projectModel) {
         UserModel user = (UserModel) session.getAttribute("userSession");
         Long creatorId = user.getUser_id();
@@ -48,18 +48,21 @@ public class ProjectController {
         }
     }
 
-     @GetMapping("/show")
+
+    //Show all the project in the database
+    @GetMapping("/show")
     public List<ProjectModel> getAllProjects() {
         return projectService.getAllProjects();
     }
 
-     @GetMapping("/count")
+    //Count all the projects in the database
+    @GetMapping("/count")
     public int countProject() {
         return projectService.countProject();
     }
 
 
-
+    //Delete project by project_id
     @PostMapping("/delete/{project_id}")
     public ResponseEntity<String> deleteProjectById(@PathVariable Long project_id) {
           try {
@@ -71,6 +74,7 @@ public class ProjectController {
     }
 
 
+    //Show all the color in the database
     @GetMapping("/allColor")
     public ResponseEntity<List<ColorModel>> getAllColors() {
         List<ColorModel> colors = projectService.getAllColors();

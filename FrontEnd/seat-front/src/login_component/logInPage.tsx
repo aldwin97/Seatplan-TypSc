@@ -14,10 +14,21 @@ const LogInPage: React.FC = () => {
   const [redirectToDashboard, setRedirectToDashboard] = useState(false);
 
   useEffect(() => {
-    if (redirectToDashboard) {
-      navigate('/dashboardPage');
+    checkSessionStatus();
+  }, []);
+
+  const checkSessionStatus = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/user/checkSession');
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        navigate('/dashboardPage'); // Redirect to the dashboard if the session is active
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }, [redirectToDashboard, navigate]);
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -69,8 +80,19 @@ const LogInPage: React.FC = () => {
       }
   
       if (response.status === 200) {
-        setRedirectToDashboard(true); // Redirect to the dashboard on successful login
-        return;
+        const data = await response.json();
+  
+        if (!data) {
+          setError('An error occurred during login. Please try again.');
+          return;
+        }
+  
+        if (data.status === 'success') {
+          setRedirectToDashboard(true); // Redirect to the dashboard on successful login
+          return;
+        } else {
+          setError('An error occurred during login.');
+        }
       }
   
       setError('An error occurred during login.');
@@ -81,8 +103,6 @@ const LogInPage: React.FC = () => {
   };
   
   
-  
-
   return (
     <body className={styles.body}>
       <div className={styles.signInContainer}>

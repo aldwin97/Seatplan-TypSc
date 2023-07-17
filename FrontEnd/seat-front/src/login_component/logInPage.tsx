@@ -10,25 +10,14 @@ const LogInPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
   const [redirectToDashboard, setRedirectToDashboard] = useState(false);
 
   useEffect(() => {
-    checkSessionStatus();
-  }, []);
-
-  const checkSessionStatus = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/user/checkSession');
-      const data = await response.json();
-
-      if (data.status === 'success') {
-        navigate('/dashboardPage'); // Redirect to the dashboard if the session is active
-      }
-    } catch (error) {
-      console.log(error);
+    if (redirectToDashboard) {
+      navigate('/dashboardPage');
     }
-  };
+  }, [redirectToDashboard, navigate]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -36,7 +25,7 @@ const LogInPage: React.FC = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setError('');
+    setError(false);
   };
 
   const helpPageHandleClick = () => {
@@ -61,7 +50,7 @@ const LogInPage: React.FC = () => {
 
   const dashboardPageHandleClick = async () => {
     if (!username || !password) {
-      setError('Please provide both username and password.');
+      setError(true);
       return;
     }
   
@@ -74,37 +63,22 @@ const LogInPage: React.FC = () => {
         body: JSON.stringify({ username, password }),
       });
   
-      if (response.status === 401) {
-        setError('Incorrect username or password.');
+      if (!response.ok) {
+        setError(true);
         return;
       }
   
-      if (response.status === 200) {
-        const data = await response.json();
-  
-        if (!data) {
-          setError('An error occurred during login. Please try again.');
-          return;
-        }
-  
-        if (data.status === 'success') {
-          setRedirectToDashboard(true); // Redirect to the dashboard on successful login
-          return;
-        } else {
-          setError('An error occurred during login.');
-        }
-      }
-  
-      setError('An error occurred during login.');
+      const responseData = await response.json();
+      console.log(responseData);
+      setRedirectToDashboard(true);
     } catch (error) {
       console.log(error);
-      setError('An error occurred during login. Please try again.');
+      setError(true);
     }
   };
-  
-  
+
   return (
-    <body className={styles.body}>
+    <div className={styles.body}>
       <div className={styles.signInContainer}>
         <button onClick={openModal} className={styles.sub} type="submit">
           SIGN IN
@@ -120,7 +94,7 @@ const LogInPage: React.FC = () => {
 
             <div className={`${styles['input-group']} ${error && !username && styles.errorInput}`}>
               <input
-                required
+                required 
                 type="text"
                 name="text"
                 autoComplete="off"
@@ -151,7 +125,7 @@ const LogInPage: React.FC = () => {
             </div>
 
             {error && (
-              <div className={styles.errorMessage}>{error}</div>
+              <div className={styles.errorMessage}>Incorrect username or password.</div>
             )}
 
             <button onClick={dashboardPageHandleClick} className={styles.sub2} type="submit">
@@ -179,17 +153,14 @@ const LogInPage: React.FC = () => {
           </button>
         </div>
         <div className={styles.supportContainer}>
-          <button
-            onClick={helpPageHandleClick}
-            className={styles.supportLink}
-            type="button"
-          >
-            Support
-          </button>
+        <a href="#" onClick={helpPageHandleClick} className={styles.supportLink}>
+        Support
+      </a>
         </div>
       </div>
-    </body>
+    </div>
   );
 };
 
 export default LogInPage;
+

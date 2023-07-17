@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.seatPlan.project.mapper.SeatMapper;
@@ -20,7 +19,6 @@ public class SeatService {
     public SeatService(@Autowired SeatMapper seatMapper) {
         this.seatMapper = seatMapper;
     }
-
 
     public List<Map<String, Object>> getAllSeat() {
         List<SeatModel> seats = seatMapper.getAllSeatModels();
@@ -40,7 +38,6 @@ public class SeatService {
         return filteredSeat;
     }
     
-
     public void saveComment(CommentModel comment) {
         seatMapper.insertComment(comment);
     }
@@ -61,7 +58,6 @@ public class SeatService {
         return filteredComment;
     }
 
-
     public List<Map<String, Object>> getAllComment() {
        List<CommentModel> comments = seatMapper.getAllComment();
         List<Map<String, Object>> filteredComments = comments.stream()
@@ -79,16 +75,11 @@ public class SeatService {
         return filteredComments;
     }
 
-
     public void updateSeat(SeatModel seat) {
         seatMapper.updateSeat(seat);
     }
-    
+
     public SeatModel getSeatById(Long seat_id) {
         return seatMapper.getSeatById(seat_id);
     }
-
-
-
-
 }

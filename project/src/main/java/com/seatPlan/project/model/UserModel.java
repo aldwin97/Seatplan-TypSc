@@ -30,7 +30,7 @@ public class UserModel {
     private Long updated_by;
     
     
-    
+    //For joint table
     private String position_name;
     private String usertype_name;
     private String staffstatus_name;

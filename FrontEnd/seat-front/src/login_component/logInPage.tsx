@@ -68,24 +68,18 @@ const LogInPage: React.FC = () => {
         return;
       }
   
-      if (!response.ok) {
-        setError('An error occurred during login.');
+      if (response.status === 200) {
+        setRedirectToDashboard(true); // Redirect to the dashboard on successful login
         return;
       }
   
-      try {
-        const responseData = await response.json();
-        // Handle the authenticated user data
-        console.log(responseData);
-        setRedirectToDashboard(true);
-      } catch (error) {
-        setError('Invalid response received from the server.');
-      }
+      setError('An error occurred during login.');
     } catch (error) {
       console.log(error);
       setError('An error occurred during login. Please try again.');
     }
   };
+  
   
   
 

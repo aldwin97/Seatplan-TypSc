@@ -16,6 +16,7 @@
     <mapper resource="mapper/DashBoardMapper.xml" />
     <mapper resource="mapper/ProjectMapper.xml" />
     <mapper resource="mapper/SeatMapper.xml" />
+    <mapper resource="mapper/UserMapper.xml" />
   </mappers>
   
 </configuration>

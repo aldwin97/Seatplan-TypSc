@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.CommentModel;
+import com.seatPlan.project.model.UserInputModel;
 import com.seatPlan.project.model.UserModel;
-import com.seatPlan.project.service.AdminService;
 import jakarta.servlet.http.HttpSession;
+
+import com.seatPlan.project.service.AdminService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
     
-    private AdminService  adminService;
+    private AdminService adminService;
 
 
     public AdminController(@Autowired AdminService adminService){
@@ -79,22 +81,24 @@ public class AdminController {
         }    
     }
     @PostMapping("/insert")
-public ResponseEntity<String> insertUser(@RequestBody UserModel userModel) {
+public ResponseEntity<String> insertUser(@RequestBody UserInputModel userInputModel) {
     try {
-        if (adminService.isUsernameExists(userModel.getUsername())) {
+        if (adminService.isUsernameExists(userInputModel.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
         }
 
-        if (adminService.isUserEmailExists(userModel.getEmail())) {
+        if (adminService.isUserEmailExists(userInputModel.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
         }
 
-        adminService.insertUser(userModel);
+        adminService.insertUser(userInputModel);
         return ResponseEntity.ok("User inserted successfully");
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
     }
 }
+
+
 @PutMapping("/update/{user_id}")
 public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
     try {

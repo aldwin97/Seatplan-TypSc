@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.seatPlan.project.mapper.UserMapper;
+
+import com.seatPlan.project.dao.UserDao;
 import com.seatPlan.project.model.UserModel;
 import jakarta.servlet.http.HttpSession;
 
@@ -17,14 +18,14 @@ import jakarta.servlet.http.HttpSession;
 public class UserService{
 
     
-    public UserMapper userMapper;
+    public UserDao userDao;
 
-    public UserService(@Autowired UserMapper userMapper) {
-        this.userMapper = userMapper;
+    public UserService(@Autowired(required=true) UserDao userDao) {
+        this.userDao = userDao;
     }
 
     public UserModel authenticateUser(String username, String password, HttpSession session) {
-        UserModel user = userMapper.getUserByUsername(username);
+        UserModel user = userDao.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("userSession", user);
             return user;
@@ -35,37 +36,37 @@ public class UserService{
 
     // displaying all the data in user table
      public List<UserModel> getAllUsers() {
-        return userMapper.getAllUsers();
+        return userDao.getAllUsers();
     }
 
     // count the all row in the user table
     public int countUsers() {
-        return userMapper.countUsers();
+        return userDao.countUsers();
     }
 
     // delete a user base on the username
      public void deleteUserByUsername(String username) {
-        userMapper.deleteUserByUsername(username);
+        userDao.deleteUserByUsername(username);
     }
 
     public void updateUser(UserModel userModel) {
-        userMapper.updateUser(userModel);
+        userDao.updateUser(userModel);
     }
 
     public boolean isUsernameExists(String username) {
-        return userMapper.getUserByUsername(username) != null;
+        return userDao.getUserByUsername(username) != null;
     }
 
      public boolean isUserEmailExists(String email) {
-        return userMapper.getUserByEmail(email) != null;
+        return userDao.getUserByEmail(email) != null;
     }
 
     public UserModel getUserByUsername(String username) {
-        return userMapper.getUserByUsername(username);
+        return userDao.getUserByUsername(username);
     }
 
     public List<Map<String, Object>>  showUserById(Long user_id){
-        List<UserModel> userInfos = userMapper. showUserById(user_id);
+        List<UserModel> userInfos = userDao. showUserById(user_id);
         List<Map<String, Object>> filteredUserInfo = userInfos.stream()
         .map(userInfo ->{
             Map<String, Object> userInfoMap = new HashMap<>();
@@ -87,7 +88,7 @@ public class UserService{
     }
 
     public UserModel getUserById(Long user_id) {
-       return userMapper.getUserById(user_id);
+       return userDao.getUserById(user_id);
     }
 
 }

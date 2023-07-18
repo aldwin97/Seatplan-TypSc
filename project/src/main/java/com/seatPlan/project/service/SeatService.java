@@ -7,21 +7,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.seatPlan.project.mapper.SeatMapper;
+
+import com.seatPlan.project.dao.SeatDao;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
 
 @Service
 public class SeatService {
-    private final SeatMapper seatMapper;
+
+    private final SeatDao seatDao;
 
    
-    public SeatService(@Autowired SeatMapper seatMapper) {
-        this.seatMapper = seatMapper;
+    public SeatService(@Autowired(required=true)SeatDao seatDao) {
+        this.seatDao = seatDao;
     }
 
     public List<Map<String, Object>> getAllSeat() {
-        List<SeatModel> seats = seatMapper.getAllSeatModels();
+        List<SeatModel> seats = seatDao.getAllSeatModels();
         List<Map<String, Object>> filteredSeat = seats.stream()
             .map(seat -> {
                 Map<String, Object> seatMap = new HashMap<>();
@@ -39,11 +41,11 @@ public class SeatService {
     }
     
     public void saveComment(CommentModel comment) {
-        seatMapper.insertComment(comment);
+    seatDao.insertComment(comment);
     }
 
     public List<Map<String, Object>> getCommentByUserId(Long user_id) {
-        List<CommentModel> comments = seatMapper.getCommentByUserId(user_id);
+        List<CommentModel> comments =seatDao.getCommentByUserId(user_id);
         List<Map<String, Object>> filteredComment = comments.stream()
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();
@@ -59,7 +61,7 @@ public class SeatService {
     }
 
     public List<Map<String, Object>> getAllComment() {
-       List<CommentModel> comments = seatMapper.getAllComment();
+       List<CommentModel> comments =seatDao.getAllComment();
         List<Map<String, Object>> filteredComments = comments.stream()
         .map(comment ->{
             Map<String, Object> commentMap = new HashMap<>();
@@ -76,10 +78,10 @@ public class SeatService {
     }
 
     public void updateSeat(SeatModel seat) {
-        seatMapper.updateSeat(seat);
+    seatDao.updateSeat(seat);
     }
 
     public SeatModel getSeatById(Long seat_id) {
-        return seatMapper.getSeatById(seat_id);
+        return seatDao.getSeatById(seat_id);
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.seatPlan.project.mapper.SeatMapper">
+<mapper namespace="com.seatPlan.project.dao.SeatDao">
 
     <select id="getAllSeatModels" resultType="com.seatPlan.project.model.SeatModel">
         SELECT ts.*, COALESCE(tu.first_name, 'No') AS first_name,

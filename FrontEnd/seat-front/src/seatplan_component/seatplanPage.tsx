@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser,faFaceSmile,  faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,7 +14,7 @@ interface Seat {
   occupant: string;
   project: string;
   comments: string[];
-  viewerNames: string[]; // Updated type to string[]
+  viewerNames: string[];
 }
 
 interface SeatPopupProps {
@@ -24,6 +24,25 @@ interface SeatPopupProps {
   seats: Seat[];
 }
 
+const predefinedColors = [
+  { color: '#FF0000', name: 'Red' },
+  { color: '#00FF00', name: 'Green' },
+  { color: '#0000FF', name: 'Blue' },
+  { color: '#FFFF00', name: 'Yellow' },
+  { color: '#FF00FF', name: 'Magenta' },
+  { color: '#00FFFF', name: 'Cyan' },
+  { color: '#FFA500', name: 'Orange' },
+  { color: '#800080', name: 'Purple' },
+  { color: '#008000', name: 'Dark Green' },
+  { color: '#000080', name: 'Navy' },
+  { color: '#800000', name: 'Maroon' },
+  { color: '#808080', name: 'Gray' },
+  { color: '#FFC0CB', name: 'Pink' },
+  { color: '#FFFFF0', name: 'Ivory' },
+  { color: '#008080', name: 'Teal' },
+  { color: '#808000', name: 'Olive' },
+];
+
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [occupant, setOccupant] = useState(seat.occupant);
   const [project, setProject] = useState(seat.project);
@@ -31,8 +50,8 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const [showComments, setShowComments] = useState(false);
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
-
   const [color, setColor] = useState(seat.color);
+
   useEffect(() => {
     document.body.classList.toggle('popupOpen', true);
     return () => {
@@ -48,7 +67,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
     setProject(event.target.value);
   };
 
-  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleColorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setColor(event.target.value);
   };
 
@@ -153,16 +172,23 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
             <>
               <label>
                 Occupant:
-                <input type="text" value={occupant} onChange={handleOccupantChange} required/>
+                <input type="text" value={occupant} onChange={handleOccupantChange} required />
               </label>
               <label>
                 Project:
-                <input type="text" value={project} onChange={handleProjectChange} required/>
+                <input type="text" value={project} onChange={handleProjectChange} required />
               </label>
               <label>
-                Color:
-                <input type="color" value={color} onChange={handleColorChange} required/>
-              </label>
+              Color:
+              <select value={color} onChange={handleColorChange} required>
+                {predefinedColors.map((colorOption) => (
+                  <option key={colorOption.color} value={colorOption.color}>
+                    {colorOption.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
               {isSeatOccupied ? (
                 <>
                   <button type="submit">Save</button>
@@ -207,10 +233,6 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
               <label>
                 Project:
                 <input type="text" value={seat.project} readOnly={!isSeatOccupied} />
-              </label>
-              <label>
-                Color:
-                <input type="color" value={seat.color} disabled={!isSeatOccupied} />
               </label>
               {isSeatOccupied && (
                 <button type="button" className={styles.editButton} onClick={handleEdit}>
@@ -260,7 +282,6 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
     </div>
   );
 }
-
 
 function SeatplanPage() {
   const navigate = useNavigate();

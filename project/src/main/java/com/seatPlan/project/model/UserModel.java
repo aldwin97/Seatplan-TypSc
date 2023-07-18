@@ -2,6 +2,8 @@
 package com.seatPlan.project.model;
 
 import java.time.LocalDateTime;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserModel {
+
+    
     private Long user_id;
     private Long project_id;
     private String first_name;
@@ -35,4 +39,44 @@ public class UserModel {
     private String usertype_name;
     private String staffstatus_name;
     private String project_name;
+
+
+    // private Role role;
+
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    //   return List.of(new SimpleGrantedAuthority(role.name()));
+    // }
+
+
+    // @Override
+    // public String getUsername(){
+    //     return username;
+    // }
+
+    // @Override
+    // public String getPassword(){
+    //     return password;
+    // }
+
+
+    // @Override
+    // public boolean isAccountNonExpired() {
+    //     return true;
+    // }
+    // @Override
+    // public boolean isAccountNonLocked() {
+    //     return true;
+        
+    // }
+    // @Override
+    // public boolean isCredentialsNonExpired() {
+    //     return true;
+        
+    // }
+    // @Override
+    // public boolean isEnabled() {
+    //     return true;
+        
+    // }
 }

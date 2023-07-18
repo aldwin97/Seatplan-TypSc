@@ -23,6 +23,8 @@ body {
 
 /* Sidebar */
 .page-sidebar {
+  transition: all 10s linear; /* Adjust the duration to make the transition slower */
+  cursor: pointer;
   width: 280px;
   position: fixed;
   background: #fff;
@@ -30,11 +32,15 @@ body {
   bottom: 0;
   padding: 30px;
   box-shadow: 0 0 1.25rem rgba(31, 45, 61, 0.04);
-  -webkit-transition: background .2s ease-in-out;
-  -moz-transition: background .2s ease-in-out;
-  -o-transition: background .2s ease-in-out;
-  transition: background .2s ease-in-out;
   z-index: 1;
+}
+.sidebar-open {
+  transition: all 10s ease-in-out; /* Adjust the duration and timing function as needed */
+}
+
+/* Transition styles for the closed sidebar */
+.sidebar-closed {
+  transition: all 10s ease-in-out; /* Adjust the duration and timing function as needed */
 }
 
 .logo-box {
@@ -147,71 +153,147 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-.menu {
-  width: 100%;
-  height: 3px;
-  color: #308a38;
-  margin-left: 170px;
-  text-transform: capitalize;
-  font-weight: bold;
-  font-size: 22px;
-  font-family: 'Montserrat', sans-serif;
-  -webkit-transition: all .2s ease-in-out;
-  -moz-transition: all .2s ease-in-out;
-  -o-transition: all .2s ease-in-out;
-  transition: all .2s ease-in-out;
-}
+ /* Dropdown Menu */
+      .dropdownMenu2 {
+        position: absolute;
+        top: 50px; /* Adjust the top position as needed */
+        right: 20px; /* Adjust the right position as needed */
+        z-index: 100;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
 
-.menu-out {
-  width: 100%;
-  height: 3px;
-  color: #308a38;
-  text-transform: capitalize;
-  font-weight: bold;
-  font-size: 22px;
-  font-family: 'Montserrat', sans-serif;
-  -webkit-transition: all .2s ease-in-out;
-  -moz-transition: all .2s ease-in-out;
-  -o-transition: all .2s ease-in-out;
-  transition: all .2s ease-in-out;
-  z-index: 2;
-}
+      .dropdownMenu2 button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-.dropdown{
- margin-left: 1450px;
-  z-index: 100;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  backdrop-filter: blur(5px); /* Adjust the blur value as needed */
-}
-.dropdownMenu {
-  margin-left: 1400px;
-  width: 120px;
-  height: 90px;
-  margin-top: 30px;
-  display: block;
-  background-color: #fff;
-  visibility: visible;
-  opacity: 1;
-}
-  .dropdownItem{
-   top: 5px;
-    align-items: center;
-    display: block;
-    margin-top: 15px;
-    width: 100%;
-    padding: .25rem 1.5rem;
-    clear: both;
-    font-weight: 400;
-    color: #212529;
-    text-align: inherit;
-    white-space: nowrap;
-    background-color: transparent;
-    border: 0;
-  }
+      .dropdownMenu2 button:hover {
+        background-color: #f5f5f5;
+      }
+
+      
+
+      .dropdownMenu {
+        position: absolute;
+        top: 50px; /* Adjust the top position as needed */
+        left: 10px; /* Adjust the right position as needed */
+        z-index: 100;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        backdrop-filter: blur(5px); /* Adjust the blur value as needed */
+      }
+      
+
+      .dropdownMenu button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdownMenu button:hover {
+        background-color: #ddecde;
+      }
+
+      .sub
+      {
+        
+        color: #308a38;
+      
+      }
+
+      .dropdownRows {
+        flex-direction: row;
+      }
+      .menu {
+        cursor: pointer;
+        width: 100%;
+        height: 3px;
+        color: #308a38;
+        margin-left: 170px;
+        text-transform: capitalize;
+        font-weight: bold;
+        font-size: 22px;
+        font-family: 'Montserrat', sans-serif;
+        
+      }
+      
+      .menu-out {
+        cursor: pointer;
+        width: 100%;
+        height: 3px;
+        color: #308a38;
+        text-transform: capitalize;
+        font-weight: bold;
+        font-size: 22px;
+        font-family: 'Montserrat', sans-serif;
+        -webkit-transition: all .2s ease-in-out;
+        -moz-transition: all .2s ease-in-out;
+        -o-transition: all .2s ease-in-out;
+        transition: all .2s ease-in-out;
+        z-index: 2;
+      }
+
+      
+
+
+      .profile {
+        position: absolute;
+        font-size: 20px;
+        top: 4px;
+        right: 3%;
+        width: 30px;
+        padding: 8px;
+        background-color: transparent;
+        color: #308a38;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+      }
+      .profile:hover {
+        background-color: #fff;
+        color: #a7a7a7;
+      }
+
+      .notif {
+        position: absolute;
+        font-size: 20px;
+        top: 4px;
+        right: 6%;
+        width: 30px;
+        padding: 8px;
+        background-color: transparent;
+        color: #308a38;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+      }
+      .notif:hover {
+        background-color: #fff;
+        color: #a7a7a7;
+      }
+
 .page-header {
   width: 100%;
   height: 30px; /* Adjust the height according to your needs */
@@ -223,4 +305,558 @@ body {
   z-index: 1;
   box-shadow: 0 0 1.25rem rgba(31,45,61,.04);
 
+}
+.container {
+  min-width: 1200px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+ 
+      .main {
+        margin: 0 auto; /* Center the main element horizontally */
+        display: flex; /* Add flex display to center its contents vertically */
+        justify-content: center; /* Center the contents horizontally */
+        align-items: center; /* Center the contents vertically */
+        height: 100vh;
+        background-color: transparent;
+      }
+      .container2 {
+        min-height: calc(100vh - 20px); /* Set minimum height as 100% of the viewport height minus 20px */
+        max-height: 300vh; /* Set maximum height as 200% of the viewport height */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: static;
+        background-color: transparent;
+      }
+      
+      .container2 > form {
+        margin: 20px;
+      }
+      
+      .container2 > form > .form2 {
+        gap: 20px;
+      }
+      
+      .container2 > form > .form3 {
+        gap: 20px;
+      }
+      
+      .container2 > form > .form4 {
+        gap: 30px;
+      }
+      
+      
+      .form2 {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* Create 3 equal columns */
+        justify-content: flex-start; 
+        align-items: center;
+        background-color: #ffffff;
+        border-radius: 20px;
+        margin-right: 10px;
+        background-color: transparent;
+        gap: 5px; /* Adjust the gap as needed */
+      }
+      
+      .form3 {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start; /* Align items from left to right */
+        align-items: center;
+        background-color: #ffffff;
+        border-radius: 20px;
+        width: 83%;
+        height: 100vh;
+        background-color: transparent;
+      }
+      
+      .form4 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+        border-radius: 20px;
+        gap: 60px; /* Adjust the gap as needed */
+        width: 100%;
+      }
+      
+      .form4 > div {
+        flex: 1; /* Allow the two card-like divs to share the available space equally */
+      }
+      
+
+      .cardimg {
+        background-size: 100% 100%;
+        width: 100%;
+        border-radius: .60rem;
+        background-image: url('./../assets/loginbg.jpg');
+      }
+      .card {
+        align-items: center;
+        height: 400px;
+        width: 530px;
+        background-color: white;
+        text-align: center;
+        margin-top: 15px;
+        z-index: 2;
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .60rem;
+          }
+    
+      .card2 {
+        align-items: center;
+        margin-top: -185px;
+        margin-left:  6%;
+        padding: 20px;
+        height: 150px;
+        width: 150px;
+        background-color: #b3e4bb;
+        box-shadow: 0 2px 5px #308a38;
+        text-align: center;
+      }.card3 {
+        align-items: center;
+        margin-top: -185px;
+        margin-left: 15%;
+        padding: 20px;
+        height: 150px;
+        width: 150px;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 1;
+        
+      }.card4 {
+        align-items: center;
+        margin-top: -187px;
+        margin-left: 24%;
+        padding: 20px;
+        height: 150px;
+        width: 150px;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+      .card6 {
+        align-items: center;
+        margin-left: 103.3%;
+        margin-top:  -200px;
+        padding: 20px;
+        height: 150px;
+        width: 150px;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 0;
+      }
+      .card7 {
+        align-items: center;
+        margin-top: -200px;
+        margin-left: 118%;
+        padding: 20px;
+        height: 150px;
+        width: 150px;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+      .card8 {
+        align-items: center;
+        margin-left: 127%;
+        margin-top:  -200px;
+        padding: 20px;
+        height: 150px;
+        width: 150px;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+      }
+      .cardtitle {
+        width: 450px;
+        font-weight: bold;
+        color: #000000;
+        text-align: left;
+        font-size: 32px;
+        margin-top: 20px;
+      }
+
+      .cardtext {
+        margin-top: 20px;
+        width: 450px;
+        text-align: left;
+        font-size: 14px;
+        color: rgb(0, 0, 0);
+        margin-bottom: 10px;
+      }
+
+      .date {
+        font-size: 14px;
+        color: gray;
+        margin-bottom: 5px;
+      }
+
+      .time {
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      
+       .scrollable::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+       .scrollable::-webkit-scrollbar-track {
+        background-color: #fff;
+      }
+      
+       .scrollable::-webkit-scrollbar-thumb {
+        background-color: #e6e6e6;
+      }
+      
+       .scrollable::-webkit-scrollbar-thumb:hover {
+        background-color: #e6e6e6;
+      }
+
+
+
+
+
+      .card2,
+      .card3,
+      .card4,
+      .card6,
+      .card7,
+      .card8
+      {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 10px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        border-radius: 20px;
+      }
+
+      
+      .card.title3,
+      .card.title4,
+      .card.title6,
+      .card.title7,
+      .card.title8,
+      .card.title9,
+      .card.title0 {
+        background-color: #308a38;
+        margin-top: 0; /* Remove top margin for other cards */
+      }
+
+      
+      .cardtitle3,
+      .cardtitle4,
+      .cardtitle6,
+      .cardtitle7,
+      .cardtitle8,
+      .cardtitle0 {
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+
+
+      .cardtitle5,
+      .cardtitle9 {
+        font-weight: bold;
+        font-size: 18px;
+        color: #308a38;
+        margin-bottom: -100px;
+      }
+
+
+
+      .card5 {
+        align-items: center;
+        margin-left: 18%;
+        height: 400px;
+        width: 355px;
+        background-color: white;
+        box-shadow: 0 10px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        margin-top: 15px;
+        border-radius: 20px;
+        
+      }
+
+      .cardtitle5 {
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 10px;
+      }
+
+
+      .card9 {
+        display: flex;
+        margin-top: -150px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        border-radius: 20px;
+        width: 117%;
+        height: 430px;
+        padding: 20px;
+    
+        background-color: white;
+        box-shadow: 0 10px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        border-radius: 20px;
+      }
+
+      .cardtitle9 {
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 10px;
+      }
+
+
+      /* Add custom styles for card images and other classes as needed */
+
+
+      /* Add custom styles for card images and other classes as needed */
+
+
+
+
+      .card0:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card1:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card2:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card3:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card4:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card5:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card6:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card7:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }.card8:hover {
+        transform: translateY(-5px);
+        border-color: rgb(0, 255, 0);
+      }
+      .card9:hover {
+      transform: translateY(-5px);
+      border-color: rgb(0, 255, 0);
+      }
+      @media (max-width: 1200px) {
+        .container {
+          padding: 0 20px; /* Add padding to adjust the content width */
+        }
+      }
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+
+  .notif {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .profile {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .burgerButton {
+    position: absolute;
+    top: 0;
+    left: 2%;
+    opacity: 0.5%;
+  }
+
+  .dropdownMenu {
+    width: 100%;
+  }
+
+  .scrollable {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+.card{
+width: 357px;
+  margin-left: -1%;
+}
+  .card2,
+  .card3,
+  .card4,
+  .card6,
+  .card7,
+  .card8 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 93.3%;
+    margin-left: -1%;
+  }
+
+  .card5,
+  .card9 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 110%;
+    margin-left: -1%;
+  }
+
+  .cardtitle9 {
+    font-size: 18px;
+  }
+
+  .cardtitle5 {
+    font-size: 18px;
+    margin-top: -100px;
+  }
+  .container {
+    min-width: auto;
+    max-width: auto;
+    
+  }
+ .backg
+ {
+  height: 100vh;
+ }
+  .container2 {
+    flex-direction: column;
+    
+  }
+
+ 
+ .backg
+ {
+  margin: 0;
+  padding: 0;
+  background-size: 100% 100%;
+  background-image: url('./../assets/BG1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+ }
+
+ .form2 {
+  grid-template-columns: repeat(1, 1fr);
+  justify-content: center;
+  margin-left: 0;
+}
+
+.form4 {
+  flex-direction: column;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.form4 > div {
+  flex: auto;
+}
+
+}
+.card2 {
+  position: relative; 
+  align-items: center;
+  margin-top: -185px;
+  margin-left:  6%;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: #D2E4DC;
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+ 
+}
+
+/* The .cardimg2 class will control the size and background of the image */
+.cardimg2 {
+  position: absolute;
+  top: 0;
+  left: 4;
+  right: 0;
+  bottom: 10;
+  color: #ffffff;
+  margin-top: 10px;
+  margin-right:10px;
+  width: 40px;
+  height: 40px; /* Set the height to match the image aspect ratio */
+  background-size: cover; /* Adjust the background size as needed */
+  background-repeat: no-repeat; /* Prevent the background from repeating */
+  border-radius: 50%; 
+  
+}
+
+.cardcount2 {
+  font-size: 32px;
+  width: 40px;
+  height: 40px;
+  color: #000000;
+}
+.cardtitle2{
+  position: absolute;
+  background-color: rgba(98, 186, 185, 0.2);
+  top: 0px;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  color: #000000;
+  
+  text-align: left;
+  font-weight: bold;
+  
+}
+.button-container {
+  position: fixed;
+  top: 20px; /* Change this value to adjust the vertical position */
+  left: 20px; /* Change this value to adjust the horizontal position */
+}
+
+
+.sidebar-open {
+  transition: all 1s cubic-bezier(0.1, 0.7, 1.0, 0.9);
+  
+}
+
+.sidebar-closed {
+  transition: all 1s cubic-bezier(0.1, 0.7, 1.0, 0.9);
+  
 }

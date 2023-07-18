@@ -4,7 +4,8 @@ package com.seatPlan.project.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.seatPlan.project.mapper.ProjectMapper;
+
+import com.seatPlan.project.dao.ProjectDao;
 import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
 
@@ -12,31 +13,31 @@ import com.seatPlan.project.model.ProjectModel;
 @Service
 public class ProjectService {
 
-     public ProjectMapper projectMapper;
+     public ProjectDao projectDao;
 
-    public ProjectService(@Autowired ProjectMapper projectMapper) {
-        this.projectMapper = projectMapper;
+    public ProjectService(@Autowired(required=true) ProjectDao projectDao) {
+        this.projectDao = projectDao;
     }
 
     public void insertProject(ProjectModel projectModel) {
-        projectMapper.insertProject(projectModel);
+        projectDao.insertProject(projectModel);
     }
 
      public List<ProjectModel> getAllProjects() {
-        return projectMapper.getAllProjects();
+        return projectDao.getAllProjects();
     }
 
     // count the all row in the user table
     public int countProject() {
-        return projectMapper.countProject();
+        return projectDao.countProject();
     }
 
     public void deleteProjectById(Long project_id) {
-        projectMapper.deleteProjectById(project_id);
+        projectDao.deleteProjectById(project_id);
 
     }
 
      public List<ColorModel> getAllColors() {
-        return projectMapper.getAllColors();
+        return projectDao.getAllColors();
     }
 }

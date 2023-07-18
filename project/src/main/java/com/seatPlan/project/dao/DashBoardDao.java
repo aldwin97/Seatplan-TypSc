@@ -1,10 +1,10 @@
 //Kenneth Christian B. Gutierrez
-package com.seatPlan.project.mapper;
+package com.seatPlan.project.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface DashBoardMapper {
+public interface DashBoardDao {
     int countUser();
     int countSeatAvailable();
     int countTrainee();

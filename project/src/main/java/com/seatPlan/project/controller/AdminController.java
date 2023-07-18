@@ -15,14 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.UserModel;
-import com.seatPlan.project.service.AdminService;
 import jakarta.servlet.http.HttpSession;
+
+import com.seatPlan.project.service.AdminService;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
     
-    private AdminService  adminService;
+    private AdminService adminService;
 
 
     public AdminController(@Autowired AdminService adminService){

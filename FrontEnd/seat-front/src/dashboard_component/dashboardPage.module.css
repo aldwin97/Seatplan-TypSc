@@ -417,74 +417,7 @@ body {
         border: 1px solid rgba(0,0,0,.125);
         border-radius: .60rem;
           }
-    
-      .card2 {
-        align-items: center;
-        margin-top: -185px;
-        margin-left:  6%;
-        padding: 20px;
-        height: 150px;
-        width: 150px;
-        background-color: #b3e4bb;
-        box-shadow: 0 2px 5px #308a38;
-        text-align: center;
-      }.card3 {
-        align-items: center;
-        margin-top: -185px;
-        margin-left: 15%;
-        padding: 20px;
-        height: 150px;
-        width: 150px;
-        background-color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        z-index: 1;
-        
-      }.card4 {
-        align-items: center;
-        margin-top: -187px;
-        margin-left: 24%;
-        padding: 20px;
-        height: 150px;
-        width: 150px;
-        background-color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
-      .card6 {
-        align-items: center;
-        margin-left: 103.3%;
-        margin-top:  -200px;
-        padding: 20px;
-        height: 150px;
-        width: 150px;
-        background-color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        z-index: 0;
-      }
-      .card7 {
-        align-items: center;
-        margin-top: -200px;
-        margin-left: 118%;
-        padding: 20px;
-        height: 150px;
-        width: 150px;
-        background-color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
-      .card8 {
-        align-items: center;
-        margin-left: 127%;
-        margin-top:  -200px;
-        padding: 20px;
-        height: 150px;
-        width: 150px;
-        background-color: white;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
+
       .cardtitle {
         width: 450px;
         font-weight: bold;
@@ -514,27 +447,6 @@ body {
         font-size: 18px;
       }
 
-      
-       .scrollable::-webkit-scrollbar {
-        width: 6px;
-      }
-      
-       .scrollable::-webkit-scrollbar-track {
-        background-color: #fff;
-      }
-      
-       .scrollable::-webkit-scrollbar-thumb {
-        background-color: #e6e6e6;
-      }
-      
-       .scrollable::-webkit-scrollbar-thumb:hover {
-        background-color: #e6e6e6;
-      }
-
-
-
-
-
       .card2,
       .card3,
       .card4,
@@ -552,41 +464,6 @@ body {
         text-align: center;
         border-radius: 20px;
       }
-
-      
-      .card.title3,
-      .card.title4,
-      .card.title6,
-      .card.title7,
-      .card.title8,
-      .card.title9,
-      .card.title0 {
-        background-color: #308a38;
-        margin-top: 0; /* Remove top margin for other cards */
-      }
-
-      
-      .cardtitle3,
-      .cardtitle4,
-      .cardtitle6,
-      .cardtitle7,
-      .cardtitle8,
-      .cardtitle0 {
-        font-weight: bold;
-        font-size: 16px;
-        margin-top: 10px;
-      }
-
-
-      .cardtitle5,
-      .cardtitle9 {
-        font-weight: bold;
-        font-size: 18px;
-        color: #308a38;
-        margin-bottom: -100px;
-      }
-
-
 
       .card5 {
         align-items: center;
@@ -710,9 +587,11 @@ body {
   }
 
   .scrollable {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    .scrollable {
+      max-height: 350px; /* Set the desired fixed height */
+      overflow-y: auto; /* Enable vertical scrollbar */
+      position: relative; /* Ensure the cardtitle3 is positioned relative to this container */
+    }
   }
 .card{
 width: 357px;
@@ -807,30 +686,36 @@ width: 357px;
  
 }
 
-/* The .cardimg2 class will control the size and background of the image */
+
 .cardimg2 {
-  position: absolute;
-  top: 0;
-  left: 4;
-  right: 0;
-  bottom: 10;
-  color: #ffffff;
-  margin-top: 10px;
-  margin-right:10px;
-  width: 40px;
-  height: 40px; /* Set the height to match the image aspect ratio */
+  align-items: center;
+  color:  #20770E;
   background-size: cover; /* Adjust the background size as needed */
-  background-repeat: no-repeat; /* Prevent the background from repeating */
-  border-radius: 50%; 
+  background-repeat: no-repeat; /* Prevent the background from repeating */ 
+
   
 }
+.cardimg3 {
+  align-items: center;
+  color:  #20770E;
+  margin-top: 23px;
+  background-size: cover; /* Adjust the background size as needed */
+  background-repeat: no-repeat; /* Prevent the background from repeating */ 
+
+  
+}
+
 
 .cardcount2 {
   font-size: 32px;
   width: 40px;
   height: 40px;
+  margin-right: 15px;
   color: #000000;
+  text-align: center;
+  font-weight: bold;
 }
+
 .cardtitle2{
   position: absolute;
   background-color: rgba(98, 186, 185, 0.2);
@@ -839,10 +724,111 @@ width: 357px;
   right: 0;
   padding: 5px;
   color: #000000;
-  
-  text-align: left;
+  text-align: center;
   font-weight: bold;
   
+}
+.cardtitle6{
+  position: absolute;
+  background-color: rgba(98, 186, 185, 0.2);
+  top: 0px;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  color: #000000;
+  text-align: center;
+  font-weight: bold;
+  z-index: -2;
+}
+.card3 {
+  align-items: center;
+  margin-top: -185px;
+  margin-left: 15%;
+  position: relative; 
+  align-items: center;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: #D2E4DC;
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+  
+
+  
+}
+.card4 {
+  align-items: center;
+  margin-top: -187px;
+  margin-left: 24%;
+  position: relative; 
+  align-items: center;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: #D2E4DC;
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+}
+.card6 {
+  align-items: center;
+  margin-left: 103.3%;
+  margin-top:  -200px;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: rgba(211, 226, 245, 0.7);
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+}
+
+.cardtitle3 {
+  background-color: rgba(98, 186, 185, 0.2);
+  width: 180px;
+  padding: 5px;
+  top: -138px;
+  color: #000000;
+  text-align: center;
+  font-weight: bold;
+  position: relative; 
+  z-index: 2; 
+}
+
+
+.card7,
+.card8,
+.card9 {
+  position: relative; 
+  z-index: 1; 
+}
+
+.card7 {
+  align-items: center;
+  margin-top: -200px;
+  margin-left: 118%;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: rgba(211, 226, 245, 0.7);
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+  z-index: 0;
+}
+.card8 {
+  align-items: center;
+  margin-left: 127%;
+  margin-top:  -200px;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: rgba(211, 226, 245, 0.7);
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+  z-index: 0;
 }
 .button-container {
   position: fixed;

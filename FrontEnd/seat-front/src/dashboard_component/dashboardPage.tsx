@@ -1,91 +1,95 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import {  Button } from '@mui/material';
 import styles from './dashboardPage.module.css';
+import { Dashboard, Work, Menu } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 
-function DashboardPage() {
+
+
+const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
+ 
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
 
-  const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
-  };
-  const adminPageHandleClick = () => {
-    navigate('/AdminPage');
-  };
-  const seatplanPageHandleClick = () => {
-    navigate('/SeatplanPage');
-  };
-  const logInPageHandleClick = () => {
-    navigate('/');
-  };
-
-  const profilePageHandleClick = () => {
-    navigate('/ProfilePage');
-  }
-
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [currDate, setCurrDate] = useState('');
-  const [currTime, setCurrTime] = useState('');
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
-
-  const toggleProfileDropdown = () => {
+ 
+  const toggleProfileDropdown = (): void => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  useEffect(() => {
-    const timerID = setInterval(() => {
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString();
-      const formattedTime = currentDate.toLocaleTimeString();
-      setCurrDate(formattedDate);
-      setCurrTime(formattedTime);
-    }, 1000);
 
-    return () => {
-      clearInterval(timerID);
-    };
-  }, []);
+  
 
+  const logInPageHandleClick = (): void => {
+    navigate('/');
+  };
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!isDrawerOpen);
+  };
+
+ 
   return (
     <>
-    <body className={styles.backg}>
-    <div className={styles.container}>
-      <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-      </button>
-
-      {isDropdownOpen && (
-        <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
-          <button onClick={dashboardPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
-            Dashboard
-          </button>
-          <button onClick={adminPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
-            Members
-          </button>
-          <button onClick={seatplanPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faProjectDiagram} className={styles.icon} />
-            Projects
-          </button>
+      <body>
+        
+      <Button onClick={toggleDrawer}>
+        <i className={styles['menu-out']}>
+          <Menu />
+        </i>
+      </Button>
+      <SwipeableDrawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={toggleDrawer}
+        onOpen={toggleDrawer}
+        variant="persistent"
+        className={isDrawerOpen ? styles['sidebar-open'] : styles['sidebar-closed']}
+      >
+      
+        <div className={styles['page-sidebar']}>
+          <div className={styles['logo-box']}>
+            <span className={styles['logo-text']}>Seat</span>
+            <i className={styles['menu']} onClick={toggleDrawer}>
+              <Menu />
+            </i>
+            <div className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}>
+              
+              <ul className={styles['accordion-menu']}>
+                <li className={styles['sidebar-title']}>Apps</li>
+                <li className={styles['active-page']}>
+                  <a href="index.html" className={styles['active']}>
+                    <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Dashboard/>
+                    </i>
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a href="index.html" className={styles['active']}>
+                    <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Work/>
+                    </i>
+                    Project
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      )}
-
-      <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
+      </SwipeableDrawer>
+            
+            <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
+        <FontAwesomeIcon icon={faUser}  className={styles.uicon}/>
       </button>
 
       {isProfileDropdownOpen && (
         <div className={styles.dropdownMenu2}>
-          <button onClick={profilePageHandleClick} className={styles.sub}>
+          <button className={styles.sub}>
             <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
             Profile
           </button>
@@ -101,37 +105,45 @@ function DashboardPage() {
         <FontAwesomeIcon icon={faBell} />
       </button>
 
+
       <div className={styles.container2}>
         <form className={styles.main2}>
 
           <form className={styles.form3}>
 
 
-          <form className={styles.form}>
-
-          <div className={styles.card}>
-            <svg className={styles.cardimg}></svg>
-            <div className={styles.cardtitle}>HELLO (USERNAME)</div>
-            <div className={styles.cardtext}>Welcome Back! Always check you Notifications!</div>
-            <div className={styles.date}>Today is {currDate}</div>
-            <div className={styles.time}>{currTime}</div>
-          </div>
-          </form>
+         
         <form className={styles.form2}>
+        <form className={styles.form}>
 
+<div className={styles.card}>
+  <svg className={styles.cardimg}></svg>
+  <div className={styles.cardtitle}>HELLO <br/>(USERNAME)</div>
+  <div className={styles.cardtext}>Welcome Back! You have 2 Notifications</div>
+  
+</div>
+</form>
           <div className={styles.card2}>
-            <svg className={styles.cardimg2}></svg>
-            <div className={styles.cardtitle2}>TOTAL SEAT</div>
-          </div>
+          <div className={styles.cardtitle2}>TOTAL SEAT</div>
+          <FontAwesomeIcon icon={faFaceSmile} className={styles.cardimg2} />
+          <div className={styles.cardcount2 }>500</div>
+            </div>
+        
 
           <div className={styles.card3}>
             <svg className={styles.cardimg3}></svg>
             <div className={styles.cardtitle3}>OCCUPIED SEAT</div>
           </div>
-
+          
           <div className={styles.card4}>
             <svg className={styles.cardimg4}></svg>
             <div className={styles.cardtitle4}>AVAILABLE SEAT</div>
+          </div>
+          <div>
+          <div className={styles.card5}>
+    <svg className={styles.cardimg5}></svg>
+    <div className={styles.cardtitle5}>SEAT CONDITIONS</div>
+  </div>
           </div>
           <div className={styles.card6}>
             <svg className={styles.cardimg6}></svg>
@@ -147,13 +159,11 @@ function DashboardPage() {
             <svg className={styles.cardimg8}></svg>
             <div className={styles.cardtitle8}>REGULAR EMPLOYEE</div>
           </div>
+          
           </form>
 
           <form className={styles.form4}>
-          <div className={styles.card5}>
-            <svg className={styles.cardimg5}></svg>
-            <div className={styles.cardtitle5}>SEAT CONDITIONS</div>
-          </div>
+         
           <div className={styles.scrollable}>
           <div className={styles.card9}>
             <svg className={styles.cardimg9}></svg>
@@ -163,11 +173,15 @@ function DashboardPage() {
           
         </form>
         </form>
-      </div>
-    </div>
-    </body>
+ 
+        </div>
+  
+       
+      </body>
     </>
   );
-}
+};
 
 export default DashboardPage;
+
+

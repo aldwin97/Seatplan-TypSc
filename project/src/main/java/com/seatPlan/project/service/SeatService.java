@@ -1,32 +1,29 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import com.seatPlan.project.mapper.SeatMapper;
+import com.seatPlan.project.dao.SeatDao;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
-import com.seatPlan.project.model.StaffStatusModel;
 
 @Service
 public class SeatService {
-    private final SeatMapper seatMapper;
+
+    private final SeatDao seatDao;
 
    
-    public SeatService(@Autowired SeatMapper seatMapper) {
-        this.seatMapper = seatMapper;
+    public SeatService(@Autowired(required=true)SeatDao seatDao) {
+        this.seatDao = seatDao;
     }
 
-
     public List<Map<String, Object>> getAllSeat() {
-        List<SeatModel> seats = seatMapper.getAllSeatModels();
+        List<SeatModel> seats = seatDao.getAllSeatModels();
         List<Map<String, Object>> filteredSeat = seats.stream()
             .map(seat -> {
                 Map<String, Object> seatMap = new HashMap<>();
@@ -43,16 +40,16 @@ public class SeatService {
         return filteredSeat;
     }
     
-
     public void saveComment(CommentModel comment) {
-        seatMapper.insertComment(comment);
+    seatDao.insertComment(comment);
     }
 
     public List<Map<String, Object>> getCommentByUserId(Long user_id) {
-        List<CommentModel> comments = seatMapper.getCommentByUserId(user_id);
+        List<CommentModel> comments =seatDao.getCommentByUserId(user_id);
         List<Map<String, Object>> filteredComment = comments.stream()
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();
+                commentMap.put("comment_id", comment.getComment_id());
                 commentMap.put("seat_id",comment.getSeat_id());
                 commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));
                 commentMap.put("comment", comment.getComment());
@@ -62,9 +59,29 @@ public class SeatService {
     
         return filteredComment;
     }
-    
 
+    public List<Map<String, Object>> getAllComment() {
+       List<CommentModel> comments =seatDao.getAllComment();
+        List<Map<String, Object>> filteredComments = comments.stream()
+        .map(comment ->{
+            Map<String, Object> commentMap = new HashMap<>();
+            commentMap.put("comment_id",comment.getComment_id());
+            commentMap.put("seat_id",comment.getSeat_id());
+            commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));
+            commentMap.put("comment", comment.getComment());
+            commentMap.put("created_time", comment.getCreated_time());
+            return commentMap;
 
+        }).collect(Collectors.toList());
 
+        return filteredComments;
+    }
 
+    public void updateSeat(SeatModel seat) {
+    seatDao.updateSeat(seat);
+    }
+
+    public SeatModel getSeatById(Long seat_id) {
+        return seatDao.getSeatById(seat_id);
+    }
 }

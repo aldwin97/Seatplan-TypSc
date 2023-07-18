@@ -1,10 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, SelectChangeEvent, Snackbar, Alert } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, IconButton, Button, Typography, Box, Pagination, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, TextField } from '@mui/material';
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Snackbar,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Paper,
+  IconButton,
+  Button,
+  Typography,
+  Box,
+  Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser,
+  faBell,
+  faChartBar,
+  faUsers,
+  faProjectDiagram,
+  faPowerOff,
+  faFaceSmile,
+} from '@fortawesome/free-solid-svg-icons';
 import './adminMembersPage.css';
 
 interface User {
@@ -21,6 +53,8 @@ interface User {
   usertype_name: string;
   position_name: string;
   position_id: number;
+  project_id: number;
+  project_name: string;
   user_picture: string;
   is_deleted: boolean;
   created_time: string;
@@ -28,6 +62,7 @@ interface User {
   updated_time: string;
   updated_by: number;
 }
+
 
 interface UserType {
   usertype_id: number;
@@ -43,80 +78,12 @@ interface StaffStatus {
   staffstatus_id: number;
   staffstatus_name: string;
 }
+interface Project {
+  project_id: number;
+  project_name: string;
+}
 
 const AdminMembersPage: React.FC = () => {
-
-
-  useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080/admin'); // Replace with your WebSocket server URL
-
-    // Event listener for WebSocket connection open
-    socket.addEventListener('open', () => {
-      console.log('WebSocket connection established');
-
-      // Send a message to the server to subscribe to user updates
-      const message = { type: 'subscribe' };
-      socket.send(JSON.stringify(message));
-    });
-
-    // Event listener for WebSocket connection close
-    socket.addEventListener('close', () => {
-      console.log('WebSocket connection closed');
-    });
-
-    // Event listener for WebSocket messages
-    socket.addEventListener('message', (event) => {
-      const message = JSON.parse(event.data);
-
-      // Handle different message types
-      switch (message.type) {
-        case 'userUpdated':
-          handleUserUpdated(message.data);
-          break;
-        case 'userInserted':
-          handleUserInserted(message.data);
-          break;
-        case 'userDeleted':
-          handleUserDeleted(message.data);
-          break;
-        default:
-          break;
-      }
-    });
-
-    // Cleanup function to close the WebSocket connection
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  // Function to handle user updated event
-  const handleUserUpdated = (updatedUser: User) => {
-    // Update the user in the users state
-    setUsers((prevUsers) => {
-      const updatedUsers = prevUsers.map((user) => {
-        if (user.user_id === updatedUser.user_id) {
-          return updatedUser;
-        }
-        return user;
-      });
-      return updatedUsers;
-    });
-  };
-
-  // Function to handle user inserted event
-  const handleUserInserted = (insertedUser: User) => {
-    // Add the inserted user to the users state
-    setUsers((prevUsers) => [...prevUsers, insertedUser]);
-  };
-
-  // Function to handle user deleted event
-  const handleUserDeleted = (deletedUserId: number) => {
-    // Remove the deleted user from the users state
-    setUsers((prevUsers) => prevUsers.filter((user) => user.user_id !== deletedUserId));
-  };
-
-  
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,6 +91,8 @@ const AdminMembersPage: React.FC = () => {
   const [userInfoDialogOpen, setUserInfoDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null); // State variable to store the logged-in user ID
+  const [projects, setProjects] = useState<Project[]>([]); // Specify the type as an array of Project objects
   const [newUser, setNewUser] = useState<User>({
     user_id: 0,
     first_name: '',
@@ -138,13 +107,21 @@ const AdminMembersPage: React.FC = () => {
     position_name: '',
     usertype_id: 0,
     position_id: 0,
+    project_id: 0,
+    project_name: '',
     user_picture: '',
     is_deleted: false,
     created_time: '',
-    created_by: 0,
+    created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     updated_time: '',
-    updated_by: 0,
-  });
+    updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
+  });  
+  useEffect(() => {
+    // Retrieve the logged-in user ID from the session storage
+    const user_id = sessionStorage.getItem('user_id');
+    setLoggedInUserId(user_id ? parseInt(user_id) : null);
+  }, []);
+  
 
   const [perPage, setPerPage] = useState(8);
   const navigate = useNavigate();
@@ -215,6 +192,10 @@ const AdminMembersPage: React.FC = () => {
 
   const handleAddUsers = () => {
     const currentTime = new Date().toISOString();
+    const loggedInUserId = sessionStorage.getItem('user_id');
+  
+    console.log('loggedInUserId:', loggedInUserId); // Check the value in the console
+  
     const newUserModel = {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
@@ -223,10 +204,16 @@ const AdminMembersPage: React.FC = () => {
       username: newUser.username,
       password: newUser.password,
       staffstatus_id: newUser.staffstatus_id,
+      project_id: newUser.project_id,
       usertype_id: newUser.usertype_id,
       position_id: newUser.position_id,
+      created_time: currentTime,
+      created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
-
+  
+    console.log('newUserModel:', newUserModel); // Check the newUserModel object in the console
+  
+  
     // Make the POST request to insert a new user
     fetch('http://localhost:8080/admin/insert', {
       method: 'POST',
@@ -261,7 +248,7 @@ const AdminMembersPage: React.FC = () => {
         setSnackbarOpen(true);
       });
   };
-
+  
   
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -282,117 +269,104 @@ const AdminMembersPage: React.FC = () => {
     setSearchText(event.target.value);
   };
 
-  const filteredUsers = users.filter(
+  const filteredUsers = users
+  .filter(
     (user) =>
       user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
       user.last_name.toLowerCase().includes(searchText.toLowerCase()) ||
       user.username.toLowerCase().includes(searchText.toLowerCase())
-  );
+  )
+  .map((user) => {
+    let formattedCreatedTime = 'Invalid date';
+    let formattedUpdatedTime = 'Invalid date';
 
-  const indexOfLastUser = currentPage * perPage;
-  const indexOfFirstUser = indexOfLastUser - perPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editedUser, setEditedUser] = useState<User | null>(null);
-
-  const handleEditUser = () => {
-    setEditMode(true);
-    setEditedUser(selectedUser);
-  };
-  
-  const handleSaveUser = () => {
-    if (!editedUser) {
-      return;
+    if (user.created_time && typeof user.created_time === 'string' && user.created_time.trim() !== '') {
+      formattedCreatedTime = user.created_time;
     }
-  
-    const hasEditedFields = Object.keys(editedUser).some(
-      (field) =>
-        selectedUser &&
-        editedUser[field as keyof User] !== selectedUser[field as keyof User]
-    );
-  
-    // Prepare the updated user data
-    const updatedUserModel: Partial<User> = {
-      user_id: selectedUser?.user_id,
-      first_name: editedUser.first_name || '',
-      last_name: editedUser.last_name || '',
-      mobile_num: editedUser.mobile_num || 0,
-      username: editedUser.username || '',
-      password: editedUser.password || '',
-      staffstatus_id: selectedUser?.staffstatus_id,
-      usertype_id: selectedUser?.usertype_id,
-      position_id: selectedUser?.position_id,
+
+    if (user.updated_time && typeof user.updated_time === 'string' && user.updated_time.trim() !== '') {
+      formattedUpdatedTime = user.updated_time;
+    }
+
+    return {
+      ...user,
+      created_time: formattedCreatedTime,
+      updated_time: formattedUpdatedTime,
     };
-  
-    // Conditionally include the email field if it has been edited
-    if (editedUser.email !== selectedUser?.email) {
-      updatedUserModel.email = editedUser.email;
-    }
-  
-    if (editMode) {
-      // Make the PUT request to update the user
-      fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUserModel),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('User updated successfully');
-            // Refresh the page to reflect the changes
-            window.location.reload();
-            // Alternatively, update the user in the user list if needed
-          } else {
-            response.text().then((errorMessage) => {
-              console.log('Failed to update user:', errorMessage);
-              // Set the error message state
-              setErrorMessage(errorMessage);
-            });
-          }
-        })
-        .catch((error) => {
-          console.log('Error while updating user', error);
-        });
-    } else {
-      // Make the POST request to insert a new user
-      fetch('http://localhost:8080/admin/insert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUserModel),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log('User inserted successfully');
-            // Refresh the page to reflect the changes
-            window.location.reload();
-          } else if (response.status === 400) {
-            response.json().then((data) => {
-              console.log('Failed to insert user:', data.message);
-              // Set the error message state
-              setErrorMessage(data.message);
-            });
-          } else {
-            console.log('Failed to insert user');
-          }
-        })
-        .catch((error) => {
-          console.log('Error while inserting user', error);
-        });
-    }
-  };
-  
-  
-  
-  
-  
+  });
 
+
+
+
+
+
+const indexOfLastUser = currentPage * perPage;
+const indexOfFirstUser = indexOfLastUser - perPage;
+const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+
+const [editMode, setEditMode] = useState(false);
+const [editedUser, setEditedUser] = useState<User | null>(null);
+
+const handleEditUser = () => {
+  setEditMode(true);
+  setEditedUser(selectedUser);
+};
+
+const handleSaveUser = () => {
+  if (!editedUser) {
+    return;
+  }
+
+  // Prepare the updated user data
+  const updatedUserModel: Partial<User> = {
+    user_id: selectedUser?.user_id,
+    staffstatus_id: selectedUser?.staffstatus_id,
+    usertype_id: selectedUser?.usertype_id,
+    position_id: selectedUser?.position_id,
+    project_id: selectedUser?.project_id,
+    first_name: editedUser?.first_name || '',
+    last_name: editedUser?.last_name || '',
+    mobile_num: editedUser?.mobile_num || 0,
+    username: editedUser?.username || '',
+    password: editedUser?.password || '',
+    updated_by: loggedInUserId ? Number(loggedInUserId) : 0, // Convert loggedInUserId to a number
+  };
+
+  // Conditionally include the email field if it has been edited
+  if (editedUser.email !== selectedUser?.email) {
+    updatedUserModel.email = editedUser.email;
+  }
+
+  // Make the PUT request to update the user
+  fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedUserModel),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log('User updated successfully');
+        // Refresh the page to reflect the changes
+        window.location.reload();
+        // Alternatively, update the user in the user list if needed
+      } else {
+        response.text().then((errorMessage) => {
+          console.log('Failed to update user:', errorMessage);
+          // Set the error message state
+          setErrorMessage(errorMessage);
+        });
+      }
+    })
+    .catch((error) => {
+      console.log('Error while updating user', error);
+    });
+};
+
+  
   useEffect(() => {
-    // Make the GET request to fetch users data
     fetch('http://localhost:8080/admin/showAllUser')
       .then((response) => response.json())
       .then((data) => {
@@ -400,9 +374,12 @@ const AdminMembersPage: React.FC = () => {
         setUsers(data);
       })
       .catch((error) => {
-        console.log('Error while fetching users data', error);
+        console.log('Error while fetching users data:', error);
       });
   }, []);
+  
+  
+  
 
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
@@ -419,8 +396,6 @@ const AdminMembersPage: React.FC = () => {
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [currDate, setCurrDate] = useState('');
-  const [currTime, setCurrTime] = useState('');
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -429,20 +404,6 @@ const AdminMembersPage: React.FC = () => {
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
-
-  useEffect(() => {
-    const timerID = setInterval(() => {
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString();
-      const formattedTime = currentDate.toLocaleTimeString();
-      setCurrDate(formattedDate);
-      setCurrTime(formattedTime);
-    }, 1000);
-
-    return () => {
-      clearInterval(timerID);
-    };
-  }, []);
 
   const [usertypes, setUserTypes] = useState<UserType[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
@@ -485,7 +446,20 @@ const AdminMembersPage: React.FC = () => {
       });
   }, []);
 
+  useEffect(() => {
+    fetch('http://localhost:8080/admin/showAllProject')
+      .then((response) => response.json())
+      .then((data) => {
+        setProjects(data);
+      })
+      .catch((error) => {
+        console.log('Error while fetching projects:', error);
+      });
+  }, []);
   
+
+
+
   return (
     <div className="container">
       <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
@@ -567,31 +541,36 @@ const AdminMembersPage: React.FC = () => {
         <Table>
           <TableHead className="table-header">
             <TableRow>
-              <TableCell></TableCell>
+            <TableCell></TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {currentUsers.map((user) => (
-              <TableRow key={user.user_id} hover>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedUsers.includes(user.user_id)}
-                    onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
-                    {`${user.first_name} ${user.last_name}`}
-                  </a>
-                </TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.email}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody> 
+          {currentUsers.map((user) => {
+
+    return (
+      <TableRow key={user.user_id} hover>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={selectedUsers.includes(user.user_id)}
+            onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
+          />
+        </TableCell>
+        <TableCell>
+          <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
+            {`${user.first_name} ${user.last_name}`}
+          </a>
+        </TableCell>
+        <TableCell>{user.username}</TableCell>
+        <TableCell>{user.email}</TableCell>
+
+      </TableRow>
+    );
+  })}
+</TableBody>
+
         </Table>
       </TableContainer>
 
@@ -602,58 +581,46 @@ const AdminMembersPage: React.FC = () => {
       <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
   <div className="user-info-page">
     <Typography variant="h5" className="user-info-title">
-      {editMode ? 'EDIT USER INFORMATION' : 'USER INFORMATION'}
+      {editMode ? ` Edit ${selectedUser?.first_name || "User"}'s Information` : `${selectedUser?.first_name || "User"}'s Information`}
     </Typography>
     {selectedUser && (
       <div className="user-info-content">
-        <strong className="user-info-label">Name:</strong>
-        {editMode ? (
-          <>
-            <div className="name-label">First Name:</div>
-            <TextField
+      <strong className="user-info-label">Name:</strong>
+      {editMode ? (
+        <>
+          <div className="name-input">
+            <input
               className="user-info-value"
-              value={editedUser?.first_name || ''}
+              value={`${editedUser?.first_name || ''} ${editedUser?.last_name || ''}`}
               onChange={(e) => {
-                const firstName = e.target.value;
+                const fullName = e.target.value;
+                const [firstName, lastName] = fullName.split(' ');
                 setEditedUser((prevEditedUser: User | null) => ({
                   ...prevEditedUser!,
                   first_name: firstName || '',
-                }));
-              }}
-            />
-            <div className="name-label">Last Name:</div>
-            <TextField
-              className="user-info-value"
-              value={editedUser?.last_name || ''}
-              onChange={(e) => {
-                const lastName = e.target.value;
-                setEditedUser((prevEditedUser: User | null) => ({
-                  ...prevEditedUser!,
                   last_name: lastName || '',
                 }));
               }}
             />
-          </>
-        ) : (
-          <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
-        )}
-        <br />
+          </div>
+        </>
+      ) : (
+        <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
+      )}
 
-        {/* <strong className="user-info-label">Username:</strong>
-        {editMode ? (
-          <TextField
-            className="user-info-value"
-            value={editedUser?.username || ''}
-            onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, username: e.target.value }))}
-          />
-        ) : (
-          <span className="user-info-value">{selectedUser.username}</span>
-        )}
-        <br /> */}
+  
+        <strong className="user-info-label">Username:</strong>
+{editMode ? (
+  <span className="user-info-value">{editedUser?.username || ''}</span>
+) : (
+  <span className="user-info-value">{selectedUser.username}</span>
+)}
+
+
 
         <strong className="user-info-label">Email:</strong>
         {editMode ? (
-          <TextField
+          <input
             className="user-info-value"
             value={editedUser?.email || ''}
             onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, email: e.target.value }))}
@@ -661,11 +628,11 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.email}</span>
         )}
-        <br />
+  
 
         <strong className="user-info-label">Contact:</strong>{" "}
         {editMode ? (
-          <TextField
+          <input
             className="user-info-value"
             value={editedUser?.mobile_num || ''}
             onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, mobile_num: parseInt(e.target.value) }))}
@@ -673,11 +640,11 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.mobile_num}</span>
         )}
-        <br />
+   
 
         <strong className="user-info-label">Password:</strong>{" "}
         {editMode ? (
-          <TextField
+          <input
             className="user-info-value"
             type="password"
             value={editedUser?.password || ''}
@@ -686,7 +653,7 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.password ? "********" : ""}</span>
         )}
-        <br />
+   
 
         <strong className="user-info-label">UserType:</strong>{" "}
 {editMode ? (
@@ -706,6 +673,29 @@ const AdminMembersPage: React.FC = () => {
 )}
 
 
+<strong className="user-info-label">Project:</strong>{" "}
+{editMode ? (
+  <Select
+    className="user-info-value"
+    value={editedUser?.project_id || ''}
+    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, project_id: Number(e.target.value) }))}
+  >
+    {projects.map((project) => (
+      <MenuItem key={project.project_id} value={project.project_id}>
+        {project.project_name}
+      </MenuItem>
+    ))}
+  </Select>
+) : (
+  <span className="user-info-value">{selectedUser?.project_name}</span>
+)}
+
+
+
+
+
+
+
         <strong className="user-info-label">Position:</strong>{" "}
         {editMode ? (
           <Select
@@ -722,15 +712,24 @@ const AdminMembersPage: React.FC = () => {
         ) : (
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
-        <br />
+     
 
-        {/* <strong className="user-info-label">Created At:</strong>{" "}
-        <span className="user-info-value">{selectedUser.created_time}</span>
-        <br />
+        <strong className="user-info-label">Created By:</strong>{" "}
+<span className="user-info-value">{selectedUser.created_by}</span>
+
+        
+        <strong className="user-info-label">Updated By:</strong>{" "}
+<span className="user-info-value">{selectedUser.updated_by}</span>
 
 
-        <strong className="user-info-label">Updated At:</strong>{" "}
-        <span className="user-info-value">{editMode ? selectedUser.updated_time : editedUser?.updated_time || selectedUser.updated_time}</span> */}
+        <strong className="user-info-label">Created At:</strong>{" "}
+<span className="user-info-value">{selectedUser.created_time}</span>
+
+
+<strong className="user-info-label">Updated At:</strong>{" "}
+<span className="user-info-value">{selectedUser.updated_time}</span>
+
+
       </div>
     )}
 
@@ -744,7 +743,7 @@ const AdminMembersPage: React.FC = () => {
           Edit
         </Button>
       )}
-      <Button onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
+      <Button  onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
         Close
       </Button>
     </div>
@@ -798,7 +797,7 @@ const AdminMembersPage: React.FC = () => {
       type="number"
       fullWidth
       value={newUser.mobile_num}
-      onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value) })}
+      onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value, 10) })}
     />
     <TextField
       margin="dense"
@@ -808,66 +807,82 @@ const AdminMembersPage: React.FC = () => {
       value={newUser.password}
       onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
     />
- <Typography variant="subtitle1" gutterBottom>
-  Position
-</Typography>
-<Select
-  margin="dense"
-  value={newUser.position_id}
-  onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
-  fullWidth
->
-  {positions.map((position) => (
-    <MenuItem key={position.position_id} value={position.position_id}>
-      {position.position_name}
-    </MenuItem>
-  ))}
-</Select>
 
-<Typography variant="subtitle1" gutterBottom>
-  Staff Status
-</Typography>
-<Select
-  margin="dense"
-  value={newUser.staffstatus_id}
-  onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
-  fullWidth
->
-  {staffStatuses.map((status) => (
-    <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
-      {status.staffstatus_name}
-    </MenuItem>
-  ))}
-</Select>
+    <Typography variant="subtitle1" gutterBottom>
+      Position
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.position_id}
+      onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {positions.map((position) => (
+        <MenuItem key={position.position_id} value={position.position_id}>
+          {position.position_name}
+        </MenuItem>
+      ))}
+    </Select>
 
-<Typography variant="subtitle1" gutterBottom>
-  UserType
-</Typography>
-<Select
-  margin="dense"
-  value={newUser.usertype_id}
-  onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
-  fullWidth
->
-  {usertypes.map((usertype) => (
-    <MenuItem key={usertype.usertype_id} value={usertype.usertype_id}>
-      {usertype.usertype_name}
-    </MenuItem>
-  ))}
-</Select>
+    <Typography variant="subtitle1" gutterBottom>
+      Staff Status
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.staffstatus_id}
+      onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {staffStatuses.map((status) => (
+        <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
+          {status.staffstatus_name}
+        </MenuItem>
+      ))}
+    </Select>
 
+    <Typography variant="subtitle1" gutterBottom>
+      Project
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.project_id}
+      onChange={(e) => setNewUser({ ...newUser, project_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {projects.map((project) => (
+        <MenuItem key={project.project_id} value={project.project_id}>
+          {project.project_name}
+        </MenuItem>
+      ))}
+    </Select>
 
+    <Typography variant="subtitle1" gutterBottom>
+      UserType
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.usertype_id}
+      onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {usertypes.map((usertype) => (
+        <MenuItem key={usertype.usertype_id} value={usertype.usertype_id}>
+          {usertype.usertype_name}
+        </MenuItem>
+      ))}
+    </Select>
   </DialogContent>
   <DialogActions className="add-user-dialog-actions">
-  <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
-    Cancel
-  </Button>
-  <Button onClick={handleAddUsers} color="primary">
-    Add
-  </Button>
-</DialogActions>
-
+    <Button onClick={() => setAddUserDialogOpen(false)} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleAddUsers} color="primary">
+      Add
+    </Button>
+  </DialogActions>
 </Dialog>
+
+
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success">
           {snackbarMessage}

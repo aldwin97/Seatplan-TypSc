@@ -1,40 +1,41 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.seatPlan.project.mapper.DashBoardMapper;
+import com.seatPlan.project.dao.DashBoardDao;
 
 
 @Service
 public class DashBoardService {
-    private DashBoardMapper dashBoardMapper;
+    private DashBoardDao dashBoardDao;
 
-    public DashBoardService(@Autowired DashBoardMapper dashBoardMapper) {
-        this.dashBoardMapper = dashBoardMapper;
+    public DashBoardService(@Autowired(required=true)DashBoardDao dashBoardDao) {
+        this.dashBoardDao = dashBoardDao;
     }
 
     public int countUser(){
-        return dashBoardMapper.countUser();
+        return dashBoardDao.countUser();
     }
 
     public int countSeatAvailable(){
-        return  dashBoardMapper.countSeatAvailable();
+        return  dashBoardDao.countSeatAvailable();
     }
 
     public int countTrainee(){
-        return dashBoardMapper.countTrainee();
+        return dashBoardDao.countTrainee();
     }
 
     public int countRegular(){
-        return dashBoardMapper.countRegular();
+        return dashBoardDao.countRegular();
     }
 
     public int countOccupied(){
-        return dashBoardMapper.countOccupied();
+        return dashBoardDao.countOccupied();
     }
 
     public int countUnderMaintenance(){
-        return dashBoardMapper.countUnderMaintenance();
+        return dashBoardDao.countUnderMaintenance();
     }
 
 }

@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './login_component/logInPage';
 import ViewSeatPage from './viewseat_component/viewSeatPage';
 import HelpPage from './help_component/helpPage';
 import DashboardPage from './dashboard_component/dashboardPage';
 import AdminMembersPage from './admin_component/adminMembersPage';
-import SeatplanPage from './seatplan_component/seatplanPage'
-import './App.css';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import SeatplanPage from './seatplan_component/seatplanPage';
 import ProfilePage from './profile_component/profilePage';
+import './App.css';
 
 function App(): JSX.Element {
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -22,7 +21,7 @@ function App(): JSX.Element {
           <Route path="/seatPlanPage" element={<SeatplanPage />} />
           <Route path="/adminPage" element={<AdminMembersPage />} />
           <Route path="/profilePage" element={<ProfilePage />} />
-          <Route path="*" element={<Navigate to="/" />} /> // Redirect to the homepage for unknown routes
+          <Route path="*" element={<Navigate to="/" />} /> {/* Redirect to the homepage for unknown routes */}
         </Routes>
       </BrowserRouter>
     </div>

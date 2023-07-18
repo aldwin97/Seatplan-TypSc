@@ -1,3 +1,4 @@
+//Kenneth Christian Gutierrez
 package com.seatPlan.project.config;
 
 import org.springframework.context.annotation.Configuration;

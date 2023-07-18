@@ -1,0 +1,28 @@
+<!DOCTYPE configuration>
+<configuration>
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC" />
+      <dataSource type="POOLED">
+        <property name="driver" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/seatPlan_db" />
+        <property name="username" value="kenneth" />
+        <property name="password" value="password1234" />
+      </dataSource>
+    </environment>
+  </environments>
+
+  <mappers>
+    
+    <mapper resource="mapper/AdminMapper.xml" />
+
+    <mapper resource="resources/mapper/ProjectMapper.xml" />
+
+    <mapper resource="resources/mapper/UserMapper.xml" />
+    <mapper resource="resources/mapper/SeatMapper.xml" />
+
+    <mapper resource="resources/mapper/DashBoardMapper.xml" />
+
+  </mappers>
+  
+</configuration>

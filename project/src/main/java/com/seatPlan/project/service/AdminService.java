@@ -1,14 +1,14 @@
+//Kenneth Christian B. Gutierrez
 package com.seatPlan.project.service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.seatPlan.project.mapper.AdminMapper;
+import com.seatPlan.project.dao.AdminDao;
+import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
@@ -19,13 +19,15 @@ import com.seatPlan.project.model.UserTypeModel;
 
 @Service
 public class AdminService {
-    private AdminMapper adminMapper;
-    public AdminService(@Autowired AdminMapper adminMapper){
-        this.adminMapper = adminMapper;
+
+    private AdminDao adminDao;
+
+    public AdminService(@Autowired(required=true) AdminDao adminDao){
+        this.adminDao = adminDao;
     }
 
     public List<Map<String, Object>> getAllPosition() {
-        List<PositionModel> positions = adminMapper.getAllPosition();
+        List<PositionModel> positions = adminDao.getAllPosition();
         List<Map<String, Object>> filteredPositions = positions.stream()
     .map(position -> {
         Map<String, Object> positionMap = new HashMap<>();
@@ -37,9 +39,8 @@ public class AdminService {
         return filteredPositions;
     }
 
-
     public List<Map<String, Object>> getAllProject(){
-        List<ProjectModel> projects = adminMapper.getAllProject();
+        List<ProjectModel> projects = adminDao.getAllProject();
         List<Map<String, Object>> filteredProjects = projects.stream()
         .map(project ->{
             Map<String, Object> projectMap = new HashMap<>();
@@ -52,10 +53,8 @@ public class AdminService {
         return filteredProjects;
     }
 
-
-
     public List<Map<String, Object>> getAllUserType(){
-        List<UserTypeModel> userTypes = adminMapper.getAllUserTypeModels();
+        List<UserTypeModel> userTypes = adminDao.getAllUserTypeModels();
         List<Map<String, Object>> filteredUserType = userTypes.stream()
         .map(userType ->{
             Map<String, Object> userTypeMap = new HashMap<>();
@@ -69,7 +68,7 @@ public class AdminService {
     }
 
     public List<Map<String, Object>> getAllUser() {
-        List<UserModel> users = adminMapper.getAllUser();
+        List<UserModel> users = adminDao.getAllUser();
         List<Map<String, Object>> filteredUserType = users.stream()
                 .map(user -> {
                     Map<String, Object> userMap = new HashMap<>();
@@ -84,13 +83,17 @@ public class AdminService {
                     userMap.put("usertype_name",user.getUsertype_name());
                     userMap.put("project_name",user.getProject_name());
                     userMap.put("staffstatus_name", user.getStaffstatus_name());
+                    userMap.put("created_time",user.getCreated_time());
+                    userMap.put("updated_time",user.getUpdated_time());
+                    userMap.put("updated_by",user.getUpdated_by());
+                    userMap.put("created_by",user.getCreated_by());
                     return userMap;
                 }).collect(Collectors.toList());
         return filteredUserType;
     }
 
      public List<Map<String, Object>> getAllStaffStatus(){
-        List<StaffStatusModel> staffs = adminMapper.getAllStaffStatusModels();
+        List<StaffStatusModel> staffs = adminDao.getAllStaffStatusModels();
         List<Map<String, Object>> filteredStaffStatus = staffs.stream()
         .map(staff ->{
             Map<String, Object> staffMap = new HashMap<>();
@@ -104,28 +107,32 @@ public class AdminService {
     }
 
      public void deleteUserById(Long user_id) {
-         adminMapper.deleteUserById(user_id);
+         adminDao.deleteUserById(user_id);
         
     }
 
     public boolean isUsernameExists(String username) {
-        return adminMapper.getUserByUsername(username) != null;
+        return adminDao.getUserByUsername(username) != null;
     }
 
      public boolean isUserEmailExists(String email) {
-        return adminMapper.getUserByEmail(email) != null;
+        return adminDao.getUserByEmail(email) != null;
     }
 
     public void insertUser(UserModel userModel) {
-        adminMapper.insertUser(userModel);
+        adminDao.insertUser(userModel);
     }
 
     public void updateUser(UserModel userModel) {
-        adminMapper.updateUser(userModel);
+        adminDao.updateUser(userModel);
     }
 
     public UserModel getUserById(Long user_id) {
-        return adminMapper.getUserById(user_id);
+        return adminDao.getUserById(user_id);
+    }
+
+    public void saveComment(CommentModel comment) {
+        adminDao.insertComment(comment);
     }
     
     

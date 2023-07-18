@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styles from './profilePage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { faUser, faBell, faChartBar, faUsers, faProjectDiagram, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 
-function ProfilePage() {
+
+
+const LogInPage: React.FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
+
   const navigate = useNavigate();
 
   const toggleOldPasswordVisibility = () => {
@@ -26,254 +27,239 @@ function ProfilePage() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
-  };
-  const adminPageHandleClick = () => {
-    navigate('/AdminPage');
-  };
-  const seatplanPageHandleClick = () => {
-    navigate('/SeatplanPage');
-  };
-  const logInPageHandleClick = () => {
+  const logInPageHandleClick = (): void => {
     navigate('/');
   };
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
 
-  const toggleProfileDropdown = () => {
+
+  // const populateProfileSummary = () => {
+  //   const firstNameInput = document.querySelector<HTMLInputElement>('input[name="FirstName"]');
+  //   const lastNameInput = document.querySelector<HTMLInputElement>('input[name="LastName"]');
+  //   const usernameInput = document.querySelector<HTMLInputElement>('input[name="username"]');
+  //   const emailInput = document.querySelector<HTMLInputElement>('input[name="Email"]');
+  //   const contactNumberInput = document.querySelector<HTMLInputElement>('input[name="ContactNumber"]');
+
+  //   if (firstNameInput && lastNameInput && usernameInput && emailInput && contactNumberInput) {
+  //     const fullName = `${firstNameInput.value} ${lastNameInput.value}`;
+  //     document.getElementById('fullName')!.textContent = fullName;
+  //     document.getElementById('username')!.textContent = usernameInput.value;
+  //     document.getElementById('email')!.textContent = emailInput.value;
+  //     document.getElementById('contactNumber')!.textContent = contactNumberInput.value;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   populateProfileSummary();
+  // }, []);
+
+
+
+
+
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
+  const toggleProfileDropdown = (): void => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const handlePersonalSaveChanges = () => {
-    // Perform actions to save the changes
-    // This can include sending the form data to the server or updating the state
-    console.log('Saving changes...');
-  };
-
-  const handlePersonalCancelChanges = () => {
-    // Reset the form fields to their initial values or clear them
-    // Perform any other necessary actions when canceling changes
-    console.log('Canceling changes...');
-  };
-
-  const handleAccountSaveChanges = () => {
-    if (newPassword !== confirmPassword) {
-      setPasswordsMatch(false);
-      return; // Stop further execution
-    }
-
-    // Reset the error state
-    setPasswordsMatch(true);
-
-    // Perform actions to save the changes
-    // This can include sending the form data to the server or updating the state
-    console.log('Saving changes...');
-  };
-
-  const handleAccountCancelChanges = () => {
-    // Reset the form fields to their initial values or clear them
-    setNewPassword('');
-    setConfirmPassword('');
-
-    // Perform any other actions needed when canceling changes
-    console.log('Canceling changes...');
-  };
-
   return (
-    <>
     <body className={styles.backg}>
-    <div className={styles.container}>
-      <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-      </button>
-
-      {isDropdownOpen && (
-        <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
-          <button onClick={dashboardPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
-            Dashboard
-          </button>
-          <button onClick={adminPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
-            Members
-          </button>
-          <button onClick={seatplanPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faProjectDiagram} className={styles.icon} />
-            Projects
-          </button>
-        </div>
-      )}
-
-      <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
-      </button>
-
-      {isProfileDropdownOpen && (
-        <div className={styles.dropdownMenu2}>
-          <button className={styles.sub}>
-            <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
-            Profile
-          </button>
-          <button onClick={logInPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
-            Logout
-          </button>
-          
-        </div>
-      )}
-
-      <button className={styles.notif}>
-        <FontAwesomeIcon icon={faBell} />
-      </button>
-    </div>
-
-
-    <div className = {styles.prof}>
+      
+      {/* Cards */}
       <form className={styles.form1}>
+      {/* <div className={styles.profileSum}>
+          <h2>Profile Summary</h2>
+          <p><strong>Full Name</strong> <span id="fullName"></span></p>
+          <p><strong>Username</strong> <span id="username"></span></p>
+          <p><strong>Email Address</strong> <span id="email"></span></p>
+          <p><strong>Contact Number</strong> <span id="contactNumber"></span></p>
+        </div> */}
+      <div className={styles.set}>
+      <div className={styles.personal}>
+     
+      <h1>Personal Information</h1>
+        <div className={styles['name-group']}>
+          <input
+            required
+            type="text"
+            name="FirstName"
+            autoComplete="off"
+            className={styles.nameInput}
+          />
+          <label className={styles['name-label']}>First Name</label>
+        </div>
 
-        <h1>PERSONAL INFORMATION</h1>
+
+        <div className={styles['name-group']}>
+          <input
+            required
+            type="text"
+            name="LastName"
+            autoComplete="off"
+            className={styles.nameInput}
+          />
+          <label className={styles['name-label']}>Last Name</label>
+        </div>
+        
+
         <div className={styles['input-group']}>
-          <input required
-          type="text"
-          name = "firstName"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>First Name</label>
+          <input
+            required
+            type="text"
+            name="Email"
+            autoComplete="off"
+            className={styles.input}
+          />
+          <label className={styles['user-label']}>Email Address</label>
         </div>
 
         <div className={styles['input-group']}>
-          <input required
-          type="text"
-          name = "lastName"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>Last Name</label>
+          <input
+            required
+            type="text"
+            name="ContactNumber"
+            autoComplete="off"
+            className={styles.input}
+          />
+          <label className={styles['user-label']}>Contact Number</label>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+      <div className={styles.accountS}>
+        <h1>Account Settings</h1>
+       <div className={styles['input-group']}>
+          <input required 
+            type="text" 
+            name="username" 
+            autoComplete="off" 
+            className={styles.input} />
+              <label className={styles['user-label']}>Username</label>
         </div>
 
         <div className={styles['input-group']}>
-          <input required
-          type="text"
-          name = "emailAddress"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>Email Address</label>
+          <input
+            required
+            type={showOldPassword ? 'text' : 'password'}
+            name="oldPassword"
+            autoComplete="off"
+            className={styles.input}
+          />
+          <label className={styles['user-label']}>Old Password</label>
+          <span
+            className={`${styles['toggle-password']} ${showOldPassword ? styles.active : ''}`}
+            onClick={toggleOldPasswordVisibility}
+          >
+            {showOldPassword ? <FaEye /> : <FaEyeSlash />}
+          </span>
         </div>
 
-        <div className={styles['input-group']}>
-          <input required
-          type="number"
-          name = "contactNumber"
-          autoComplete="off"
-          className={styles.input}
-        />
-        <label className= {styles['user-label']}>Contact Number</label>
+        <div className={styles['change-group']}>
+          <input
+            required
+            type={showNewPassword ? 'text' : 'password'}
+            name="newPassword"
+            autoComplete="off"
+            className={styles.changeInput}
+          />
+          <label className={styles['change-label']}>New Password</label>
+          <span
+            className={`${styles['toggle-password1']} ${showNewPassword ? styles.active : ''}`}
+            onClick={toggleNewPasswordVisibility}
+          >
+            {showNewPassword ? <FaEye /> : <FaEyeSlash />}
+          </span>
         </div>
 
-        <div className={styles['button-group']}>
-            <button type="button" className={styles.saveButton} onClick={handlePersonalSaveChanges}>
-              Save Changes
-            </button>
-            <button type="button" className={styles.cancelButton} onClick={handlePersonalCancelChanges}>
-              Cancel
-            </button>
-          </div>
-
-
-
-        <h2>ACCOUNT SETTINGS</h2>
-        <div className={styles['input-group']}>
-            <input
-              required
-              type="text"
-              name="username"
-              autoComplete="off"
-              className={styles.input}
-            />
-            <label className={styles['user-label']}>Username</label>
+        <div className={styles['change-group']}>
+          <input
+            required
+            type={showConfirmPassword ? 'text' : 'password'}
+            name="confirmPassword"
+            autoComplete="off"
+            className={styles.changeInput}
+          />
+          <label className={styles['change-label']}>Confirm Password</label>
+          <span
+            className={`${styles['toggle-password1']} ${showConfirmPassword ? styles.active : ''}`}
+            onClick={toggleConfirmPasswordVisibility}
+          >
+            {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+          </span>
         </div>
+      </div>
+      </div>
 
-        <div className={styles['input-group']}>
-              <input
-                required
-                type={showOldPassword ? 'text' : 'password'}
-                name="oldPassword"
-                autoComplete="off"
-                className={styles.input}
-              />
-              <label className={styles['user-label']}>Old Password</label>
-              <span
-                className={`${styles['toggle-password']} ${showOldPassword ? styles.active : ''}`}
-                onClick={toggleOldPasswordVisibility}
-              >
-                {showOldPassword ? <FaEye /> : <FaEyeSlash />}
-              </span>
-            </div>
+   </form>
 
-            <div className={styles['input-group']}>
-              <input
-                required
-                type={showNewPassword ? 'text' : 'password'}
-                name="newPassword"
-                autoComplete="off"
-                className={styles.input}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-              <label className={styles['user-label']}>New Password</label>
-              <span
-                className={`${styles['toggle-password']} ${showNewPassword ? styles.active : ''}`}
-                onClick={toggleNewPasswordVisibility}
-              >
-                {showNewPassword ? <FaEye /> : <FaEyeSlash />}
-              </span>
-            </div>
 
-            <div className={styles['input-group']}>
-              <input
-                required
-                type={showConfirmPassword ? 'text' : 'password'}
-                name="confirmPassword"
-                autoComplete="off"
-                className={styles.input}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-              <label className={styles['user-label']}>Confirm Password</label>
-              <span
-                className={`${styles['toggle-password']} ${showConfirmPassword ? styles.active : ''}`}
-                onClick={toggleConfirmPasswordVisibility}
-              >
-                {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
-              </span>
-            </div>
 
-            {!passwordsMatch && <p className={styles.error}>Passwords do not match.</p>}
 
-            <div className={styles['button-group']}>
-              <button type="button" className={styles.saveButton} onClick={handleAccountSaveChanges}>
-                Save Changes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       {/* for notification and profile */}
+
+          <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
+            <FontAwesomeIcon icon={faUser as IconProp} />
+          </button>
+
+          {isProfileDropdownOpen && (
+            <div className={styles.dropdownMenu2}>
+
+              <button className={styles.sub}>
+                <FontAwesomeIcon icon={faFaceSmile as IconProp} className={styles.icon} />
+                Profile
               </button>
-              <button type="button" className={styles.cancelButton} onClick={handleAccountCancelChanges}>
-                Cancel
+
+              <button onClick={logInPageHandleClick} className={styles.sub}>
+                <FontAwesomeIcon icon={faPowerOff as IconProp} className={styles.icon} />
+                Logout
               </button>
+
             </div>
-          </form>
-        </div>
-      </body>
-    </>
+          )}
+
+          <button className={styles.notif}>
+            <FontAwesomeIcon icon={faBell as IconProp} />
+          </button>
+
+
+
+
+
+
+
+    </body>
   );
+};
 
-}
-
-export default ProfilePage;
+export default LogInPage;

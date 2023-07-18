@@ -69,13 +69,19 @@ const LogInPage: React.FC = () => {
       }
   
       const responseData = await response.json();
-      console.log(responseData);
-      setRedirectToDashboard(true);
+    const { user_id } = responseData; // Extract the user_id from responseData
+    console.log(user_id);
+    setRedirectToDashboard(true);
+  
+      // Save session data to Session Storage
+      window.sessionStorage.setItem('user_id', user_id);
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
+  
+  
 
   return (
     <div className={styles.body}>

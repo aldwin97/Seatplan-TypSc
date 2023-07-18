@@ -53,15 +53,16 @@ interface User {
   usertype_name: string;
   position_name: string;
   position_id: number;
-  user_picture: string;
-  is_deleted: boolean;
-  created_time: string; // Updated to string type
-  updated_time: string;
-  created_by: number;
-  updated_by: number ;
   project_id: number;
   project_name: string;
+  user_picture: string;
+  is_deleted: boolean;
+  created_time: string;
+  created_by: number;
+  updated_time: string;
+  updated_by: number;
 }
+
 
 interface UserType {
   usertype_id: number;
@@ -111,10 +112,10 @@ const AdminMembersPage: React.FC = () => {
     user_picture: '',
     is_deleted: false,
     created_time: '',
-    created_by: 0,
+    created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     updated_time: '',
-    updated_by: 0,
-  });
+    updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
+  });  
   useEffect(() => {
     // Retrieve the logged-in user ID from the session storage
     const user_id = sessionStorage.getItem('user_id');
@@ -193,6 +194,8 @@ const AdminMembersPage: React.FC = () => {
     const currentTime = new Date().toISOString();
     const loggedInUserId = sessionStorage.getItem('user_id');
   
+    console.log('loggedInUserId:', loggedInUserId); // Check the value in the console
+  
     const newUserModel = {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
@@ -205,23 +208,21 @@ const AdminMembersPage: React.FC = () => {
       usertype_id: newUser.usertype_id,
       position_id: newUser.position_id,
       created_time: currentTime,
-      created_by: loggedInUserId ? Number(loggedInUserId) : 0, // Convert loggedInUserId to a number
+      created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
   
-    console.log('Data to be inserted:', newUserModel);
+    console.log('newUserModel:', newUserModel); // Check the newUserModel object in the console
   
-  
-
   
     // Make the POST request to insert a new user
     fetch('http://localhost:8080/admin/insert', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newUserModel),
-  })
-    .then((response) => {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUserModel),
+    })
+      .then((response) => {
         if (response.ok) {
           console.log('User inserted successfully');
           setSnackbarMessage('User added successfully');
@@ -247,7 +248,7 @@ const AdminMembersPage: React.FC = () => {
         setSnackbarOpen(true);
       });
   };
-
+  
   
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -722,7 +723,9 @@ const handleSaveUser = () => {
         )}
         <br />
 
-
+        <strong className="user-info-label">Created By:</strong>{" "}
+<span className="user-info-value">{selectedUser.created_by}</span>
+<br />
         
         <strong className="user-info-label">Updated By:</strong>{" "}
 <span className="user-info-value">{selectedUser.updated_by}</span>

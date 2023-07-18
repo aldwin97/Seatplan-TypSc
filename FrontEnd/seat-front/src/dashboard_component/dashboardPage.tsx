@@ -125,7 +125,7 @@ const DashboardPage: React.FC = () => {
 </form>
           <div className={styles.card2}>
           <div className={styles.cardtitle2}>TOTAL SEAT</div>
-          <img className={styles['cardimg2']} />
+          <FontAwesomeIcon icon={faFaceSmile} className={styles.cardimg2} />
           <div className={styles.cardcount2 }>500</div>
             </div>
         

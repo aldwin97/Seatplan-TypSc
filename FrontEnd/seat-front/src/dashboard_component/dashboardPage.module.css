@@ -810,14 +810,15 @@ width: 357px;
 /* The .cardimg2 class will control the size and background of the image */
 .cardimg2 {
   position: absolute;
-  top: 20px;
-  left: 0;
+  top: 0;
+  left: 4;
   right: 0;
-  bottom: 0;
-  margin: auto; /* Center the image vertically and horizontally */
+  bottom: 10;
+  color: #ffffff;
+  margin-top: 10px;
+  margin-right:10px;
   width: 40px;
   height: 40px; /* Set the height to match the image aspect ratio */
-  background-image: url('./asset/Members.png');
   background-size: cover; /* Adjust the background size as needed */
   background-repeat: no-repeat; /* Prevent the background from repeating */
   border-radius: 50%; 
@@ -838,7 +839,7 @@ width: 357px;
   padding: 5px;
   color: #000000;
   
-  text-align: center;
+  text-align: left;
   font-weight: bold;
   
 }

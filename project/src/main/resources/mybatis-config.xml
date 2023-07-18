@@ -13,11 +13,16 @@
   </environments>
 
   <mappers>
-    <mapper resource="mapper/DashBoardMapper.xml" />
-    <mapper resource="mapper/ProjectMapper.xml" />
-    <mapper resource="mapper/SeatMapper.xml" />
-    <mapper resource="mapper/UserMapper.xml" />
+    
     <mapper resource="mapper/AdminMapper.xml" />
+
+    <mapper resource="resources/mapper/ProjectMapper.xml" />
+
+    <mapper resource="resources/mapper/UserMapper.xml" />
+    <mapper resource="resources/mapper/SeatMapper.xml" />
+
+    <mapper resource="resources/mapper/DashBoardMapper.xml" />
+
   </mappers>
   
 </configuration>

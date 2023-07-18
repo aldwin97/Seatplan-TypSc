@@ -1,17 +1,15 @@
 //Kenneth Christian B. Gutierrez
-package com.seatPlan.project.mapper;
+package com.seatPlan.project.dao;
 
 import java.util.List;
 
 
 import org.apache.ibatis.annotations.Mapper;
-
 import org.apache.ibatis.annotations.Param;
-
 import com.seatPlan.project.model.UserModel;
 
 @Mapper
-public interface UserMapper {
+public interface UserDao {
 
 
     // output all the data in table 

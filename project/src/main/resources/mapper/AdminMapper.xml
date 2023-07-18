@@ -1,7 +1,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.seatPlan.project.mapper.AdminMapper">
+        <mapper namespace="com.seatPlan.project.dao.AdminDao">
+
 
     <select id="getAllPosition" resultType="com.seatPlan.project.model.PositionModel">
         SELECT * FROM table_position WHERE is_deleted = 0

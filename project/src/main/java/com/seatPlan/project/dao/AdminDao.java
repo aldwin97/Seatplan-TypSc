@@ -1,5 +1,5 @@
 //Kenneth Christian B. Gutierrez
-package com.seatPlan.project.mapper;
+package com.seatPlan.project.dao;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,8 +10,11 @@ import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.model.UserTypeModel;
+
+
+
 @Mapper
-public interface AdminMapper {
+public interface AdminDao {
 
 
     List<PositionModel> getAllPosition();
@@ -27,8 +30,6 @@ public interface AdminMapper {
     List<StaffStatusModel> getAllStaffStatusModels();
 
     
-
-
     List<UserModel> getAllUser();
 
 

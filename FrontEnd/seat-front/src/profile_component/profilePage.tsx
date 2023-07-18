@@ -164,34 +164,34 @@ const LogInPage: React.FC = () => {
           </span>
         </div>
 
-        <div className={styles['input-group1']}>
+        <div className={styles['change-group']}>
           <input
             required
             type={showNewPassword ? 'text' : 'password'}
             name="newPassword"
             autoComplete="off"
-            className={styles.input}
+            className={styles.changeInput}
           />
-          <label className={styles['user-label']}>New Password</label>
+          <label className={styles['change-label']}>New Password</label>
           <span
-            className={`${styles['toggle-password']} ${showNewPassword ? styles.active : ''}`}
+            className={`${styles['toggle-password1']} ${showNewPassword ? styles.active : ''}`}
             onClick={toggleNewPasswordVisibility}
           >
             {showNewPassword ? <FaEye /> : <FaEyeSlash />}
           </span>
         </div>
 
-        <div className={styles['input-group1']}>
+        <div className={styles['change-group']}>
           <input
             required
             type={showConfirmPassword ? 'text' : 'password'}
             name="confirmPassword"
             autoComplete="off"
-            className={styles.input}
+            className={styles.changeInput}
           />
-          <label className={styles['user-label']}>Confirm Password</label>
+          <label className={styles['change-label']}>Confirm Password</label>
           <span
-            className={`${styles['toggle-password']} ${showConfirmPassword ? styles.active : ''}`}
+            className={`${styles['toggle-password1']} ${showConfirmPassword ? styles.active : ''}`}
             onClick={toggleConfirmPasswordVisibility}
           >
             {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}

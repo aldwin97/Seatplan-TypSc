@@ -32,17 +32,7 @@ const DashboardPage: React.FC = () => {
     setDrawerOpen(!isDrawerOpen);
   };
 
-  const handleSwipe = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
-    setDrawerOpen(open);
-  };
+ 
   return (
     <>
       <body>
@@ -55,8 +45,8 @@ const DashboardPage: React.FC = () => {
       <SwipeableDrawer
         anchor="left"
         open={isDrawerOpen}
-        onClose={handleSwipe(false)}
-        onOpen={handleSwipe(true)}
+        onClose={toggleDrawer}
+        onOpen={toggleDrawer}
         variant="persistent"
         className={isDrawerOpen ? styles['sidebar-open'] : styles['sidebar-closed']}
       >
@@ -68,7 +58,7 @@ const DashboardPage: React.FC = () => {
               <Menu />
             </i>
             <div className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}>
-              {/* Replace the following with your actual sidebar content */}
+              
               <ul className={styles['accordion-menu']}>
                 <li className={styles['sidebar-title']}>Apps</li>
                 <li className={styles['active-page']}>
@@ -94,7 +84,7 @@ const DashboardPage: React.FC = () => {
       </SwipeableDrawer>
             
             <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
+        <FontAwesomeIcon icon={faUser}  className={styles.uicon}/>
       </button>
 
       {isProfileDropdownOpen && (
@@ -134,9 +124,11 @@ const DashboardPage: React.FC = () => {
 </div>
 </form>
           <div className={styles.card2}>
-            <svg className={styles.cardimg2}><FontAwesomeIcon icon={faUser} /></svg>
-            <div className={styles.cardtitle2}>TOTAL SEAT</div>
-          </div>
+          <div className={styles.cardtitle2}>TOTAL SEAT</div>
+          <img className={styles['cardimg2']} />
+          <div className={styles.cardcount2 }>500</div>
+            </div>
+        
 
           <div className={styles.card3}>
             <svg className={styles.cardimg3}></svg>

@@ -157,7 +157,7 @@ body {
       .dropdownMenu2 {
         position: absolute;
         top: 50px; /* Adjust the top position as needed */
-        right: 10px; /* Adjust the right position as needed */
+        right: 20px; /* Adjust the right position as needed */
         z-index: 100;
         background-color: #fff;
         border: 1px solid #ddd;
@@ -181,10 +181,7 @@ body {
         background-color: #f5f5f5;
       }
 
-      .sub
-      {
-        color: #308a38;
-      }
+      
 
       .dropdownMenu {
         position: absolute;
@@ -217,7 +214,9 @@ body {
 
       .sub
       {
+        
         color: #308a38;
+      
       }
 
       .dropdownRows {
@@ -257,8 +256,9 @@ body {
 
       .profile {
         position: absolute;
+        font-size: 20px;
         top: 4px;
-        right: 1%;
+        right: 3%;
         width: 30px;
         padding: 8px;
         background-color: transparent;
@@ -276,8 +276,9 @@ body {
 
       .notif {
         position: absolute;
+        font-size: 20px;
         top: 4px;
-        right: 4%;
+        right: 6%;
         width: 30px;
         padding: 8px;
         background-color: transparent;
@@ -552,7 +553,7 @@ body {
         border-radius: 20px;
       }
 
-      .card.title2,
+      
       .card.title3,
       .card.title4,
       .card.title6,
@@ -564,7 +565,7 @@ body {
         margin-top: 0; /* Remove top margin for other cards */
       }
 
-      .cardtitle2,
+      
       .cardtitle3,
       .cardtitle4,
       .cardtitle6,
@@ -572,7 +573,7 @@ body {
       .cardtitle8,
       .cardtitle0 {
         font-weight: bold;
-        font-size: 12px;
+        font-size: 16px;
         margin-top: 10px;
       }
 
@@ -789,11 +790,57 @@ width: 357px;
 .form4 > div {
   flex: auto;
 }
+
 }
-.cardimg2{
-  color: #2FA73A;
-  margin-bottom:70px;
-  width: 20px;
+.card2 {
+  position: relative; 
+  align-items: center;
+  margin-top: -185px;
+  margin-left:  6%;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: #D2E4DC;
+  box-shadow: 0 2px 5px #308a38;
+  text-align: center;
+  border-radius: 0;
+ 
+}
+
+/* The .cardimg2 class will control the size and background of the image */
+.cardimg2 {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto; /* Center the image vertically and horizontally */
+  width: 40px;
+  height: 40px; /* Set the height to match the image aspect ratio */
+  background-image: url('./asset/Members.png');
+  background-size: cover; /* Adjust the background size as needed */
+  background-repeat: no-repeat; /* Prevent the background from repeating */
+  border-radius: 50%; 
+}
+
+.cardcount2 {
+  font-size: 32px;
+  width: 40px;
+  height: 40px;
+  color: #000000;
+}
+.cardtitle2{
+  position: absolute;
+  background-color: rgba(98, 186, 185, 0.2);
+  top: 0px;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  color: #000000;
+  
+  text-align: center;
+  font-weight: bold;
+  
 }
 .button-container {
   position: fixed;
@@ -801,14 +848,13 @@ width: 357px;
   left: 20px; /* Change this value to adjust the horizontal position */
 }
 
-/* Styling for the drawer */
-.drawer-container {
-  position: fixed;
-  top: 0;
-  left: -250px; /* Set to a negative value to hide the drawer initially */
-  width: 250px;
-  height: 100vh;
-  background-color: #f0f0f0;
-  padding: 20px;
-  transition: left 0.3s ease;
+
+.sidebar-open {
+  transition: all 1s cubic-bezier(0.1, 0.7, 1.0, 0.9);
+  
+}
+
+.sidebar-closed {
+  transition: all 1s cubic-bezier(0.1, 0.7, 1.0, 0.9);
+  
 }

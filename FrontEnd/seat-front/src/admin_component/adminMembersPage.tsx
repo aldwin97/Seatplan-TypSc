@@ -581,55 +581,46 @@ const handleSaveUser = () => {
       <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
   <div className="user-info-page">
     <Typography variant="h5" className="user-info-title">
-      {editMode ? 'EDIT USER INFORMATION' : 'USER INFORMATION'}
+      {editMode ? ` Edit ${selectedUser?.first_name || "User"}'s Information` : `${selectedUser?.first_name || "User"}'s Information`}
     </Typography>
     {selectedUser && (
       <div className="user-info-content">
-        <strong className="user-info-label">Name:</strong>
-        {editMode ? (
-          <>
-            <div className="name-label">First Name:</div>
-            <TextField
+      <strong className="user-info-label">Name:</strong>
+      {editMode ? (
+        <>
+          <div className="name-input">
+            <input
               className="user-info-value"
-              value={editedUser?.first_name || ''}
+              value={`${editedUser?.first_name || ''} ${editedUser?.last_name || ''}`}
               onChange={(e) => {
-                const firstName = e.target.value;
+                const fullName = e.target.value;
+                const [firstName, lastName] = fullName.split(' ');
                 setEditedUser((prevEditedUser: User | null) => ({
                   ...prevEditedUser!,
                   first_name: firstName || '',
-                }));
-              }}
-            />
-            <div className="name-label">Last Name:</div>
-            <TextField
-              className="user-info-value"
-              value={editedUser?.last_name || ''}
-              onChange={(e) => {
-                const lastName = e.target.value;
-                setEditedUser((prevEditedUser: User | null) => ({
-                  ...prevEditedUser!,
                   last_name: lastName || '',
                 }));
               }}
             />
-          </>
-        ) : (
-          <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
-        )}
-        <br />
+          </div>
+        </>
+      ) : (
+        <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
+      )}
 
+  
         <strong className="user-info-label">Username:</strong>
 {editMode ? (
   <span className="user-info-value">{editedUser?.username || ''}</span>
 ) : (
   <span className="user-info-value">{selectedUser.username}</span>
 )}
-<br />
+
 
 
         <strong className="user-info-label">Email:</strong>
         {editMode ? (
-          <TextField
+          <input
             className="user-info-value"
             value={editedUser?.email || ''}
             onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, email: e.target.value }))}
@@ -637,11 +628,11 @@ const handleSaveUser = () => {
         ) : (
           <span className="user-info-value">{selectedUser.email}</span>
         )}
-        <br />
+  
 
         <strong className="user-info-label">Contact:</strong>{" "}
         {editMode ? (
-          <TextField
+          <input
             className="user-info-value"
             value={editedUser?.mobile_num || ''}
             onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, mobile_num: parseInt(e.target.value) }))}
@@ -649,11 +640,11 @@ const handleSaveUser = () => {
         ) : (
           <span className="user-info-value">{selectedUser.mobile_num}</span>
         )}
-        <br />
+   
 
         <strong className="user-info-label">Password:</strong>{" "}
         {editMode ? (
-          <TextField
+          <input
             className="user-info-value"
             type="password"
             value={editedUser?.password || ''}
@@ -662,7 +653,7 @@ const handleSaveUser = () => {
         ) : (
           <span className="user-info-value">{selectedUser.password ? "********" : ""}</span>
         )}
-        <br />
+   
 
         <strong className="user-info-label">UserType:</strong>{" "}
 {editMode ? (
@@ -698,7 +689,7 @@ const handleSaveUser = () => {
 ) : (
   <span className="user-info-value">{selectedUser?.project_name}</span>
 )}
-<br />
+
 
 
 
@@ -721,19 +712,19 @@ const handleSaveUser = () => {
         ) : (
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
-        <br />
+     
 
         <strong className="user-info-label">Created By:</strong>{" "}
 <span className="user-info-value">{selectedUser.created_by}</span>
-<br />
+
         
         <strong className="user-info-label">Updated By:</strong>{" "}
 <span className="user-info-value">{selectedUser.updated_by}</span>
-<br />
+
 
         <strong className="user-info-label">Created At:</strong>{" "}
 <span className="user-info-value">{selectedUser.created_time}</span>
-<br />
+
 
 <strong className="user-info-label">Updated At:</strong>{" "}
 <span className="user-info-value">{selectedUser.updated_time}</span>
@@ -752,7 +743,7 @@ const handleSaveUser = () => {
           Edit
         </Button>
       )}
-      <Button onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
+      <Button  onClick={handleCloseDialog} color="primary" className="user-info-dialog-close-button">
         Close
       </Button>
     </div>

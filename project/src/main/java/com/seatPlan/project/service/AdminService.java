@@ -14,6 +14,7 @@ import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.model.UserTypeModel;
+import com.seatPlan.project.model.UserInputModel;
 
 
 
@@ -119,8 +120,10 @@ public class AdminService {
         return adminDao.getUserByEmail(email) != null;
     }
 
-    public void insertUser(UserModel userModel) {
-        adminDao.insertUser(userModel);
+
+    
+    public void insertUser(UserInputModel userInputModel) {
+        adminDao.insertUser(userInputModel);
     }
 
     public void updateUser(UserModel userModel) {

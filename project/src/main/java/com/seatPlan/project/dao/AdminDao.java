@@ -8,6 +8,7 @@ import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.model.StaffStatusModel;
+import com.seatPlan.project.model.UserInputModel;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.model.UserTypeModel;
 
@@ -23,7 +24,6 @@ public interface AdminDao {
     List<ProjectModel> getAllProject();
 
 
-
     List<UserTypeModel> getAllUserTypeModels();
 
 
@@ -36,23 +36,16 @@ public interface AdminDao {
     void deleteUserById(@Param("user_id") Long user_id);
 
 
-    void insertUser(UserModel userModel);
-
-
+    void insertUser(UserInputModel userInsertModel);
 
     UserModel getUserById(Long user_id);
     
-
     void updateUser(UserModel userModel);
 
+    UserInputModel getUserByUsername(String username);
+
+    UserInputModel getUserByEmail(String email);
 
 
-    UserModel getUserByUsername(String username);
-
-
-    UserModel getUserByEmail(String email);
-
-
-   
     void insertComment(CommentModel comment);
 }

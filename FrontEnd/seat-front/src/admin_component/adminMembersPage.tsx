@@ -53,13 +53,16 @@ interface User {
   usertype_name: string;
   position_name: string;
   position_id: number;
+  project_id: number;
+  project_name: string;
   user_picture: string;
   is_deleted: boolean;
-  created_time: string; // Updated to string type
-  updated_time: string;
+  created_time: string;
   created_by: number;
+  updated_time: string;
   updated_by: number;
 }
+
 
 interface UserType {
   usertype_id: number;
@@ -75,6 +78,10 @@ interface StaffStatus {
   staffstatus_id: number;
   staffstatus_name: string;
 }
+interface Project {
+  project_id: number;
+  project_name: string;
+}
 
 const AdminMembersPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -84,6 +91,8 @@ const AdminMembersPage: React.FC = () => {
   const [userInfoDialogOpen, setUserInfoDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null); // State variable to store the logged-in user ID
+  const [projects, setProjects] = useState<Project[]>([]); // Specify the type as an array of Project objects
   const [newUser, setNewUser] = useState<User>({
     user_id: 0,
     first_name: '',
@@ -98,13 +107,20 @@ const AdminMembersPage: React.FC = () => {
     position_name: '',
     usertype_id: 0,
     position_id: 0,
+    project_id: 0,
+    project_name: '',
     user_picture: '',
     is_deleted: false,
     created_time: '',
-    created_by: 0,
+    created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     updated_time: '',
-    updated_by: 0,
-  });
+    updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
+  });  
+  useEffect(() => {
+    // Retrieve the logged-in user ID from the session storage
+    const user_id = sessionStorage.getItem('user_id');
+    setLoggedInUserId(user_id ? parseInt(user_id) : null);
+  }, []);
   
 
   const [perPage, setPerPage] = useState(8);
@@ -176,6 +192,10 @@ const AdminMembersPage: React.FC = () => {
 
   const handleAddUsers = () => {
     const currentTime = new Date().toISOString();
+    const loggedInUserId = sessionStorage.getItem('user_id');
+  
+    console.log('loggedInUserId:', loggedInUserId); // Check the value in the console
+  
     const newUserModel = {
       first_name: newUser.first_name,
       last_name: newUser.last_name,
@@ -184,14 +204,16 @@ const AdminMembersPage: React.FC = () => {
       username: newUser.username,
       password: newUser.password,
       staffstatus_id: newUser.staffstatus_id,
-      project_id: null,
+      project_id: newUser.project_id,
       usertype_id: newUser.usertype_id,
       position_id: newUser.position_id,
       created_time: currentTime,
-      created_by: null,
+      created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
   
-
+    console.log('newUserModel:', newUserModel); // Check the newUserModel object in the console
+  
+  
     // Make the POST request to insert a new user
     fetch('http://localhost:8080/admin/insert', {
       method: 'POST',
@@ -226,7 +248,7 @@ const AdminMembersPage: React.FC = () => {
         setSnackbarOpen(true);
       });
   };
-
+  
   
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -299,14 +321,16 @@ const handleSaveUser = () => {
   // Prepare the updated user data
   const updatedUserModel: Partial<User> = {
     user_id: selectedUser?.user_id,
-    first_name: editedUser.first_name || '',
-    last_name: editedUser.last_name || '',
-    mobile_num: editedUser.mobile_num || 0,
-    username: editedUser.username || '',
-    password: editedUser.password || '',
     staffstatus_id: selectedUser?.staffstatus_id,
     usertype_id: selectedUser?.usertype_id,
     position_id: selectedUser?.position_id,
+    project_id: selectedUser?.project_id,
+    first_name: editedUser?.first_name || '',
+    last_name: editedUser?.last_name || '',
+    mobile_num: editedUser?.mobile_num || 0,
+    username: editedUser?.username || '',
+    password: editedUser?.password || '',
+    updated_by: loggedInUserId ? Number(loggedInUserId) : 0, // Convert loggedInUserId to a number
   };
 
   // Conditionally include the email field if it has been edited
@@ -421,6 +445,19 @@ const handleSaveUser = () => {
         console.log('Error while fetching usertypes', error);
       });
   }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/admin/showAllProject')
+      .then((response) => response.json())
+      .then((data) => {
+        setProjects(data);
+      })
+      .catch((error) => {
+        console.log('Error while fetching projects:', error);
+      });
+  }, []);
+  
+
 
 
   return (
@@ -645,6 +682,29 @@ const handleSaveUser = () => {
 )}
 
 
+<strong className="user-info-label">Project:</strong>{" "}
+{editMode ? (
+  <Select
+    className="user-info-value"
+    value={editedUser?.project_id || ''}
+    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, project_id: Number(e.target.value) }))}
+  >
+    {projects.map((project) => (
+      <MenuItem key={project.project_id} value={project.project_id}>
+        {project.project_name}
+      </MenuItem>
+    ))}
+  </Select>
+) : (
+  <span className="user-info-value">{selectedUser?.project_name}</span>
+)}
+<br />
+
+
+
+
+
+
         <strong className="user-info-label">Position:</strong>{" "}
         {editMode ? (
           <Select
@@ -662,6 +722,11 @@ const handleSaveUser = () => {
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
         <br />
+
+        <strong className="user-info-label">Created By:</strong>{" "}
+<span className="user-info-value">{selectedUser.created_by}</span>
+<br />
+        
         <strong className="user-info-label">Updated By:</strong>{" "}
 <span className="user-info-value">{selectedUser.updated_by}</span>
 <br />
@@ -741,7 +806,7 @@ const handleSaveUser = () => {
       type="number"
       fullWidth
       value={newUser.mobile_num}
-      onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value) })}
+      onChange={(e) => setNewUser({ ...newUser, mobile_num: parseInt(e.target.value, 10) })}
     />
     <TextField
       margin="dense"
@@ -785,6 +850,22 @@ const handleSaveUser = () => {
     </Select>
 
     <Typography variant="subtitle1" gutterBottom>
+      Project
+    </Typography>
+    <Select
+      margin="dense"
+      value={newUser.project_id}
+      onChange={(e) => setNewUser({ ...newUser, project_id: Number(e.target.value) })}
+      fullWidth
+    >
+      {projects.map((project) => (
+        <MenuItem key={project.project_id} value={project.project_id}>
+          {project.project_name}
+        </MenuItem>
+      ))}
+    </Select>
+
+    <Typography variant="subtitle1" gutterBottom>
       UserType
     </Typography>
     <Select
@@ -809,6 +890,7 @@ const handleSaveUser = () => {
     </Button>
   </DialogActions>
 </Dialog>
+
 
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
         <Alert onClose={handleSnackbarClose} severity="success">

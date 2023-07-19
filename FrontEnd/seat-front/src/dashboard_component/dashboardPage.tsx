@@ -1,18 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState,  useEffect, useRef } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import {  Button } from '@mui/material';
 import styles from './dashboardPage.module.css';
-import { Dashboard, Work, Menu, SupervisedUserCircle, PersonPinCircleRounded, WhereToVoteTwoTone, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+import { Dashboard, Work, Menu, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-
+import Chart from 'chart.js/auto';
 
 
 
 
 
 const DashboardPage: React.FC = () => {
+  const chartRef = useRef<HTMLCanvasElement | null>(null);
+  const myChart = useRef<Chart | null>(null);
+  useEffect(() => {
+    if (chartRef.current) {
+      const ctx = chartRef.current.getContext('2d');
+
+      if (ctx) {
+        if (myChart.current) {
+          myChart.current.destroy(); // Destroy the previous chart
+        }
+
+        myChart.current = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Occupied', 'Available', 'Under Maintenance'],
+            datasets: [
+              {
+                label: 'Seat Conditions',
+                data: [50, 60, 20],
+                backgroundColor: [ 'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 99, 132, 0.2)'],
+                borderWidth: 1,
+                
+               
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+               
+              },
+            },
+          },
+        });
+      }
+    }
+    return () => {
+      if (myChart.current) {
+        myChart.current.destroy(); // Clean up the chart on unmount
+      }
+    };
+  }, []);
   const navigate = useNavigate();
  
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -33,9 +78,7 @@ const DashboardPage: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
-
   
-
  
   return (
     <>
@@ -142,14 +185,17 @@ const DashboardPage: React.FC = () => {
           </div>
           
           <div className={styles.card4}>
-          <div className={styles.cardimg2}><WhereToVoteTwoTone style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardimg2}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
           <div className={styles.cardcount2 }>350</div>
             <div className={styles.cardtitle2}>AVAILABLE SEAT</div>
           </div>
           <div>
           <div className={styles.card5}>
     <svg className={styles.cardimg5}></svg>
-    <div className={styles.cardtitle5}>SEAT CONDITIONS</div>
+    <div className={styles.cardtitle3}>SEAT CONDITIONS</div>
+    <div >
+      <canvas ref={chartRef} />
+    </div>
   </div>
           </div>
           <div className={styles.card6}>
@@ -159,14 +205,15 @@ const DashboardPage: React.FC = () => {
           </div>
 
           <div className={styles.card7}>
-          <div className={styles.cardimg3}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardimg3}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
           <div className={styles.cardcount2 }>45</div>
             <div className={styles.cardtitle3}>TRAINEE</div>
           </div>
 
           <div className={styles.card8}>
             <svg className={styles.cardimg8}></svg>
-            <div className={styles.cardimg2}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
+           
+            <div className={styles.cardimg3}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
           <div className={styles.cardcount2 }>45</div>
             <div className={styles.cardtitle3}>REGULAR EMPLOYEE</div>
           </div>

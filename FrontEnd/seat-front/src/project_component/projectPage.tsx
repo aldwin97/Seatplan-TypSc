@@ -196,7 +196,7 @@ function ProjectPage() {
   
   return (
     <body className="backg">
-    <div className="container">
+    <div>
       <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
         <div className="burgerIcon"></div>
         <div className="burgerIcon"></div>
@@ -241,11 +241,12 @@ function ProjectPage() {
         </div>
       )}
       {/* Project form */}
-      <form className="form" onSubmit={handleSubmit}>
-  <div className="styles.formGroup">
-    <label htmlFor="projectName">Project Name:</label>
+      <form className="form0" onSubmit={handleSubmit}>
+  <div className="formG">
+    <label className="projectlabel" htmlFor="projectName">Project Name:</label>
     <input
       type="text"
+      className="projectinput"
       id="projectName"
       name="projectName"
       value={projectName}
@@ -253,9 +254,9 @@ function ProjectPage() {
       required
     />
   </div>
-  <div className="styles.formGroup">
-    <label htmlFor="colorId">Color:</label>
-    <select id="colorId" name="colorId" value={selectedColorId} onChange={handleColorIdChange} required>
+  <div className="formG">
+    <label  htmlFor="colorId">Color:</label>
+    <select className="projectselect" id="colorId" name="colorId" value={selectedColorId} onChange={handleColorIdChange} required>
       <option value={0}>Select a color</option>
       {colors.map((color) => (
         <option key={color.color_id} value={color.color_id}>
@@ -264,8 +265,8 @@ function ProjectPage() {
       ))}
     </select>
   </div>
-  <button type="submit" className="styles.submitButton">
-    <FontAwesomeIcon icon={faPlus} className="styles.icon" />
+  <button type="submit" className="ubmitButton">
+    <FontAwesomeIcon icon={faPlus} className="icon" />
     Add Project
   </button><br></br>
 </form>
@@ -284,14 +285,11 @@ function ProjectPage() {
             <TableRow key={project.project_id} hover>
               <TableCell  padding="checkbox">
                 {/* Add your checkbox logic here if needed */}
-                <Checkbox
-                  className="checkmark"
-                  // Add your checkbox props and logic here if needed
-                />
+    
               </TableCell>
               <TableCell>
                 {/* You can use a link to navigate to a specific project if needed */}
-                <a  href="#" onClick={() => project.project_id && handleProjectClick(project.project_id)}>
+                <a  >
   {project.project_name}
 </a>
 

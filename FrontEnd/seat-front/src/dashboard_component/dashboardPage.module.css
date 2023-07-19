@@ -846,3 +846,15 @@ width: 357px;
   transition: all 1s cubic-bezier(0.1, 0.7, 1.0, 0.9);
   
 }
+.chartcontainer {
+  position: relative;
+  width: 100%; /* Set the width to 100% to fill the container */
+  height: 400px;
+  margin-top: 10px; /* Set the initial height for the bar graph (change to your desired value) */
+}
+
+/* Style for the chart canvas */
+.chartcontainer canvas {
+  width: 100%; /* Ensure the canvas fills the entire container width */
+  height: 100%; /* Ensure the canvas fills the entire container height */
+}

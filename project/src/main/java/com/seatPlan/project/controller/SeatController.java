@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.seatPlan.project.model.CommentModel;
+
+import com.seatPlan.project.model.CommentInputModel;
 import com.seatPlan.project.model.SeatModel;
-import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.SeatService;
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/seat")
@@ -38,11 +37,8 @@ public class SeatController {
 
     // Create a comment
     @PostMapping("/insertComment")
-    public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
+    public ResponseEntity<String> saveComment(@RequestBody CommentInputModel comment) {
         try {
-            UserModel creatorId = (UserModel) session.getAttribute("userSession");
-            comment.setCreated_by(creatorId.getUser_id());
-            comment.setUser_id(creatorId.getUser_id());
             seatService.saveComment(comment);
             return ResponseEntity.ok("Comment inserted successfully");
         } catch (Exception e) {
@@ -51,10 +47,8 @@ public class SeatController {
     }
 
     //Show all the comment by logged user
-    @GetMapping("/showAllCommentByUserId")
-    public List<Map<String, Object>> getCommentByUserId(HttpSession session) {
-        UserModel user = (UserModel) session.getAttribute("userSession");
-        Long user_id = user.getUser_id();
+    @GetMapping("/showAllCommentBy/{user_id}")
+    public List<Map<String, Object>> getCommentByUserId(@PathVariable ("user_id") Long user_id) {
         List<Map<String, Object>> comments = seatService.getCommentByUserId(user_id);
         return comments;
     }
@@ -68,11 +62,10 @@ public class SeatController {
 
     //swap seat
     @PutMapping("/swap/{seat_id}")
-    public ResponseEntity<String> updateSeat(HttpSession session ,@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
+    public ResponseEntity<String> swapSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
         try {
-            UserModel user = (UserModel) session.getAttribute("userSession");
-            Long updator = user.getUser_id();
             SeatModel existingSeat = seatService.getSeatById(seat_id);
+
             if (existingSeat == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
             }
@@ -80,15 +73,34 @@ public class SeatController {
             if (seat.getUser_id() != null) {
                 existingSeat.setUser_id(seat.getUser_id());
             }
-            if (seat.getSeatstatus_id() != null) {
-                existingSeat.setSeatstatus_id(seat.getSeatstatus_id());
-            }
-            if (seat.getAreaId() != null) {
-                existingSeat.setAreaId(seat.getAreaId());
+
+            seatService.swapSeat(existingSeat);
+            
+            return ResponseEntity.ok("Seat updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
+        }
+    }
+
+
+
+
+     @PutMapping("/update/{seat_id}")
+    public ResponseEntity<String> updateSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
+        try {
+            SeatModel existingSeat = seatService.getSeatById(seat_id);
+            long status = (long) 2;
+
+            if (existingSeat == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
             }
             
-            if(updator != null){
-                seat.setUpdatedBy(updator);
+            if (seat.getUser_id() != null) {
+                existingSeat.setUser_id(seat.getUser_id());
+                existingSeat.setSeat_id(status);
+            }
+            if (seat.getSeatstatus_id() != null) {
+                existingSeat.setSeatstatus_id(seat.getSeatstatus_id());
             }
 
             seatService.updateSeat(existingSeat);

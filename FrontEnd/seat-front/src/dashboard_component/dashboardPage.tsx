@@ -68,13 +68,31 @@ const DashboardPage: React.FC = () => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
+  const logInPageHandleClick = () => {
+    // Make a request to the server to logout
+    fetch('/logout', {
+      method: 'GET',
+      credentials: 'include', // This is important to include cookies (e.g., the session cookie)
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Successful logout
+          // Remove session information from the session storage
+          console.log('Logout successful');
 
-  
-
-  const logInPageHandleClick = (): void => {
-    navigate('/');
+          // Remove session data from the session storage
+          window.sessionStorage.removeItem('user_id'); // Replace 'user_id' with the actual key used for user_id
+          // You may redirect to the login page or do other operations as needed
+          navigate('/login'); // Redirect to the login page after logout
+        } else {
+          // Handle errors, if any
+          console.error('Logout failed');
+        }
+      })
+      .catch((error) => {
+        console.error('Error occurred during logout:', error);
+      });
   };
-
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };

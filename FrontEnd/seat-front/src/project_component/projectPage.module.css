@@ -1,0 +1,191 @@
+
+
+.backg
+{
+  margin: 0;
+  padding: 0;
+  background-size: 100% 100%;
+  background-image: url('./../assets/BG1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+   
+.burgerButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 30px;
+  height: 25px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: absolute;
+  top: 7px;
+  left: 1%;
+  transition: transform 0.3s ease;
+  z-index: 1000; /* Updated z-index value */
+}
+      .burgerButton.open {
+        transform: rotate(90deg);
+      }
+
+      .burgerIcon {
+        width: 100%;
+        height: 3px;
+        background-color: #308a38;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Dropdown Menu */
+      .dropdownMenu2 {
+        position: absolute;
+        top: 50px; /* Adjust the top position as needed */
+        right: 10px; /* Adjust the right position as needed */
+        z-index: 100;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
+
+      .dropdownMenu2 button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdownMenu2 button:hover {
+        background-color: #f5f5f5;
+      }
+
+      .sub
+      {
+        color: #308a38;
+      }
+
+      .dropdownMenu {
+        position: absolute;
+        top: 50px; /* Adjust the top position as needed */
+        left: 10px; /* Adjust the right position as needed */
+        z-index: 100;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        backdrop-filter: blur(5px); /* Adjust the blur value as needed */
+      }
+      
+
+      .dropdownMenu button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdownMenu button:hover {
+        background-color: #ddecde;
+      }
+
+      .sub
+      {
+        color: #308a38;
+      }
+
+      .dropdownRows {
+        flex-direction: row;
+      }
+
+
+
+
+      .profile {
+        position: absolute;
+        top: 4px;
+        right: 1%;
+        width: 30px;
+        padding: 8px;
+        background-color: transparent;
+        color: #308a38;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+        z-index: 1000; /* Updated z-index value */
+      }
+      
+      .profile:hover {
+        background-color: #fff;
+        color: #a7a7a7;
+      }
+
+      .notif {
+        position: absolute;
+        top: 4px;
+        right: 4%;
+        width: 30px;
+        padding: 8px;
+        background-color: transparent;
+        color: #308a38;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+        z-index: 1000; /* Updated z-index value */
+      }
+      .notif:hover {
+        background-color: #fff;
+        color: #a7a7a7;
+      }
+
+      .form {
+        width: 300px;
+        margin: 0 auto;
+      }
+      
+      .formGroup {
+        margin-bottom: 20px;
+      }
+      
+      label {
+        display: block;
+        font-weight: bold;
+      }
+      
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      
+      .submitButton {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .submitButton:hover {
+        background-color: #0056b3;
+      }
+      

@@ -15,12 +15,10 @@
   <mappers>
     
     <mapper resource="mapper/AdminMapper.xml" />
-
     <mapper resource="resources/mapper/ProjectMapper.xml" />
-
     <mapper resource="resources/mapper/UserMapper.xml" />
+    
     <mapper resource="resources/mapper/SeatMapper.xml" />
-
     <mapper resource="resources/mapper/DashBoardMapper.xml" />
 
   </mappers>

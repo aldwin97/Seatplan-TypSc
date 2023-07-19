@@ -15,9 +15,17 @@
         LEFT JOIN table_seatstatus tss ON ts.seatstatus_id = tss.seatstatus_id
     </select>
 
-    <insert id="insertComment" useGeneratedKeys="true" keyProperty="comment_id">
-        INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by)
-        VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by})
+    <insert id="insertComment"  parameterType="com.seatPlan.project.model.CommentInputModel">
+        INSERT INTO table_comment (
+            user_id,
+            seat_id, 
+            comment, 
+            created_by)
+        VALUES (
+            #{user_id}, 
+            #{seat_id}, 
+            #{comment}, 
+            #{created_by})
     </insert>
 
     <select id="getCommentByUserId" resultType="com.seatPlan.project.model.CommentModel">
@@ -35,21 +43,26 @@
         ORDER BY c.created_time DESC
     </select>
 
-    <update id="updateSeat">
+    <update id="swapSeat"  parameterType="com.seatPlan.project.model.SeatModel">
+        UPDATE table_seat
+        <set>
+            <if test="user_id != null">user_id = #{user_id},</if>
+            <if test="updated_by != null">updated_by = #{updated_by},</if>
+        </set>
+        WHERE seat_id = #{seat_id}
+    </update>
+
+
+    <update id="updateSeat"  parameterType="com.seatPlan.project.model.SeatModel">
         UPDATE table_seat
         <set>
             <if test="user_id != null">user_id = #{user_id},</if>
             <if test="seatstatus_id != null">seatstatus_id = #{seatstatus_id},</if>
-            <if test="area_id != null">area_id = #{area_id},</if>
             <if test="updated_by != null">updated_by = #{updated_by},</if>
         </set>
         WHERE seat_id = #{seat_id}
     </update>
     
-
-    
-    
-
     <select id="getSeatById" resultType="com.seatPlan.project.model.SeatModel">
         SELECT * FROM table_seat WHERE seat_id = #{seat_id} AND is_deleted = 0
     </select>

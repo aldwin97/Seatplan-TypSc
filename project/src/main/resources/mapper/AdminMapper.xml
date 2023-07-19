@@ -91,11 +91,20 @@
     </select>
 
     <insert id="insertComment" parameterType="com.seatPlan.project.model.CommentModel">
-        INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by, recipient_id)
-        VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by}, #{recipient_id})
-        <selectKey keyProperty="comment_id" order="BEFORE">
-            SELECT LAST_INSERT_ID() AS comment_id
-        </selectKey>
+        INSERT INTO table_comment (
+            user_id,
+            seat_id,
+            comment,
+            created_time,
+            created_by,
+            recipient_id)
+        VALUES  (
+            #{user_id},
+            #{seat_id},
+            #{comment}, 
+            #{created_time}, 
+            #{created_by}, 
+            #{recipient_id})
     </insert>
 
 </mapper>

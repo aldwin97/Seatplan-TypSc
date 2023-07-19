@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.dao.SeatDao;
+import com.seatPlan.project.model.CommentInputModel;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
 
@@ -28,7 +29,6 @@ public class SeatService {
             .map(seat -> {
                 Map<String, Object> seatMap = new HashMap<>();
                 seatMap.put("seat_id", seat.getSeat_id());
-                seatMap.put("seatNumber", seat.getSeat_num());
                 seatMap.put("full_name", String.join(" ", seat.getFirst_name(), seat.getLast_name()));
                 seatMap.put("area_name", seat.getArea_name());
                 seatMap.put("project_name", seat.getProject_name()); 
@@ -40,7 +40,7 @@ public class SeatService {
         return filteredSeat;
     }
     
-    public void saveComment(CommentModel comment) {
+    public void saveComment(CommentInputModel comment) {
     seatDao.insertComment(comment);
     }
 
@@ -75,6 +75,10 @@ public class SeatService {
         }).collect(Collectors.toList());
 
         return filteredComments;
+    }
+
+    public void swapSeat(SeatModel seat) {
+    seatDao.swapSeat(seat);
     }
 
     public void updateSeat(SeatModel seat) {

@@ -223,8 +223,8 @@ input:valid {
 }
 
 
-.nameInput:focus ~ .name-label,
-input:valid ~ .name-label { 
+.nameInput:not(:read-only):focus ~ .name-label,
+input:not(:read-only):valid ~ .name-label { 
   transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;
@@ -280,8 +280,8 @@ input:valid {
 }
 
 
-.input:focus ~ .user-label,
-input:valid ~ .user-label { 
+.input:not(:read-only):focus ~ .user-label,
+input:not(:read-only):valid ~ .user-label { 
   transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;
@@ -301,6 +301,21 @@ input:valid ~ .user-label {
   margin-left:33.5%;
   margin-top: -14.9%;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .saveButton{
@@ -345,6 +360,45 @@ input:valid ~ .user-label {
   background-color: #c22121;
   color: #ffffff;
 }
+
+.editAccountButton{
+  position: relative;
+ margin-top: -47%;
+ margin-left: -2%;
+ background-color:#6d6d6d;
+  color: #ffffff;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+}
+
+.editAccountButton:hover{
+  background-color: #1e7e28;
+  color: #ffffff;
+}
+
+
+
+.editPersonalButton{
+  position: relative;
+  margin-top: -57%;
+  margin-left: 92.6%;
+  background-color:#6d6d6d;
+   color: #ffffff;
+   border: none;
+   border-radius: 40px;
+   cursor: pointer;
+   transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+ }
+ 
+ 
+ .editPersonalButton:hover {
+   background-color: #1e7e28;
+   color: #ffffff;
+ }
+ 
+
 
 
 
@@ -395,8 +449,8 @@ input:valid {
 }
 
 
-.changeInput:focus ~ .change-label,
-input:valid ~ .change-label { 
+.changeInput:not(:read-only):focus ~ .change-label,
+input:not(:read-only):valid ~ .change-label { 
   transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;

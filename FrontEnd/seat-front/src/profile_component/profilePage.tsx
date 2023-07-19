@@ -12,14 +12,14 @@ import Tooltip from '@mui/material/Tooltip';
 
 
 
-const LogInPage: React.FC = () => {
+  const LogInPage: React.FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
-
-
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  
   const navigate = useNavigate();
 
   const toggleOldPasswordVisibility = () => {
@@ -69,6 +69,12 @@ const LogInPage: React.FC = () => {
     setAccountEditMode(true); // Enable edit mode when the user clicks the "Edit" button
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Your form submission logic goes here
+    // For this example, we'll just set the formSubmitted state to true
+    setFormSubmitted(true);
+  };
 
 
 
@@ -92,7 +98,25 @@ const LogInPage: React.FC = () => {
         <div className={styles.cover}>
       <img src={profileBackg} />
         </div>
+
+
+
+
+
+
+        <div className={styles.Header}>
+
+        </div>
       </div>
+
+
+
+
+
+
+
+
+
       <div className={styles.set}>
 
 
@@ -175,7 +199,22 @@ const LogInPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <Tooltip title="Edit" placement="top" arrow className={styles.editPersonalButton}>
+        <Tooltip
+          title="Edit"
+          placement="top"
+          arrow
+          style={{ 
+            backgroundColor: '#797979', 
+            color: '#ffffff', 
+            border: 'none', 
+            borderRadius: '40px',
+            padding: '8px',
+            marginTop: '-57%',
+            marginLeft: '92.6%',
+            cursor: 'pointer',
+            transition: 'background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out'
+ }}
+        >
           <IconButton onClick={handlePersonalEditClick}>
             <ManageAccountsSharpIcon />
           </IconButton>
@@ -214,7 +253,7 @@ const LogInPage: React.FC = () => {
           name="username"
           autoComplete="off"
           className={styles.input}
-          readOnly={true} // Set to true to disable the 
+          readOnly={true} 
           // value={username} // Set the value with the retrieved username from the database 
         />
         <label className={styles['user-label']}>Username</label>
@@ -290,7 +329,22 @@ const LogInPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <Tooltip title="Edit" placement="top" arrow className={styles.editAccountButton}>
+        <Tooltip
+          title="Edit"
+          placement="top"
+          arrow
+          style={{ 
+            backgroundColor: '#797979', 
+            color: '#ffffff', 
+            border: 'none', 
+            borderRadius: '40px',
+            padding: '8px',
+            marginTop: '-47.5%',
+            marginLeft: '-2%',
+            cursor: 'pointer',
+            transition: 'background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out'
+ }}
+        >
           <IconButton onClick={handleAccountEditClick}>
             <ManageAccountsSharpIcon />
           </IconButton>

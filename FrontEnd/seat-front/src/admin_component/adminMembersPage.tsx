@@ -767,7 +767,7 @@ const handleSaveUser = () => {
       fullWidth
       value={newUser.first_name}
       onChange={(e) => setNewUser({ ...newUser, first_name: e.target.value })}
-    />
+      required/>
     <TextField
       margin="dense"
       label="Last Name"
@@ -775,7 +775,7 @@ const handleSaveUser = () => {
       fullWidth
       value={newUser.last_name}
       onChange={(e) => setNewUser({ ...newUser, last_name: e.target.value })}
-    />
+      required/>
     <TextField
       margin="dense"
       label="Username"
@@ -783,7 +783,7 @@ const handleSaveUser = () => {
       fullWidth
       value={newUser.username}
       onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-    />
+      required/>
     <TextField
       margin="dense"
       label="Email"
@@ -791,7 +791,7 @@ const handleSaveUser = () => {
       fullWidth
       value={newUser.email}
       onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-    />
+      required/>
     <TextField
       margin="dense"
       label="Contact"
@@ -807,7 +807,7 @@ const handleSaveUser = () => {
       fullWidth
       value={newUser.password}
       onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-    />
+      required/>
 
     <Typography variant="subtitle1" gutterBottom>
       Position
@@ -817,7 +817,7 @@ const handleSaveUser = () => {
       value={newUser.position_id}
       onChange={(e) => setNewUser({ ...newUser, position_id: Number(e.target.value) })}
       fullWidth
-    >
+      required>
       {positions.map((position) => (
         <MenuItem key={position.position_id} value={position.position_id}>
           {position.position_name}
@@ -833,7 +833,7 @@ const handleSaveUser = () => {
       value={newUser.staffstatus_id}
       onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
       fullWidth
-    >
+      required>
       {staffStatuses.map((status) => (
         <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
           {status.staffstatus_name}
@@ -849,7 +849,7 @@ const handleSaveUser = () => {
       value={newUser.project_id}
       onChange={(e) => setNewUser({ ...newUser, project_id: Number(e.target.value) })}
       fullWidth
-    >
+      required>
       {projects.map((project) => (
         <MenuItem key={project.project_id} value={project.project_id}>
           {project.project_name}
@@ -865,7 +865,7 @@ const handleSaveUser = () => {
       value={newUser.usertype_id}
       onChange={(e) => setNewUser({ ...newUser, usertype_id: Number(e.target.value) })}
       fullWidth
-    >
+      required>
       {usertypes.map((usertype) => (
         <MenuItem key={usertype.usertype_id} value={usertype.usertype_id}>
           {usertype.usertype_name}

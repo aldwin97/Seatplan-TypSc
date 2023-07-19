@@ -6,7 +6,7 @@ import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 interface Seat {
-  id: string;
+  id: number;
   label: string;
   position: { x: number; y: number };
   isSwapping: boolean;
@@ -15,6 +15,7 @@ interface Seat {
   project: string;
   comments: string[];
   viewerNames: string[];
+  seatstatus: string;
 }
 
 interface SeatPopupProps {
@@ -78,10 +79,10 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const handleSwapSeats = () => {
     if (selectedSeatId) {
       const currentSeatId = seat.id;
-      const currentSeat = seats.find((seat) => seat.id === currentSeatId);
-      const swapSeat = seats.find((seat) => seat.id === selectedSeatId);
+const currentSeat = seats.find((seat) => seat.id === currentSeatId);
+const swapSeat = seats.find((seat) => String(seat.id) === String(selectedSeatId));
 
-      if (currentSeat && swapSeat && currentSeatId !== selectedSeatId) {
+if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId)) {
         const updatedCurrentSeat = {
           ...currentSeat,
           occupant: swapSeat.occupant,
@@ -303,106 +304,106 @@ function SeatplanPage() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [seats, setSeats] = useState<Seat[]>([
-    { id: 'seat1', label: 'Seat 1', position: { x: 100, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat2', label: 'Seat 2', position: { x: 100, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat3', label: 'Seat 3', position: { x: 100, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 1, label: 'Seat 1', seatstatus:'', position: { x: 100, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 2, label: 'Seat 2', seatstatus:'', position: { x: 100, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 3, label: 'Seat 3',seatstatus:'', position: { x: 100, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
 
-    { id: 'seat4', label: 'Seat 4', position: { x: 230, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat5', label: 'Seat 5', position: { x: 230, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat6', label: 'Seat 6', position: { x: 230, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 4, label: 'Seat 4',seatstatus:'', position: { x: 230, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 5, label: 'Seat 5',seatstatus:'', position: { x: 230, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 6, label: 'Seat 6',seatstatus:'', position: { x: 230, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
 
-    { id: 'seat7', label: 'Seat 7', position: { x: 460, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat8', label: 'Seat 8', position: { x: 460, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat9', label: 'Seat 9', position: { x: 460, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 7, label: 'Seat 7',seatstatus:'', position: { x: 460, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 8, label: 'Seat 8',seatstatus:'', position: { x: 460, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 9, label: 'Seat 9',seatstatus:'', position: { x: 460, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
 
-    { id: 'seat10', label: 'Seat 10', position: { x: 590, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat11', label: 'Seat 11', position: { x: 590, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat12', label: 'Seat 12', position: { x: 590, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat13', label: 'Seat 13', position: { x: 590, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat14', label: 'Seat 14', position: { x: 590, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat15', label: 'Seat 15', position: { x: 590, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat16', label: 'Seat 16', position: { x: 590, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 10, label: 'Seat 10',seatstatus:'', position: { x: 590, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 11, label: 'Seat 11',seatstatus:'', position: { x: 590, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 12, label: 'Seat 12',seatstatus:'', position: { x: 590, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 13, label: 'Seat 13',seatstatus:'', position: { x: 590, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 14, label: 'Seat 14',seatstatus:'', position: { x: 590, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 15, label: 'Seat 15',seatstatus:'', position: { x: 590, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 16, label: 'Seat 16',seatstatus:'', position: { x: 590, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
 
-    { id: 'seat17', label: 'Seat 17', position: { x: 820, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat18', label: 'Seat 18', position: { x: 820, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat19', label: 'Seat 19', position: { x: 820, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat20', label: 'Seat 20', position: { x: 820, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat21', label: 'Seat 21', position: { x: 820, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat22', label: 'Seat 22', position: { x: 820, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat23', label: 'Seat 23', position: { x: 820, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat24', label: 'Seat 24', position: { x: 820, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 17, label: 'Seat 17',seatstatus:'', position: { x: 820, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 18, label: 'Seat 18',seatstatus:'', position: { x: 820, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 19, label: 'Seat 19',seatstatus:'', position: { x: 820, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 20, label: 'Seat 20',seatstatus:'', position: { x: 820, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 21, label: 'Seat 21',seatstatus:'', position: { x: 820, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 22, label: 'Seat 22',seatstatus:'', position: { x: 820, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 23, label: 'Seat 23',seatstatus:'', position: { x: 820, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 24, label: 'Seat 24',seatstatus:'', position: { x: 820, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
 
-    { id: 'seat25', label: 'Seat 25', position: { x: 950, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat26', label: 'Seat 26', position: { x: 950, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat27', label: 'Seat 27', position: { x: 950, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat28', label: 'Seat 28', position: { x: 950, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat29', label: 'Seat 29', position: { x: 950, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat30', label: 'Seat 30', position: { x: 950, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat31', label: 'Seat 31', position: { x: 950, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat32', label: 'Seat 32', position: { x: 950, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat33', label: 'Seat 33', position: { x: 950, y: 900 }, isSwapping: false, color: '#e5f6ed', occupant: 'MATSUO, Hiroki', project: 'HSE/voLTE 3+ HSC/MyNavi', comments: [] , viewerNames: []},
+    { id: 25, label: 'Seat 25',seatstatus:'', position: { x: 950, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 26, label: 'Seat 26',seatstatus:'', position: { x: 950, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 27, label: 'Seat 27',seatstatus:'', position: { x: 950, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 28, label: 'Seat 28',seatstatus:'', position: { x: 950, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 29, label: 'Seat 29',seatstatus:'', position: { x: 950, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 30, label: 'Seat 30',seatstatus:'', position: { x: 950, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 31, label: 'Seat 31',seatstatus:'', position: { x: 950, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 32, label: 'Seat 32',seatstatus:'', position: { x: 950, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 33, label: 'Seat 33',seatstatus:'', position: { x: 950, y: 900 }, isSwapping: false, color: '#e5f6ed', occupant: 'MATSUO, Hiroki', project: 'HSE/voLTE 3+ HSC/MyNavi', comments: [] , viewerNames: []},
 
-    { id: 'seat34', label: 'Seat 34', position: { x: 1180, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat35', label: 'Seat 35', position: { x: 1180, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat36', label: 'Seat 36', position: { x: 1180, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat37', label: 'Seat 37', position: { x: 1180, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat38', label: 'Seat 38', position: { x: 1180, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat39', label: 'Seat 39', position: { x: 1180, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat40', label: 'Seat 40', position: { x: 1180, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat41', label: 'Seat 41', position: { x: 1180, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 34, label: 'Seat 34',seatstatus:'', position: { x: 1180, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 35, label: 'Seat 35',seatstatus:'', position: { x: 1180, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 36, label: 'Seat 36',seatstatus:'', position: { x: 1180, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 37, label: 'Seat 37',seatstatus:'', position: { x: 1180, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 38, label: 'Seat 38',seatstatus:'', position: { x: 1180, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 39, label: 'Seat 39',seatstatus:'', position: { x: 1180, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 40, label: 'Seat 40',seatstatus:'', position: { x: 1180, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 41, label: 'Seat 41',seatstatus:'', position: { x: 1180, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
 
-    { id: 'seat42', label: 'Seat 42', position: { x: 1310, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat43', label: 'Seat 43', position: { x: 1310, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat44', label: 'Seat 44', position: { x: 1310, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat45', label: 'Seat 45', position: { x: 1310, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat46', label: 'Seat 46', position: { x: 1310, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat47', label: 'Seat 47', position: { x: 1310, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat48', label: 'Seat 48', position: { x: 1310, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat49', label: 'Seat 49', position: { x: 1310, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 42, label: 'Seat 42',seatstatus:'', position: { x: 1310, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 43, label: 'Seat 43',seatstatus:'', position: { x: 1310, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 44, label: 'Seat 44',seatstatus:'', position: { x: 1310, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 45, label: 'Seat 45',seatstatus:'', position: { x: 1310, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 46, label: 'Seat 46',seatstatus:'', position: { x: 1310, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 47, label: 'Seat 47',seatstatus:'', position: { x: 1310, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 48, label: 'Seat 48',seatstatus:'', position: { x: 1310, y: 700 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 49, label: 'Seat 49',seatstatus:'', position: { x: 1310, y: 800 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
 
-    { id: 'seat50', label: 'Seat 50', position: { x: 1540, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat51', label: 'Seat 51', position: { x: 1540, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat52', label: 'Seat 52', position: { x: 1540, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat53', label: 'Seat 53', position: { x: 1540, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat54', label: 'Seat 54', position: { x: 1540, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat55', label: 'Seat 55', position: { x: 1540, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 50, label: 'Seat 50',seatstatus:'', position: { x: 1540, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 51, label: 'Seat 51',seatstatus:'', position: { x: 1540, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 52, label: 'Seat 52',seatstatus:'', position: { x: 1540, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 53, label: 'Seat 53',seatstatus:'', position: { x: 1540, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 54, label: 'Seat 54',seatstatus:'', position: { x: 1540, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 55, label: 'Seat 55',seatstatus:'', position: { x: 1540, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
 
-    { id: 'seat56', label: 'Seat 56', position: { x: 1670, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat57', label: 'Seat 57', position: { x: 1670, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat58', label: 'Seat 58', position: { x: 1670, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: []},
-    { id: 'seat59', label: 'Seat 59', position: { x: 1670, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat60', label: 'Seat 60', position: { x: 1670, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat61', label: 'Seat 61', position: { x: 1670, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 56, label: 'Seat 56',seatstatus:'', position: { x: 1670, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 57, label: 'Seat 57',seatstatus:'', position: { x: 1670, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 58, label: 'Seat 58',seatstatus:'', position: { x: 1670, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: []},
+    { id: 59, label: 'Seat 59',seatstatus:'', position: { x: 1670, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 60, label: 'Seat 60',seatstatus:'', position: { x: 1670, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 61, label: 'Seat 61',seatstatus:'', position: { x: 1670, y: 600 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
 
-    { id: 'seat62', label: 'Seat 62', position: { x: 1900, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat63', label: 'Seat 63', position: { x: 1900, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat64', label: 'Seat 64', position: { x: 1900, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat65', label: 'Seat 65', position: { x: 1900, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat66', label: 'Seat 66', position: { x: 1900, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 62, label: 'Seat 62',seatstatus:'', position: { x: 1900, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 63, label: 'Seat 63',seatstatus:'', position: { x: 1900, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 64, label: 'Seat 64',seatstatus:'', position: { x: 1900, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 65, label: 'Seat 65',seatstatus:'', position: { x: 1900, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 66, label: 'Seat 66',seatstatus:'', position: { x: 1900, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
 
-    { id: 'seat67', label: 'Seat 67', position: { x: 2030, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat68', label: 'Seat 68', position: { x: 2030, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
-    { id: 'seat69', label: 'Seat 69', position: { x: 2030, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat70', label: 'Seat 70', position: { x: 2030, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
-    { id: 'seat71', label: 'Seat 71', position: { x: 2030, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 67, label: 'Seat 67',seatstatus:'', position: { x: 2030, y: 100 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 68, label: 'Seat 68',seatstatus:'', position: { x: 2030, y: 200 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [], viewerNames: [] },
+    { id: 69, label: 'Seat 69',seatstatus:'', position: { x: 2030, y: 300 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 70, label: 'Seat 70',seatstatus:'', position: { x: 2030, y: 400 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
+    { id: 71, label: 'Seat 71',seatstatus:'', position: { x: 2030, y: 500 }, isSwapping: false, color: '#FFFFFF', occupant: 'EMPTY', project: 'EMPTY', comments: [] , viewerNames: []},
 
-    { id: 'seat72', label: 'Seat 72', position: { x: 2260, y: 100 }, isSwapping: false, color: '#e6e6e6', occupant: 'MAGDAY, Nico', project: 'VSBU', comments: [] , viewerNames: []},
-    { id: 'seat73', label: 'Seat 73', position: { x: 2260, y: 200 }, isSwapping: false, color: '#e6e6e6', occupant: 'ABLAO, Christian', project: 'VSBU', comments: [], viewerNames: [] },
-    { id: 'seat74', label: 'Seat 74', position: { x: 2260, y: 300 }, isSwapping: false, color: '#e6e6e6', occupant: 'BALACUTAN, Jose Antonio', project: 'VSBU', comments: [] , viewerNames: []},
-    { id: 'seat75', label: 'Seat 75', position: { x: 2260, y: 400 }, isSwapping: false, color: '#e6e6e6', occupant: 'FAMILARA, Aedan Kim', project: 'VSBU', comments: [] , viewerNames: []},
+    { id: 72, label: 'Seat 72',seatstatus:'', position: { x: 2260, y: 100 }, isSwapping: false, color: '#e6e6e6', occupant: 'MAGDAY, Nico', project: 'VSBU', comments: [] , viewerNames: []},
+    { id: 73, label: 'Seat 73',seatstatus:'', position: { x: 2260, y: 200 }, isSwapping: false, color: '#e6e6e6', occupant: 'ABLAO, Christian', project: 'VSBU', comments: [], viewerNames: [] },
+    { id: 74, label: 'Seat 74',seatstatus:'', position: { x: 2260, y: 300 }, isSwapping: false, color: '#e6e6e6', occupant: 'BALACUTAN, Jose Antonio', project: 'VSBU', comments: [] , viewerNames: []},
+    { id: 75, label: 'Seat 75',seatstatus:'', position: { x: 2260, y: 400 }, isSwapping: false, color: '#e6e6e6', occupant: 'FAMILARA, Aedan Kim', project: 'VSBU', comments: [] , viewerNames: []},
 
-    { id: 'seat76', label: 'Seat 76', position: { x: 2390, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [] , viewerNames: []},
-    { id: 'seat77', label: 'Seat 77', position: { x: 2390, y: 200 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [] , viewerNames: []},
-    { id: 'seat78', label: 'Seat 78', position: { x: 2390, y: 300 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [], viewerNames: [] },
-    { id: 'seat79', label: 'Seat 79', position: { x: 2390, y: 400 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [], viewerNames: []},
+    { id: 76, label: 'Seat 76',seatstatus:'', position: { x: 2390, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [] , viewerNames: []},
+    { id: 77, label: 'Seat 77',seatstatus:'', position: { x: 2390, y: 200 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [] , viewerNames: []},
+    { id: 78, label: 'Seat 78',seatstatus:'', position: { x: 2390, y: 300 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [], viewerNames: [] },
+    { id: 79, label: 'Seat 79',seatstatus:'', position: { x: 2390, y: 400 }, isSwapping: false, color: '#ffffe6', occupant: 'S2BU', project: 'S2BU', comments: [], viewerNames: []},
 
-    { id: 'seat80', label: 'Seat 80', position: { x: 2620, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: 'DTR-NOC', project: 'DTR-NOC', comments: [] , viewerNames: []},
-    { id: 'seat81', label: 'Seat 81', position: { x: 2620, y: 200 }, isSwapping: false, color: '#ff0000', occupant: 'EMPTY', project: '', comments: [] , viewerNames: []},
+    { id: 80, label: 'Seat 80',seatstatus:'', position: { x: 2620, y: 100 }, isSwapping: false, color: '#ffffe6', occupant: 'DTR-NOC', project: 'DTR-NOC', comments: [] , viewerNames: []},
+    { id: 81, label: 'Seat 81',seatstatus:'', position: { x: 2620, y: 200 }, isSwapping: false, color: '#ff0000', occupant: 'EMPTY', project: '', comments: [] , viewerNames: []},
 
-    { id: 'seat85', label: 'Seat 85', position: { x: 100, y: 800 }, isSwapping: false, color: '#FFFF66', occupant: 'MAGSAMBOL, Jonathan', project: 'HSC/Shell', comments: [] , viewerNames: []},
-    { id: 'seat84', label: 'Seat 84', position: { x: 100, y: 1000 }, isSwapping: false, color: '#FF6666', occupant: 'OMIYA, Yuichiro', project: 'JTS', comments: [] , viewerNames: []},
-    { id: 'seat83', label: 'Seat 83', position: { x: 100, y: 1100 }, isSwapping: false, color: '#FFFF66', occupant: 'IKEDA, Kazuki', project: 'Hitachi', comments: [] , viewerNames: []},
-    { id: 'seat82', label: 'Seat 82', position: { x: 100, y: 1200 }, isSwapping: false, color: '#F0FFF1', occupant: 'HINTO, Cristina', project: 'NRI', comments: [] , viewerNames: []},
+    { id: 85, label: 'Seat 85',seatstatus:'', position: { x: 100, y: 800 }, isSwapping: false, color: '#FFFF66', occupant: 'MAGSAMBOL, Jonathan', project: 'HSC/Shell', comments: [] , viewerNames: []},
+    { id: 84, label: 'Seat 84',seatstatus:'', position: { x: 100, y: 1000 }, isSwapping: false, color: '#FF6666', occupant: 'OMIYA, Yuichiro', project: 'JTS', comments: [] , viewerNames: []},
+    { id: 83, label: 'Seat 83',seatstatus:'', position: { x: 100, y: 1100 }, isSwapping: false, color: '#FFFF66', occupant: 'IKEDA, Kazuki', project: 'Hitachi', comments: [] , viewerNames: []},
+    { id: 82, label: 'Seat 82',seatstatus:'', position: { x: 100, y: 1200 }, isSwapping: false, color: '#F0FFF1', occupant: 'HINTO, Cristina', project: 'NRI', comments: [] , viewerNames: []},
   ]);
   
   
@@ -456,7 +457,8 @@ function SeatplanPage() {
   
         if (seat.isSwapping) {
           // Get the swapped seat
-          const swappedSeat = seats.find((s) => s.id === seat.occupant);
+          const swappedSeat = seats.find((s) => String(s.id) === String(seat.occupant));
+
           if (swappedSeat) {
             const maxTextWidth = seatSize - textOffsetX * 2;
             const text = swappedSeat.occupant;
@@ -649,7 +651,7 @@ function SeatplanPage() {
         ctx.fillStyle = '#000000';
   
         if (seat.isSwapping) {
-          const swappedSeat = filteredSeats.find((s) => s.id === seat.occupant);
+          const swappedSeat = filteredSeats.find((s) => String(s.id) === String(seat.occupant));
           if (swappedSeat) {
             const maxTextWidth = seatSize - textOffsetX * 2;
             const text = swappedSeat.occupant;

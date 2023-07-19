@@ -112,30 +112,53 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24); 
     max-width: 90%; 
     height: 75%; 
-    margin-top: 8%;
+    margin-top: 7%;
     margin-left: 5%;
 
   }
   
 /* Add styles for each section within the form */
-/* .profileSum {
+.profileSum {
   display: flex;
   background-color: #ffffff;
   border-radius: 40px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
-  width: 900px;
-  height: 305px; 
-  margin-bottom: 3%; 
-} */
+  width: 630px;
+  height: 638px; 
+  margin-bottom: .1%; 
+  margin-right: 50%;
+  position: absolute;
+  z-index: 2;
+}
 
 .set {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-left: 40%;
+  margin-top:1.5%;
 }
 
-.personal, .accountS {
+.line{
+  height: 1.2px;
+  background-color: rgb(172, 172, 172);
+  width: 900px;
+  z-index:1;
+  position: absolute;
+  margin-top: 3.5%;
+}
+
+.personal {
+  color: #226e29;
+  background-color: #ffffff;
+  border-radius: 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+  width: 900px;
+  height: 305px;
+  margin-bottom: 3%;
+}
+
+.accountS {
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
@@ -149,10 +172,8 @@
 
 
 
-
-
 h1 {
-  margin-top: 3%;
+  margin-top: 2%;
   margin-left: 4%;
   text-align: left;
   color: #16A637;
@@ -163,7 +184,7 @@ h1 {
 .name-group {
   position: relative;
   display: inline-block;
-  margin-bottom: -7px;
+  margin-bottom: -1px;
   padding: 1%;
   margin-left:3.5%;
 }
@@ -204,7 +225,7 @@ input:valid {
 
 .nameInput:focus ~ .name-label,
 input:valid ~ .name-label { 
-  transform: translateY(-50%) scale(0.8);
+  transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;
   color: #2da738;
@@ -222,7 +243,7 @@ input:valid ~ .name-label {
   padding: 1%;
   margin-left:3.5%; 
   position: relative;
-  margin-bottom: -7px;
+  margin-bottom:  -1px;
 }
 
 .input {
@@ -261,30 +282,69 @@ input:valid {
 
 .input:focus ~ .user-label,
 input:valid ~ .user-label { 
-  transform: translateY(-50%) scale(0.8);
+  transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;
   color: #2da738;
 }
 
+.personal-button {
+  display:flex;
+  position: absolute;
+  margin-left:33.5%;
+  margin-top: -14.3%;
+}
+
+.account-button {
+  display:flex;
+  position: absolute;
+  margin-left:33.5%;
+  margin-top: -14.9%;
+}
 
 
+.saveButton{
+  font-family: 'League Spartan Regular';
+  font-size: 15px;
+  letter-spacing: 1px;
+  width: 150px;
+  padding: 3%;
+  background-color: #2b7e47;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 9%;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  margin-left:10px;
+}
+
+.saveButton:hover {
+  background-color: #049613;
+  color: #ffffff;
+}
 
 
+.cancelButton{
+  font-family: 'League Spartan Regular';
+  font-size: 15px;
+  letter-spacing: 1px;
+  width: 40%;
+  padding: 3%;
+  background-color: #d44242;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 9%;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  margin-left:10px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+.cancelButton:hover {
+  background-color: #c22121;
+  color: #ffffff;
+}
 
 
 
@@ -337,7 +397,7 @@ input:valid {
 
 .changeInput:focus ~ .change-label,
 input:valid ~ .change-label { 
-  transform: translateY(-50%) scale(0.8);
+  transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;
   color: #2da738;

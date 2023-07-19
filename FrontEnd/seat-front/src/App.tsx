@@ -7,6 +7,7 @@ import DashboardPage from './dashboard_component/dashboardPage';
 import AdminMembersPage from './admin_component/adminMembersPage';
 import SeatplanPage from './seatplan_component/seatplanPage';
 import ProfilePage from './profile_component/profilePage';
+
 import './App.css';
 
 function App(): JSX.Element {
@@ -24,6 +25,7 @@ function App(): JSX.Element {
           <Route path="*" element={<Navigate to="/" />} /> {/* Redirect to the homepage for unknown routes */}
         </Routes>
       </BrowserRouter>
+      
     </div>
   );
 }

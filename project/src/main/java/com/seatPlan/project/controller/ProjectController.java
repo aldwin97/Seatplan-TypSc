@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
-import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProjectService;
-import jakarta.servlet.http.HttpSession;
+
 
 
 
@@ -34,12 +33,8 @@ public class ProjectController {
 
     //Add project in the database
     @PostMapping("/add")
-    public ResponseEntity<String> createProject(HttpSession session,@RequestBody ProjectModel projectModel) {
-        UserModel user = (UserModel) session.getAttribute("userSession");
-        Long creatorId = user.getUser_id();
-
-        projectModel.setCreated_by(creatorId);
-
+    public ResponseEntity<String> createProject(@RequestBody ProjectModel projectModel) 
+{
         try {
             projectService.insertProject(projectModel);
             return ResponseEntity.ok("Project created successfully");

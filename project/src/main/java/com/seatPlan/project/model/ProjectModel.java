@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectModel {
-   private Long project_id;
+private Long project_id;
 private String project_name;
 private Long color_id;
 private int is_deleted;

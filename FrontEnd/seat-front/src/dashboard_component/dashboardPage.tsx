@@ -1,13 +1,15 @@
 import React, { useState,  useEffect, useRef } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import {  Button } from '@mui/material';
+import {  Button} from '@mui/material';
 import styles from './dashboardPage.module.css';
 import { Dashboard, Work, Menu, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import Chart from 'chart.js/auto';
-import { Card, Image } from 'semantic-ui-react';
+
+
+
 
 
 
@@ -91,7 +93,7 @@ const DashboardPage: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
-  
+ 
  
   return (
     <>
@@ -238,6 +240,9 @@ const DashboardPage: React.FC = () => {
             <svg className={styles.cardimg9}></svg>
             <div className={styles.cardtitle4}>RECENT COMMENTS</div>
            
+     
+
+    
           </div></div>
     </form>
           

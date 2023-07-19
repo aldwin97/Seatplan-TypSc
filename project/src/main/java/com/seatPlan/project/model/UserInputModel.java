@@ -1,7 +1,6 @@
 //Kenneth Christian B. Gutierrez
 package com.seatPlan.project.model;
 
-import java.time.LocalDateTime;
 
 
 import lombok.AllArgsConstructor;
@@ -20,8 +19,6 @@ public class UserInputModel {
     private Long mobile_num;
     private String username;
     private String password;
-
-
     private Long project_id;
     private Long staffstatus_id;
     private Long usertype_id;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.dao.ProjectDao;
 import com.seatPlan.project.model.ColorModel;
+import com.seatPlan.project.model.ProjectInputModel;
 import com.seatPlan.project.model.ProjectModel;
 
 
@@ -19,8 +20,8 @@ public class ProjectService {
         this.projectDao = projectDao;
     }
 
-    public void insertProject(ProjectModel projectModel) {
-        projectDao.insertProject(projectModel);
+    public void insertProject(ProjectInputModel projectInputModel) {
+        projectDao.insertProject(projectInputModel);
     }
 
      public List<ProjectModel> getAllProjects() {

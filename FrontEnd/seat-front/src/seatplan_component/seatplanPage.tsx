@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile, faEdit } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -551,7 +551,9 @@ function SeatplanPage() {
       }
     }
   };
-  
+  const projectPageHandleClick = () => {
+    navigate('/ProjectPage');
+  };
   
   const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -707,8 +709,12 @@ function SeatplanPage() {
             Members
           </button>
           <button className={styles.sub}>
-            <FontAwesomeIcon icon={faProjectDiagram} className={styles.icon} />
-            Projects
+          <FontAwesomeIcon icon={faEdit} className={styles.icon} />
+            Seat Plan Management
+          </button>
+          <button onClick={projectPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
+           Projects
           </button>
         </div>
       )}

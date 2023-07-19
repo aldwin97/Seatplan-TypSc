@@ -394,7 +394,6 @@ body {
       .cardimg {
         background-size: 100% 100%;
         width: 100%;
-        border-radius: .60rem;
         background-image: url('./../assets/loginbg.jpg');
       }
       .card {
@@ -412,10 +411,9 @@ body {
         flex-direction: column;
         min-width: 0;
         word-wrap: break-word;
-        background-color: #fff;
         background-clip: border-box;
         border: 1px solid rgba(0,0,0,.125);
-        border-radius: .60rem;
+        box-shadow: 0 2px 5px #308a38;
           }
 
       .cardtitle {
@@ -465,59 +463,24 @@ body {
         border-radius: 20px;
       }
 
-      .card5 {
+     .card5  {
         align-items: center;
         margin-left: 18%;
         height: 400px;
         width: 355px;
         background-color: white;
-        box-shadow: 0 10px 5px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 5px #308a38;
         text-align: center;
         margin-top: 15px;
-        border-radius: 20px;
+        border-radius: 0px;
+        flex-direction: column;
+        justify-content: center;
         
       }
 
-      .cardtitle5 {
-        font-weight: bold;
-        font-size: 18px;
-        margin-top: 10px;
-      }
 
-
-      .card9 {
-        display: flex;
-        margin-top: -150px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        border-radius: 20px;
-        width: 117%;
-        height: 430px;
-        padding: 20px;
-    
-        background-color: white;
-        box-shadow: 0 10px 5px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        border-radius: 20px;
-      }
-
-      .cardtitle9 {
-        font-weight: bold;
-        font-size: 18px;
-        margin-top: 10px;
-      }
-
-
-      /* Add custom styles for card images and other classes as needed */
-
-
-      /* Add custom styles for card images and other classes as needed */
-
-
-
-
+     
+      
       .card0:hover {
         transform: translateY(-5px);
         border-color: rgb(0, 255, 0);
@@ -611,15 +574,7 @@ width: 357px;
     margin-left: -1%;
   }
 
-  .card5,
-  .card9 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    width: 110%;
-    margin-left: -1%;
-  }
+ 
 
   .cardtitle9 {
     font-size: 18px;
@@ -679,7 +634,7 @@ width: 357px;
   padding: 20px;
   height: 150px;
   width: 150px;
-  background-color: #D2E4DC;
+  background-color: #ffffff;
   box-shadow: 0 2px 5px #308a38;
   text-align: center;
   border-radius: 0;
@@ -718,28 +673,17 @@ width: 357px;
 
 .cardtitle2{
   position: absolute;
-  background-color: rgba(98, 186, 185, 0.2);
+  background-color: #2FA73A;
   top: 0px;
   left: 0;
   right: 0;
   padding: 5px;
-  color: #000000;
+  color: #ffffff;
   text-align: center;
   font-weight: bold;
   
 }
-.cardtitle6{
-  position: absolute;
-  background-color: rgba(98, 186, 185, 0.2);
-  top: 0px;
-  left: 0;
-  right: 0;
-  padding: 5px;
-  color: #000000;
-  text-align: center;
-  font-weight: bold;
-  z-index: -2;
-}
+
 .card3 {
   align-items: center;
   margin-top: -185px;
@@ -749,7 +693,7 @@ width: 357px;
   padding: 20px;
   height: 150px;
   width: 150px;
-  background-color: #D2E4DC;
+  background-color: #ffffff;
   box-shadow: 0 2px 5px #308a38;
   text-align: center;
   border-radius: 0;
@@ -766,7 +710,7 @@ width: 357px;
   padding: 20px;
   height: 150px;
   width: 150px;
-  background-color: #D2E4DC;
+  background-color: #ffffff;
   box-shadow: 0 2px 5px #308a38;
   text-align: center;
   border-radius: 0;
@@ -778,24 +722,23 @@ width: 357px;
   padding: 20px;
   height: 150px;
   width: 150px;
-  background-color: rgba(211, 226, 245, 0.7);
+  background-color:#ffffff;
   box-shadow: 0 2px 5px #308a38;
   text-align: center;
   border-radius: 0;
 }
 
 .cardtitle3 {
-  background-color: rgba(98, 186, 185, 0.2);
+  background-color:  #2FA73A;
   width: 180px;
   padding: 5px;
-  top: -138px;
-  color: #000000;
+  top: -135px;
+  color: #ffffff;
   text-align: center;
   font-weight: bold;
   position: relative; 
   z-index: 2; 
 }
-
 
 .card7,
 .card8,
@@ -811,7 +754,7 @@ width: 357px;
   padding: 20px;
   height: 150px;
   width: 150px;
-  background-color: rgba(211, 226, 245, 0.7);
+  background-color: #ffffff;
   box-shadow: 0 2px 5px #308a38;
   text-align: center;
   border-radius: 0;
@@ -824,8 +767,8 @@ width: 357px;
   padding: 20px;
   height: 150px;
   width: 150px;
-  background-color: rgba(211, 226, 245, 0.7);
-  box-shadow: 0 2px 5px #308a38;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px   #308a38;
   text-align: center;
   border-radius: 0;
   z-index: 0;
@@ -847,14 +790,25 @@ width: 357px;
   
 }
 .chartcontainer {
-  position: relative;
+  display: flex;
+  justify-content: center; /* Center the canvas horizontally */
+  align-items: center; /* Center the canvas vertically */
   width: 100%; /* Set the width to 100% to fill the container */
-  height: 400px;
-  margin-top: 10px; /* Set the initial height for the bar graph (change to your desired value) */
+  height: 400px; 
 }
 
-/* Style for the chart canvas */
-.chartcontainer canvas {
-  width: 100%; /* Ensure the canvas fills the entire container width */
-  height: 100%; /* Ensure the canvas fills the entire container height */
+
+.card9 {
+  display: flex;
+  margin-top: -150px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  padding: 20px;
+  width: 117%;
+  height: 430px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 2px 5px   #308a38;
+  text-align: left;
 }

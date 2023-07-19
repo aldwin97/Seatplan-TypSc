@@ -2,7 +2,34 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faFaceSmile, faChartBar, faUsers, faPlus, faPowerOff, faEdit, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import styles from './projectPage.module.css';
+import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  Snackbar,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Paper,
+  IconButton,
+  Button,
+  Typography,
+  Box,
+  Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
+} from '@mui/material';
+
+import './projectPage.css';
 
 interface ColorModel {
   color_id: number;
@@ -11,7 +38,7 @@ interface ColorModel {
 }
 
 interface Project {
-  project_id?: number;
+  project_id?: number; // Marking it as optional with `?`
   project_name: string;
   color_id: number;
   created_by: number;
@@ -19,7 +46,6 @@ interface Project {
 
 
 function ProjectPage() {
-  const navigate = useNavigate();
 
   // State variables to handle form inputs
   const [projectName, setProjectName] = useState('');
@@ -28,8 +54,10 @@ function ProjectPage() {
   // Add state variables for the additional data fields (if needed)
 
   const handleProjectNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Input Value:', e.target.value);
     setProjectName(e.target.value);
   };
+  
 
   useEffect(() => {
     // Retrieve the logged-in user ID from the session storage
@@ -96,10 +124,11 @@ function ProjectPage() {
     // Retrieve the user ID from session storage
     // Create a new project object to send to the backend
     const newProject: Project = {
-      project_name: '',
+      project_name: projectName,
       color_id: selectedColorId,
       created_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
+    
     console.log('New Project:', newProject);
     try {
       // Make a request to the backend to add the new project
@@ -135,24 +164,53 @@ function ProjectPage() {
     setSelectedColorId(parseInt(e.target.value));
   };
 
+  const [projects, setProjects] = useState<Project[]>([]);
 
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/project/show');
+      if (response.ok) {
+        const projectsData = await response.json();
+        setProjects(projectsData);
+      } else {
+        console.error('Failed to fetch projects');
+      }
+    } catch (error) {
+      console.error('Error occurred while fetching projects:', error);
+    }
+  };
+
+
+  const navigate = useNavigate();
+
+  // Function to handle project name link click
+  const handleProjectClick = (projectId: number) => {
+    // Here, you can define the logic to navigate to the specific project page.
+    // For example, if your project details page is '/projects/:projectId', you can do the following:
+    navigate(`/projects/${projectId}`);
+  };
+  
   return (
-    <body className={styles.backg}>
-    <div className={styles.container}>
-      <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
+    <body className="backg">
+    <div className="container">
+      <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
+        <div className="burgerIcon"></div>
+        <div className="burgerIcon"></div>
+        <div className="burgerIcon"></div>
       </button>
 
       {isDropdownOpen && (
-        <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
-          <button onClick={dashboardPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
+        <div className="dropdownMenu dropdownRows">
+          <button onClick={dashboardPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faChartBar} className="icon" />
             Dashboard
           </button>
-          <button onClick={adminPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
+          <button onClick={adminPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faUsers} className="icon" />
             Members
           </button>
           <button onClick={seatplanPageHandleClick} className="sub">
@@ -161,31 +219,30 @@ function ProjectPage() {
           </button>
           <button onClick={projectPageHandleClick} className="sub">
             <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
-            Projects
+           Projects
           </button>
         </div>
       )}
 
-      <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
+      <button className={`profile ${isProfileDropdownOpen ? 'open2' : ''}`} onClick={toggleProfileDropdown}>
         <FontAwesomeIcon icon={faUser} />
       </button>
 
       {isProfileDropdownOpen && (
-        <div className={styles.dropdownMenu2}>
-          <button className={styles.sub}>
-            <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
+        <div className="dropdownMenu2">
+          <button className="sub">
+            <FontAwesomeIcon icon={faFaceSmile} className="icon" />
             Profile
           </button>
-          <button onClick={logInPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
+          <button onClick={logInPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faPowerOff} className="icon" />
             Logout
           </button>
         </div>
       )}
-
       {/* Project form */}
-      <form className={styles.form} onSubmit={handleSubmit}>
-  <div className={styles.formGroup}>
+      <form className="form" onSubmit={handleSubmit}>
+  <div className="styles.formGroup">
     <label htmlFor="projectName">Project Name:</label>
     <input
       type="text"
@@ -196,7 +253,7 @@ function ProjectPage() {
       required
     />
   </div>
-  <div className={styles.formGroup}>
+  <div className="styles.formGroup">
     <label htmlFor="colorId">Color:</label>
     <select id="colorId" name="colorId" value={selectedColorId} onChange={handleColorIdChange} required>
       <option value={0}>Select a color</option>
@@ -207,12 +264,47 @@ function ProjectPage() {
       ))}
     </select>
   </div>
-  <button type="submit" className={styles.submitButton}>
-    <FontAwesomeIcon icon={faPlus} className={styles.icon} />
+  <button type="submit" className="styles.submitButton">
+    <FontAwesomeIcon icon={faPlus} className="styles.icon" />
     Add Project
-  </button>
+  </button><br></br>
 </form>
+<TableContainer component={Paper} >
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell >Project Name</TableCell>
+            <TableCell>Color ID</TableCell>
+            <TableCell >Created By</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {projects.map((project) => (
+            <TableRow key={project.project_id} hover>
+              <TableCell  padding="checkbox">
+                {/* Add your checkbox logic here if needed */}
+                <Checkbox
+                  className="checkmark"
+                  // Add your checkbox props and logic here if needed
+                />
+              </TableCell>
+              <TableCell>
+                {/* You can use a link to navigate to a specific project if needed */}
+                <a  href="#" onClick={() => project.project_id && handleProjectClick(project.project_id)}>
+  {project.project_name}
+</a>
+
+              </TableCell>
+              <TableCell>{project.color_id}</TableCell>
+              <TableCell>{project.created_by}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   </div>
+  
   </body>
   );
 }

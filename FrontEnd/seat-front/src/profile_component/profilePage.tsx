@@ -18,7 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+
   
   const navigate = useNavigate();
 
@@ -68,14 +68,6 @@ import Tooltip from '@mui/material/Tooltip';
   const handleAccountEditClick = () => {
     setAccountEditMode(true); // Enable edit mode when the user clicks the "Edit" button
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Your form submission logic goes here
-    // For this example, we'll just set the formSubmitted state to true
-    setFormSubmitted(true);
-  };
-
 
 
   

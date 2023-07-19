@@ -103,7 +103,7 @@ function ProjectPage() {
     console.log('New Project:', newProject);
     try {
       // Make a request to the backend to add the new project
-      const response = await fetch('http://localhost:8080/project/add', {
+      const response = await fetch('http://localhost:8080/project/insertNewProject', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

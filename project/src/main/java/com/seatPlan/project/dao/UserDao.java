@@ -12,8 +12,6 @@ import com.seatPlan.project.model.UserModel;
 public interface UserDao {
 
 
-    // output all the data in table 
-    List<UserModel> getAllUsers();
 
     UserModel getUserByUsername(String username);
     // count the row of the table

@@ -75,8 +75,4 @@ public class ProjectController {
         List<ColorModel> colors = projectService.getAllColors();
         return ResponseEntity.ok(colors);
     }
-
-
-
-
 }

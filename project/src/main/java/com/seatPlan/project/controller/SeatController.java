@@ -82,9 +82,6 @@ public class SeatController {
         }
     }
 
-
-
-
      @PutMapping("/update/{seat_id}")
     public ResponseEntity<String> updateSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
         try {

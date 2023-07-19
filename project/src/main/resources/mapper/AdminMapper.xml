@@ -95,14 +95,12 @@
             user_id,
             seat_id,
             comment,
-            created_time,
             created_by,
             recipient_id)
         VALUES  (
             #{user_id},
             #{seat_id},
             #{comment}, 
-            #{created_time}, 
             #{created_by}, 
             #{recipient_id})
     </insert>

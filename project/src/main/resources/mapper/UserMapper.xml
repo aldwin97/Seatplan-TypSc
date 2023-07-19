@@ -2,9 +2,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.seatPlan.project.dao.UserDao">
-    <select id="getAllUsers" resultType="com.seatPlan.project.model.UserModel">
-        SELECT * FROM table_user WHERE is_deleted = 0
-    </select>
 
     <select id="getUserByUsername" resultType="com.seatPlan.project.model.UserModel">
         SELECT * FROM table_user WHERE username = #{username} AND is_deleted = 0

@@ -542,18 +542,19 @@ const handleSaveUser = () => {
           <TableHead className="table-header">
             <TableRow>
             <TableCell></TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell className="table-header">Name</TableCell>
+              <TableCell className="table-header">Username</TableCell>
+              <TableCell className="table-header">Email</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
           {currentUsers.map((user) => {
 
     return (
-      <TableRow key={user.user_id} hover>
-        <TableCell padding="checkbox">
+      <TableRow className="table-cell" key={user.user_id} hover>
+        <TableCell className="checkbox-btn" padding="checkbox">
           <Checkbox
+            className="checkmark"
             checked={selectedUsers.includes(user.user_id)}
             onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
           />

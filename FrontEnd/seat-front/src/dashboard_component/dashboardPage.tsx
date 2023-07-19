@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import {  Button } from '@mui/material';
 import styles from './dashboardPage.module.css';
-import { Dashboard, Work, Menu } from '@mui/icons-material';
+import { Dashboard, Work, Menu, SupervisedUserCircle, PersonPinCircleRounded, WhereToVoteTwoTone, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+
+
 
 
 
@@ -31,6 +33,8 @@ const DashboardPage: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
+
+  
 
  
   return (
@@ -124,20 +128,23 @@ const DashboardPage: React.FC = () => {
 </div>
 </form>
           <div className={styles.card2}>
-          <div className={styles.cardtitle2}>TOTAL SEAT</div>
-          <FontAwesomeIcon icon={faFaceSmile} className={styles.cardimg2} />
+         
+          <div className={styles.cardimg2}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
           <div className={styles.cardcount2 }>500</div>
+          <div className={styles.cardtitle2}>TOTAL SEAT</div>
             </div>
         
 
           <div className={styles.card3}>
-            <svg className={styles.cardimg3}></svg>
-            <div className={styles.cardtitle3}>OCCUPIED SEAT</div>
+            <div className={styles.cardimg2}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
+            <div className={styles.cardcount2 }>150</div>
+            <div className={styles.cardtitle2}>OCCUPIED SEAT</div>
           </div>
           
           <div className={styles.card4}>
-            <svg className={styles.cardimg4}></svg>
-            <div className={styles.cardtitle4}>AVAILABLE SEAT</div>
+          <div className={styles.cardimg2}><WhereToVoteTwoTone style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2 }>350</div>
+            <div className={styles.cardtitle2}>AVAILABLE SEAT</div>
           </div>
           <div>
           <div className={styles.card5}>
@@ -146,18 +153,22 @@ const DashboardPage: React.FC = () => {
   </div>
           </div>
           <div className={styles.card6}>
-            <svg className={styles.cardimg6}></svg>
-            <div className={styles.cardtitle6}>TOTAL EMPLOYEE</div>
+          <div className={styles.cardimg3}><GroupsRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2}>150</div>
+          <div className={styles.cardtitle3}>TOTAL EMPLOYEE</div>
           </div>
 
           <div className={styles.card7}>
-            <svg className={styles.cardimg7}></svg>
-            <div className={styles.cardtitle7}>TRAINEE</div>
+          <div className={styles.cardimg3}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2 }>45</div>
+            <div className={styles.cardtitle3}>TRAINEE</div>
           </div>
 
           <div className={styles.card8}>
             <svg className={styles.cardimg8}></svg>
-            <div className={styles.cardtitle8}>REGULAR EMPLOYEE</div>
+            <div className={styles.cardimg2}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2 }>45</div>
+            <div className={styles.cardtitle3}>REGULAR EMPLOYEE</div>
           </div>
           
           </form>
@@ -167,7 +178,7 @@ const DashboardPage: React.FC = () => {
           <div className={styles.scrollable}>
           <div className={styles.card9}>
             <svg className={styles.cardimg9}></svg>
-            <div className={styles.cardtitle9}>RECENT COMMENTS</div>
+            <div className={styles.cardtitle3}>RECENT COMMENTS</div>
           </div></div>
     </form>
           

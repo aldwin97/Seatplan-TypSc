@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styles from './profilePage.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
-
+import profileBackg from './assets/profileBackg.jpg'; 
 
 
 const LogInPage: React.FC = () => {
@@ -31,28 +31,36 @@ const LogInPage: React.FC = () => {
     navigate('/');
   };
 
+  const handlePersonalSaveChanges = (): void => {
+    // Perform actions to save the changes
+    // This can include sending the form data to the server or updating the state
+    console.log('Saving changes...');
+  };
+
+  const handlePersonalCancelChanges = (): void => {
+    // Reset the form fields to their initial values or clear them
+    // Perform any other necessary actions when canceling changes
+    console.log('Canceling changes...');
+  };
+
+  const handleAccountSaveChanges = (): void => {
+    // Perform actions to save the changes
+    // This can include sending the form data to the server or updating the state
+    console.log('Saving changes...');
+  };
+
+  const handleAccountCancelChanges = (): void => {
+    // Reset the form fields to their initial values or clear them
+    // Perform any other necessary actions when canceling changes
+    console.log('Canceling changes...');
+  };
 
 
 
-  // const populateProfileSummary = () => {
-  //   const firstNameInput = document.querySelector<HTMLInputElement>('input[name="FirstName"]');
-  //   const lastNameInput = document.querySelector<HTMLInputElement>('input[name="LastName"]');
-  //   const usernameInput = document.querySelector<HTMLInputElement>('input[name="username"]');
-  //   const emailInput = document.querySelector<HTMLInputElement>('input[name="Email"]');
-  //   const contactNumberInput = document.querySelector<HTMLInputElement>('input[name="ContactNumber"]');
 
-  //   if (firstNameInput && lastNameInput && usernameInput && emailInput && contactNumberInput) {
-  //     const fullName = `${firstNameInput.value} ${lastNameInput.value}`;
-  //     document.getElementById('fullName')!.textContent = fullName;
-  //     document.getElementById('username')!.textContent = usernameInput.value;
-  //     document.getElementById('email')!.textContent = emailInput.value;
-  //     document.getElementById('contactNumber')!.textContent = contactNumberInput.value;
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   populateProfileSummary();
-  // }, []);
+
+  
 
 
 
@@ -68,16 +76,15 @@ const LogInPage: React.FC = () => {
       
       {/* Cards */}
       <form className={styles.form1}>
-      {/* <div className={styles.profileSum}>
-          <h2>Profile Summary</h2>
-          <p><strong>Full Name</strong> <span id="fullName"></span></p>
-          <p><strong>Username</strong> <span id="username"></span></p>
-          <p><strong>Email Address</strong> <span id="email"></span></p>
-          <p><strong>Contact Number</strong> <span id="contactNumber"></span></p>
-        </div> */}
+      <div className={styles.profileSum}>
+      <div className={styles.cover}>
+      <img src={profileBackg} alt="Profile Background" />
+      {/* Add other content here */}
+    </div>
+      </div>
       <div className={styles.set}>
       <div className={styles.personal}>
-     
+      <div className={styles.line}></div>
       <h1>Personal Information</h1>
         <div className={styles['name-group']}>
           <input
@@ -124,19 +131,22 @@ const LogInPage: React.FC = () => {
           />
           <label className={styles['user-label']}>Contact Number</label>
         </div>
+       
+        <div className={styles['personal-button']}>
+        <button type="button" className={styles.saveButton} onClick={handlePersonalSaveChanges}>
+          Save Changes
+        </button>
+        <button type="button" className={styles.cancelButton} onClick={handlePersonalCancelChanges}>
+          Cancel
+        </button>
+        </div>
+
+
       </div>
 
 
-
-
-
-
-
-
-
-
-
       <div className={styles.accountS}>
+      <div className={styles.line}></div>
         <h1>Account Settings</h1>
        <div className={styles['input-group']}>
           <input required 
@@ -197,6 +207,22 @@ const LogInPage: React.FC = () => {
             {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
           </span>
         </div>
+
+        <div className={styles['account-button']}>
+        <button type="button" className={styles.saveButton} onClick={handleAccountSaveChanges}>
+          Save Changes
+        </button>
+        <button type="button" className={styles.cancelButton} onClick={handleAccountCancelChanges}>
+          Cancel
+        </button>
+        </div>
+
+
+
+
+
+
+
       </div>
       </div>
 

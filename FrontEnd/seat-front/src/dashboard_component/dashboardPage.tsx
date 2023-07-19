@@ -1,16 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState,  useEffect, useRef } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import {  Button } from '@mui/material';
+import {  Button} from '@mui/material';
 import styles from './dashboardPage.module.css';
-import { Dashboard, Work, Menu } from '@mui/icons-material';
+import { Dashboard, Work, Menu, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import Chart from 'chart.js/auto';
+
+
+
+
+
+
 
 
 
 
 const DashboardPage: React.FC = () => {
+  const chartHeight = 250; 
+  const chartRef = useRef<HTMLCanvasElement | null>(null);
+  const myChart = useRef<Chart | null>(null);
+  useEffect(() => {
+    if (chartRef.current) {
+      const ctx = chartRef.current.getContext('2d');
+
+      if (ctx) {
+        if (myChart.current) {
+          myChart.current.destroy(); // Destroy the previous chart
+        }
+
+        myChart.current = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Occupied', 'Available', 'Under Repair'],
+            datasets: [
+              {
+                label: 'Seat Conditions',
+                data: [100, 60, 200],
+                backgroundColor: [ 'rgba(47, 167, 58, 0.5)',
+                'rgba(47, 167, 58, 0.5)',
+                'rgba(47, 167, 58, 0.5)'],
+                borderColor: '#2FA73A',
+                borderWidth: 2,
+                
+               
+              },
+            ],
+          },
+          options: {
+            indexAxis: 'x',
+            scales: {
+              x: {
+                beginAtZero: true,
+                
+              },
+             
+            },
+            plugins: {
+              legend: {
+                display: false, // Set display to false to remove the legend and small squares
+              },
+            },
+          },
+        });
+      }
+    }
+
+    return () => {
+      if (myChart.current) {
+        myChart.current.destroy(); // Clean up the chart on unmount
+      }
+    };
+  }, []);
   const navigate = useNavigate();
  
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -21,17 +83,35 @@ const DashboardPage: React.FC = () => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
+  const logInPageHandleClick = () => {
+    // Make a request to the server to logout
+    fetch('/logout', {
+      method: 'GET',
+      credentials: 'include', // This is important to include cookies (e.g., the session cookie)
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Successful logout
+          // Remove session information from the session storage
+          console.log('Logout successful');
 
-  
-
-  const logInPageHandleClick = (): void => {
-    navigate('/');
+          // Remove session data from the session storage
+          window.sessionStorage.removeItem('user_id'); // Replace 'user_id' with the actual key used for user_id
+          // You may redirect to the login page or do other operations as needed
+          navigate('/login'); // Redirect to the login page after logout
+        } else {
+          // Handle errors, if any
+          console.error('Logout failed');
+        }
+      })
+      .catch((error) => {
+        console.error('Error occurred during logout:', error);
+      });
   };
-
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
-
+ 
  
   return (
     <>
@@ -124,40 +204,49 @@ const DashboardPage: React.FC = () => {
 </div>
 </form>
           <div className={styles.card2}>
-          <div className={styles.cardtitle2}>TOTAL SEAT</div>
-          <FontAwesomeIcon icon={faFaceSmile} className={styles.cardimg2} />
+         
+          <div className={styles.cardimg2}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
           <div className={styles.cardcount2 }>500</div>
+          <div className={styles.cardtitle2}>TOTAL SEAT</div>
             </div>
         
 
           <div className={styles.card3}>
-            <svg className={styles.cardimg3}></svg>
-            <div className={styles.cardtitle3}>OCCUPIED SEAT</div>
+            <div className={styles.cardimg2}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
+            <div className={styles.cardcount2 }>150</div>
+            <div className={styles.cardtitle2}>OCCUPIED SEAT</div>
           </div>
           
           <div className={styles.card4}>
-            <svg className={styles.cardimg4}></svg>
-            <div className={styles.cardtitle4}>AVAILABLE SEAT</div>
+          <div className={styles.cardimg2}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2 }>350</div>
+            <div className={styles.cardtitle2}>AVAILABLE SEAT</div>
           </div>
           <div>
           <div className={styles.card5}>
-    <svg className={styles.cardimg5}></svg>
-    <div className={styles.cardtitle5}>SEAT CONDITIONS</div>
+          <div className={styles.charttitle}>SEAT CONDITIONS</div>
+    <div className={styles.chartcontainer} >
+      <canvas ref={chartRef}style={{  height: `${chartHeight}px` }}/>
+    </div>
+    
   </div>
           </div>
           <div className={styles.card6}>
-            <svg className={styles.cardimg6}></svg>
-            <div className={styles.cardtitle6}>TOTAL EMPLOYEE</div>
+          <div className={styles.cardimg3}><GroupsRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2}>150</div>
+          <div className={styles.cardtitle3}>TOTAL EMPLOYEE</div>
           </div>
 
           <div className={styles.card7}>
-            <svg className={styles.cardimg7}></svg>
-            <div className={styles.cardtitle7}>TRAINEE</div>
+          <div className={styles.cardimg3}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2 }>45</div>
+            <div className={styles.cardtitle3}>TRAINEE</div>
           </div>
 
           <div className={styles.card8}>
-            <svg className={styles.cardimg8}></svg>
-            <div className={styles.cardtitle8}>REGULAR EMPLOYEE</div>
+            <div className={styles.cardimg3}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount2 }>45</div>
+            <div className={styles.cardtitle3}>REGULAR EMPLOYEE</div>
           </div>
           
           </form>
@@ -167,7 +256,11 @@ const DashboardPage: React.FC = () => {
           <div className={styles.scrollable}>
           <div className={styles.card9}>
             <svg className={styles.cardimg9}></svg>
-            <div className={styles.cardtitle9}>RECENT COMMENTS</div>
+            <div className={styles.cardtitle4}>RECENT COMMENTS</div>
+           
+     
+
+    
           </div></div>
     </form>
           

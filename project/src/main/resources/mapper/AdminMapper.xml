@@ -34,14 +34,31 @@
         UPDATE table_user SET is_deleted = 1 WHERE user_id = #{user_id}
     </update>
 
-    <insert id="insertUser" parameterType="com.seatPlan.project.model.UserModel">
-        INSERT INTO table_user (first_name, last_name, email, mobile_num, username, password,
-        staffstatus_id, project_id, usertype_id, position_id, created_time, created_by)
-        VALUES (#{first_name}, #{last_name}, #{email}, #{mobile_num}, #{username}, #{password},
-        #{staffstatus_id}, #{project_id}, #{usertype_id}, #{position_id}, #{created_time}, #{created_by})
-        <selectKey keyProperty="user_id" order="BEFORE">
-            SELECT LAST_INSERT_ID() AS user_id
-        </selectKey>
+    <insert id="insertUser" parameterType="com.seatPlan.project.model.UserInputModel">
+        INSERT INTO table_user
+            (first_name, 
+            last_name, 
+            email, 
+            mobile_num, 
+            username, 
+            password,
+            staffstatus_id, 
+            project_id, 
+            usertype_id, 
+            position_id, 
+            created_by)
+        VALUES 
+            (#{first_name}, 
+            #{last_name}, 
+            #{email}, 
+            #{mobile_num},
+            #{username},
+            #{password},
+            #{staffstatus_id},
+            #{project_id}, 
+            #{usertype_id},
+            #{position_id},
+            #{created_by})
     </insert>
 
     <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
@@ -65,20 +82,29 @@
         WHERE user_id = #{user_id}
     </update>
 
-    <select id="getUserByUsername" resultType="com.seatPlan.project.model.UserModel">
+    <select id="getUserByUsername" resultType="com.seatPlan.project.model.UserInputModel">
         SELECT * FROM table_user WHERE username = #{username} AND is_deleted = 0
     </select>
 
-    <select id="getUserByEmail" resultType="com.seatPlan.project.model.UserModel">
+    <select id="getUserByEmail" resultType="com.seatPlan.project.model.UserInputModel">
         SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0
     </select>
 
     <insert id="insertComment" parameterType="com.seatPlan.project.model.CommentModel">
-        INSERT INTO table_comment (user_id, seat_id, comment, created_time, created_by, recipient_id)
-        VALUES (#{user_id}, #{seat_id}, #{comment}, #{created_time}, #{created_by}, #{recipient_id})
-        <selectKey keyProperty="comment_id" order="BEFORE">
-            SELECT LAST_INSERT_ID() AS comment_id
-        </selectKey>
+        INSERT INTO table_comment (
+            user_id,
+            seat_id,
+            comment,
+            created_time,
+            created_by,
+            recipient_id)
+        VALUES  (
+            #{user_id},
+            #{seat_id},
+            #{comment}, 
+            #{created_time}, 
+            #{created_by}, 
+            #{recipient_id})
     </insert>
 
 </mapper>

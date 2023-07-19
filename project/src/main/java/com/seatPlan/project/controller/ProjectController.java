@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.ColorModel;
+import com.seatPlan.project.model.ProjectInputModel;
 import com.seatPlan.project.model.ProjectModel;
 import com.seatPlan.project.service.ProjectService;
 
@@ -32,11 +33,10 @@ public class ProjectController {
     }
 
     //Add project in the database
-    @PostMapping("/add")
-    public ResponseEntity<String> createProject(@RequestBody ProjectModel projectModel) 
-{
+    @PostMapping("/insertNewProject")
+    public ResponseEntity<String> createProject(@RequestBody ProjectInputModel projectInputModel) {
         try {
-            projectService.insertProject(projectModel);
+            projectService.insertProject(projectInputModel);
             return ResponseEntity.ok("Project created successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create project");

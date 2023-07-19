@@ -3,9 +3,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.seatPlan.project.dao.ProjectDao">
 
-    <insert id="insertProject" useGeneratedKeys="true" keyProperty="project_id">
-        INSERT INTO table_project (project_name, color_id, is_deleted, created_by, created_time)
-        VALUES (#{project_name}, #{color_id}, #{is_deleted}, #{created_by}, #{created_time})
+    <insert id="insertProject"  parameterType="com.seatPlan.project.model.ProjectInputModel">
+        INSERT INTO table_project (
+            project_name, 
+            color_id,  
+            created_by)
+        VALUES (
+            #{project_name}, 
+            #{color_id},
+            #{created_by})
     </insert>
 
     <select id="getAllProjects" resultType="com.seatPlan.project.model.ProjectModel">

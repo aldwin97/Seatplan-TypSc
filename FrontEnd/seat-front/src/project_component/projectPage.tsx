@@ -119,43 +119,50 @@ function ProjectPage() {
   };
 
   // Function to handle form submission
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Retrieve the user ID from session storage
-    // Create a new project object to send to the backend
-    const newProject: Project = {
-      project_name: projectName,
-      color_id: selectedColorId,
-      created_by: loggedInUserId ? Number(loggedInUserId) : 0,
-    };
-    
-    console.log('New Project:', newProject);
-    try {
-      // Make a request to the backend to add the new project
-      const response = await fetch('http://localhost:8080/project/insertNewProject', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newProject),
-      });
-  
-      if (response.ok) {
-        // Project created successfully
-        // Perform any additional actions or show a success message if needed
-        console.log('Project created successfully');
-        // Reset form inputs after successful project creation
-        setProjectName('');
-        setSelectedColorId(0); // Reset selectedColorId to the default value
-      } else {
-        // Failed to create project
-        // Handle the error or show an error message if needed
-        console.error('Failed to create project');
-      }
-    } catch (error) {
-      console.error('Error occurred during project creation:', error);
-    }
+  // ... (previous code)
+
+// Function to handle form submission
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  // Retrieve the user ID from session storage
+  // Create a new project object to send to the backend
+  const newProject: Project = {
+    project_name: projectName,
+    color_id: selectedColorId,
+    created_by: loggedInUserId ? Number(loggedInUserId) : 0,
   };
+
+  console.log('New Project:', newProject);
+  try {
+    // Make a request to the backend to add the new project
+    const response = await fetch('http://localhost:8080/project/insertNewProject', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProject),
+    });
+
+    if (response.ok) {
+      // Project created successfully
+      // Perform any additional actions or show a success message if needed
+      console.log('Project created successfully');
+      // Reset form inputs after successful project creation
+      setProjectName('');
+      setSelectedColorId(0); // Reset selectedColorId to the default value
+      window.location.reload(); // Reload the page after successful project creation
+    } else {
+      // Failed to create project
+      // Handle the error or show an error message if needed
+      console.error('Failed to create project');
+    }
+  } catch (error) {
+    console.error('Error occurred during project creation:', error);
+  }
+};
+
+// ... (remaining code)
+
 
   const [selectedColorId, setSelectedColorId] = useState(0);
 
@@ -172,10 +179,11 @@ function ProjectPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('http://localhost:8080/project/show');
+      const response = await fetch('http://localhost:8080/project/showAllProject');
       if (response.ok) {
         const projectsData = await response.json();
         setProjects(projectsData);
+
       } else {
         console.error('Failed to fetch projects');
       }
@@ -187,12 +195,27 @@ function ProjectPage() {
 
   const navigate = useNavigate();
 
-  // Function to handle project name link click
-  const handleProjectClick = (projectId: number) => {
-    // Here, you can define the logic to navigate to the specific project page.
-    // For example, if your project details page is '/projects/:projectId', you can do the following:
-    navigate(`/projects/${projectId}`);
+  const getColorName = (colorId: number) => {
+    const color = colors.find((c) => c.color_id === colorId);
+    return color ? color.color_name : 'Unknown Color';
   };
+
+
+  const projectsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Function to get the projects for the current page
+  const getCurrentPageProjects = () => {
+    const startIndex = (currentPage - 1) * projectsPerPage;
+    const endIndex = startIndex + projectsPerPage;
+    return projects.slice(startIndex, endIndex);
+  };
+
+
+
   
   return (
     <body className="backg">
@@ -265,42 +288,44 @@ function ProjectPage() {
       ))}
     </select>
   </div>
-  <button type="submit" className="ubmitButton">
+  <button type="submit" className="submitButton">
     <FontAwesomeIcon icon={faPlus} className="icon" />
     Add Project
   </button><br></br>
 </form>
-<TableContainer component={Paper} >
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell >Project Name</TableCell>
-            <TableCell>Color ID</TableCell>
-            <TableCell >Created By</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {projects.map((project) => (
-            <TableRow key={project.project_id} hover>
-              <TableCell  padding="checkbox">
-                {/* Add your checkbox logic here if needed */}
-    
-              </TableCell>
-              <TableCell>
-                {/* You can use a link to navigate to a specific project if needed */}
-                <a  >
-  {project.project_name}
-</a>
-
-              </TableCell>
-              <TableCell>{project.color_id}</TableCell>
-              <TableCell>{project.created_by}</TableCell>
+<TableContainer component={Paper}>
+        <Table>
+          <TableHead className="Thead">
+            <TableRow>
+              <TableCell className="Tcell"></TableCell>
+              <TableCell className="Tcell">Project Name</TableCell>
+              <TableCell className="Tcell">Color</TableCell>
+              <TableCell className="Tcell">Created By</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {getCurrentPageProjects().map((project) => (
+              <TableRow key={project.project_id} hover>
+                <TableCell padding="checkbox">
+                  {/* Add your checkbox logic here if needed */}
+                </TableCell>
+                <TableCell>
+                  {/* You can use a link to navigate to a specific project if needed */}
+                  <a>{project.project_name}</a>
+                </TableCell>
+                <TableCell className="Tcell">{getColorName(project.color_id)}</TableCell>
+                <TableCell className="Tcell">{project.created_by}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Pagination
+        count={Math.ceil(projects.length / projectsPerPage)}
+        page={currentPage}
+        onChange={handlePageChange}
+        className="pagination"
+      />
   </div>
   
   </body>

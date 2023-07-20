@@ -30,13 +30,24 @@ interface SeatPopupProps {
   setSeats: (seats: Seat[]) => void;
   seats: Seat[];
 }
+interface Occupant {
+  user_id: number;
+  name: string;
+  first_name: string;
+  last_name: string;
+
+  // Add other properties if available in the response
+}
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [selectedSeatId, setSelectedSeatId] = useState('');
   const [showComments, setShowComments] = useState(false);
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
+  const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
 
+  // Add selectedOccupant state with a default value
+  const [selectedOccupant, setSelectedOccupant] = useState<string>('');
 
   useEffect(() => {
     document.body.classList.toggle('popupOpen', true);
@@ -92,7 +103,7 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
     event.preventDefault();
     const updatedSeats = seats.map((s) => {
       if (s.seat_id === seat.seat_id) {
-        return { ...s, occupant };
+        return { ...s, occupant: selectedOccupant }; // Update 'occupant' with 'selectedOccupant'
       }
       return s;
     });
@@ -133,61 +144,51 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
   const handleEdit = () => {
     setIsEditMode(true);
   };
-
-  const [occupant, setOccupant] = useState('');
-
-  // State variables to hold the lists fetched from the backend
-  const [occupantsList, setOccupantsList] = useState([]);
-
-
-  // Function to fetch occupants and projects from the backend
-  const fetchOccupantsAndProjects = async () => {
-    try {
-      // Replace the following with the actual API endpoints to fetch occupants and projects
-      const occupantsResponse = await fetch('/api/occupants');
-
-
-      // Assuming the backend returns JSON data with 'occupants' and 'projects' properties
-      const occupantsData = await occupantsResponse.json();
-
-
-      // Update the state variables with the fetched data
-      setOccupantsList(occupantsData.occupants);
-    } catch (error) {
-      console.error('Error fetching occupants and projects:', error);
-    }
+  const handleOccupantChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOccupant(event.target.value);
   };
-
+  
+  // Function to fetch occupants and projects from the backend
+ 
   useEffect(() => {
-    // Fetch occupants and projects when the component mounts
-    fetchOccupantsAndProjects();
+    fetchOccupants();
   }, []);
 
-  // Event handler for changes in the selected occupant
-  const handleOccupantChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setOccupant(event.target.value);
-  };
-
-
+  /// Function to fetch the list of occupants from the backend
+const fetchOccupants = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/seat/showAllUser');
+    if (response.ok) {
+      const occupantsData: Occupant[] = await response.json();
+      setOccupantsList(occupantsData);
+    } else {
+      console.error('Failed to fetch occupants');
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching occupants:', error);
+  }
+};
 
   return (
     <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
       <div className={styles.seatPopupContent}>
         <h3>{seat.seat_id}</h3>
         <form onSubmit={handleFormSubmit}>
-          {isEditMode ? (
-            <>
-               <label>
-        Occupant:
-        <select value={occupant} onChange={handleOccupantChange} required>
-          <option value="">Select an occupant</option>
-          {occupantsList.map((occupant) => (
-            <option key={occupant} value={occupant}>
-              {occupant}
-            </option>
-          ))}
-        </select>
-      </label>
+        {isEditMode ? (
+          <>
+            <select
+              value={selectedOccupant}
+              onChange={handleOccupantChange}
+              required
+            >
+              <option value="">Select an occupant</option>
+              {occupantsList.map((occupant) => (
+                <option key={occupant.user_id} value={occupant.user_id}>
+                  {`${occupant.first_name} ${occupant.last_name}`}
+                </option>
+              ))}
+            </select>
+
               {isSeatOccupied ? (
                 <>
                   <button type="submit">Save</button>
@@ -197,7 +198,7 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
                       className={styles.value}
                       value={selectedSeatId}
                       onChange={(e) => handleSeatSelect(e.target.value)}
-                    >
+                      >
                       <option className={styles.value} value="">
                         Select a seat
                       </option>

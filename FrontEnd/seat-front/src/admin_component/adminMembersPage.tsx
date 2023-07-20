@@ -36,6 +36,7 @@ import {
   faProjectDiagram,
   faPowerOff,
   faFaceSmile,
+  faEdit,
 } from '@fortawesome/free-solid-svg-icons';
 import './adminMembersPage.css';
 
@@ -380,7 +381,9 @@ const handleSaveUser = () => {
   
   
   
-
+  const projectPageHandleClick = () => {
+    navigate('/ProjectPage');
+  };
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
   };
@@ -479,8 +482,12 @@ const handleSaveUser = () => {
             Members
           </button>
           <button onClick={seatplanPageHandleClick} className="sub">
+            <FontAwesomeIcon icon={faEdit} className="icon" />
+            Seat Plan Management
+          </button>
+          <button onClick={projectPageHandleClick} className="sub">
             <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
-            Projects
+           Projects
           </button>
         </div>
       )}

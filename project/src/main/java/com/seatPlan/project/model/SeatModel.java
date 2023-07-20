@@ -15,12 +15,12 @@ public class SeatModel {
     private  Long  seat_id;
     private Long user_id;
     private Long seatstatus_id;
-    private Long areaId;
+    private Long area_id;
     private int isDeleted;
-    private LocalDateTime createdTime;
-    private Long createdBy;
-    private LocalDateTime updatedTime;
-    private Long updatedBy;
+    private LocalDateTime created_time;
+    private Long created_by;
+    private LocalDateTime updated_time;
+    private Long updated_by;
     private Long position_x;
     private Long position_y;
 

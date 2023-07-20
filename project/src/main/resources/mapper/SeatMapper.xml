@@ -60,7 +60,7 @@
     </update>
 
 
-    <update id="updateSeat"  parameterType="com.seatPlan.project.model.SeatModel">
+    <update id="updateSeat" parameterType="com.seatPlan.project.model.SeatModel">
         UPDATE table_seat
         <set>
             <if test="user_id != null">user_id = #{user_id},</if>
@@ -69,6 +69,7 @@
         </set>
         WHERE seat_id = #{seat_id}
     </update>
+    
     
     <select id="getSeatById" resultType="com.seatPlan.project.model.SeatModel">
         SELECT * FROM table_seat WHERE seat_id = #{seat_id} AND is_deleted = 0

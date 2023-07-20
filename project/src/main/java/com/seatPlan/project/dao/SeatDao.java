@@ -21,7 +21,6 @@ public interface SeatDao {
 
     void swapSeat(SeatModel seat);
 
-
      void updateSeat(SeatModel seat);
 
     SeatModel getSeatById(Long seat_id);

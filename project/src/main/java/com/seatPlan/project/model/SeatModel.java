@@ -21,6 +21,8 @@ public class SeatModel {
     private Long createdBy;
     private LocalDateTime updatedTime;
     private Long updatedBy;
+    private Long position_x;
+    private Long position_y;
 
 
 

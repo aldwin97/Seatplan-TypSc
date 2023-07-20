@@ -33,6 +33,8 @@ public class SeatService {
                 seatMap.put("area_name", seat.getArea_name());
                 seatMap.put("project_name", seat.getProject_name()); 
                 seatMap.put("seat_status", seat.getSeat_status());
+                seatMap.put("position_x",seat.getPosition_x());
+                seatMap.put("position_y",seat.getPosition_y());
                 return seatMap;
             })
             .collect(Collectors.toList());

@@ -12,6 +12,7 @@ import com.seatPlan.project.dao.SeatDao;
 import com.seatPlan.project.model.CommentInputModel;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
+import com.seatPlan.project.model.UserModel;
 
 @Service
 public class SeatService {
@@ -91,4 +92,20 @@ public class SeatService {
     public SeatModel getSeatById(Long seat_id) {
         return seatDao.getSeatById(seat_id);
     }
+
+      public List<Map<String, Object>> getAllUser() {
+        List<UserModel> users = seatDao.getAllUser();
+        List<Map<String, Object>> filteredUserType = users.stream()
+                .map(user -> {
+                    Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("user_id", user.getUser_id());
+                    userMap.put("first_name", user.getFirst_name());
+                    userMap.put("last_name", user.getLast_name());
+                    return userMap;
+                }).collect(Collectors.toList());
+        return filteredUserType;
+    }
+
+
+
 }

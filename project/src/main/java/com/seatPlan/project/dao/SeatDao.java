@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import com.seatPlan.project.model.CommentInputModel;
 import com.seatPlan.project.model.SeatModel;
+import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.model.CommentModel;
 
 @Mapper
@@ -24,5 +25,7 @@ public interface SeatDao {
      void updateSeat(SeatModel seat);
 
     SeatModel getSeatById(Long seat_id);
+
+    List<UserModel> getAllUser();
 
 }

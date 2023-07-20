@@ -75,4 +75,10 @@
         SELECT * FROM table_seat WHERE seat_id = #{seat_id} AND is_deleted = 0
     </select>
 
+
+    <select id="getAllUser" resultType="com.seatPlan.project.model.UserModel">
+        SELECT user_id, first_name, last_name
+        FROM table_user
+    </select>
+
 </mapper>

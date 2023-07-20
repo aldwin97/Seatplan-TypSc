@@ -110,6 +110,16 @@ public class SeatController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
         }
     }
+
+
+
+
+    @GetMapping("/showAllUser")
+    public List<Map<String, Object>> allUser(){
+        List<Map<String, Object>> users = seatService.getAllUser();
+        return users;
+    }
+
     
 
 

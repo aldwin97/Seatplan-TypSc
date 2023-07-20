@@ -32,4 +32,5 @@ public class SeatModel {
     private String last_name;
     private String area_name;
     private String seat_status;
+    private String color_code;
 }

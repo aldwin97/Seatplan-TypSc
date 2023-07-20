@@ -11,7 +11,7 @@
             ta.area_name,
             COALESCE(tu.project_id, 0) AS project_id,
             COALESCE(tp.project_name, 'No Project') AS project_name,
-            COALESCE(tc.color_code, 'No Color') AS color_code,
+            COALESCE(tc.color_code, '#FFFFFF') AS color_code,
             COALESCE(tss.seat_status, 'No Seat Status') AS seat_status
         FROM table_seat ts
         LEFT JOIN table_user tu ON ts.user_id = tu.user_id

@@ -124,7 +124,7 @@ const AdminMembersPage: React.FC = () => {
   }, []);
   
 
-  const [perPage, setPerPage] = useState(8);
+  const [perPage, setPerPage] = useState(10);
   const navigate = useNavigate();
 
   const handleCloseDialog = () => {
@@ -257,7 +257,7 @@ const AdminMembersPage: React.FC = () => {
     setCurrentPage(value);
   };
 
-  const perPageOptions = [2, 5, 10];
+  const perPageOptions = [10, 30, 50];
 
   const handlePerPageChange = (event: SelectChangeEvent<number>) => {
     const value = event.target.value as number;
@@ -590,7 +590,7 @@ console.log('Data being updated:', updatedUserModel);
       <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
   <div className="user-info-page">
     <Typography variant="h5" className="user-info-title">
-      {editMode ? ` Edit ${selectedUser?.first_name || "User"}'s Information` : `${selectedUser?.first_name || "User"}'s Information`}
+    {editMode ? 'Edit Information' : 'User Information'}
     </Typography>
     {selectedUser && (
       <div className="user-info-content">

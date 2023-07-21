@@ -30,13 +30,26 @@ interface SeatPopupProps {
   setSeats: (seats: Seat[]) => void;
   seats: Seat[];
 }
+interface Occupant {
+  user_id: number;
+  name: string;
+  first_name: string;
+  last_name: string;
+
+  // Add other properties if available in the response
+}
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [selectedSeatId, setSelectedSeatId] = useState('');
   const [showComments, setShowComments] = useState(false);
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
+  const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
+  const [isOccupantAlreadyAssigned, setIsOccupantAlreadyAssigned] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
+  // Add selectedOccupant state with a default value
+  const [selectedOccupant, setSelectedOccupant] = useState<string>('');
 
   useEffect(() => {
     document.body.classList.toggle('popupOpen', true);
@@ -44,33 +57,45 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
       document.body.classList.toggle('popupOpen', false);
     };
   }, []);
+  
+
+  useEffect(() => {
+    // Load seats data from local storage if available
+    const storedSeats = localStorage.getItem('seats');
+    if (storedSeats) {
+      setSeats(JSON.parse(storedSeats));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save seats data to local storage whenever it changes
+    localStorage.setItem('seats', JSON.stringify(seats));
+  }, [seats]);
 
   const handleSeatSelect = (selectedSeatId: string) => {
     setSelectedSeatId(selectedSeatId);
   };
 
-  const handleSwapSeats = () => {
+  const handleSwapSeats = async () => {
     if (selectedSeatId) {
       const currentSeatId = seat.seat_id;
-const currentSeat = seats.find((seat) => seat.seat_id === currentSeatId);
-const swapSeat = seats.find((seat) => String(seat.seat_id) === String(selectedSeatId));
-
-if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId)) {
+      const currentSeat = seats.find((seat) => seat.seat_id === currentSeatId);
+      const swapSeat = seats.find((seat) => seat.seat_id === Number(selectedSeatId));
+  
+      if (currentSeat && swapSeat && currentSeatId !== Number(selectedSeatId)) {
+        // Create the updated seats with the swapped occupant and project
         const updatedCurrentSeat = {
           ...currentSeat,
           occupant: swapSeat.occupant,
           project: swapSeat.project,
-          label: swapSeat.seat_id,
-          color: swapSeat.color,
         };
         const updatedSwapSeat = {
           ...swapSeat,
           occupant: currentSeat.occupant,
           project: currentSeat.project,
-          label: currentSeat.seat_id,
-          color: currentSeat.color,
         };
-
+  
+        // Swap the seats in the frontend
         const updatedSeats = seats.map((seat) => {
           if (seat.seat_id === updatedCurrentSeat.seat_id) {
             return updatedCurrentSeat;
@@ -79,26 +104,104 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
           }
           return seat;
         });
-
+  
         setSeats(updatedSeats);
+  
+        try {
+          // Swap the seats in the backend
+          await fetch(`http://localhost:8080/seat/swap/${seat.seat_id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedCurrentSeat),
+          });
+  
+          await fetch(`http://localhost:8080/seat/swap/${Number(selectedSeatId)}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedSwapSeat),
+          });
+  
+          console.log('Seats swapped successfully');
+          onClose();
+        } catch (error) {
+          console.error('Failed to swap seats:', error);
+        }
       }
     }
-    onClose();
+  };
+  
+
+ useEffect(() => {
+  // Check if the selected occupant is already assigned to another seat
+  const checkOccupantAssignment = () => {
+    const seatsWithSameOccupant = seats.filter(
+      (s) => s.occupant === selectedOccupant && s.seat_id !== seat.seat_id
+    );
+    setIsOccupantAlreadyAssigned(seatsWithSameOccupant.length > 0);
   };
 
-  const isSeatOccupied = seat.occupant !== '' && seat.project !== '';
+  checkOccupantAssignment();
+}, [selectedOccupant, seat.seat_id, seats]);
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+const isSeatOccupied = seat.occupant !== '' && seat.project !== '';
+const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+
+  if (isOccupantAlreadyAssigned) {
+    setErrorMsg('This occupant is already assigned to another seat.');
+    return;
+  }
+
+  try {
     const updatedSeats = seats.map((s) => {
       if (s.seat_id === seat.seat_id) {
-        return { ...s, occupant };
+        return { ...s, occupant: selectedOccupant }; // Update 'occupant' with 'selectedOccupant'
       }
       return s;
     });
+
     setSeats(updatedSeats);
-    onClose();
-  };
+
+    // Prepare the seat data to be sent to the backend
+    const updatedSeatData = {
+      ...seat,
+      user_id: selectedOccupant, // Assign the selected occupant's ID
+    };
+
+    // Send the updated seat data to the backend
+    const response = await fetch(`http://localhost:8080/seat/update/${seat.seat_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedSeatData),
+    });
+
+    if (response.ok) {
+      console.log('Seat updated successfully');
+      onClose();
+      window.location.reload(); // Refresh the page
+    } else if (response.status === 500) {
+      setErrorMsg('This occupant is already assigned to another seat.');
+      // You can also display the error message on the page instead of using an alert
+      // For example, set a state to show the error message:
+      // setErrorMsg('This occupant is already assigned to another seat.');
+    } else {
+      console.error('Failed to update seat');
+    }
+  } catch (error) {
+    console.error('Error occurred while updating seat:', error);
+  }
+};
+
+  useEffect(() => {
+    fetchOccupants();
+  }, []);
+  
 
   const handleViewComments = () => {
     setShowComments(!showComments);
@@ -133,41 +236,30 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
   const handleEdit = () => {
     setIsEditMode(true);
   };
-
-  const [occupant, setOccupant] = useState('');
-
-  // State variables to hold the lists fetched from the backend
-  const [occupantsList, setOccupantsList] = useState([]);
-
-
-  // Function to fetch occupants and projects from the backend
-  const fetchOccupantsAndProjects = async () => {
-    try {
-      // Replace the following with the actual API endpoints to fetch occupants and projects
-      const occupantsResponse = await fetch('/api/occupants');
-
-
-      // Assuming the backend returns JSON data with 'occupants' and 'projects' properties
-      const occupantsData = await occupantsResponse.json();
-
-
-      // Update the state variables with the fetched data
-      setOccupantsList(occupantsData.occupants);
-    } catch (error) {
-      console.error('Error fetching occupants and projects:', error);
-    }
+  const handleOccupantChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOccupant(event.target.value);
   };
-
+  
+  // Function to fetch occupants and projects from the backend
+ 
   useEffect(() => {
-    // Fetch occupants and projects when the component mounts
-    fetchOccupantsAndProjects();
+    fetchOccupants();
   }, []);
 
-  // Event handler for changes in the selected occupant
-  const handleOccupantChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setOccupant(event.target.value);
-  };
-
+  /// Function to fetch the list of occupants from the backend
+const fetchOccupants = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/seat/showAllUser');
+    if (response.ok) {
+      const occupantsData: Occupant[] = await response.json();
+      setOccupantsList(occupantsData);
+    } else {
+      console.error('Failed to fetch occupants');
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching occupants:', error);
+  }
+};
 
 
   return (
@@ -175,19 +267,34 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
       <div className={styles.seatPopupContent}>
         <h3>{seat.seat_id}</h3>
         <form onSubmit={handleFormSubmit}>
-          {isEditMode ? (
-            <>
-               <label>
-        Occupant:
-        <select value={occupant} onChange={handleOccupantChange} required>
-          <option value="">Select an occupant</option>
-          {occupantsList.map((occupant) => (
-            <option key={occupant} value={occupant}>
-              {occupant}
-            </option>
-          ))}
-        </select>
-      </label>
+        {isEditMode ? (
+          <>
+            <select
+              value={selectedOccupant}
+              onChange={handleOccupantChange}
+              required
+            >
+              <option value="">Select an occupant</option>
+              {occupantsList.map((occupant) => (
+                <option key={occupant.user_id} value={occupant.user_id}>
+                  {`${occupant.first_name} ${occupant.last_name}`}
+                </option>
+              ))}
+            </select>
+            {errorMsg && (
+  <div className={styles.errorPopup}>
+    <p>{errorMsg}</p>
+    <button
+      onClick={() => {
+        setErrorMsg('');
+        window.location.reload();
+      }}
+    >
+      Close
+    </button>
+  </div>
+)}
+
               {isSeatOccupied ? (
                 <>
                   <button type="submit">Save</button>
@@ -197,7 +304,7 @@ if (currentSeat && swapSeat && String(currentSeatId) !== String(selectedSeatId))
                       className={styles.value}
                       value={selectedSeatId}
                       onChange={(e) => handleSeatSelect(e.target.value)}
-                    >
+                      >
                       <option className={styles.value} value="">
                         Select a seat
                       </option>

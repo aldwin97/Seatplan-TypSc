@@ -9,10 +9,7 @@ import profileBackg from './assets/profileBackg.jpg';
 import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'; // Added import
 
 const LogInPage: React.FC = () => {

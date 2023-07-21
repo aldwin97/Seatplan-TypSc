@@ -135,12 +135,12 @@ public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, 
             existingUser.setPassword(userModel.getPassword());
         }
 
-        if (userModel.getStaffstatus_id() != null) {
-            existingUser.setStaffstatus_id(userModel.getStaffstatus_id());
-        }
-
         if (userModel.getUsertype_id() != null) {
             existingUser.setUsertype_id(userModel.getUsertype_id());
+        }
+
+        if (userModel.getStaffstatus_id() != null) {
+            existingUser.setStaffstatus_id(userModel.getStaffstatus_id());
         }
 
         if (userModel.getPosition_id() != null) {

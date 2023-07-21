@@ -77,12 +77,11 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   };
 
   const handleSwapSeats = async () => {
-    if (selectedSeatId) {
-      const currentSeatId = seat.seat_id;
-      const currentSeat = seats.find((seat) => seat.seat_id === currentSeatId);
+    if (selectedSeatId && selectedSeatId !== seat.seat_id.toString()) {
+      const currentSeat = seats.find((seat) => seat.seat_id === seat.seat_id);
       const swapSeat = seats.find((seat) => seat.seat_id === Number(selectedSeatId));
   
-      if (currentSeat && swapSeat && currentSeatId !== Number(selectedSeatId)) {
+      if (currentSeat && swapSeat) {
         // Create the updated seats with the swapped occupant and project
         const updatedCurrentSeat = {
           ...currentSeat,
@@ -109,21 +108,15 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   
         try {
           // Swap the seats in the backend
-          await fetch(`http://localhost:8080/seat/swap/${seat.seat_id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedCurrentSeat),
-          });
-  
-          await fetch(`http://localhost:8080/seat/swap/${Number(selectedSeatId)}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedSwapSeat),
-          });
+          // Swap the seats in the backend
+await fetch(`http://localhost:8080/seat/swap/${seat.seat_id}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ updatedCurrentSeat, updatedSwapSeat }),
+});
+
   
           console.log('Seats swapped successfully');
           onClose();
@@ -133,6 +126,8 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
       }
     }
   };
+  
+  
   
 
  useEffect(() => {
@@ -299,25 +294,25 @@ const fetchOccupants = async () => {
                 <>
                   <button type="submit">Save</button>
                   <div>
-                    <p>Select a seat to swap:</p>
-                    <select
-                      className={styles.value}
-                      value={selectedSeatId}
-                      onChange={(e) => handleSeatSelect(e.target.value)}
-                      >
-                      <option className={styles.value} value="">
-                        Select a seat
-                      </option>
-                      {seats.map((seat) => (
-                        <option key={seat.seat_id} value={seat.seat_id}>
-                          {seat.seat_id}
-                        </option>
-                      ))}
-                    </select>
-                    <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
-                      Swap Now
-                    </button>
-                  </div>
+                <p>Select a seat to swap:</p>
+                <select
+                  className={styles.value}
+                  value={selectedSeatId}
+                  onChange={(e) => handleSeatSelect(e.target.value)}
+                >
+                  <option className={styles.value} value="">
+                    Select a seat
+                  </option>
+                  {seats.map((seat) => (
+                    <option key={seat.seat_id} value={seat.seat_id}>
+                      {seat.seat_id}
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
+                  Swap Now
+                </button>
+              </div>
                 </>
               ) : (
                 <>

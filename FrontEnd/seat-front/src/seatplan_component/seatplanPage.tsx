@@ -46,6 +46,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const [reply, setReply] = useState('');
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [isOccupantAlreadyAssigned, setIsOccupantAlreadyAssigned] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
@@ -151,56 +152,52 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
 
   if (isOccupantAlreadyAssigned) {
-    alert('This occupant is already assigned to another seat.');
+    setErrorMsg('This occupant is already assigned to another seat.');
     return;
   }
-  
-    try {
-      // Check if the selected occupant is already assigned to another seat
-      const isOccupantAlreadyAssigned = seats.some(
-        (s) => s.occupant === selectedOccupant && s.seat_id !== seat.seat_id
-      );
-  
-      if (isOccupantAlreadyAssigned) {
-        alert('This occupant is already assigned to another seat.');
-        return; // Stop further execution
+
+  try {
+    const updatedSeats = seats.map((s) => {
+      if (s.seat_id === seat.seat_id) {
+        return { ...s, occupant: selectedOccupant }; // Update 'occupant' with 'selectedOccupant'
       }
-  
-      const updatedSeats = seats.map((s) => {
-        if (s.seat_id === seat.seat_id) {
-          return { ...s, occupant: selectedOccupant }; // Update 'occupant' with 'selectedOccupant'
-        }
-        return s;
-      });
-  
-      setSeats(updatedSeats);
-  
-      // Prepare the seat data to be sent to the backend
-      const updatedSeatData = {
-        ...seat,
-        user_id: selectedOccupant, // Assign the selected occupant's ID
-      };
-  
-      // Send the updated seat data to the backend
-      const response = await fetch(`http://localhost:8080/seat/update/${seat.seat_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedSeatData),
-      });
-  
-      if (response.ok) {
-        console.log('Seat updated successfully');
-        onClose();
-        window.location.reload(); // Refresh the page
-      } else {
-        console.error('Failed to update seat');
-      }
-    } catch (error) {
-      console.error('Error occurred while updating seat:', error);
+      return s;
+    });
+
+    setSeats(updatedSeats);
+
+    // Prepare the seat data to be sent to the backend
+    const updatedSeatData = {
+      ...seat,
+      user_id: selectedOccupant, // Assign the selected occupant's ID
+    };
+
+    // Send the updated seat data to the backend
+    const response = await fetch(`http://localhost:8080/seat/update/${seat.seat_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedSeatData),
+    });
+
+    if (response.ok) {
+      console.log('Seat updated successfully');
+      onClose();
+      window.location.reload(); // Refresh the page
+    } else if (response.status === 500) {
+      setErrorMsg('This occupant is already assigned to another seat.');
+      // You can also display the error message on the page instead of using an alert
+      // For example, set a state to show the error message:
+      // setErrorMsg('This occupant is already assigned to another seat.');
+    } else {
+      console.error('Failed to update seat');
     }
-  };
+  } catch (error) {
+    console.error('Error occurred while updating seat:', error);
+  }
+};
+
   useEffect(() => {
     fetchOccupants();
   }, []);
@@ -284,6 +281,19 @@ const fetchOccupants = async () => {
                 </option>
               ))}
             </select>
+            {errorMsg && (
+  <div className={styles.errorPopup}>
+    <p>{errorMsg}</p>
+    <button
+      onClick={() => {
+        setErrorMsg('');
+        window.location.reload();
+      }}
+    >
+      Close
+    </button>
+  </div>
+)}
 
               {isSeatOccupied ? (
                 <>

@@ -665,3 +665,62 @@ margin-top: 40px;
     margin-bottom: 10px;
   }
 }
+
+/* seatplanPage.module.css */
+/* seatplanPage.module.css */
+.errorPopup {
+  position: fixed;
+  top: 50%;
+  width: 400px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #ff0000;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  animation: shake 0.2s ease-in-out;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(-5deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(5deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+.errorPopup p {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.errorPopup button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #ff0000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.errorPopup button:hover {
+  background-color: #b6b6b6;
+}

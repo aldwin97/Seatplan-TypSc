@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seatPlan.project.model.CommentInputModel;
@@ -93,27 +94,31 @@ public class SeatController {
         return users;
     }
 
-
-
-
-    @PostMapping("/swap/{seatId1}/{seatId2}")
-    public ResponseEntity<String> swapUserIds(@PathVariable("seatId1") Long seatId1, @PathVariable("seatId2") Long seatId2, @RequestBody SeatModel seatModel) {
-        if (seatId1 == null || seatId2 == null) {
-            return ResponseEntity.badRequest().body("Both seatId1 and seatId2 parameters are required.");
-        }
-        
-        Long userId1 = seatModel.getUserId1(); 
-        Long userId2 = seatModel.getUserId2();
     
-        try {
-            seatService.swapUserIds(seatId1, seatId2, userId1, userId2);
-    
-            return ResponseEntity.ok("User IDs swapped successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap user IDs");
-        }
+
+
+    @PostMapping("/swap/{seatId1}/{seatId2}/{updated_by}")
+public ResponseEntity<String> swapUserIds(
+        @PathVariable("seatId1") Long seatId1, 
+        @PathVariable("seatId2") Long seatId2, 
+        @RequestBody SeatModel seatModel,
+        @PathVariable("updated_by") Long updated_by) {
+
+    if (seatId1 == null || seatId2 == null) {
+        return ResponseEntity.badRequest().body("Both seatId1 and seatId2 parameters are required.");
     }
     
+    Long userId1 = seatModel.getUserId1(); 
+    Long userId2 = seatModel.getUserId2();
+
+    try {
+        seatService.swapUserIds(seatId1, seatId2, userId1, userId2, updated_by); // Pass the updatedBy value
+        return ResponseEntity.ok("User IDs swapped successfully");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap user IDs");
+    }
+}
+
 
     
 

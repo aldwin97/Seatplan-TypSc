@@ -91,7 +91,10 @@
     </select>
 
     
-    <update id="swapUserIds" parameterType="com.seatPlan.project.model.SeatModel">
+
+
+
+     <update id="swapUserIds" parameterType="com.seatPlan.project.model.SeatModel">
         UPDATE table_seat
         <set>
             <if test="userId1 != null">
@@ -100,10 +103,10 @@
             <if test="userId2 != null">
                 user_id = CASE seat_id WHEN #{seatId2} THEN #{userId1} ELSE user_id END,
             </if>
+            updated_by = #{updated_by},
         </set>
         WHERE seat_id IN (#{seatId1}, #{seatId2})
     </update>
-    
     
 
 

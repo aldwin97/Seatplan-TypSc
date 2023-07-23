@@ -32,6 +32,6 @@ public interface SeatDao {
 
 
 
-     void swapUserIds(@Param("seatId1") Long seatId1, @Param("seatId2") Long seatId2, @Param("userId1") Long userId1, @Param("userId2") Long userId2);
+     void swapUserIds(@Param("seatId1") Long seatId1, @Param("seatId2") Long seatId2, @Param("userId1") Long userId1, @Param("userId2") Long userId2, @Param ("updated_by" )Long updated_by);
 
 }

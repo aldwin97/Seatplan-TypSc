@@ -108,4 +108,10 @@ public class SeatService {
 
 
 
+    public void swapUserIds(Long seatId1, Long seatId2, Long userId1, Long userId2) {
+        seatDao.swapUserIds(seatId1, seatId2, userId1, userId2);
+    }
+
+
+
 }

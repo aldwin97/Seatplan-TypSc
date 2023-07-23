@@ -53,30 +53,6 @@ public class SeatController {
         return comments;
     }
 
-    //show all the comment in the database
-    @PutMapping("/swap/{seat_id}")
-    public ResponseEntity<String> swapSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
-        try {
-            SeatModel existingSeat = seatService.getSeatById(seat_id);
-    
-            if (existingSeat == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
-            }
-    
-            // Store the user ID of the seat being swapped with the current seat's user ID
-            Long tempUserId = existingSeat.getUser_id();
-            existingSeat.setUser_id(seat.getUser_id());
-    
-            // Update the user ID of the current seat with the stored user ID
-            seat.setUser_id(tempUserId);
-    
-            seatService.swapSeat(existingSeat);
-    
-            return ResponseEntity.ok("Seats swapped successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap seats");
-        }
-    }
     
 
     @PutMapping("/update/{seat_id}")
@@ -116,6 +92,31 @@ public class SeatController {
         List<Map<String, Object>> users = seatService.getAllUser();
         return users;
     }
+
+
+
+
+    @PostMapping("/swap/{seatId1}/{seatId2}")
+    public ResponseEntity<String> swapUserIds(@PathVariable("seatId1") Long seatId1, @PathVariable("seatId2") Long seatId2, @RequestBody SeatModel seatModel) {
+        if (seatId1 == null || seatId2 == null) {
+            return ResponseEntity.badRequest().body("Both seatId1 and seatId2 parameters are required.");
+        }
+        
+        Long userId1 = seatModel.getUserId1(); 
+        Long userId2 = seatModel.getUserId2();
+    
+        try {
+            seatService.swapUserIds(seatId1, seatId2, userId1, userId2);
+    
+            return ResponseEntity.ok("User IDs swapped successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap user IDs");
+        }
+    }
+    
+
+    
+
 
     
 

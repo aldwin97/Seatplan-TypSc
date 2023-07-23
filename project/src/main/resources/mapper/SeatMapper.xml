@@ -90,4 +90,22 @@
         WHERE is_deleted = 0
     </select>
 
+    
+    <update id="swapUserIds" parameterType="com.seatPlan.project.model.SeatModel">
+        UPDATE table_seat
+        <set>
+            <if test="userId1 != null">
+                user_id = CASE seat_id WHEN #{seatId1} THEN #{userId2} ELSE user_id END,
+            </if>
+            <if test="userId2 != null">
+                user_id = CASE seat_id WHEN #{seatId2} THEN #{userId1} ELSE user_id END,
+            </if>
+        </set>
+        WHERE seat_id IN (#{seatId1}, #{seatId2})
+    </update>
+    
+    
+
+
+
 </mapper>

@@ -124,7 +124,7 @@
 
 
 
-     <update id="swapUserIds" parameterType="com.seatPlan.project.model.SeatModel">
+     <!-- <update id="swapUserIds" parameterType="com.seatPlan.project.model.SeatModel">
         UPDATE table_seat
         <set>
             <if test="userId1 != null and userId2 != null and userId1 != userId2">
@@ -152,8 +152,24 @@
         </set>
         WHERE seat_id IN (#{seatId1}, #{seatId2})
     </update>
+     -->
     
-    
+
+
+     <update id="swapUserIds"  parameterType="com.seatPlan.project.model.SeatModel">
+        UPDATE table_seat
+        <set>
+            <if test="seatId1 != null and seatId2 != null">
+                user_id = CASE seat_id 
+                          WHEN #{seatId1} THEN (SELECT user_id FROM table_seat WHERE seat_id = #{seatId2})
+                          WHEN #{seatId2} THEN (SELECT user_id FROM table_seat WHERE seat_id = #{seatId1})
+                          ELSE user_id 
+                          END,
+            </if>
+             updated_by = #{updated_by},
+        </set>
+        WHERE seat_id IN (#{seatId1}, #{seatId2})
+    </update>
 
 
 

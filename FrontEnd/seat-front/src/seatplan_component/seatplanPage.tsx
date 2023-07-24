@@ -5,6 +5,7 @@ import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff,
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
+
 interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
@@ -22,6 +23,30 @@ interface Seat {
   seat_status: string;
   color_code: string;
   seat_id: number;
+  user_id: number;
+  userId1: number;
+  userId2: number;
+}
+interface SeatModel {
+  position: { x: number; y: number };
+  isSwapping: boolean;
+  color: string;
+  occupant: string;
+  project: string;
+  comments: string[];
+  viewerNames: string[];
+  seatstatus: string;
+  position_x: number;
+  position_y: number;
+  seat_num: number;
+  full_name: string;
+  project_name: string;
+  seat_status: string;
+  color_code: string;
+  seat_id: number;
+  user_id: number;
+  userId1: number;
+  userId2: number;
 }
 
 interface SeatPopupProps {
@@ -58,74 +83,81 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
     };
   }, []);
   
-
-  useEffect(() => {
-    // Load seats data from local storage if available
-    const storedSeats = localStorage.getItem('seats');
-    if (storedSeats) {
-      setSeats(JSON.parse(storedSeats));
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save seats data to local storage whenever it changes
-    localStorage.setItem('seats', JSON.stringify(seats));
-  }, [seats]);
-
   const handleSeatSelect = (selectedSeatId: string) => {
     setSelectedSeatId(selectedSeatId);
   };
-
-  const handleSwapSeats = async () => {
-    if (selectedSeatId) {
-      const currentSeatId = seat.seat_id;
-      const currentSeat = seats.find((seat) => seat.seat_id === currentSeatId);
-      const swapSeat = seats.find((seat) => seat.seat_id === Number(selectedSeatId));
+  function getUpdatedByFromSessionStorage(): number {
+    const user_id = sessionStorage.getItem('user_id');
+    if (user_id) {
+      console.log('Value of updated_by retrieved from session storage:', user_id);
+      return parseInt(user_id, 10);
+    } else {
+      console.warn('Value of updated_by not found in session storage. Defaulting to 0.');
+      return 0;
+    }
+  }
   
-      if (currentSeat && swapSeat && currentSeatId !== Number(selectedSeatId)) {
+  
+  const handleSwapSeats = async () => {
+    if (selectedSeatId && selectedSeatId !== seat.seat_id.toString()) {
+      const currentSeat = seats.find((s) => s.seat_id === seat.seat_id);
+      const swapSeat = seats.find((s) => s.seat_id === Number(selectedSeatId));
+      const updated_by = getUpdatedByFromSessionStorage();
+  
+      if (currentSeat && swapSeat) {
         // Create the updated seats with the swapped occupant and project
         const updatedCurrentSeat = {
           ...currentSeat,
           occupant: swapSeat.occupant,
           project: swapSeat.project,
+          userId1: swapSeat.userId1,
+          userId2: swapSeat.userId2,
         };
         const updatedSwapSeat = {
           ...swapSeat,
           occupant: currentSeat.occupant,
           project: currentSeat.project,
+          userId1: currentSeat.userId1,
+          userId2: currentSeat.userId2,
         };
   
         // Swap the seats in the frontend
-        const updatedSeats = seats.map((seat) => {
-          if (seat.seat_id === updatedCurrentSeat.seat_id) {
+        const updatedSeats = seats.map((s) => {
+          if (s.seat_id === updatedCurrentSeat.seat_id) {
             return updatedCurrentSeat;
-          } else if (seat.seat_id === updatedSwapSeat.seat_id) {
+          } else if (s.seat_id === updatedSwapSeat.seat_id) {
             return updatedSwapSeat;
           }
-          return seat;
+          return s;
         });
-  
-        setSeats(updatedSeats);
   
         try {
           // Swap the seats in the backend
-          await fetch(`http://localhost:8080/seat/swap/${seat.seat_id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedCurrentSeat),
-          });
+          await fetch(
+            `http://localhost:8080/seat/swap/${seat.seat_id}/${selectedSeatId}/${updated_by}`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                seatId1: updatedCurrentSeat.seat_id,
+                seatId2: updatedSwapSeat.seat_id,
+                userId1: updatedCurrentSeat.userId1,
+                userId2: updatedCurrentSeat.userId2,
+                updated_by: updated_by,
+              }),
+            }
+          );
   
-          await fetch(`http://localhost:8080/seat/swap/${Number(selectedSeatId)}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedSwapSeat),
-          });
+          // Update the frontend with the swapped seats
+          setSeats(updatedSeats);
   
           console.log('Seats swapped successfully');
+          console.log('Data being swapped:');
+          console.log('Current Seat:', updatedCurrentSeat);
+          console.log('Swap Seat:', updatedSwapSeat);
+  
           onClose();
         } catch (error) {
           console.error('Failed to swap seats:', error);
@@ -133,6 +165,12 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
       }
     }
   };
+  
+  
+  
+  
+  
+  
   
 
  useEffect(() => {
@@ -299,25 +337,25 @@ const fetchOccupants = async () => {
                 <>
                   <button type="submit">Save</button>
                   <div>
-                    <p>Select a seat to swap:</p>
-                    <select
-                      className={styles.value}
-                      value={selectedSeatId}
-                      onChange={(e) => handleSeatSelect(e.target.value)}
-                      >
-                      <option className={styles.value} value="">
-                        Select a seat
-                      </option>
-                      {seats.map((seat) => (
-                        <option key={seat.seat_id} value={seat.seat_id}>
-                          {seat.seat_id}
-                        </option>
-                      ))}
-                    </select>
-                    <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
-                      Swap Now
-                    </button>
-                  </div>
+                <p>Select a seat to swap:</p>
+                <select
+                  className={styles.value}
+                  value={selectedSeatId}
+                  onChange={(e) => handleSeatSelect(e.target.value)}
+                >
+                  <option className={styles.value} value="">
+                    Select a seat
+                  </option>
+                  {seats.map((seat) => (
+                    <option key={seat.seat_id} value={seat.seat_id}>
+                      {seat.seat_id}
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
+                  Swap Now
+                </button>
+              </div>
                 </>
               ) : (
                 <>

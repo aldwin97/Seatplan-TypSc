@@ -124,7 +124,7 @@ const AdminMembersPage: React.FC = () => {
   }, []);
   
 
-  const [perPage, setPerPage] = useState(8);
+  const [perPage, setPerPage] = useState(10);
   const navigate = useNavigate();
 
   const handleCloseDialog = () => {
@@ -143,14 +143,15 @@ const AdminMembersPage: React.FC = () => {
       }
     });
   };
-
   const handleViewUserInfo = (userId: number) => {
     const user = users.find((user) => user.user_id === userId);
     if (user) {
       setSelectedUser(user);
+      setEditedUser({ ...user }); // Set the editedUser state with the initial values from selectedUser
       setUserInfoDialogOpen(true);
     }
   };
+  
 
   const handleUserClick = (userId: number) => {
     handleViewUserInfo(userId);
@@ -256,7 +257,7 @@ const AdminMembersPage: React.FC = () => {
     setCurrentPage(value);
   };
 
-  const perPageOptions = [2, 5, 10];
+  const perPageOptions = [10, 30, 50];
 
   const handlePerPageChange = (event: SelectChangeEvent<number>) => {
     const value = event.target.value as number;
@@ -322,10 +323,10 @@ const handleSaveUser = () => {
   // Prepare the updated user data
   const updatedUserModel: Partial<User> = {
     user_id: selectedUser?.user_id,
-    staffstatus_id: selectedUser?.staffstatus_id,
-    usertype_id: selectedUser?.usertype_id,
-    position_id: selectedUser?.position_id,
-    project_id: selectedUser?.project_id,
+    staffstatus_id: editedUser?.staffstatus_id,
+    usertype_id: editedUser?.usertype_id,
+    position_id: editedUser?.position_id,
+    project_id: editedUser?.project_id,
     first_name: editedUser?.first_name || '',
     last_name: editedUser?.last_name || '',
     mobile_num: editedUser?.mobile_num || 0,
@@ -338,7 +339,7 @@ const handleSaveUser = () => {
   if (editedUser.email !== selectedUser?.email) {
     updatedUserModel.email = editedUser.email;
   }
-
+console.log('Data being updated:', updatedUserModel);
   // Make the PUT request to update the user
   fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
     method: 'PUT',
@@ -589,7 +590,7 @@ const handleSaveUser = () => {
       <Dialog open={userInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
   <div className="user-info-page">
     <Typography variant="h5" className="user-info-title">
-      {editMode ? ` Edit ${selectedUser?.first_name || "User"}'s Information` : `${selectedUser?.first_name || "User"}'s Information`}
+    {editMode ? 'Edit Information' : 'User Information'}
     </Typography>
     {selectedUser && (
       <div className="user-info-content">
@@ -666,16 +667,16 @@ const handleSaveUser = () => {
         <strong className="user-info-label">UserType:</strong>{" "}
 {editMode ? (
   <Select
-    className="user-info-value"
-    value={editedUser?.usertype_id || ''}
-    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, usertype_id: Number(e.target.value) }))}
-  >
-    {usertypes.map((userType) => (
-      <MenuItem key={userType.usertype_id} value={userType.usertype_id}>
-        {userType.usertype_name}
-      </MenuItem>
-    ))}
-  </Select>
+  className="user-info-value"
+  value={editedUser?.usertype_id || ''} // Use the editedUser state value
+  onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, usertype_id: Number(e.target.value) }))}
+>
+  {usertypes.map((userType) => (
+    <MenuItem key={userType.usertype_id} value={userType.usertype_id}>
+      {userType.usertype_name}
+    </MenuItem>
+  ))}
+</Select>
 ) : (
   <span className="user-info-value">{selectedUser.usertype_name}</span>
 )}

@@ -26,6 +26,10 @@ public class SeatModel {
 
 
 
+    private Long userId1;
+    private Long userId2;
+
+
     //For joint table
     private String project_name;
     private String first_name;

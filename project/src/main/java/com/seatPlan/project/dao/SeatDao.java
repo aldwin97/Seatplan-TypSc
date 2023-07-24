@@ -4,6 +4,8 @@ package com.seatPlan.project.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.seatPlan.project.model.CommentInputModel;
 import com.seatPlan.project.model.SeatModel;
 import com.seatPlan.project.model.UserModel;
@@ -24,8 +26,19 @@ public interface SeatDao {
 
      void updateSeat(SeatModel seat);
 
-    SeatModel getSeatById(Long seat_id);
+    SeatModel getSeatById(Long seat_id);    
 
     List<UserModel> getAllUser();
+
+    void swapUserIds(Long seatId1, Long seatId2, Long updated_by);
+
+
+
+    //  void swapUserIds(@Param("seatId1") Long seatId1, @Param("seatId2") Long seatId2, @Param("userId1") Long userId1, @Param("userId2") Long userId2, @Param ("updated_by" )Long updated_by);
+
+
+
+
+
 
 }

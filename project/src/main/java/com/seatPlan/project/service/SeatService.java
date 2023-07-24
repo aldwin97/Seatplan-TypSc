@@ -37,6 +37,7 @@ public class SeatService {
                 seatMap.put("position_x",seat.getPosition_x());
                 seatMap.put("position_y",seat.getPosition_y());
                 seatMap.put("color_code", seat.getColor_code());
+                seatMap.put("user_id",seat.getUser_id());
                 return seatMap;
             })
             .collect(Collectors.toList());
@@ -108,10 +109,14 @@ public class SeatService {
 
 
 
-    public void swapUserIds(Long seatId1, Long seatId2, Long userId1, Long userId2, Long updated_by) {
-        seatDao.swapUserIds(seatId1, seatId2, userId1, userId2, updated_by);
-    }
+    // public void swapUserIds(Long seatId1, Long seatId2, Long userId1, Long userId2, Long updated_by) {
+    //     seatDao.swapUserIds(seatId1, seatId2, userId1, userId2, updated_by);
+    // }
 
+
+    public void swapUserIds(Long seatId1, Long seatId2, Long updated_by) {
+        seatDao.swapUserIds(seatId1, seatId2, updated_by);
+    }
 
 
 }

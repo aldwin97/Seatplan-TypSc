@@ -1,8 +1,9 @@
+
 import React, { useState,  useEffect, useRef } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import {  Button} from '@mui/material';
 import styles from './dashboardPage.module.css';
-import { Dashboard, Work, Menu, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+import { Dashboard, Groups, Work, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBell, faPowerOff, faFaceSmile } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
@@ -10,15 +11,8 @@ import Chart from 'chart.js/auto';
 
 
 
-
-
-
-
-
-
-
 const DashboardPage: React.FC = () => {
-  const chartHeight = 250; 
+  const chartHeight = 320; 
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const myChart = useRef<Chart | null>(null);
   useEffect(() => {
@@ -27,7 +21,7 @@ const DashboardPage: React.FC = () => {
 
       if (ctx) {
         if (myChart.current) {
-          myChart.current.destroy(); // Destroy the previous chart
+          myChart.current.destroy(); // Destroy the previo us chart
         }
 
         myChart.current = new Chart(ctx, {
@@ -157,6 +151,22 @@ const DashboardPage: React.FC = () => {
                     Project
                   </a>
                 </li>
+                <li>
+                  <a href="index.html" className={styles['active']}>
+                    <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Groups/>
+                    </i>
+                    Members
+                  </a>
+                </li>
+                <li>
+                  <a href="index.html" className={styles['active']}>
+                    <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Logout/>
+                    </i>
+                    Logout
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -186,88 +196,75 @@ const DashboardPage: React.FC = () => {
       </button>
 
 
-      <div className={styles.container2}>
-        <form className={styles.main2}>
+      <div className={styles.container}>
+        <div className={styles.main}>
 
-          <form className={styles.form3}>
-
-
-         
-        <form className={styles.form2}>
-        <form className={styles.form}>
-
-<div className={styles.card}>
-  <svg className={styles.cardimg}></svg>
-  <div className={styles.cardtitle}>HELLO <br/>(USERNAME)</div>
-  <div className={styles.cardtext}>Welcome Back! You have 2 Notifications</div>
-  
-</div>
-</form>
-          <div className={styles.card2}>
-         
-          <div className={styles.cardimg2}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
-          <div className={styles.cardcount2 }>500</div>
-          <div className={styles.cardtitle2}>TOTAL SEAT</div>
-            </div>
+          <div className={styles.cardHello}>
+            <svg className={styles.Helloimg}></svg>
+            <div className={styles.Hellotitle}>HELLO <br/>(USERNAME)</div>
+            <div className={styles.Hellotext}>Welcome Back! You have 2 Notifications</div></div>
+            
+            <div className={styles.countcontainer}>
+              <div className={styles.card1}>
+              <div className={styles.cardicon}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
+              <div className={styles.cardcount }>500</div>
+              <div className={styles.cardtitle}>TOTAL SEAT</div>
+             </div>
         
 
-          <div className={styles.card3}>
-            <div className={styles.cardimg2}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount2 }>150</div>
-            <div className={styles.cardtitle2}>OCCUPIED SEAT</div>
+          <div className={styles.card2}>
+            <div className={styles.cardicon}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
+            <div className={styles.cardcount}>150</div>
+            <div className={styles.cardtitle}>OCCUPIED SEAT</div>
           </div>
+          
+          <div className={styles.card3}>
+          <div className={styles.cardicon}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount }>350</div>
+            <div className={styles.cardtitle}>AVAILABLE SEAT</div>
+          </div>
+          
+
+          
           
           <div className={styles.card4}>
-          <div className={styles.cardimg2}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
-          <div className={styles.cardcount2 }>350</div>
-            <div className={styles.cardtitle2}>AVAILABLE SEAT</div>
+          <div className={styles.cardicon}><GroupsRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount}>150</div>
+          <div className={styles.cardtitle}>TOTAL EMPLOYEE</div>
           </div>
-          <div>
+
           <div className={styles.card5}>
-          <div className={styles.charttitle}>SEAT CONDITIONS</div>
-    <div className={styles.chartcontainer} >
-      <canvas ref={chartRef}style={{  height: `${chartHeight}px` }}/>
-    </div>
-    
-  </div>
+          <div className={styles.cardicon}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount }>45</div>
+            <div className={styles.cardtitle}>TRAINEE</div>
           </div>
+
           <div className={styles.card6}>
-          <div className={styles.cardimg3}><GroupsRounded style={{ fontSize: 42 }}/></div>
-          <div className={styles.cardcount2}>150</div>
-          <div className={styles.cardtitle3}>TOTAL EMPLOYEE</div>
-          </div>
-
-          <div className={styles.card7}>
-          <div className={styles.cardimg3}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
-          <div className={styles.cardcount2 }>45</div>
-            <div className={styles.cardtitle3}>TRAINEE</div>
-          </div>
-
-          <div className={styles.card8}>
-            <div className={styles.cardimg3}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
-          <div className={styles.cardcount2 }>45</div>
-            <div className={styles.cardtitle3}>REGULAR EMPLOYEE</div>
+            <div className={styles.cardicon}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
+          <div className={styles.cardcount}>45</div>
+            <div className={styles.cardtitle}>REGULAR EMPLOYEE</div>
           </div>
           
-          </form>
-
-          <form className={styles.form4}>
-         
-          <div className={styles.scrollable}>
-          <div className={styles.card9}>
-            <svg className={styles.cardimg9}></svg>
-            <div className={styles.cardtitle4}>RECENT COMMENTS</div>
-           
-     
-
-    
-          </div></div>
-    </form>
+            </div>
           
-        </form>
-        </form>
- 
+            <div className={styles.cardseat}>
+                <div className={styles.cardtitle1}>SEAT CONDITIONS </div>
+                <div className={styles.chartcontainer}>
+                <canvas ref={chartRef} style={{ height: `${chartHeight}px` , marginTop:'55px' }} />
+                </div>
+                <div className={styles.cardcomment}>
+                <div className={styles.cardtitle}>RECENT COMMENTS </div>
+                <div className={styles.chartcontainer}>
+                
+                </div>
+          </div>
+          
+          </div>
+          
         </div>
+      </div>
+ 
+       
   
        
       </body>

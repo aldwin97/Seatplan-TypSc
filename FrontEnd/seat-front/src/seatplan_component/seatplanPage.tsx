@@ -27,27 +27,6 @@ interface Seat {
   userId1: number;
   userId2: number;
 }
-interface SeatModel {
-  position: { x: number; y: number };
-  isSwapping: boolean;
-  color: string;
-  occupant: string;
-  project: string;
-  comments: string[];
-  viewerNames: string[];
-  seatstatus: string;
-  position_x: number;
-  position_y: number;
-  seat_num: number;
-  full_name: string;
-  project_name: string;
-  seat_status: string;
-  color_code: string;
-  seat_id: number;
-  user_id: number;
-  userId1: number;
-  userId2: number;
-}
 
 interface SeatPopupProps {
   seat: Seat;

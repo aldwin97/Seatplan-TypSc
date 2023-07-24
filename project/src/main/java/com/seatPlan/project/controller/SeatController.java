@@ -69,10 +69,6 @@ public class SeatController {
                 existingSeat.setUser_id(seat.getUser_id());
             }
 
-            if (seat.getSeatstatus_id() != null) {
-                existingSeat.setSeatstatus_id(seat.getSeatstatus_id());
-            }
-
             if (seat.getUpdated_by() != null) {
                 existingSeat.setUpdated_by(seat.getUpdated_by());
             }

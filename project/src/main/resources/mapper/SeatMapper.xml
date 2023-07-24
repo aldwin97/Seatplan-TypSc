@@ -140,6 +140,7 @@
         WHERE seat_id IN (#{seatId1}, #{seatId2})
     </update>
     
+    
 
 
 

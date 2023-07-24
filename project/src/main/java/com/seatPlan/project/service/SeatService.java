@@ -37,6 +37,7 @@ public class SeatService {
                 seatMap.put("position_x",seat.getPosition_x());
                 seatMap.put("position_y",seat.getPosition_y());
                 seatMap.put("color_code", seat.getColor_code());
+                seatMap.put("user_id",seat.getUser_id());
                 return seatMap;
             })
             .collect(Collectors.toList());

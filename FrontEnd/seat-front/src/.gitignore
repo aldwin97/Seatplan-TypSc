@@ -33,8 +33,5 @@ build/
 .vscode/
 
 ### Dependencies ###
-<<<<<<< HEAD
+**/FrontEnd/**/node_modules/
 /node_modules/
-=======
-/node_modules/
->>>>>>> 9779f105c34526d73db27e4e72b6d64f45a1f306

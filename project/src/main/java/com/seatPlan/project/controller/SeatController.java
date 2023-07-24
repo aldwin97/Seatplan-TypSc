@@ -53,63 +53,118 @@ public class SeatController {
         return comments;
     }
 
-    //show all the comment in the database
-    @GetMapping("/showAllComment")
-    public List<Map<String, Object>> allProject(){
-        List<Map<String, Object>> comments = seatService.getAllComment();
-        return comments;
-    }
+    
 
-    //swap seat
-    @PutMapping("/swap/{seat_id}")
-    public ResponseEntity<String> swapSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
-        try {
-            SeatModel existingSeat = seatService.getSeatById(seat_id);
-
-            if (existingSeat == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
-            }
-            
-            if (seat.getUser_id() != null) {
-                existingSeat.setUser_id(seat.getUser_id());
-            }
-
-            seatService.swapSeat(existingSeat);
-            
-            return ResponseEntity.ok("Seat updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
-        }
-    }
-
-
-
-
-     @PutMapping("/update/{seat_id}")
+    @PutMapping("/update/{seat_id}")
     public ResponseEntity<String> updateSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
         try {
+            // Fetch the existing SeatModel from the database using seat_id
             SeatModel existingSeat = seatService.getSeatById(seat_id);
-            long status = (long) 2;
 
             if (existingSeat == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
             }
-            
+
             if (seat.getUser_id() != null) {
                 existingSeat.setUser_id(seat.getUser_id());
-                existingSeat.setSeat_id(status);
             }
-            if (seat.getSeatstatus_id() != null) {
-                existingSeat.setSeatstatus_id(seat.getSeatstatus_id());
+
+            if (seat.getUpdated_by() != null) {
+                existingSeat.setUpdated_by(seat.getUpdated_by());
             }
 
             seatService.updateSeat(existingSeat);
-            
+
             return ResponseEntity.ok("Seat updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
         }
     }
+
+
+
+    @GetMapping("/showAllUser")
+    public List<Map<String, Object>> allUser(){
+        List<Map<String, Object>> users = seatService.getAllUser();
+        return users;
+    }
+
+    
+
+
+//     @PostMapping("/swap/{seatId1}/{seatId2}/{updated_by}")
+// public ResponseEntity<String> swapUserIds(
+//         @PathVariable("seatId1") Long seatId1, 
+//         @PathVariable("seatId2") Long seatId2, 
+//         @RequestBody SeatModel seatModel,
+//         @PathVariable("updated_by") Long updated_by) {
+
+//     if (seatId1 == null || seatId2 == null) {
+//         return ResponseEntity.badRequest().body("Both seatId1 and seatId2 parameters are required.");
+//     }
+    
+//     Long userId1 = seatModel.getUserId1(); 
+//     Long userId2 = seatModel.getUserId2();
+
+//     try {
+//         seatService.swapUserIds(seatId1, seatId2, userId1, userId2, updated_by); // Pass the updatedBy value
+//         return ResponseEntity.ok("User IDs swapped successfully");
+//     } catch (Exception e) {
+//         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap user IDs");
+//     }
+// }
+
+
+// @PostMapping("/swap/{seatId1}/{seatId2}/{updated_by}")
+// public ResponseEntity<String> swapUserIds(
+//         @PathVariable("seatId1") Long seatId1, 
+//         @PathVariable("seatId2") Long seatId2, 
+//         @RequestBody SeatModel seatModel,
+//         @PathVariable("updated_by") Long updated_by) {
+
+//     if (seatId1 == null || seatId2 == null) {
+//         return ResponseEntity.badRequest().body("Both seatId1 and seatId2 parameters are required.");
+//     }
+
+//     Long userId1 = seatModel.getUserId1(); 
+//     Long userId2 = seatModel.getUserId2();
+    
+//     // If userId1 is null, set it to null directly
+//     if (userId1 == null) {
+//         userId1 = null;
+//     }
+
+//     // If userId2 is null, set it to null directly
+//     if (userId2 == null) {
+//         userId2 = null;
+//     }
+
+//     try {
+//         seatService.swapUserIds(seatId1, seatId2, userId1, userId2, updated_by);
+//         return ResponseEntity.ok("User IDs swapped successfully");
+//     } catch (Exception e) {
+//         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap user IDs");
+//     }
+// }
+
+
+@PostMapping("/swap/{seatId1}/{seatId2}/{updated_by}")
+public ResponseEntity<String> swapUserIds(
+        @PathVariable("seatId1") Long seatId1,
+        @PathVariable("seatId2") Long seatId2,
+        @PathVariable("updated_by") Long updated_by) {
+
+    try {
+        seatService.swapUserIds(seatId1, seatId2, updated_by);
+        return ResponseEntity.ok("User IDs swapped successfully");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to swap user IDs");
+    }
+}
+
+
+
+    
 
 
 }

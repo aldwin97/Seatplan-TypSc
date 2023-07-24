@@ -12,6 +12,7 @@ import com.seatPlan.project.dao.SeatDao;
 import com.seatPlan.project.model.CommentInputModel;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.SeatModel;
+import com.seatPlan.project.model.UserModel;
 
 @Service
 public class SeatService {
@@ -33,6 +34,10 @@ public class SeatService {
                 seatMap.put("area_name", seat.getArea_name());
                 seatMap.put("project_name", seat.getProject_name()); 
                 seatMap.put("seat_status", seat.getSeat_status());
+                seatMap.put("position_x",seat.getPosition_x());
+                seatMap.put("position_y",seat.getPosition_y());
+                seatMap.put("color_code", seat.getColor_code());
+                seatMap.put("user_id",seat.getUser_id());
                 return seatMap;
             })
             .collect(Collectors.toList());
@@ -88,4 +93,30 @@ public class SeatService {
     public SeatModel getSeatById(Long seat_id) {
         return seatDao.getSeatById(seat_id);
     }
+
+      public List<Map<String, Object>> getAllUser() {
+        List<UserModel> users = seatDao.getAllUser();
+        List<Map<String, Object>> filteredUserType = users.stream()
+                .map(user -> {
+                    Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("user_id", user.getUser_id());
+                    userMap.put("first_name", user.getFirst_name());
+                    userMap.put("last_name", user.getLast_name());
+                    return userMap;
+                }).collect(Collectors.toList());
+        return filteredUserType;
+    }
+
+
+
+    // public void swapUserIds(Long seatId1, Long seatId2, Long userId1, Long userId2, Long updated_by) {
+    //     seatDao.swapUserIds(seatId1, seatId2, userId1, userId2, updated_by);
+    // }
+
+
+    public void swapUserIds(Long seatId1, Long seatId2, Long updated_by) {
+        seatDao.swapUserIds(seatId1, seatId2, updated_by);
+    }
+
+
 }

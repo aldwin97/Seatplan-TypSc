@@ -45,7 +45,7 @@ public class ProjectController {
 
 
     //Show all the project in the database
-    @GetMapping("/show")
+    @GetMapping("/showAllProject")
     public List<ProjectModel> getAllProjects() {
         return projectService.getAllProjects();
     }
@@ -75,8 +75,4 @@ public class ProjectController {
         List<ColorModel> colors = projectService.getAllColors();
         return ResponseEntity.ok(colors);
     }
-
-
-
-
 }

@@ -82,6 +82,7 @@
         WHERE user_id = #{user_id}
     </update>
 
+
     <select id="getUserByUsername" resultType="com.seatPlan.project.model.UserInputModel">
         SELECT * FROM table_user WHERE username = #{username} AND is_deleted = 0
     </select>
@@ -95,14 +96,12 @@
             user_id,
             seat_id,
             comment,
-            created_time,
             created_by,
             recipient_id)
         VALUES  (
             #{user_id},
             #{seat_id},
             #{comment}, 
-            #{created_time}, 
             #{created_by}, 
             #{recipient_id})
     </insert>

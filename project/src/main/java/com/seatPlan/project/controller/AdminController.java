@@ -135,12 +135,12 @@ public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, 
             existingUser.setPassword(userModel.getPassword());
         }
 
-        if (userModel.getStaffstatus_id() != null) {
-            existingUser.setStaffstatus_id(userModel.getStaffstatus_id());
-        }
-
         if (userModel.getUsertype_id() != null) {
             existingUser.setUsertype_id(userModel.getUsertype_id());
+        }
+
+        if (userModel.getStaffstatus_id() != null) {
+            existingUser.setStaffstatus_id(userModel.getStaffstatus_id());
         }
 
         if (userModel.getPosition_id() != null) {
@@ -168,12 +168,9 @@ public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, 
 
 
     //Reply comment to the viewer
-    @PostMapping("/replyComment/{recipient_id}/{seat_id}")
-    public ResponseEntity<String> saveComment(@RequestBody CommentModel comment, HttpSession session) {
+    @PostMapping("/replyComment")
+    public ResponseEntity<String> saveComment(@RequestBody CommentModel comment) {
         try {
-            UserModel creatorId = (UserModel) session.getAttribute("userSession");
-            comment.setCreated_by(creatorId.getUser_id());
-            comment.setUser_id(creatorId.getUser_id());
             adminService.saveComment(comment);
             return ResponseEntity.ok("Comment inserted successfully");
         } catch (Exception e) {
@@ -181,5 +178,5 @@ public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, 
         }
     }
 
-
+    
 }

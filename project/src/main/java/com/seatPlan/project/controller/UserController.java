@@ -47,12 +47,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }   
-
-    // display all users
-     @GetMapping("/show/AllUser")
-    public List<UserModel> getAllUsers() {
-        return userService.getAllUsers();
-    }
     
     // count the number of row in the table
      @GetMapping("/count")

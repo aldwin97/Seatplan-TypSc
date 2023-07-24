@@ -34,10 +34,6 @@ public class UserService{
         }
     }
 
-    // displaying all the data in user table
-     public List<UserModel> getAllUsers() {
-        return userDao.getAllUsers();
-    }
 
     // count the all row in the user table
     public int countUsers() {

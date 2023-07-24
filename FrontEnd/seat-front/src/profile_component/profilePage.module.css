@@ -3,6 +3,7 @@
   padding: 0;
   background-size: 100% 100%;
   background-image: url('../assets/BG1.jpg');
+   /* background-color: #F8FAF9; */
   background-repeat: no-repeat;
   background-position: center;
   height: 100vh;
@@ -557,6 +558,16 @@ input:not(:read-only):valid ~ .change-label {
   background-color: rgba(255, 255, 255, 0);
   padding: 0 .2em;
   color: #2da738;
+}
+
+
+.errorText {
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
+  position: absolute;
+  margin-top: -14px;
+  margin-left: 45px;
 }
 
 

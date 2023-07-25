@@ -1,7 +1,6 @@
 //Kenneth Christian B. Gutierrez
 package com.seatPlan.project.controller;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,18 +137,10 @@ public class UserController {
     }
      
     //show the logged user Info
-    @GetMapping("/showLogedUserInfo")
-    public List<Map<String, Object>> showUserById(HttpSession session) {
-        if (session.getAttribute("userSession") != null) {
-            UserModel user = (UserModel) session.getAttribute("userSession");
-            Long user_id = user.getUser_id();
+    @GetMapping("/showLogedUserInfo/{user_id}")
+    public List<Map<String, Object>> showUserById(@PathVariable ("user_id") Long user_id  ) {
             List<Map<String, Object>> userInfo = userService.showUserById(user_id);
             return userInfo;
-        } else {
-            Map<String, Object> message = new HashMap<>();
-            message.put("message", "No user logged");
-            return Collections.singletonList(message);
-        }
     }
 
 }

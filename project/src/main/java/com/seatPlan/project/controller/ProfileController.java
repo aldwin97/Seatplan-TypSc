@@ -90,6 +90,10 @@ public ResponseEntity<String> updateUserPassword(@PathVariable("user_id") Long u
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Old password is incorrect");
         }
 
+        if (userModel.getPassword() != null && userModel.getPassword().equals(existingUser.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password cannot be the same as the old password");
+        }
+
         if (userModel.getPassword() != null) {
             existingUser.setPassword(userModel.getPassword());
         }

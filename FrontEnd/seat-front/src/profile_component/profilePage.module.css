@@ -2,8 +2,9 @@
   margin: 0;
   padding: 0;
   background-size: 100% 100%;
-  background-image: url('../assets/BG1.jpg');
-   /* background-color: #F8FAF9; */
+  /* background-image: url('../assets/SEATMGT.jpg');/*
+  /* background: linear-gradient(to bottom right, #ebebeb, #b1b1b1a9); */
+  background-color: #F8FAF9;
   background-repeat: no-repeat;
   background-position: center;
   height: 100vh;
@@ -27,8 +28,8 @@
 /* Dropdown Menu */
 .dropdownMenu2 {
   position: absolute;
-  top: 50px; /* Adjust the top position as needed */
-  right: 10px; /* Adjust the right position as needed */
+  top: 50px; 
+  right: 10px; 
   z-index: 100;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -111,7 +112,7 @@
     justify-content: center;
     align-items: center;
     padding: 10;
-    background-color: #6969693a; 
+    background-color: #ffffffb0; 
     border-radius: 40px; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24); 
     max-width: 90%; 
@@ -435,14 +436,14 @@ input:not(:read-only):valid ~ .user-label {
   display:flex;
   position: absolute;
   margin-left:33.5%;
-  margin-top: -14.3%;
+  margin-top: -15.3%;
 }
 
 .account-button {
   display:flex;
   position: absolute;
   margin-left:33.5%;
-  margin-top: -14.9%;
+  margin-top: -15.7%;
 }
 
 
@@ -566,14 +567,13 @@ input:not(:read-only):valid ~ .change-label {
   font-size: 14px;
   margin-top: 8px;
   position: absolute;
-  margin-top: -14px;
   margin-left: 45px;
 }
 
 
 .toggle-password1 { 
   position: absolute;
-  top: 58%;
+  top: 50%;
   left: 92%;
   transform: translateY(-50%);
   display: inline-block;

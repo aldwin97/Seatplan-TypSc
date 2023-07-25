@@ -14,7 +14,6 @@ import MuiAlert from '@mui/material/Alert';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'; // Added import
 
 
-
 const LogInPage: React.FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -22,10 +21,13 @@ const LogInPage: React.FC = () => {
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
   const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] = useState(false);
+  const [passwordMismatchSnackbar, setPasswordMismatchSnackbar] = useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState(''); // New state for the confirm password error
+  
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: '',
@@ -42,6 +44,12 @@ const LogInPage: React.FC = () => {
   });
 
   const [accountValues, setAccountValues] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+  const [initialAccountValues, setInitialAccountValues] = useState({
     oldPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -109,21 +117,26 @@ const LogInPage: React.FC = () => {
     const { newPassword, confirmPassword } = accountValues;
     if (newPassword !== confirmPassword) {
       setConfirmPasswordError('Passwords do not match.');
+      setPasswordMismatchSnackbar(true); // Show the Snackbar for password mismatch
     } else {
       setConfirmPasswordError(''); // Reset the error state if the passwords match
       setAccountEditMode(false);
     }
   };
 
-
   const handleAccountCancelChanges = (): void => {
+    // Restore the initial account values when the "Cancel" button is clicked
+    setAccountValues({ ...initialAccountValues });
+    setConfirmPasswordError(''); // Reset the confirmPasswordError state
+    setPasswordMismatchSnackbar(false); // Hide the Snackbar for password mismatch when cancelled
     setAccountEditMode(false);
   };
 
   const handleAccountEditClick = () => {
+    // Save the current account values when entering edit mode
+    setInitialAccountValues({ ...accountValues });
     setAccountEditMode(true);
   };
-
 
 
 
@@ -149,19 +162,52 @@ const LogInPage: React.FC = () => {
 
 
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    event.target.value = ''; // Reset the value of the file input
     if (file) {
+      // Check if the file is an image based on the MIME type or file extension
+      if (!file.type.startsWith('image/') || !/\.(jpg|jpeg|png)$/i.test(file.name)) {
+        setErrorMsg('File not supported.');
+        setSelectedImage(null);
+        return;
+      }
+  
+
+  
       // Handle the file here if needed
       console.log('Selected file:', file);
-      // Read the selected image and set it as the URL to be displayed
+  
+      // Check if the file is a Blob
+      if (file instanceof Blob) {
+        // console.log('File is a Blob!');
+  
+        // Generate a Blob URL for the selected file
+        const blobUrl = URL.createObjectURL(file);
+        // console.log('Blob URL:', blobUrl);
+  
+        // Use the blobUrl directly to display the image (e.g., set it as an image src)
+        setSelectedImage(blobUrl);
+      } 
+  
+      // Read the selected file as a data URL (base64-encoded string)
       const reader = new FileReader();
       reader.onload = () => {
-        setSelectedImage(reader.result as string);
+        const base64File = reader.result as string;
+  
+        // Set the base64File as the image URL to be displayed
+        setSelectedImage(base64File);
+        console.log(base64File);
       };
       reader.readAsDataURL(file);
     }
   };
+  
+
+  const handleImageSnackbarClose = () => {
+    setErrorMsg(null);
+  };
+
 
 
 
@@ -199,12 +245,16 @@ const LogInPage: React.FC = () => {
     setPersonalFormValidSnackbar(false); // Hide the success Snackbar when it's closed
   };
 
+  const handleAccountSnackbarClose = () => {
+    setPasswordMismatchSnackbar(false);
+  };
+
 
 
   
   return (
-    <body className={styles.backg}>
-      <form className={styles.form1}>
+    <div className={styles.backg}>
+      <div className={styles.form1}>
         {/* Left Container */}
         <div className={styles.profileSum}>
           <div className={styles.cover}>
@@ -228,6 +278,42 @@ const LogInPage: React.FC = () => {
             View Seatplan
           </button>
           <div className={styles.profilePicture}>
+
+         
+
+
+              <Snackbar
+            open={!!errorMsg}
+            autoHideDuration={5000}
+            onClose={handleImageSnackbarClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              onClose={handleImageSnackbarClose}
+              severity="error"
+              sx={{ width: '290px' }}
+            >
+              {errorMsg}
+            </MuiAlert>
+          </Snackbar>
+
+
+
+
+
+
+
+
+
+
+
+
+
             {selectedImage ? (
               // Render the selected image if available with circular styling
               <img src={selectedImage} alt="Profile" />
@@ -346,7 +432,7 @@ const LogInPage: React.FC = () => {
               variant="filled"
               onClose={handleSnackbarClose}
               severity="error"
-              sx={{ width: '270px' }} // Add custom styles to make the Snackbar wider
+              sx={{ width: '290px' }} 
             >
               Please fill in all the required fields.
             </MuiAlert>
@@ -376,8 +462,8 @@ const LogInPage: React.FC = () => {
                   border: 'none',
                   borderRadius: '40px',
                   padding: '8px',
-                  marginTop: '-57%',
-                  marginLeft: '92.6%',
+                  marginTop: '-61.5%',
+                  marginLeft: '91.6%',
                   cursor: 'pointer',
                   transition: 'background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out'
                 }}
@@ -492,8 +578,27 @@ const LogInPage: React.FC = () => {
       </div>
 
 
-      {confirmPasswordError && <div className={styles.errorText}>{confirmPasswordError}</div>}
-
+   
+      
+      <Snackbar
+              open={passwordMismatchSnackbar}
+              autoHideDuration={5000}
+              onClose={handleAccountSnackbarClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={handleAccountSnackbarClose}
+                severity="error"
+                sx={{ width: '290px' }} 
+              >
+                Passwords do not match.
+              </MuiAlert>
+            </Snackbar>
 
 
       {editAccountMode ? (
@@ -516,8 +621,8 @@ const LogInPage: React.FC = () => {
             border: 'none', 
             borderRadius: '40px',
             padding: '8px',
-            marginTop: '-47.5%',
-            marginLeft: '-2%',
+            marginTop: '-51%',
+            marginLeft: '-3%',
             cursor: 'pointer',
             transition: 'background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out'
  }}
@@ -529,7 +634,7 @@ const LogInPage: React.FC = () => {
       )}
     </div>
     </div>
-   </form>
+   </div>
 
 
 
@@ -578,7 +683,7 @@ const LogInPage: React.FC = () => {
 
 
 
-    </body>
+    </div>
   );
 };
 

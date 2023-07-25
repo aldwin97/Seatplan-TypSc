@@ -138,26 +138,27 @@
 }
 
 
-.inputDisplay {
+/* .inputDisplay {
   position: absolute;
   margin-top: 55%;
-}
+} */
 
 
 
 
-
+/* 
 .nameContainer {
-  display: flex; /* Use flexbox to make the elements inside display in a row */
-  justify-content: center; /* Horizontally center the elements */
-  align-items: center; /* Vertically center the elements */
-}
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+} 
+
 
 .nameContainer h2 {
   color: #525252;
   font-size: 45px;
   font-family: 'League Spartan Bold';
-  margin: 0 7px; /* Add some space around the first name and last name */
+  margin: 0 7px; 
   text-align: center;
 }
 
@@ -192,7 +193,7 @@ h5{
   margin-bottom: -8%;
   bottom: 250px;
   position: relative;
-}
+} */
 
 .seatButton{
   display:flex;
@@ -568,6 +569,12 @@ input:not(:read-only):valid ~ .change-label {
   margin-top: 8px;
   position: absolute;
   margin-left: 45px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
 }
 
 

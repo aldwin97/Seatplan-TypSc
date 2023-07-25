@@ -26,8 +26,10 @@ const LogInPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(''); // New state for the confirm password error
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
   
+
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: '',
@@ -55,6 +57,10 @@ const LogInPage: React.FC = () => {
     confirmPassword: '',
   });
 
+
+
+
+
   const navigate = useNavigate();
 
   const viewSeatPageHandleClick = () => {
@@ -80,6 +86,7 @@ const LogInPage: React.FC = () => {
 
 
 
+// PERSONAL INFORMATION BUTTONS //
 
   const handlePersonalSaveChanges = () => {
     // Validate the personal information inputs
@@ -110,7 +117,7 @@ const LogInPage: React.FC = () => {
 
 
 
-
+// ACCOUNT SETTINGS BUTTON //
 
   const handleAccountSaveChanges = (): void => {
     // Validate the confirm password
@@ -143,6 +150,7 @@ const LogInPage: React.FC = () => {
 
 
 
+// INPUTS 
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -169,7 +177,7 @@ const LogInPage: React.FC = () => {
       // Check if the file is an image based on the MIME type or file extension
       if (!file.type.startsWith('image/') || !/\.(jpg|jpeg|png)$/i.test(file.name)) {
         setErrorMsg('File not supported.');
-        setSelectedImage(null);
+       
         return;
       }
   
@@ -204,14 +212,7 @@ const LogInPage: React.FC = () => {
   };
   
 
-  const handleImageSnackbarClose = () => {
-    setErrorMsg(null);
-  };
 
-
-
-
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
   const toggleProfileDropdown = (): void => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
@@ -240,6 +241,16 @@ const LogInPage: React.FC = () => {
     }
   };
 
+  
+
+
+
+// SNACKBAR
+
+  const handleImageSnackbarClose = () => {
+    setErrorMsg(null);
+  };
+
   const handleSnackbarClose = () => {
     setPersonalFormValid(true); // Reset the form validity state when Snackbar is closed
     setPersonalFormValidSnackbar(false); // Hide the success Snackbar when it's closed
@@ -254,13 +265,18 @@ const LogInPage: React.FC = () => {
   
   return (
     <div className={styles.backg}>
+
       <div className={styles.form1}>
+
+
         {/* Left Container */}
         <div className={styles.profileSum}>
+
           <div className={styles.cover}>
             <img src={profileBackg} alt='Profile Background'/>
           </div>
-          <div className={styles.inputDisplay}>
+
+          {/* <div className={styles.inputDisplay}>
             {savedPersonalInfo.FirstName && savedPersonalInfo.LastName && savedPersonalInfo.Email && savedPersonalInfo.ContactNumber && (
               <div className={styles['personal-info']}>
                 <div className={styles.nameContainer}>
@@ -273,14 +289,13 @@ const LogInPage: React.FC = () => {
                 <h5>Position</h5>
               </div>
             )}
-          </div>
+          </div> */}
+
           <button type="button" className={styles.seatButton} onClick={viewSeatPageHandleClick}>
             View Seatplan
           </button>
+
           <div className={styles.profilePicture}>
-
-         
-
 
               <Snackbar
             open={!!errorMsg}
@@ -301,17 +316,6 @@ const LogInPage: React.FC = () => {
               {errorMsg}
             </MuiAlert>
           </Snackbar>
-
-
-
-
-
-
-
-
-
-
-
 
 
             {selectedImage ? (
@@ -508,7 +512,7 @@ const LogInPage: React.FC = () => {
       <label className={styles.readLabel2}> Old Password </label>
         <input
           required
-          type={showOldPassword ? 'text' : 'password'}
+          type={editAccountMode ? (showOldPassword ? 'text' : 'password') : 'password'}
           name="oldPassword"
           autoComplete="off"
           className={styles.input}
@@ -531,7 +535,7 @@ const LogInPage: React.FC = () => {
       <label className={styles.readLabel}>New Password</label>
         <input
           required
-          type={showNewPassword ? 'text' : 'password'}
+          type={editAccountMode ? (showNewPassword ? 'text' : 'password') : 'password'}
           name="newPassword"
           autoComplete="off"
           className={styles.changeInput}
@@ -556,7 +560,7 @@ const LogInPage: React.FC = () => {
       <label className={styles.readLabel}>Confirm Password</label>
         <input
           required
-          type={showConfirmPassword ? 'text' : 'password'}
+          type={editAccountMode ? (showConfirmPassword ? 'text' : 'password') : 'password'}
           name="confirmPassword"
           autoComplete="off"
           className={`${styles.changeInput} ${confirmPasswordError ? styles.errorInput : ''}`}
@@ -564,7 +568,6 @@ const LogInPage: React.FC = () => {
           readOnly={!editAccountMode}
           value={accountValues.confirmPassword}
           onChange={handleAccountInputChange}
-
         />
       
         {editAccountMode && (
@@ -580,7 +583,7 @@ const LogInPage: React.FC = () => {
 
    
       
-      <Snackbar
+            <Snackbar
               open={passwordMismatchSnackbar}
               autoHideDuration={5000}
               onClose={handleAccountSnackbarClose}

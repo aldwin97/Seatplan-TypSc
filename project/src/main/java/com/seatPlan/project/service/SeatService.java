@@ -112,6 +112,12 @@ public class SeatService {
     }
 
 
+    
+    public boolean isUserAlreadyAssigned(Long user_id) {
+        return seatDao.isUserAlreadyAssigned(user_id);
+    }
+
+
   
 
 }

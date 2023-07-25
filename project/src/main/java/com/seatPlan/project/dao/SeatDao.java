@@ -32,4 +32,7 @@ public interface SeatDao {
 
     void swapUserIds(Long seatId1, Long seatId2, Long updated_by);
 
+    
+    boolean isUserAlreadyAssigned(Long user_id);
+
 }

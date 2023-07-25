@@ -68,17 +68,7 @@
     </update>
 
 
-    <!-- <update id="updateSeat" parameterType="com.seatPlan.project.model.SeatModel">
-        UPDATE table_seat
-        <set>
-            <if test="user_id != null">user_id = #{user_id},</if>
-            <if test="seatstatus_id != null">seatstatus_id = #{seatstatus_id},</if>
-            <if test="updated_by != null">updated_by = #{updated_by},</if>
-        </set>
-        WHERE seat_id = #{seat_id}
-    </update> -->
-
-    <!-- <update id="updateSeat" parameterType="com.seatPlan.project.model.SeatModel">
+    <update id="updateSeat" parameterType="com.seatPlan.project.model.SeatModel">
         UPDATE table_seat
         <set>
             <if test="user_id != null">
@@ -88,33 +78,9 @@
             <if test="updated_by != null">updated_by = #{updated_by},</if>
         </set>
         WHERE seat_id = #{seat_id}
-    </update> -->
-
-
-    <update id="updateSeat" parameterType="com.seatPlan.project.model.SeatModel">
-        UPDATE table_seat
-        <set>
-            <if test="user_id != null">
-                user_id =
-                <choose>
-                    <when test="checkUserIdExist(seat_id, user_id)">#{user_id}</when>
-                    <otherwise>
-                        CASE 
-                            WHEN (SELECT COUNT(*) FROM table_seat WHERE user_id = #{user_id}) = 0
-                            THEN #{user_id}
-                            ELSE user_id
-                        END,
-                    </otherwise>
-                </choose>
-                seatstatus_id = 2,
-            </if>
-            <if test="updated_by != null">updated_by = #{updated_by},</if>
-        </set>
-        WHERE seat_id = #{seat_id}
     </update>
     
-    
-    
+       
     
     <select id="getSeatById" resultType="com.seatPlan.project.model.SeatModel">
         SELECT * FROM table_seat WHERE seat_id = #{seat_id} AND is_deleted = 0
@@ -143,6 +109,14 @@
         </set>
         WHERE seat_id IN (#{seatId1}, #{seatId2})
     </update>
+
+
+
+    <select id="isUserAlreadyAssigned" resultType="boolean">
+        SELECT COUNT(*) FROM table_seat WHERE user_id = #{user_id}
+    </select>
+
+
 
 
 

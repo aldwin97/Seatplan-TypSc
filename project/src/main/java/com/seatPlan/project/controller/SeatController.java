@@ -55,31 +55,64 @@ public class SeatController {
 
     
 
+    // @PutMapping("/update/{seat_id}")
+    // public ResponseEntity<String> updateSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
+    //     try {
+    //         // Fetch the existing SeatModel from the database using seat_id
+    //         SeatModel existingSeat = seatService.getSeatById(seat_id);
+
+    //         if (existingSeat == null) {
+    //             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
+    //         }
+
+    //         if (seat.getUser_id() != null) {
+    //             existingSeat.setUser_id(seat.getUser_id());
+    //         }
+
+    //         if (seat.getUpdated_by() != null) {
+    //             existingSeat.setUpdated_by(seat.getUpdated_by());
+    //         }
+
+    //         seatService.updateSeat(existingSeat);
+
+    //         return ResponseEntity.ok("Seat updated successfully");
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
+    //     }
+    // }
+
+
+
     @PutMapping("/update/{seat_id}")
-    public ResponseEntity<String> updateSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
-        try {
-            // Fetch the existing SeatModel from the database using seat_id
-            SeatModel existingSeat = seatService.getSeatById(seat_id);
+public ResponseEntity<String> updateSeat(@PathVariable("seat_id") Long seat_id, @RequestBody SeatModel seat) {
+    try {
+        // Fetch the existing SeatModel from the database using seat_id
+        SeatModel existingSeat = seatService.getSeatById(seat_id);
 
-            if (existingSeat == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
-            }
-
-            if (seat.getUser_id() != null) {
-                existingSeat.setUser_id(seat.getUser_id());
-            }
-
-            if (seat.getUpdated_by() != null) {
-                existingSeat.setUpdated_by(seat.getUpdated_by());
-            }
-
-            seatService.updateSeat(existingSeat);
-
-            return ResponseEntity.ok("Seat updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
+        if (existingSeat == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seat not found");
         }
+
+        // Check if the user_id is being updated
+        if (seat.getUser_id() != null && !seat.getUser_id().equals(existingSeat.getUser_id())) {
+            // Perform a check to see if the updated user_id already exists in other seats
+            if (seatService.isUserAlreadyAssigned(seat.getUser_id())) {
+                return ResponseEntity.badRequest().body("The user_id is already assigned to another seat.");
+            }
+            existingSeat.setUser_id(seat.getUser_id());
+        }
+
+        if (seat.getUpdated_by() != null) {
+            existingSeat.setUpdated_by(seat.getUpdated_by());
+        }
+
+        seatService.updateSeat(existingSeat);
+
+        return ResponseEntity.ok("Seat updated successfully");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update seat");
     }
+}
 
 
 

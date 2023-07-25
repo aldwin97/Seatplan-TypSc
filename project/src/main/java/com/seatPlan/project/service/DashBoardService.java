@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.dao.DashBoardDao;
 import com.seatPlan.project.model.ProjectModel;
-import com.seatPlan.project.model.UserModel;
-import com.seatPlan.project.model.UserTypeModel;
+
 
 
 @Service

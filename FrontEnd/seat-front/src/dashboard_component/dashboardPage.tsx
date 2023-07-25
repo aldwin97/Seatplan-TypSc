@@ -9,7 +9,7 @@
 
 
 
-
+  
   interface Column {
     id: 'ProjectName' | 'seatCount' ;
     label: string;
@@ -19,6 +19,7 @@
   }
 
   const DashboardPage: React.FC = () => {
+    
     const chartHeight = 320; 
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const myChart = useRef<Chart | null>(null);
@@ -133,6 +134,21 @@
     createData('NRI',49)
   
   ];
+  const navigate = useNavigate();
+
+  const projectPageHandleClick = () => {
+    navigate('/ProjectPage');
+  };
+  const dashboardPageHandleClick = () => {
+    navigate('/DashboardPage');
+  };
+  const adminPageHandleClick = () => {
+    navigate('/AdminPage');
+  };
+  const ProfilePageHandleClick = () => {
+    navigate('/ProfilePage');
+  };
+  
     return (
       <>
         <body>
@@ -162,7 +178,7 @@
                 <ul className={styles['accordion-menu']}>
                   <li className={styles['sidebar-title']}>Apps</li>
                   <li className={styles['active-page']}>
-                    <a href="index.html" className={styles['active']}>
+                    <a onClick={dashboardPageHandleClick} className={styles['active']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <Dashboard/>
                       </i>
@@ -170,7 +186,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="index.html" className={styles['active']}>
+                    <a onClick={ProfilePageHandleClick} className={styles['active']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <AccountBox/>
                       </i>
@@ -178,7 +194,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="index.html" className={styles['active']}>
+                    <a onClick={projectPageHandleClick} className={styles['active']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <Work/>
                       </i>
@@ -186,7 +202,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="index.html" className={styles['active']}>
+                    <a onClick={adminPageHandleClick} className={styles['active']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <Groups/>
                       </i>

@@ -27,27 +27,6 @@ interface Seat {
   userId1: number;
   userId2: number;
 }
-interface SeatModel {
-  position: { x: number; y: number };
-  isSwapping: boolean;
-  color: string;
-  occupant: string;
-  project: string;
-  comments: string[];
-  viewerNames: string[];
-  seatstatus: string;
-  position_x: number;
-  position_y: number;
-  seat_num: number;
-  full_name: string;
-  project_name: string;
-  seat_status: string;
-  color_code: string;
-  seat_id: number;
-  user_id: number;
-  userId1: number;
-  userId2: number;
-}
 
 interface SeatPopupProps {
   seat: Seat;
@@ -65,7 +44,8 @@ interface Occupant {
 }
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
-  const [selectedSeatId, setSelectedSeatId] = useState('');
+  const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
+
   const [showComments, setShowComments] = useState(false);
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
@@ -83,9 +63,10 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
     };
   }, []);
   
-  const handleSeatSelect = (selectedSeatId: string) => {
+  const handleSeatSelect = (selectedSeatId: number) => {
     setSelectedSeatId(selectedSeatId);
   };
+  
   function getUpdatedByFromSessionStorage(): number {
     const user_id = sessionStorage.getItem('user_id');
     if (user_id) {
@@ -99,7 +80,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   
   
   const handleSwapSeats = async () => {
-    if (selectedSeatId && selectedSeatId !== seat.seat_id.toString()) {
+    if (selectedSeatId && selectedSeatId !== Number(seat.seat_id)) {
       const currentSeat = seats.find((s) => s.seat_id === seat.seat_id);
       const swapSeat = seats.find((s) => s.seat_id === Number(selectedSeatId));
       const updated_by = getUpdatedByFromSessionStorage();
@@ -110,15 +91,11 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
           ...currentSeat,
           occupant: swapSeat.occupant,
           project: swapSeat.project,
-          userId1: swapSeat.userId1,
-          userId2: swapSeat.userId2,
         };
         const updatedSwapSeat = {
           ...swapSeat,
           occupant: currentSeat.occupant,
           project: currentSeat.project,
-          userId1: currentSeat.userId1,
-          userId2: currentSeat.userId2,
         };
   
         // Swap the seats in the frontend
@@ -141,10 +118,8 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                seatId1: updatedCurrentSeat.seat_id,
-                seatId2: updatedSwapSeat.seat_id,
-                userId1: updatedCurrentSeat.userId1,
-                userId2: updatedCurrentSeat.userId2,
+                seatId1: seat.seat_id,
+                seatId2: selectedSeatId,
                 updated_by: updated_by,
               }),
             }
@@ -158,13 +133,15 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
           console.log('Current Seat:', updatedCurrentSeat);
           console.log('Swap Seat:', updatedSwapSeat);
   
-          onClose();
+          // Refresh the page to fetch the updated seat data
+          window.location.reload();
         } catch (error) {
           console.error('Failed to swap seats:', error);
         }
       }
     }
   };
+  
   
   
   
@@ -189,7 +166,10 @@ const isSeatOccupied = seat.occupant !== '' && seat.project !== '';
 const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
 
-  if (isOccupantAlreadyAssigned) {
+  // Check if the selected occupant is already assigned to another seat
+  const isOccupantAssigned = seats.some((s) => s.occupant === selectedOccupant && s.seat_id !== seat.seat_id);
+
+  if (isOccupantAssigned) {
     setErrorMsg('This occupant is already assigned to another seat.');
     return;
   }
@@ -337,19 +317,19 @@ const fetchOccupants = async () => {
                 <>
                   <button type="submit">Save</button>
                   <div>
-                <p>Select a seat to swap:</p>
-                <select
-                  className={styles.value}
-                  value={selectedSeatId}
-                  onChange={(e) => handleSeatSelect(e.target.value)}
-                >
-                  <option className={styles.value} value="">
-                    Select a seat
-                  </option>
-                  {seats.map((seat) => (
-                    <option key={seat.seat_id} value={seat.seat_id}>
-                      {seat.seat_id}
-                    </option>
+                    <p>Select a seat to swap:</p>
+                    <select
+                      className={styles.value}
+                      value={selectedSeatId || ''} // Use the nullish coalescing operator to fallback to an empty string if selectedSeatId is null
+                      onChange={(e) => handleSeatSelect(Number(e.target.value))} // Parse selected value as a number
+                    >
+                      <option className={styles.value} value="">
+                        Select a seat
+                      </option>
+                      {seats.map((seat) => (
+                        <option key={seat.seat_id} value={seat.seat_id}>
+                          {seat.seat_id}
+                        </option>
                   ))}
                 </select>
                 <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
@@ -502,7 +482,7 @@ useEffect(() => {
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
 
       // Draw numbering box
-      ctx.fillStyle = '#28a745'; // Set the color of the numbering box
+      ctx.fillStyle = '#ffffff'; // Set the color of the numbering box
       ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
       ctx.fillStyle = '#000000'; // Set the color of the numbering text
       ctx.font = `${11 / zoomLevel}px Arial`; // Set the font size
@@ -698,19 +678,33 @@ useEffect(() => {
         const textOffsetX = 2 / zoomLevel;
         const textOffsetY = 50 / zoomLevel;
         const numberBoxSize = 20 / zoomLevel;
-  
+    
+     
         canvas.style.cursor = 'pointer';
-        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+        ctx.fillStyle = '#ffffff';
         ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 2 / zoomLevel;
         ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
   
-        ctx.fillStyle = '#28a745';
         ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
         ctx.fillStyle = '#000000';
         ctx.font = `${11 / zoomLevel}px Arial`;
-        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 2, scaledY + numberBoxSize / 2 + 1);
+        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 4, scaledY + numberBoxSize / 2 + 2);
+      
+
+
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2; // Set the border width
+
+        // Calculate the position for the border rectangle
+        const borderX = scaledX + numberBoxSize / 4 - 5;
+        const borderY = scaledY + numberBoxSize / 2 - 9;
+        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
+        const borderHeight = 21; // Adjust the border height as needed
+
+        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+
 
         const seatBoxY = scaledY + numberBoxSize;
         const seatBoxHeight = seatSize - numberBoxSize;

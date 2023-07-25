@@ -27,4 +27,14 @@
         SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 3 AND is_deleted = 0
     </select>
 
+
+    <select id="countUsersPerProject" resultType="com.seatPlan.project.model.ProjectModel">
+        SELECT p.project_id, p.project_name, COUNT(u.user_id) as seatCount
+        FROM table_project p
+        LEFT JOIN table_user u ON p.project_id = u.project_id
+        GROUP BY p.project_id, p.project_name
+    </select>
+
+
+
 </mapper>

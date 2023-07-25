@@ -1,7 +1,11 @@
 //Kenneth Christian B. Gutierrez
 package com.seatPlan.project.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+
+import com.seatPlan.project.model.ProjectModel;
 
 @Mapper
 public interface DashBoardDao {
@@ -11,5 +15,10 @@ public interface DashBoardDao {
     int countRegular();
     int countOccupied();
     int countUnderMaintenance();
+    List<ProjectModel> countUsersPerProject();
+
+
+
+
     
 }

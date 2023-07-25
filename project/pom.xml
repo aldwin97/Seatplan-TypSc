@@ -68,15 +68,9 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
-<<<<<<< HEAD
 		</dependency> 
 	
 		 <dependency>
-=======
-		</dependency>
-
-		<dependency>
->>>>>>> 9779f105c34526d73db27e4e72b6d64f45a1f306
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>

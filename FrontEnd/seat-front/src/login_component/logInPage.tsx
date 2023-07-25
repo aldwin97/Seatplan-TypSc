@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './logInPage.module.css';
-import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const LogInPage: React.FC = () => {
@@ -28,9 +27,9 @@ const LogInPage: React.FC = () => {
     setError(false);
   };
 
-  const helpPageHandleClick = () => {
-    navigate('/helpPage');
-  };
+  // const helpPageHandleClick = () => {
+  //   navigate('/helpPage');
+  // };
 
   const viewSeatPageHandleClick = () => {
     navigate('/viewSeatPage');
@@ -95,7 +94,9 @@ const LogInPage: React.FC = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <div className={styles.shape}></div>
-            <CloseSharpIcon className={styles.closeButton} onClick={closeModal} />
+            <button className={styles.closeButton} onClick={closeModal}>
+              Cancel
+            </button>
             <h2>SIGN IN</h2>
 
             <div className={`${styles['input-group']} ${error && !username && styles.errorInput}`}>
@@ -158,11 +159,11 @@ const LogInPage: React.FC = () => {
             View Seatplan
           </button>
         </div>
-        <div className={styles.supportContainer}>
+        {/* <div className={styles.supportContainer}>
         <a href="#" onClick={helpPageHandleClick} className={styles.supportLink}>
         Support
       </a>
-        </div>
+        </div> */}
       </div>
     </div>
   );

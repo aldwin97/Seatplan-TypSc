@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 public class UserModel {
 
     
+
+
     private Long user_id;
     private Long project_id;
     private String first_name;

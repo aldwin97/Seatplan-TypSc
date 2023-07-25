@@ -2,6 +2,7 @@
 package com.seatPlan.project.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,6 @@ public class DashBoardController {
 
        int countOccupied = dashBoardService.countOccupied(); 
 
-
         Map<String , Object> data = new HashMap<>();
         data.put("countUser", countUser);
         data.put("countSeatAvailable", countSeatAvailable);
@@ -51,4 +51,12 @@ public class DashBoardController {
         return ResponseEntity.ok(data);
        
     }
+
+    @GetMapping("/countPerProject")
+    public List<Map<String, Object>> allUser(){
+        List<Map<String, Object>> userCountList = dashBoardService.countUsersPerProject();
+        return userCountList;
+    }
+
+
 }

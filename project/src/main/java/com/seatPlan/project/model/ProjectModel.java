@@ -22,4 +22,6 @@ public class ProjectModel {
    private LocalDateTime updated_time;
    private Long updated_by;
    private String color_code;
+
+   private Long seatCount;
 }

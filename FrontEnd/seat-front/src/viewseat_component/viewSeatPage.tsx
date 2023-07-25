@@ -1,33 +1,500 @@
-import { useNavigate } from 'react-router-dom';
-import { FaSearch } from 'react-icons/fa';
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { useNavigate, } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './viewSeatPage.module.css';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-const ViewSeatPage = () => {
+
+interface Seat {
+  position: { x: number; y: number };
+  isSwapping: boolean;
+  color: string;
+  occupant: string;
+  project: string;
+  comments: string[];
+  viewerNames: string[];
+  seatstatus: string;
+  position_x: number;
+  position_y: number;
+  seat_num: number;
+  full_name: string;
+  project_name: string;
+  seat_status: string;
+  color_code: string;
+  seat_id: number;
+  user_id: number;
+  userId1: number;
+  userId2: number;
+}
+
+interface SeatPopupProps {
+  seat: Seat;
+  onClose: () => void;
+  setSeats: (seats: Seat[]) => void;
+  seats: Seat[];
+}
+interface Occupant {
+  user_id: number;
+  name: string;
+  first_name: string;
+  last_name: string;
+
+  // Add other properties if available in the response
+}
+
+function SeatPopup({ seat, onClose, }: SeatPopupProps): JSX.Element {
+  
+  const [ , setOccupantsList] = useState<Occupant[]>([]);
+  
+  useEffect(() => {
+    document.body.classList.toggle('popupOpen', true);
+    return () => {
+      document.body.classList.toggle('popupOpen', false);
+    };
+  }, []);
+  
+
+  useEffect(() => {
+    fetchOccupants();
+  }, []);
+  
+  useEffect(() => {
+    fetchOccupants();
+  }, []);
+
+  /// Function to fetch the list of occupants from the backend
+const fetchOccupants = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/seat/showAllUser');
+    if (response.ok) {
+      const occupantsData: Occupant[] = await response.json();
+      setOccupantsList(occupantsData);
+    } else {
+      console.error('Failed to fetch occupants');
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching occupants:', error);
+  }
+};
+
+return (
+  <div className={styles.seatPopupContainer}>
+    <div className={styles.seatPopupContent}>
+      <h3>{seat.seat_id}</h3>
+      <label>
+        Occupant:
+        <input type="text" value={seat.occupant} readOnly />
+      </label>
+      <label>
+        Project:
+        <input type="text" value={seat.project} readOnly />
+      </label>
+      <button type="button" className={styles.closeButton} onClick={onClose}>
+        Close
+      </button>
+    </div>
+  </div>
+);
+}
+
+function ViewSeatPage() {
   const navigate = useNavigate();
 
   const viewSeatPageHandleClick = () => {
     navigate('/');
   };
 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [seats, setSeats] = useState<Seat[]>([]);
+  useEffect(() => {
+    fetch('http://localhost:8080/seat/showAllSeat')
+      .then((response) => response.json())
+      .then((data) => {
+        // Update the position and other properties of each seat based on the data received from the backend
+        const updatedSeats = data.map((seat: Seat) => {
+          return {
+            ...seat,
+            seat_id: seat.seat_id,
+            position: { x: seat.position_x, y: seat.position_y },
+            occupant: seat.full_name,
+            project: seat.project_name,
+            seatstatus: seat.seat_status,
+            color: seat.color_code,
+          };
+        });
+        setSeats(updatedSeats);
+      })
+      .catch((error) => console.error('Error fetching seat data:', error));
+  }, []);
+
+  
+  
+  const [zoomLevel] = useState(1);
+  const [canvasOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
+
+// Update the canvas rendering code to use the fetched seat data
+useEffect(() => {
+  const canvas = canvasRef.current;
+  const ctx = canvas?.getContext('2d');
+
+  if (canvas && ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.scale(zoomLevel, zoomLevel);
+    seats.forEach((seat) => {
+      const { x, y } = seat.position ?? { x: 0, y: 0 };
+      const { color } = seat;
+
+      const scaledX = x / zoomLevel;
+      const scaledY = y / zoomLevel;
+      const seatSize = 100 / zoomLevel;
+      const textOffsetX = 2 / zoomLevel;
+      const textOffsetY = 50 / zoomLevel;
+      const numberBoxSize = 20 / zoomLevel;
+
+      canvas.style.cursor = 'pointer';
+      ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9'; // Set default color to light gray
+      ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.strokeStyle = '#000000'; // Set the border color to black
+      ctx.lineWidth = 2 / zoomLevel; // Adjust the border width as needed
+      ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+
+      // Draw numbering box
+      ctx.fillStyle = '#ffffff'; // Set the color of the numbering box
+      ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
+      ctx.fillStyle = '#000000'; // Set the color of the numbering text
+      ctx.font = `${11 / zoomLevel}px Arial`; // Set the font size
+
+      // Display the seat_id as a number
+      ctx.fillText(String(seat.seat_id), scaledX + numberBoxSize / 2, scaledY + numberBoxSize / 2 + 1);
+
+
+      // Draw seat box
+      const seatBoxY = scaledY + numberBoxSize; // Adjust the position of the seat box
+      const seatBoxHeight = seatSize - numberBoxSize; // Adjust the height of the seat box
+      ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+      ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2 / zoomLevel;
+      ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+      ctx.fillStyle = '#000000';
+
+      if (seat.isSwapping) {
+        // Get the swapped seat
+        const swappedSeat = seats.find((s) => String(s.seat_id) === String(seat.occupant));
+
+        if (swappedSeat) {
+          const maxTextWidth = seatSize - textOffsetX * 2;
+          const text = swappedSeat.occupant;
+          let fontSize = 11 / zoomLevel;
+
+          // Adjust the font size to fit the text within the seat box
+          while (ctx.measureText(text).width > maxTextWidth) {
+            fontSize -= 1 / zoomLevel;
+            ctx.font = `${fontSize}px Arial`;
+          }
+
+          ctx.fillText(swappedSeat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+        }
+      } else {
+        const maxTextWidth = seatSize - textOffsetX * 2;
+        const text = seat.occupant;
+        let fontSize = 11 / zoomLevel;
+
+        // Adjust the font size to fit the text within the seat box
+        while (ctx.measureText(text).width > maxTextWidth) {
+          fontSize -= 1 / zoomLevel;
+          ctx.font = `${fontSize}px Arial`;
+        }
+
+        ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+      }
+
+      if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Set the button background color
+        ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+        ctx.fillStyle = '#FFFFFF'; // Set the button text color
+        ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
+      }
+    });
+  }
+}, [seats, zoomLevel, selectedSeat]);
+  
+  
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  const lastClickTimeRef = useRef<number>(0);
+  const [doubleClickFlag, setDoubleClickFlag] = useState(false);
+  const [draggingSeatIndex, setDraggingSeatIndex] = useState(-1);
+  
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
+    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
+  
+    const clickedSeatIndex = seats.findIndex((seat) => {
+      const { x, y } = seat.position;
+      const seatWidth = 50 / zoomLevel;
+      const seatHeight = 50 / zoomLevel;
+      const seatRight = x + seatWidth;
+      const seatBottom = y + seatHeight;
+  
+      return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
+    });
+  
+    if (clickedSeatIndex > -1) {
+      const now = new Date().getTime();
+      const doubleClickThreshold = 300;
+  
+      if (now - lastClickTimeRef.current <= doubleClickThreshold) {
+        const clickedSeat = seats[clickedSeatIndex];
+        setSelectedSeat(clickedSeat);
+        setDoubleClickFlag(true); // Set the double-click flag
+      } else {
+        lastClickTimeRef.current = now;
+  
+        const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
+  
+        if (!isAnySeatSwapping) {
+          setDraggingSeatIndex(clickedSeatIndex);
+          const updatedSeats = seats.map((seat, index) => {
+            if (index === clickedSeatIndex) {
+              return { ...seat, isSwapping: true };
+            }
+            return seat;
+          });
+          setSeats(updatedSeats);
+        }
+      }
+    }
+  };
+  const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
+    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
+  
+    const clickedSeatIndex = seats.findIndex((seat) => {
+      const { x, y } = seat.position;
+      const seatWidth = 50 / zoomLevel;
+      const seatHeight = 50 / zoomLevel;
+      const seatRight = x + seatWidth;
+      const seatBottom = y + seatHeight;
+  
+      return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
+    });
+  
+    if (draggingSeatIndex > -1 && clickedSeatIndex > -1) {
+      const draggingSeat = seats[draggingSeatIndex];
+      const clickedSeat = seats[clickedSeatIndex];
+      const updatedSeats = seats.map((seat, index) => {
+        if (index === draggingSeatIndex) {
+          return { ...clickedSeat, isSwapping: false };
+        }
+        if (index === clickedSeatIndex) {
+          return { ...draggingSeat, isSwapping: false };
+        }
+        return seat;
+      });
+      setSeats(updatedSeats);
+    }
+  
+    if (!doubleClickFlag) {
+      setSelectedSeat(null);
+    }
+  
+    setDoubleClickFlag(false); // Reset the double-click flag
+    setDraggingSeatIndex(-1); // Reset the dragging seat index
+  };
+  
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const target = event.target as typeof event.target & {
+      search: { value: string };
+    };
+    setSearchQuery(target.search.value);
+  };
+  
+  const filteredSeats = seats.filter((seat) => {
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
+    return (
+      seat.occupant?.toLowerCase().includes(lowerCaseSearchQuery) ||
+      (seat.seat_id.toString().includes(lowerCaseSearchQuery))
+    );
+  });
+  
+  
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+  
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      ctx.scale(zoomLevel, zoomLevel);
+  
+      filteredSeats.forEach((seat) => {
+        const { x, y} = seat.position;
+        const { color } = seat;
+  
+        const scaledX = x / zoomLevel;
+        const scaledY = y / zoomLevel;
+        const seatSize = 100 / zoomLevel;
+        const textOffsetX = 2 / zoomLevel;
+        const textOffsetY = 50 / zoomLevel;
+        const numberBoxSize = 20 / zoomLevel;
+    
+     
+        canvas.style.cursor = 'pointer';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2 / zoomLevel;
+        ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+  
+        ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
+        ctx.fillStyle = '#000000';
+        ctx.font = `${11 / zoomLevel}px Arial`;
+        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 4, scaledY + numberBoxSize / 2 + 2);
+      
+
+
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2; // Set the border width
+
+        // Calculate the position for the border rectangle
+        const borderX = scaledX + numberBoxSize / 4 - 5;
+        const borderY = scaledY + numberBoxSize / 2 - 9;
+        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
+        const borderHeight = 21; // Adjust the border height as needed
+
+        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+
+
+        const seatBoxY = scaledY + numberBoxSize;
+        const seatBoxHeight = seatSize - numberBoxSize;
+        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+        ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2 / zoomLevel;
+        ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+        ctx.fillStyle = '#000000';
+  
+        if (seat.isSwapping) {
+          const swappedSeat = filteredSeats.find((s) => String(s.seat_id) === String(seat.occupant));
+          if (swappedSeat) {
+            const maxTextWidth = seatSize - textOffsetX * 2;
+            const text = swappedSeat.occupant;
+            let fontSize = 11 / zoomLevel;
+  
+            while (ctx.measureText(text).width > maxTextWidth) {
+              fontSize -= 1 / zoomLevel;
+              ctx.font = `${fontSize}px Arial`;
+            }
+  
+            ctx.fillText(swappedSeat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+          }
+        } else {
+          const maxTextWidth = seatSize - textOffsetX * 2;
+          const text = seat.occupant;
+          let fontSize = 11 / zoomLevel;
+  
+          while (ctx.measureText(text).width > maxTextWidth) {
+            fontSize -= 1 / zoomLevel;
+            ctx.font = `${fontSize}px Arial`;
+          }
+  
+          ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+        }
+  
+        if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
+        }
+      });
+    }
+  }, [filteredSeats, zoomLevel, selectedSeat]);
+  
+  const handleSeatClick = (seat: Seat) => {
+    setSelectedSeat(seat);
+  };
   return (
-    <>
-      <div className={styles.container2}>
-        <div className={styles.searchBar}>
-          <input type="text" placeholder="Search" className={styles.searchInput} />
-          <button className={styles.searchButton} type="submit">
-            <FaSearch />
-          </button>
-        </div>
-        <form className={styles.form2}>
-          {/* Form content */}
-          
-          <button className={styles.sub} type="submit" onClick={viewSeatPageHandleClick}>
+   <body className={styles.body}> <div className={styles.container}>
+      {selectedSeat && (
+        <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} setSeats={setSeats} seats={seats} />
+      )}
+<div className={styles.title}>SEAT PLAN VIEW</div>
+<div className={styles.canvasWrapper} ref={containerRef}>
+  <div className={styles.root} ref={containerRef}>
+    <div className={styles.scrollableCanvas}>
+      <canvas
+        ref={canvasRef}
+        width={2800}
+        height={1400}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      ></canvas>
+    </div>
+  </div>
+
+  <form onSubmit={handleFormSubmit} className={styles.searchForm}>
+    <input
+      type="text"
+      name="search"
+      placeholder="Search seat"
+      className={styles.searchInput}
+    />
+    <button type="submit" className={styles.searchButton}>
+      <FontAwesomeIcon icon={faSearch} />
+    </button>
+  </form>
+  <button className={styles.sign} type="submit" onClick={viewSeatPageHandleClick}>
             SIGN IN
           </button>
-        </form>
-      </div>
-    </>
-  );
-};
+  {/* Render seats on the canvas */}
+  {seats.map((seat) => (
+    <div
+      key={seat.seat_id}
+      className={styles.seat}
+      style={{ left: seat.position_x, top: seat.position_y }}
+      onClick={() => handleSeatClick(seat)}
+    >
+      {seat.seat_num}
+    </div>
+  ))}
+
+</div>
+
+<div className={styles.legend}>
+  <div className={styles.legendItem}>
+    <div className={`${styles.colorBox} ${styles.available}`}></div>
+    <span className={styles.label}>Available Seats</span>
+  </div>
+  <div className={styles.legendItem}>
+    <div className={`${styles.colorBox} ${styles.unavailable}`}></div>
+    <span className={styles.label}>Unavailable/Maintained Seats</span>
+  </div>
+</div>
+
+
+</div>
+</body>
+);
+}
 
 export default ViewSeatPage;

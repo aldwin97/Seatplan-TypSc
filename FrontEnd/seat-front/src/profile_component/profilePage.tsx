@@ -9,8 +9,11 @@ import profileBackg from './assets/profileBackg.jpg';
 import ManageAccountsSharpIcon from '@mui/icons-material/ManageAccountsSharp';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'; // Added import
+
+
 
 const LogInPage: React.FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -18,6 +21,11 @@ const LogInPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
+  const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] = useState(false);
+  const [isPersonalFormValid, setPersonalFormValid] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(''); // New state for the confirm password error
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: '',
@@ -31,6 +39,12 @@ const LogInPage: React.FC = () => {
     LastName: '',
     Email: '',
     ContactNumber: '',
+  });
+
+  const [accountValues, setAccountValues] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: '',
   });
 
   const navigate = useNavigate();
@@ -54,6 +68,10 @@ const LogInPage: React.FC = () => {
   const logInPageHandleClick = (): void => {
     navigate('/');
   };
+
+
+
+
 
   const handlePersonalSaveChanges = () => {
     // Validate the personal information inputs
@@ -80,9 +98,23 @@ const LogInPage: React.FC = () => {
     setPersonalEditMode(true);
   };
 
+
+
+
+
+
+
   const handleAccountSaveChanges = (): void => {
-    setAccountEditMode(false);
+    // Validate the confirm password
+    const { newPassword, confirmPassword } = accountValues;
+    if (newPassword !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match.');
+    } else {
+      setConfirmPasswordError(''); // Reset the error state if the passwords match
+      setAccountEditMode(false);
+    }
   };
+
 
   const handleAccountCancelChanges = (): void => {
     setAccountEditMode(false);
@@ -92,6 +124,13 @@ const LogInPage: React.FC = () => {
     setAccountEditMode(true);
   };
 
+
+
+
+
+
+
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setInputValues((prevValues) => ({
@@ -100,8 +139,15 @@ const LogInPage: React.FC = () => {
     }));
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const handleAccountInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setAccountValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -117,12 +163,14 @@ const LogInPage: React.FC = () => {
     }
   };
 
+
+
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
   const toggleProfileDropdown = (): void => {
     setProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const [isPersonalFormValid, setPersonalFormValid] = useState(true);
+ 
 
   const validatePersonalInfo = () => {
     const { FirstName, LastName, Email, ContactNumber } = inputValues;
@@ -133,16 +181,27 @@ const LogInPage: React.FC = () => {
     return isFirstNameValid && isLastNameValid && isEmailValid && isContactNumberValid;
   };
 
+
   const handlePersonalSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isPersonalFormValid) {
       console.log('yes');
+      // Show success Snackbar when the form is valid
+      setPersonalFormValidSnackbar(true);
     } else {
       console.log('no');
     }
   };
 
+  const handleSnackbarClose = () => {
+    setPersonalFormValid(true); // Reset the form validity state when Snackbar is closed
+    setPersonalFormValidSnackbar(false); // Hide the success Snackbar when it's closed
+  };
+
+
+
+  
   return (
     <body className={styles.backg}>
       <form className={styles.form1}>
@@ -152,7 +211,7 @@ const LogInPage: React.FC = () => {
             <img src={profileBackg} alt='Profile Background'/>
           </div>
           <div className={styles.inputDisplay}>
-            {savedPersonalInfo.FirstName && (
+            {savedPersonalInfo.FirstName && savedPersonalInfo.LastName && savedPersonalInfo.Email && savedPersonalInfo.ContactNumber && (
               <div className={styles['personal-info']}>
                 <div className={styles.nameContainer}>
                   <h2>{savedPersonalInfo.FirstName}</h2>
@@ -209,7 +268,7 @@ const LogInPage: React.FC = () => {
             <h1>Personal Information</h1>
 
             <div className={styles['name-group']}>
-              <label className={styles.readLabel}>First Name</label>
+              <label className={styles.readLabel}>First Name *</label>
               <input
                 required
                 type="text"
@@ -224,7 +283,7 @@ const LogInPage: React.FC = () => {
 
 
             <div className={styles['name-group']}>
-              <label className={styles.readLabel}>Last Name</label>
+              <label className={styles.readLabel}>Last Name *</label>
               <input
                 required
                 type="text"
@@ -239,7 +298,7 @@ const LogInPage: React.FC = () => {
 
 
             <div className={styles['input-group']}>
-              <label className={styles.readLabel2}>Email Address</label>
+              <label className={styles.readLabel2}>Email Address *</label>
               <input
                 required
                 type="text"
@@ -254,7 +313,7 @@ const LogInPage: React.FC = () => {
 
 
             <div className={styles['input-group']}>
-              <label className={styles.readLabel2}>Contact Number</label>
+              <label className={styles.readLabel2}>Contact Number *</label>
               <input
                 required
                 type="text"
@@ -273,14 +332,25 @@ const LogInPage: React.FC = () => {
 
 
 
-            {!isPersonalFormValid && (
-              <p style={{ color: 'red', marginBottom: '1rem' }}>Please fill in all the required fields.</p>
-            )}
-
-
-
-
-
+                  <Snackbar
+            open={!isPersonalFormValid}
+            autoHideDuration={5000}
+            onClose={handleSnackbarClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              onClose={handleSnackbarClose}
+              severity="error"
+              sx={{ width: '270px' }} // Add custom styles to make the Snackbar wider
+            >
+              Please fill in all the required fields.
+            </MuiAlert>
+          </Snackbar>
 
 
 
@@ -380,6 +450,8 @@ const LogInPage: React.FC = () => {
           autoComplete="off"
           className={styles.changeInput}
           readOnly={!editAccountMode}
+          value={accountValues.newPassword}
+          onChange={handleAccountInputChange}
         />
       
         {editAccountMode && (
@@ -401,8 +473,12 @@ const LogInPage: React.FC = () => {
           type={showConfirmPassword ? 'text' : 'password'}
           name="confirmPassword"
           autoComplete="off"
-          className={styles.changeInput}
+          className={`${styles.changeInput} ${confirmPasswordError ? styles.errorInput : ''}`}
+          style={{ border: confirmPasswordError ? '1px solid red' : '1px solid #9e9e9e' }}
           readOnly={!editAccountMode}
+          value={accountValues.confirmPassword}
+          onChange={handleAccountInputChange}
+
         />
       
         {editAccountMode && (
@@ -415,6 +491,8 @@ const LogInPage: React.FC = () => {
         )}
       </div>
 
+
+      {confirmPasswordError && <div className={styles.errorText}>{confirmPasswordError}</div>}
 
 
 

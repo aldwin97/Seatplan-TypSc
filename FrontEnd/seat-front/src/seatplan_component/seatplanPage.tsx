@@ -203,7 +203,7 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       console.log('Seat updated successfully');
       onClose();
       window.location.reload(); // Refresh the page
-    } else if (response.status === 500) {
+    } else if (response.status === 400) {
       setErrorMsg('This occupant is already assigned to another seat.');
       // You can also display the error message on the page instead of using an alert
       // For example, set a state to show the error message:

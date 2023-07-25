@@ -23,6 +23,7 @@ public class UserModel {
     private Long mobile_num;
     private String username;
     private String password;
+    private String oldPassword;
     private Long staffstatus_id;
     private Long usertype_id;
     private Long position_id;

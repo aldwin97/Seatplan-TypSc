@@ -26,23 +26,34 @@ public class DashBoardController {
 
         int countUser = dashBoardService.countUser();
 
-        int countSeatAvailable = dashBoardService.countSeatAvailable();
+       int countSeatAvailable = dashBoardService.countSeatAvailable();
 
-        int countTrainee = dashBoardService.countTrainee();
-
-        int countRegular = dashBoardService.countRegular();
+       int countTrainee = dashBoardService.countTrainee();
+       
+       int countRegular = dashBoardService.countRegular();
 
         int countUnderMaintenance = dashBoardService.countUnderMaintenance();
 
-        int countOccupied = dashBoardService.countOccupied();
+       int countOccupied = dashBoardService.countOccupied(); 
 
         Map<String, Object> data = new HashMap<>();
         data.put("countUser", countUser);
         data.put("countSeatAvailable", countSeatAvailable);
-        data.put("countTrainee", countTrainee);
-        data.put("countRegular", countRegular);
         data.put("countOccupied", countOccupied);
         data.put("countUnderMaintenance", countUnderMaintenance);
+        data.put("countAssignedEmpIntern",countAssignedEmpIntern);
+        data.put("countAssignedEmpTrainee",countAssignedEmpTrainee);
+        data.put("countAssignedEmpRegular",countAssignedEmpRegular);
+        data.put("countAssignedEmpContractual",countAssignedEmpContractual);
+        
+        data.put("countUnassignedEmpIntern",countUnassignedEmpIntern);
+        data.put("countUnassignedEmpTrainee",countUnassignedEmpTrainee);
+        data.put("countUnassignedEmpRegular",countUnassignedEmpRegular);
+        data.put("countUnassignedEmpContractual",countUnassignedEmpContractual);
+
+
+
+
         return ResponseEntity.ok(data);
 
     }

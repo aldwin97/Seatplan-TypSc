@@ -12,14 +12,24 @@ import com.seatPlan.project.model.ProjectModel;
 public interface DashBoardDao {
     int countUser();
     int countSeatAvailable();
-    int countTrainee();
-    int countRegular();
+
     int countOccupied();
     int countUnderMaintenance();
     List<ProjectModel> countUsersPerProject();
 
      List<CommentModel> getAllComment();
 
+
+    int countAssignedEmpIntern();
+    int countAssignedEmpTrainee();
+    int countAssignedEmpRegular();
+    int countAssignedEmpContractual();
+
+    int countUnassignedEmpIntern();
+    int countUnassignedEmpTrainee();
+    int countUnassignedEmpRegular();
+    int countUnassignedEmpContractual();
+          
 
 
 

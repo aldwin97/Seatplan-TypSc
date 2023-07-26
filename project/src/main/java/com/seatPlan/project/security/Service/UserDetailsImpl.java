@@ -10,12 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserDetailsImpl implements UserDetails {
     private final String username;  
     private final String password;
-    private final Long user_id;
 
-    public UserDetailsImpl(String username, String password, Long user_id) {
+
+    public UserDetailsImpl(String username, String password) {
         this.username = username;
         this.password = password;
-        this.user_id = user_id;
     }
 
     @Override
@@ -53,9 +52,6 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }   
 
-    public Long getUser_id(){
-        return user_id;
-    }   
 
     
 }

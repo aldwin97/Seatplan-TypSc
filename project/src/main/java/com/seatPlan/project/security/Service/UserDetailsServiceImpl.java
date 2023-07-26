@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserModel user = userDao.findByUsername(username);
         if(user != null){
             List<GrantedAuthority> roles = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
-            return new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getUser_id());
+            return new UserDetailsImpl(user.getUsername(), user.getPassword());
         }else{
             throw new UsernameNotFoundException("username not found");
         }

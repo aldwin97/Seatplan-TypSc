@@ -12,7 +12,7 @@ public class User extends UserModel implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     public User(UserModel user,List<GrantedAuthority> authorities){
-        super(user.getUsername(), user.getPassword(), user.getUser_id());
+        super(user.getUsername(), user.getPassword());
         this.authorities = authorities;
     }
 

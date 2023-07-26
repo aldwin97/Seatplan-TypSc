@@ -25,10 +25,6 @@
     </select>
 
 
-    
-    
-    
-
     <insert id="insertComment"  parameterType="com.seatPlan.project.model.CommentInputModel">
         INSERT INTO table_comment (
             user_id,

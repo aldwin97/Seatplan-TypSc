@@ -10,6 +10,7 @@
   import 'chartjs-plugin-datalabels';
 
 
+
   
   
   interface Column {
@@ -45,8 +46,10 @@
     }
     
     interface Comments {
-      fullname: string;
+      full_name: string;
       comment: string;
+      created_time: string;
+      seat_id:number;
     }
     
 
@@ -211,6 +214,18 @@
   };
   const SeatplanPageHandleClick = () => {
     navigate('/seatPlanPage');
+  };
+  const formatTime = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+    return date.toLocaleString('en-US', options);
   };
     return (
       <>
@@ -396,18 +411,43 @@
         <React.Fragment key={index}>
           <ListItem alignItems="flex-start">
             <ListItemAvatar>
-              <Avatar alt={comment.fullname} src="/static/images/avatar.jpg" />
+              <Avatar alt={comment.full_name} src="/static/images/avatar.jpg" />
             </ListItemAvatar>
             <ListItemText
-              primary={comment.fullname}
-              secondary={comment.comment}
+              primary={
+                <>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.primary"
+                    fontWeight="bold"
+                  >
+                    {comment.full_name}
+                  </Typography>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    <div>{formatTime(comment.created_time)} Located at Seat No.{comment.seat_id}</div>
+                  </Typography>
+                </>
+              }
+              secondary={
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="text.primary"
+                >
+                  {comment.comment}
+                </Typography>
+              }
             />
-          </ListItem> 
+          </ListItem>
           {index !== com.length - 1 && <Divider variant="inset" component="li" />}
         </React.Fragment>
       ))}
     </List>
-        
                   
                   </div>
             </div>

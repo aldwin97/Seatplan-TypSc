@@ -14,6 +14,7 @@ import MuiAlert from '@mui/material/Alert';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'; // Added import
 
 
+
 const LogInPage: React.FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -270,7 +271,7 @@ const LogInPage: React.FC = () => {
 
 
         {/* Left Container */}
-        <div className={styles.profileSum}>
+        <form className={styles.profileSum}>
 
           <div className={styles.cover}>
             <img src={profileBackg} alt='Profile Background'/>
@@ -341,8 +342,7 @@ const LogInPage: React.FC = () => {
               style={{ display: 'none' }}
             />
           </div>
-        </div>  
-
+        </form>
 
 
 
@@ -403,7 +403,7 @@ const LogInPage: React.FC = () => {
 
 
             <div className={styles['input-group']}>
-              <label className={styles.readLabel2}>Contact Number *</label>
+              <label className={styles.readLabel2}>Mobile Number *</label>
               <input
                 required
                 type="text"

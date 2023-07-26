@@ -61,26 +61,28 @@ const LogInPage: React.FC = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-  
+        
       if (!response.ok) {
         setError(true);
         return;
       }
   
-      const responseData = await response.json();
-      const { user_id, usertype_id } = responseData; // Extract the user_id and usertype_id from responseData
-      console.log(user_id, usertype_id);
-      setRedirectToDashboard(true);
+    const responseData = await response.json();
+    const { user_id,last_name, first_name } = responseData; // Extract the user_id from responseData
+    console.log(user_id);
+    console.log(last_name);
+    console.log(first_name);
+    setRedirectToDashboard(true);
   
       // Save session data to Session Storage
       window.sessionStorage.setItem('user_id', user_id);
-      window.sessionStorage.setItem('usertype_id', usertype_id); // Save the usertype_id in the session storage
+      window.sessionStorage.setItem('last_name', last_name);
+      window.sessionStorage.setItem('first_name', first_name);
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
-  
   
   
 

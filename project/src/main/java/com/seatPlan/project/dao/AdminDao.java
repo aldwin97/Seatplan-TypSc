@@ -20,21 +20,15 @@ public interface AdminDao {
 
     List<PositionModel> getAllPosition();
 
-
     List<ProjectModel> getAllProject();
-
 
     List<UserTypeModel> getAllUserTypeModels();
 
-
     List<StaffStatusModel> getAllStaffStatusModels();
 
-    
     List<UserModel> getAllUser();
 
-
     void deleteUserById(@Param("user_id") Long user_id);
-
 
     void insertUser(UserInputModel userInsertModel);
 
@@ -45,7 +39,6 @@ public interface AdminDao {
     UserInputModel getUserByUsername(String username);
 
     UserInputModel getUserByEmail(String email);
-
 
     void insertComment(CommentModel comment);
 }

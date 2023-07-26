@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProfileService;
 
@@ -65,7 +64,6 @@ public class ProfileController {
             existingUser.setMobile_num(userModel.getMobile_num());
         }
 
-        // Set the updated_by field with the value from the frontend
         if (userModel.getUpdated_by() != null) {
             existingUser.setUpdated_by(userModel.getUpdated_by());
         }

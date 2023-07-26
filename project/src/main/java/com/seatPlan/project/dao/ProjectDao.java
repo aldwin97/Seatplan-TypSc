@@ -13,17 +13,12 @@ public interface ProjectDao {
 
     void insertProject(ProjectInputModel projectInputModel);
 
-
     List<ProjectModel> getAllProjects();
 
     int countProject();
 
-
-
     void deleteProjectById(Long project_id);
 
-
     List<ColorModel> getAllColors();
-
 
 }

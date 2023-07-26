@@ -25,10 +25,11 @@ public class UserModel {
     private Long mobile_num;
     private String username;
     private String password;
+    private String oldPassword;
     private Long staffstatus_id;
     private Long usertype_id;
     private Long position_id;
-    private String user_picture;
+    private String user_picture;    
     private int is_deleted;
     private LocalDateTime created_time;
     private Long created_by;
@@ -41,44 +42,4 @@ public class UserModel {
     private String usertype_name;
     private String staffstatus_name;
     private String project_name;
-
-
-    // private Role role;
-
-    // @Override
-    // public Collection<? extends GrantedAuthority> getAuthorities() {
-    //   return List.of(new SimpleGrantedAuthority(role.name()));
-    // }
-
-
-    // @Override
-    // public String getUsername(){
-    //     return username;
-    // }
-
-    // @Override
-    // public String getPassword(){
-    //     return password;
-    // }
-
-
-    // @Override
-    // public boolean isAccountNonExpired() {
-    //     return true;
-    // }
-    // @Override
-    // public boolean isAccountNonLocked() {
-    //     return true;
-        
-    // }
-    // @Override
-    // public boolean isCredentialsNonExpired() {
-    //     return true;
-        
-    // }
-    // @Override
-    // public boolean isEnabled() {
-    //     return true;
-        
-    // }
 }

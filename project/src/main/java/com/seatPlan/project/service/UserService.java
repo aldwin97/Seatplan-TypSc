@@ -35,12 +35,11 @@ public class UserService{
     }
 
 
-    // count the all row in the user table
     public int countUsers() {
         return userDao.countUsers();
     }
 
-    // delete a user base on the username
+    
      public void deleteUserByUsername(String username) {
         userDao.deleteUserByUsername(username);
     }
@@ -73,9 +72,6 @@ public class UserService{
             userInfoMap.put("username",userInfo.getUsername());
             userInfoMap.put("mobile_num", userInfo.getMobile_num());
             userInfoMap.put("position_name", userInfo.getPosition_name());
-            userInfoMap.put("userType_name", userInfo.getUsertype_name());
-            userInfoMap.put("staffstatus_name",userInfo.getStaffstatus_name());
-            userInfoMap.put("project_name",userInfo.getProject_name());
             return userInfoMap;
 
         }).collect(Collectors.toList());

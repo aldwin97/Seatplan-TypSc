@@ -17,21 +17,15 @@ public interface UserDao {
     // count the row of the table
     int countUsers();
 
-
     void deleteUserByUsername(@Param("username") String username);
-
 
     UserModel findByUsername(String username);
 
-
     void updateUser(UserModel userModel);
-
 
     UserModel getUserById(Long user_id);
 
-    
     Object getUserByEmail(String email);
-
 
     List<UserModel> showUserById(Long user_id);
     

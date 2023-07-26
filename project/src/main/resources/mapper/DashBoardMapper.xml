@@ -7,24 +7,109 @@
         SELECT COUNT(*) FROM table_user WHERE is_deleted = 0
     </select>
               
-    <select id="countSeatAvailable" resultType="int">
+    <!-- <select id="countSeatAvailable" resultType="int">
         SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 1 AND is_deleted = 0
-    </select>
+    </select> -->
+    
 
-    <select id="countTrainee" resultType="int">
-        SELECT COUNT(*) FROM table_user WHERE staffstatus_id = 1
+    <select id="countSeatAvailable" resultType="int">
+        SELECT COUNT(*)
+        FROM table_seat ts
+        LEFT JOIN table_user tu ON ts.user_id = tu.user_id
+        WHERE ts.is_deleted = 0 AND (tu.is_deleted = 0 OR ts.user_id IS NULL)
     </select>
+    
 
-    <select id="countRegular" resultType="int">
-        SELECT COUNT(*) FROM table_user WHERE staffstatus_id = 2
-    </select>
 
     <select id="countOccupied" resultType="int">
-        SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 2 AND is_deleted = 0
+        SELECT COUNT(*)
+        FROM table_seat ts
+        LEFT JOIN table_user tu ON ts.user_id = tu.user_id
+        WHERE ts.is_deleted = 0 AND (tu.is_deleted = 0 AND ts.user_id IS NOT NULL)
     </select>
+
 
     <select id="countUnderMaintenance" resultType="int">
         SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 3 AND is_deleted = 0
     </select>
+
+
+    <select id="countUsersPerProject" resultType="com.seatPlan.project.model.ProjectModel">
+        SELECT p.project_id, p.project_name, COUNT(u.user_id) as seatCount
+        FROM table_project p
+        LEFT JOIN table_user u ON p.project_id = u.project_id
+        GROUP BY p.project_id, p.project_name
+    </select>
+
+
+    <select id="getAllComment" resultType="com.seatPlan.project.model.CommentModel">
+        SELECT c.*, u.first_name, u.last_name, u.user_picture
+        FROM table_comment c
+        JOIN table_user u ON c.user_id = u.user_id
+        ORDER BY c.created_time DESC
+    </select>
+
+    <select id="countAssignedEmpIntern" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'intern' AND u.is_deleted = 0
+      </select>
+
+
+    <select id="countAssignedEmpTrainee" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'trainee' AND u.is_deleted = 0
+    </select> 
+
+
+    <select id="countAssignedEmpRegular" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'regular' AND u.is_deleted = 0
+        </select>
+
+    <select id="countAssignedEmpContractual" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'contractual' AND u.is_deleted = 0
+    </select> 
+
+
+    <select id="countUnassignedEmpIntern" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'intern' AND u.is_deleted = 0
+      </select>
+
+
+    <select id="countUnassignedEmpTrainee" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'trainee' AND u.is_deleted = 0
+    </select> 
+
+
+    <select id="countUnassignedEmpRegular" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'regular' AND u.is_deleted = 0
+    </select> 
+
+    <select id="countUnassignedEmpContractual" resultType="int">
+        SELECT COUNT(*) FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_project p ON u.project_id = p.project_id
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'contractual' AND u.is_deleted = 0
+    </select> 
+
+
 
 </mapper>

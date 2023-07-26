@@ -19,8 +19,6 @@ import com.seatPlan.project.service.ProjectService;
 
 
 
-
-
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
@@ -32,7 +30,6 @@ public class ProjectController {
 
     }
 
-    //Add project in the database
     @PostMapping("/insertNewProject")
     public ResponseEntity<String> createProject(@RequestBody ProjectInputModel projectInputModel) {
         try {
@@ -43,21 +40,17 @@ public class ProjectController {
         }
     }
 
-
-    //Show all the project in the database
     @GetMapping("/showAllProject")
     public List<ProjectModel> getAllProjects() {
         return projectService.getAllProjects();
     }
 
-    //Count all the projects in the database
     @GetMapping("/count")
     public int countProject() {
         return projectService.countProject();
     }
 
 
-    //Delete project by project_id
     @PostMapping("/delete/{project_id}")
     public ResponseEntity<String> deleteProjectById(@PathVariable Long project_id) {
           try {
@@ -69,7 +62,6 @@ public class ProjectController {
     }
 
 
-    //Show all the color in the database
     @GetMapping("/allColor")
     public ResponseEntity<List<ColorModel>> getAllColors() {
         List<ColorModel> colors = projectService.getAllColors();

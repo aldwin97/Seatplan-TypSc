@@ -17,7 +17,6 @@ import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.UserInputModel;
 import com.seatPlan.project.model.UserModel;
 import jakarta.servlet.http.HttpSession;
-
 import com.seatPlan.project.service.AdminService;
 
 @RestController
@@ -163,8 +162,6 @@ public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
     }
 }
-
-    
 
 
     //Reply comment to the viewer

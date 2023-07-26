@@ -30,4 +30,5 @@ public class CommentModel {
     private String first_name;
     private String last_name;
     private int seat_num;
+    private String user_picture;
 }

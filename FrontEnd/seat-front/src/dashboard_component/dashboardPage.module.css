@@ -6,7 +6,7 @@ html {
 body {
   background-color: #F8FAF9;
   font-weight: normal;
-  color: #7D7D83;
+  color: #000000;
   line-height: 1.6;
   -webkit-transition: background .2s ease-in-out;
   -moz-transition: background .2s ease-in-out;
@@ -21,7 +21,7 @@ body {
   width: 100%;
   height: 3px;
   color: #308a38;
-  margin-left: 170px;
+  margin-left: 220px;
   text-transform: capitalize;
   font-weight: bold;
   font-size: 22px;
@@ -43,7 +43,6 @@ body {
   z-index: 2;
 }
 .page-sidebar {
-  transition: all 10s linear; /* Adjust the duration to make the transition slower */
   cursor: pointer;
   width: 280px;
   position: fixed;
@@ -78,7 +77,7 @@ body {
   overflow: hidden;
 }
 
-.accordion-menu > li > a {
+.accordion-menu > li > a  {
   display: block;
   padding: 12px 20px;
   font-size: 13px;
@@ -120,106 +119,6 @@ body {
   opacity: 0.25;
   font-family: 'Montserrat', sans-serif;
 }
-
-
-/* Dropdown Menu */
-.dropdownMenu2 {
-  position: absolute;
-  top: 50px; /* Adjust the top position as needed */
-  right: 10px; /* Adjust the right position as needed */
-  z-index: 100;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
-.dropdownMenu2 button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background-color: transparent;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.dropdownMenu2 button:hover {
-  background-color: #f5f5f5;
-}
-.sub
-{
-  color: #308a38;
-}
-.dropdownMenu {
-  position: absolute;
-  top: 50px;
-  left: 10px; 
-  z-index: 100;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  backdrop-filter: blur(5px); 
-}
-.dropdownMenu button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  background-color: transparent;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.dropdownMenu button:hover {
-  background-color: #ddecde;
-}
-.btnicon
-{
-  color: #308a38;
-}
-.dropdownRows {
-  flex-direction: row;
-}
-.profile {
-  position: absolute;
-  top: 4px;
-  right: 1%;
-  width: 30px;
-  padding: 8px;
-  background-color: transparent;
-  color: #308a38;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
-}
-.profile:hover {
-  background-color: #fff;
-  color: #a7a7a7;
-}
-.notif {
-  position: absolute;
-  top: 4px;
-  right: 4%;
-  width: 30px;
-  padding: 8px;
-  background-color: transparent;
-  color: #308a38;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
-}
-.notif:hover {
-  background-color: #fff;
-  color: #a7a7a7;
-}
-
 /*Container of all cards*/
 
 .container {
@@ -277,14 +176,7 @@ body {
   margin-top: 20px;
 }
 
-.Hellotext {
-  width: 450px;
-  margin-left: 20px;
-  color: #000000;
-  text-align: left;
-  font-size: 15px;
-  margin-top: 20px;
-}
+
 /*counts card and containers*/
 .countcontainer {
   display: grid;
@@ -375,49 +267,47 @@ body {
   box-shadow: 0 2px 10px #308a38;
   left:50px
 }
-.cardcomment{
+.cardcomment {
   position: absolute;
-  top:450px;
-  height: 500px;
-  width: 428%;
-  right:2px;
+  top: 430px;
+  height: 535px;
+  width: 740px; /* Adjust the width as needed */
+  right: 760px;
   background-color: white;
   box-shadow: 0 2px 10px #308a38;
   background-clip: border-box;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.125);
-
-}
-/*media*/
-@media (max-width: 1200px) {
-  .container {
-    min-width: auto;
-    max-width: 90%;
-    padding: 0 20px; /* Add some spacing at the edges for smaller screens */
-  }
+  
 }
 
-@media (max-width: 768px) {
-
-  .menu, .dropdownMenu {
-    top: 10%;
-    left: 5%;
-    padding: 5%;
-  }
-  .menu i {
-    padding: 5% 10%;
-  }
-  .dropdownMenu button {
-    padding: 5% 10%;
-  }
-  .cardHello {
-    width: 100%;
-    height: auto;
-  }
-  .Helloimg {
-    height: 200px;
-  }
-  .Hellotitle {
-    width: 90%;
-  }
+.projectCard {
+  position: absolute;
+  top: 430px; /* Adjust the top position as needed to align it with cardcomment */
+  right:1px;
+  height: 535px;
+  width: 740px; /* Adjust the width as needed */
+  background-color: white;
+  box-shadow: 0 2px 10px #308a38;
+  background-clip: border-box;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.125);
 }
+
+.cardtitle2{
+  font-weight: bold;
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+.tooltipContent {
+  font-size: 11px;
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+
+}
+
+
+
+

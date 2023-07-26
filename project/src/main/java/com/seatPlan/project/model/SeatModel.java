@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +22,6 @@ public class SeatModel {
     private Long updated_by;
     private Long position_x;
     private Long position_y;
-
 
     //For joint table
     private String project_name;

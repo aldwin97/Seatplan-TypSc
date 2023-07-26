@@ -1,0 +1,45 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        <mapper namespace="com.seatPlan.project.dao.ProfileDao">
+
+            <select id="showUserById" resultType="com.seatPlan.project.model.UserModel">
+                SELECT u.*, p.position_name, s.staffstatus_name
+                FROM table_user u
+                LEFT JOIN table_position p ON u.position_id = p.position_id
+                LEFT JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+                WHERE u.user_id = #{user_id}
+            </select>
+
+
+            <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
+                SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
+            </select>
+
+            <update id="updateUser" parameterType="com.seatPlan.project.model.UserModel">
+                UPDATE table_user
+                <set>
+                    <if test="first_name != null">first_name = #{first_name},</if>
+                    <if test="last_name != null">last_name = #{last_name},</if>
+                    <if test="email != null">email = #{email},</if>
+                    <if test="mobile_num != null">mobile_num = #{mobile_num},</if>
+                    <if test="updated_by != null">updated_by = #{updated_by},</if>
+                </set>
+                WHERE user_id = #{user_id}
+            </update>
+
+            <select id="getUserByEmail" resultType="com.seatPlan.project.model.UserInputModel">
+                SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0
+            </select>
+            
+
+            <update id="updateUserPassword" parameterType="com.seatPlan.project.model.UserModel">
+                UPDATE table_user
+                <set>
+                <if test="password != null">password = #{password},</if>
+                <if test="updated_by != null">updated_by = #{updated_by},</if>
+                </set>
+                WHERE user_id = #{user_id}
+            </update>
+
+        </mapper>

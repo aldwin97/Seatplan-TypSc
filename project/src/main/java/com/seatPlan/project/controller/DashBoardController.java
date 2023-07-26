@@ -55,7 +55,6 @@ public class DashBoardController {
         data.put("countAssignedEmpTrainee",countAssignedEmpTrainee);
         data.put("countAssignedEmpRegular",countAssignedEmpRegular);
         data.put("countAssignedEmpContractual",countAssignedEmpContractual);
-        
         data.put("countUnassignedEmpIntern",countUnassignedEmpIntern);
         data.put("countUnassignedEmpTrainee",countUnassignedEmpTrainee);
         data.put("countUnassignedEmpRegular",countUnassignedEmpRegular);

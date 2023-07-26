@@ -3,14 +3,14 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,Button,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { Dashboard,Chair, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
+  import { Dashboard,Chair,CheckCircle, AccountCircle, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
   import { useNavigate } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
   import 'chartjs-plugin-datalabels';
 
 
-
+  
   
   interface Column {
     id: 'ProjectName' | 'seatCount' ;
@@ -22,7 +22,7 @@
 
   const DashboardPage: React.FC = () => {
     const [rows, setRows] = useState<Data[]>([]);
-    const [comments, setComments] = useState([]);
+    const [com, setComments] =  useState<Comments[]>([]);
     const [dashboardData, setDashboardData] = useState<any>({});
     const [last_name, setLastName] = useState('');
     const [first_name, setFirstName] = useState('');
@@ -40,6 +40,35 @@
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
+    interface CommentCardProps {
+      com: Comments[];
+    }
+    
+    interface Comments {
+      fullname: string;
+      comment: string;
+    }
+    
+
+    useEffect(() => {
+      // Fetch the data from the endpoint
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/dashboard/showAllComment');
+          const data: Comments[] = response.data;
+  
+          // Set the 'com' state with the new data
+          setComments(data);
+        } catch (error) {
+          console.error('Error fetching showAllComment:', error);
+        }
+      };
+  
+      // Fetch the data when the component mounts
+      fetchData();
+    }, []);
+
+
     useEffect(() => {
       const fetchDashboardData = async () => {
         try {
@@ -164,20 +193,7 @@
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/dashboard/showAllComment');
-        if (response && response.data) {
-          setComments(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching comments data:', error);
-      }
-    };
-
-    fetchComments();
-  }, []);
+  
 
   const navigate = useNavigate();
 
@@ -296,13 +312,13 @@
           
 
             <div className={styles.card2}>
-              <div className={styles.cardicon}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
+              <div className={styles.cardicon}><AccountCircle style={{ fontSize: 42 }}/></div>
               <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
               <div className={styles.cardtitle}>OCCUPIED SEAT</div>
             </div>
             
             <div className={styles.card3}>
-            <div className={styles.cardicon}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
+            <div className={styles.cardicon}>< CheckCircle style={{ fontSize: 42 }}/></div>
             <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
               <div className={styles.cardtitle}>AVAILABLE SEAT</div>
             </div>
@@ -372,73 +388,25 @@
             <div className={styles.cardcomment}>
                   <div className={styles.cardtitle2}>RECENT COMMENT</div>
                   <div className={styles.commentcontent}>
-                  <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Brunch this weekend?"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Summer BBQ"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                {" — Wish I could come, but I'm out of town this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  Sandra Adams
-                </Typography>
-                {' — Do you have Paris recommendations? Have you ever…'}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      </List>
+                  
+                  
+              
+                  <List>
+      {com.map((comment, index) => (
+        <React.Fragment key={index}>
+          <ListItem alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar alt={comment.fullname} src="/static/images/avatar.jpg" />
+            </ListItemAvatar>
+            <ListItemText
+              primary={comment.fullname}
+              secondary={comment.comment}
+            />
+          </ListItem> 
+          {index !== com.length - 1 && <Divider variant="inset" component="li" />}
+        </React.Fragment>
+      ))}
+    </List>
         
                   
                   </div>

@@ -49,16 +49,14 @@
         }
       };
     
+
       fetchDashboardData();
-    }, []);
-    useEffect(() => {
-      
       const storedLastname = window.sessionStorage.getItem('last_name');
       setLastName(storedLastname ?? ''); 
       const storedFirstname = window.sessionStorage.getItem('first_name');
       setFirstName(storedFirstname ?? '');
     }, []);
-  
+ 
     useEffect(() => {
 
       if (chartRef.current) {
@@ -76,7 +74,7 @@
               datasets: [
                 {
                   label: 'Seat Conditions',
-                  data: [dashboardData.countOccupied,dashboardData.countSeatAvailable, dashboardData.countUnderMaintenance],
+                  data: [dashboardData.countOccupied, dashboardData.countSeatAvailable, dashboardData.countUnderMaintenance],
                   backgroundColor: [ 'rgba(47, 167, 58, 0.5)',
                   'rgba(47, 167, 58, 0.5)',
                   'rgba(47, 167, 58, 0.5)'],

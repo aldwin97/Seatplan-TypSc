@@ -14,39 +14,29 @@ import com.seatPlan.project.service.DashBoardService;
 @RestController
 @RequestMapping("/dashboard")
 public class DashBoardController {
-    
 
-    
     private final DashBoardService dashBoardService;
 
-
-    public DashBoardController (@Autowired DashBoardService dashBoardService){
+    public DashBoardController(@Autowired DashBoardService dashBoardService) {
         this.dashBoardService = dashBoardService;
     }
 
-   @GetMapping("/display")
+    @GetMapping("/display")
     public ResponseEntity<Map<String, Object>> dashboard() {
-        
-       int countUser = dashBoardService.countUser();
+
+        int countUser = dashBoardService.countUser();
 
        int countSeatAvailable = dashBoardService.countSeatAvailable();
 
-       int countUnderMaintenance = dashBoardService.countUnderMaintenance();
+       int countTrainee = dashBoardService.countTrainee();
+       
+       int countRegular = dashBoardService.countRegular();
+
+        int countUnderMaintenance = dashBoardService.countUnderMaintenance();
 
        int countOccupied = dashBoardService.countOccupied(); 
 
-       int countAssignedEmpIntern = dashBoardService.countAssignedEmpIntern();
-       int countAssignedEmpTrainee = dashBoardService.countAssignedEmpTrainee();
-       int countAssignedEmpRegular = dashBoardService.countAssignedEmpRegular();
-       int countAssignedEmpContractual = dashBoardService.countAssignedEmpContractual();
-
-
-       int countUnassignedEmpIntern = dashBoardService.countUnassignedEmpIntern();
-       int countUnassignedEmpTrainee = dashBoardService.countUnassignedEmpTrainee();
-       int countUnassignedEmpRegular = dashBoardService.countUnassignedEmpRegular();
-       int countUnassignedEmpContractual = dashBoardService.countUnassignedEmpContractual();
-
-        Map<String , Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         data.put("countUser", countUser);
         data.put("countSeatAvailable", countSeatAvailable);
         data.put("countOccupied", countOccupied);
@@ -65,26 +55,19 @@ public class DashBoardController {
 
 
         return ResponseEntity.ok(data);
-       
+
     }
 
     @GetMapping("/countPerProject")
-    public List<Map<String, Object>> allUser(){
+    public List<Map<String, Object>> allUser() {
         List<Map<String, Object>> userCountList = dashBoardService.countUsersPerProject();
         return userCountList;
     }
 
-
-
     @GetMapping("/showAllComment")
-    public List<Map<String, Object>> allComment(){
-            List<Map<String, Object>> comments = dashBoardService.getAllComment();
-            return comments;
-        }
-
-
-
-
-
+    public List<Map<String, Object>> allComment() {
+        List<Map<String, Object>> comments = dashBoardService.getAllComment();
+        return comments;
+    }
 
 }

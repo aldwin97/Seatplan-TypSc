@@ -240,6 +240,7 @@ justify-content: center;
 .defaultImage{
 background-image: url('../assets/default.png');
 position: absolute;
+background-size: cover;
 }
 
 .uploadButton {
@@ -619,3 +620,41 @@ input:not(:read-only):valid ~ .change-label {
 }
 
 
+@media screen and (max-width: 1618px) {
+
+  .form1 {
+    padding: 10;
+    max-width: 95%; 
+    height: 80%; 
+    margin-top: 7%;
+    margin-left: 2.5%;
+
+  }
+
+  .profileSum {
+    width: 590px;
+    height: 635px; 
+    margin-bottom: .1%; 
+    margin-right: 56%;
+  }
+
+  .cover img {
+    width: 590px;
+    height: auto; 
+  }
+  
+
+.uploadButton {
+  top: 265px;
+}
+
+.uploadButton svg {
+  font-size: 90; 
+}
+
+  
+.seatButton{
+  margin-top: 99%;
+}
+
+}

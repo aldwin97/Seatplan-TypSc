@@ -22,6 +22,7 @@ const LogInPage: React.FC = () => {
   const [editAccountMode, setAccountEditMode] = useState(false);
   const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] = useState(false);
   const [passwordMismatchSnackbar, setPasswordMismatchSnackbar] = useState(false);
+  const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -119,17 +120,29 @@ const LogInPage: React.FC = () => {
 
 // ACCOUNT SETTINGS BUTTON //
 
-  const handleAccountSaveChanges = (): void => {
-    // Validate the confirm password
-    const { newPassword, confirmPassword } = accountValues;
-    if (newPassword !== confirmPassword) {
-      setConfirmPasswordError('Passwords do not match.');
-      setPasswordMismatchSnackbar(true); // Show the Snackbar for password mismatch
-    } else {
-      setConfirmPasswordError(''); // Reset the error state if the passwords match
-      setAccountEditMode(false);
-    }
-  };
+const handleAccountSaveChanges = (): void => {
+  // Validate the confirm password
+  const { oldPassword, newPassword, confirmPassword } = accountValues;
+
+  // Check if the new password and old password are the same
+  if (newPassword === oldPassword) {
+    setPasswordMatchError(true);
+    setPasswordMismatchSnackbar(true);
+  }
+  // Check if the new password and confirm password are the same
+  else if (newPassword !== confirmPassword) {
+    setConfirmPasswordError('Passwords do not match.');
+    setPasswordMismatchSnackbar(true);
+    setPasswordMatchError(false);
+  } else {
+    setConfirmPasswordError('');
+    setPasswordMismatchSnackbar(false);
+    setPasswordMatchError(false);
+    setAccountEditMode(false);
+  }
+};
+
+
 
   const handleAccountCancelChanges = (): void => {
     // Restore the initial account values when the "Cancel" button is clicked
@@ -258,7 +271,9 @@ const LogInPage: React.FC = () => {
 
   const handleAccountSnackbarClose = () => {
     setPasswordMismatchSnackbar(false);
+    setPasswordMatchError(false);
   };
+  
 
 
 
@@ -270,7 +285,7 @@ const LogInPage: React.FC = () => {
 
 
         {/* Left Container */}
-        <div className={styles.profileSum}>
+        <form className={styles.profileSum}>
 
           <div className={styles.cover}>
             <img src={profileBackg} alt='Profile Background'/>
@@ -341,8 +356,7 @@ const LogInPage: React.FC = () => {
               style={{ display: 'none' }}
             />
           </div>
-        </div>  
-
+        </form>
 
 
 
@@ -403,7 +417,7 @@ const LogInPage: React.FC = () => {
 
 
             <div className={styles['input-group']}>
-              <label className={styles.readLabel2}>Contact Number *</label>
+              <label className={styles.readLabel2}>Mobile Number *</label>
               <input
                 required
                 type="text"
@@ -583,25 +597,29 @@ const LogInPage: React.FC = () => {
 
    
       
-            <Snackbar
-              open={passwordMismatchSnackbar}
-              autoHideDuration={5000}
-              onClose={handleAccountSnackbarClose}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                onClose={handleAccountSnackbarClose}
-                severity="error"
-                sx={{ width: '290px' }} 
-              >
-                Passwords do not match.
-              </MuiAlert>
-            </Snackbar>
+      <Snackbar
+  open={passwordMismatchSnackbar || passwordMatchError}
+  autoHideDuration={5000}
+  onClose={handleAccountSnackbarClose}
+  anchorOrigin={{
+    vertical: 'top',
+    horizontal: 'right',
+  }}
+>
+  <MuiAlert
+    elevation={6}
+    variant="filled"
+    onClose={handleAccountSnackbarClose}
+    severity="error"
+    sx={{ width: '290px' }} 
+  >
+    {passwordMatchError
+      ? 'New password must be different from the old password.'
+      : 'Passwords do not match.'}
+  </MuiAlert>
+</Snackbar>
+
+
 
 
       {editAccountMode ? (

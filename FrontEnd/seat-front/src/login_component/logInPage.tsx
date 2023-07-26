@@ -68,17 +68,19 @@ const LogInPage: React.FC = () => {
       }
   
       const responseData = await response.json();
-    const { user_id } = responseData; // Extract the user_id from responseData
-    console.log(user_id);
-    setRedirectToDashboard(true);
+      const { user_id, usertype_id } = responseData; // Extract the user_id and usertype_id from responseData
+      console.log(user_id, usertype_id);
+      setRedirectToDashboard(true);
   
       // Save session data to Session Storage
       window.sessionStorage.setItem('user_id', user_id);
+      window.sessionStorage.setItem('usertype_id', usertype_id); // Save the usertype_id in the session storage
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
+  
   
   
 
@@ -93,10 +95,11 @@ const LogInPage: React.FC = () => {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <div className={styles.shape}></div>
-            <button className={styles.closeButton} onClick={closeModal}>
+          <button className={styles.closeButton} onClick={closeModal}>
               Cancel
             </button>
+            <div className={styles.shape}></div>
+            
             <h2>SIGN IN</h2>
 
             <div className={`${styles['input-group']} ${error && !username && styles.errorInput}`}>

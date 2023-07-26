@@ -16,7 +16,7 @@
         SELECT COUNT(*)
         FROM table_seat ts
         LEFT JOIN table_user tu ON ts.user_id = tu.user_id
-        WHERE ts.is_deleted = 0 AND (tu.is_deleted = 0 OR ts.user_id IS NULL)
+        WHERE ts.is_deleted = 0 AND (tu.is_deleted = 1 OR ts.user_id IS NULL) AND ts.seatstatus_id != 3
     </select>
     
 

@@ -42,4 +42,22 @@ public class ProfileService {
         return filteredUserInfo;
     }
     
+    public UserModel getUserById(Long user_id) {
+        return profileDao.getUserById(user_id);
+    }
+
+
+    public boolean isUserEmailExists(String email) {
+        return profileDao.getUserByEmail(email) != null;
+    }
+
+    public void updateUser(UserModel userModel) {
+        profileDao.updateUser(userModel);
+    }
+
+     public void updateUserPassword(UserModel userModel) {
+        profileDao.updateUserPassword(userModel);
+    }
+
+
 }

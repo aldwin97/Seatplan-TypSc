@@ -10,6 +10,7 @@ interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
   color: string;
+
   occupant: string;
   project: string;
   comments: string[];
@@ -36,11 +37,17 @@ interface SeatPopupProps {
 }
 interface Occupant {
   user_id: number;
+  
   name: string;
   first_name: string;
   last_name: string;
 
   // Add other properties if available in the response
+}
+
+interface Position{
+  position_id: number;
+  position_name: string;
 }
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
@@ -50,9 +57,21 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
-  const [isOccupantAlreadyAssigned, setIsOccupantAlreadyAssigned] = useState(false);
+  const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [positions, setPositions] = useState<Position[]>([]);
 
+  useEffect(() => {
+    // Fetch positions data from the backend API
+    fetch('/showAllPosition')
+      .then((response) => response.json())
+      .then((data) => {
+        setPositions(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching positions:', error);
+      });
+  }, []);
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
 
@@ -203,7 +222,7 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       console.log('Seat updated successfully');
       onClose();
       window.location.reload(); // Refresh the page
-    } else if (response.status === 500) {
+    } else if (response.status === 400) {
       setErrorMsg('This occupant is already assigned to another seat.');
       // You can also display the error message on the page instead of using an alert
       // For example, set a state to show the error message:
@@ -488,8 +507,7 @@ useEffect(() => {
       ctx.font = `${11 / zoomLevel}px Arial`; // Set the font size
 
       // Display the seat_id as a number
-      ctx.fillText(String(seat.seat_id), scaledX + numberBoxSize / 2, scaledY + numberBoxSize / 2 + 1);
-
+      
 
       // Draw seat box
       const seatBoxY = scaledY + numberBoxSize; // Adjust the position of the seat box
@@ -528,8 +546,8 @@ useEffect(() => {
           fontSize -= 1 / zoomLevel;
           ctx.font = `${fontSize}px Arial`;
         }
-
         ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+        ctx.fillText(seat.project_name, scaledX + textOffsetX, scaledY + textOffsetY);
       }
 
       if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
@@ -542,7 +560,8 @@ useEffect(() => {
   }
 }, [seats, zoomLevel, selectedSeat]);
   
-  
+
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -691,7 +710,16 @@ useEffect(() => {
         ctx.fillStyle = '#000000';
         ctx.font = `${11 / zoomLevel}px Arial`;
         ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 4, scaledY + numberBoxSize / 2 + 2);
-      
+        ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+
+        // Get the acronym of the project name
+        const projectNameAcronym = seat.project_name
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase())
+          .join('');
+        
+        // Draw the project name acronym below the occupant
+        ctx.fillText(projectNameAcronym, scaledX + numberBoxSize / 0.7, scaledY + numberBoxSize / 2 + 2);
 
 
         ctx.strokeStyle = '#000000';
@@ -726,8 +754,8 @@ useEffect(() => {
               fontSize -= 1 / zoomLevel;
               ctx.font = `${fontSize}px Arial`;
             }
-  
-            ctx.fillText(swappedSeat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+            ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+           
           }
         } else {
           const maxTextWidth = seatSize - textOffsetX * 2;
@@ -739,7 +767,13 @@ useEffect(() => {
             ctx.font = `${fontSize}px Arial`;
           }
   
-          ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+          // Assuming `seat` is the object containing the seat information
+ // Adjust this value as needed
+const textOffsetY = 45; // Adjust this value to create some vertical space between the occupant and project name
+
+// Draw the occupant
+ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+
         }
   
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {

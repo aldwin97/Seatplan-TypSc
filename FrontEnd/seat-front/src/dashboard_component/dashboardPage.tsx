@@ -3,9 +3,10 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,Button,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { Dashboard, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
+  import { Dashboard,Chair, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
   import { useNavigate } from 'react-router-dom';
   import Chart from 'chart.js/auto';
+  import axios from 'axios';
 
 
 
@@ -19,7 +20,9 @@
   }
 
   const DashboardPage: React.FC = () => {
-    
+    const [dashboardData, setDashboardData] = useState<any>({});
+    const [last_name, setLastName] = useState('');
+    const [first_name, setFirstName] = useState('');
     const chartHeight = 320; 
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const myChart = useRef<Chart | null>(null);
@@ -35,6 +38,29 @@
       setPage(0);
     };
     useEffect(() => {
+      const fetchDashboardData = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/dashboard/display');
+          if (response && response.data) {
+            setDashboardData(response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        }
+      };
+    
+      fetchDashboardData();
+    }, []);
+    useEffect(() => {
+      
+      const storedLastname = window.sessionStorage.getItem('last_name');
+      setLastName(storedLastname ?? ''); 
+      const storedFirstname = window.sessionStorage.getItem('first_name');
+      setFirstName(storedFirstname ?? '');
+    }, []);
+  
+    useEffect(() => {
+
       if (chartRef.current) {
         const ctx = chartRef.current.getContext('2d');
 
@@ -50,7 +76,7 @@
               datasets: [
                 {
                   label: 'Seat Conditions',
-                  data: [100, 60, 200],
+                  data: [dashboardData.countOccupied,dashboardData.countSeatAvailable, dashboardData.countUnderMaintenance],
                   backgroundColor: [ 'rgba(47, 167, 58, 0.5)',
                   'rgba(47, 167, 58, 0.5)',
                   'rgba(47, 167, 58, 0.5)'],
@@ -148,7 +174,9 @@
   const ProfilePageHandleClick = () => {
     navigate('/ProfilePage');
   };
-  
+  const SeatplanPageHandleClick = () => {
+    navigate('/seatPlanPage');
+  };
     return (
       <>
         <body>
@@ -210,6 +238,14 @@
                     </a>
                   </li>
                   <li>
+                    <a onClick={SeatplanPageHandleClick} className={styles['active']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <Chair/>
+                      </i>
+                      Seat
+                    </a>
+                  </li>
+                  <li>
                     <a href="index.html" className={styles['active']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <Logout/>
@@ -229,7 +265,7 @@
 
             <div className={styles.cardHello}>
               <svg className={styles.Helloimg}></svg>
-              <div className={styles.Hellotitle}>HELLO <br/>(USERNAME)</div>
+              <div className={styles.Hellotitle}>HELLO <br/>{first_name} {last_name}</div>
             </div>
               
               <div className={styles.countcontainer}>
@@ -242,13 +278,13 @@
 
             <div className={styles.card2}>
               <div className={styles.cardicon}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
-              <div className={styles.cardcount}>150</div>
+              <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
               <div className={styles.cardtitle}>OCCUPIED SEAT</div>
             </div>
             
             <div className={styles.card3}>
             <div className={styles.cardicon}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount }>350</div>
+            <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
               <div className={styles.cardtitle}>AVAILABLE SEAT</div>
             </div>
             
@@ -267,11 +303,15 @@
             <Tooltip
           title={
             <div className={styles.tooltipContent}>
+             
+              
+              <span>Intern: 4</span>
+              <br />
+              <span>Trainee: 5</span>
+              <br />
+              <span>Regular: 5</span>
+              <br />
               <span>Contractual: 3</span>
-              <br />
-              <span>Project: 4</span>
-              <br />
-              <span>Others: 5</span>
             </div>
           }
           arrow
@@ -287,11 +327,13 @@
             <Tooltip
           title={
             <div className={styles.tooltipContent}>
-              <span>Trainee: 3</span>
+            <span>Intern: 4</span>
               <br />
-              <span>Ojt: 4</span>
+              <span>Trainee: 5</span>
               <br />
-              <span>Others: 5</span>
+              <span>Regular: 5</span>
+              <br />
+              <span>Contractual: 3</span>
             </div>
           }
           arrow

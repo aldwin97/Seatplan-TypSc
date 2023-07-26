@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styles from './profilePage.module.css';
@@ -12,10 +12,15 @@ import Tooltip from '@mui/material/Tooltip';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'; // Added import
+import axios from 'axios';
 
 
 
-const LogInPage: React.FC = () => {
+
+
+
+const ProfilePage: React.FC = () => {
+  const navigate = useNavigate();
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,9 +34,7 @@ const LogInPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
-  
-
-
+  const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: '',
     LastName: '',
@@ -58,11 +61,45 @@ const LogInPage: React.FC = () => {
     confirmPassword: '',
   });
 
+  
+  interface UserProfile {
+    first_name: string;
+    last_name: string;
+    email: string;
+    position_name: string;
+    username: string;
+    mobile_num: string;
+  }
+  
+  
+  useEffect(() => {
+    const user_id = window.sessionStorage.getItem('user_id');
+
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/profile/showLogedUserInfo/${user_id}`);
+
+        const responseData: UserProfile = response.data[0];
+        setProfileData(responseData);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  if (!profileData) {
+    return <div>Loading...</div>; 
+  }
+
+ 
 
 
 
 
-  const navigate = useNavigate();
+
+
 
   const viewSeatPageHandleClick = () => {
     navigate('/viewSeatPage');
@@ -89,20 +126,54 @@ const LogInPage: React.FC = () => {
 
 // PERSONAL INFORMATION BUTTONS //
 
-  const handlePersonalSaveChanges = () => {
-    // Validate the personal information inputs
-    const isPersonalInfoValid = validatePersonalInfo();
+const handlePersonalSaveChanges = async () => {
 
-    if (isPersonalInfoValid) {
-      // Update the saved personal information state with the current input values
-      setSavedPersonalInfo({ ...inputValues });
-      setPersonalEditMode(false); // Once changes are saved, exit edit mode
-      setPersonalFormValid(true); // Reset form validity state
-    } else {
-      // Set form validity state to false to show the error
-      setPersonalFormValid(false);
+  const isPersonalInfoValid = validatePersonalInfo();
+
+  if (isPersonalInfoValid) {
+    try {
+      const user_id = window.sessionStorage.getItem('user_id');
+
+     
+      const updatedUser = {
+        first_name: inputValues.FirstName,
+        last_name: inputValues.LastName,
+        email: inputValues.Email,
+        mobile_num: inputValues.ContactNumber
+      };
+
+      
+      const response = await axios.put(`http://localhost:8080/profile/updatePersonalInfo/${user_id}`, updatedUser);
+
+      if (response.status === 200) {
+        
+        setSavedPersonalInfo({ ...inputValues });
+
+       
+        setProfileData({
+          ...profileData,
+          
+          email: inputValues.Email,
+          mobile_num: inputValues.ContactNumber
+        });
+
+        setPersonalEditMode(false); // Once changes are saved, exit edit mode
+        setPersonalFormValid(true); // Reset form validity state
+      } else {
+        console.error('Error updating user:', response.data);
+        // Handle error scenario here (e.g., show error message)
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      // Handle error scenario here (e.g., show error message)
     }
-  };
+  } else {
+    // Set form validity state to false to show the error
+    setPersonalFormValid(false);
+  }
+};
+
+
 
   const handlePersonalCancelChanges = () => {
     setInputValues(savedPersonalInfo);
@@ -277,20 +348,17 @@ const LogInPage: React.FC = () => {
             <img src={profileBackg} alt='Profile Background'/>
           </div>
 
-          {/* <div className={styles.inputDisplay}>
-            {savedPersonalInfo.FirstName && savedPersonalInfo.LastName && savedPersonalInfo.Email && savedPersonalInfo.ContactNumber && (
-              <div className={styles['personal-info']}>
-                <div className={styles.nameContainer}>
-                  <h2>{savedPersonalInfo.FirstName}</h2>
-                  <h2>{savedPersonalInfo.LastName}</h2>
-                </div>
-                <h3>username</h3>
-                <h4>{savedPersonalInfo.Email}</h4>
-                <h4>{savedPersonalInfo.ContactNumber}</h4>
-                <h5>Position</h5>
-              </div>
-            )}
-          </div> */}
+
+        <div className={styles.inputDisplay}>
+      
+          <h3>{profileData.last_name} {profileData.first_name}</h3>
+          <h4>{profileData.position_name}</h4>
+          <h5>{profileData.username}</h5>
+          <h5>{profileData.email}</h5>
+          <h5>{profileData.mobile_num}</h5>
+        
+
+        </div>
 
           <button type="button" className={styles.seatButton} onClick={viewSeatPageHandleClick}>
             View Seatplan
@@ -322,7 +390,7 @@ const LogInPage: React.FC = () => {
             {selectedImage ? (
               // Render the selected image if available with circular styling
               <img src={selectedImage} alt="Profile" />
-            ) : (
+            ) : ( 
               // Render a default image or placeholder if no file is selected with circular styling
               <img
               src={selectedImage ?? 'default' }
@@ -690,4 +758,4 @@ const LogInPage: React.FC = () => {
   );
 };
 
-export default LogInPage;
+export default ProfilePage;

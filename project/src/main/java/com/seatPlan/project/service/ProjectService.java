@@ -28,7 +28,6 @@ public class ProjectService {
         return projectDao.getAllProjects();
     }
 
-    // count the all row in the user table
     public int countProject() {
         return projectDao.countProject();
     }

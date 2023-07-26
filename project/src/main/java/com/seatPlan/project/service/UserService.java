@@ -35,12 +35,11 @@ public class UserService{
     }
 
 
-    // count the all row in the user table
     public int countUsers() {
         return userDao.countUsers();
     }
 
-    // delete a user base on the username
+    
      public void deleteUserByUsername(String username) {
         userDao.deleteUserByUsername(username);
     }

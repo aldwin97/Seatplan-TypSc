@@ -3,6 +3,7 @@
 .backg
 { 
   display: flex;
+  position: fixed;
   justify-content: center;
   align-items: center;
   margin: 0;
@@ -11,7 +12,8 @@
   background-image: url('./../assets/BG1.jpg');
   background-repeat: no-repeat;
   background-position: center;
-
+  height: 100vh;
+  width: 100vw;
 }
    
 .burgerButton {

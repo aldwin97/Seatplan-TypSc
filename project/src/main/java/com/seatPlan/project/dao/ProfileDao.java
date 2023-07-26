@@ -10,17 +10,14 @@ import com.seatPlan.project.model.UserModel;
 @Mapper
 public interface ProfileDao {
 
-
-
     List<UserModel> showUserById(Long user_id);
-
 
     UserModel getUserById(Long user_id);
     
     void updateUser(UserModel userModel);
-    
+
     void updateUserPassword(UserModel userModel);
 
-     UserInputModel getUserByEmail(String email);
+    UserInputModel getUserByEmail(String email);
     
 }

@@ -7,14 +7,27 @@
         SELECT COUNT(*) FROM table_user WHERE is_deleted = 0
     </select>
               
-    <select id="countSeatAvailable" resultType="int">
+    <!-- <select id="countSeatAvailable" resultType="int">
         SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 1 AND is_deleted = 0
+    </select> -->
+    
+
+    <select id="countSeatAvailable" resultType="int">
+        SELECT COUNT(*)
+        FROM table_seat ts
+        LEFT JOIN table_user tu ON ts.user_id = tu.user_id
+        WHERE ts.is_deleted = 0 AND (tu.is_deleted = 1 OR ts.user_id IS NULL) AND ts.seatstatus_id != 3
     </select>
+    
 
 
     <select id="countOccupied" resultType="int">
-        SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 2 AND is_deleted = 0
+        SELECT COUNT(*)
+        FROM table_seat ts
+        LEFT JOIN table_user tu ON ts.user_id = tu.user_id
+        WHERE ts.is_deleted = 0 AND (tu.is_deleted = 0 AND ts.user_id IS NOT NULL)
     </select>
+
 
     <select id="countUnderMaintenance" resultType="int">
         SELECT COUNT(*) FROM table_seat WHERE seatstatus_id = 3 AND is_deleted = 0
@@ -30,7 +43,7 @@
 
 
     <select id="getAllComment" resultType="com.seatPlan.project.model.CommentModel">
-        SELECT c.*, u.first_name, u.last_name
+        SELECT c.*, u.first_name, u.last_name, u.user_picture
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
         ORDER BY c.created_time DESC

@@ -461,8 +461,11 @@ console.log('Data being updated:', updatedUserModel);
       });
   }, []);
   
-
-
+  const sortedCurrentUsers = currentUsers.sort((a, b) => {
+    const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
+    const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
 
   return (
     <div className="container">
@@ -556,8 +559,8 @@ console.log('Data being updated:', updatedUserModel);
             </TableRow>
           </TableHead>
           <TableBody>
-          {currentUsers.map((user) => {
-
+            
+          {sortedCurrentUsers.map((user) => {
     return (
       <TableRow className="table-cell" key={user.user_id} hover>
         <TableCell className="checkbox-btn" padding="checkbox">

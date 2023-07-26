@@ -65,6 +65,7 @@ public class DashBoardService {
             commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));
             commentMap.put("comment", comment.getComment());
             commentMap.put("created_time", comment.getCreated_time());
+            commentMap.put("user_picture", comment.getUser_picture());
             return commentMap;
 
         }).collect(Collectors.toList());

@@ -314,7 +314,7 @@ const fetchOccupants = async () => {
               <option value="">Select an occupant</option>
               {occupantsList.map((occupant) => (
                 <option key={occupant.user_id} value={occupant.user_id}>
-                  {`${occupant.first_name} ${occupant.last_name}`}
+                   {`${occupant.last_name} ${occupant.first_name}`}
                 </option>
               ))}
             </select>
@@ -497,7 +497,7 @@ useEffect(() => {
       ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9'; // Set default color to light gray
       ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
       ctx.strokeStyle = '#000000'; // Set the border color to black
-      ctx.lineWidth = 2 / zoomLevel; // Adjust the border width as needed
+      ctx.lineWidth = 1 / zoomLevel; // Adjust the border width as needed
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
 
       // Draw numbering box
@@ -515,7 +515,7 @@ useEffect(() => {
       ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
       ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
       ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 2 / zoomLevel;
+      ctx.lineWidth = 1 / zoomLevel;
       ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
       ctx.fillStyle = '#000000';
 
@@ -684,102 +684,84 @@ useEffect(() => {
   
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+    
       ctx.scale(zoomLevel, zoomLevel);
-  
+    
       filteredSeats.forEach((seat) => {
-        const { x, y} = seat.position;
+        const { x, y } = seat.position;
         const { color } = seat;
-  
+    
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
-        const seatSize = 100 / zoomLevel;
+        const seatSize = 98 / zoomLevel;
         const textOffsetX = 2 / zoomLevel;
-        const textOffsetY = 50 / zoomLevel;
-        const numberBoxSize = 20 / zoomLevel;
+        const numberBoxSize = 80 / zoomLevel;
     
-     
         canvas.style.cursor = 'pointer';
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2 / zoomLevel;
         ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
-  
+    
         ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
         ctx.fillStyle = '#000000';
         ctx.font = `${11 / zoomLevel}px Arial`;
-        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 4, scaledY + numberBoxSize / 2 + 2);
-        ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
+        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
+    
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1; // Set the border width
+    
+        // Calculate the position for the border rectangle
+        const borderX = scaledX + numberBoxSize / 18 - 5;
+        const borderY = scaledY + numberBoxSize / 9.5 - 9;
+        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
+        const borderHeight = 21; // Adjust the border height as needed
+    
+        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+    
+        const seatBoxY = scaledY + numberBoxSize;
+        const seatBoxHeight = seatSize - numberBoxSize;
+        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+        ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+        ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
+        ctx.fillStyle = '#000000';
+    
+        const textOffsetY = 45; // Adjust this value to create some vertical space between the occupant and project name
+
+    // Draw the occupant's name
+    const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
+    const surname = occupantNameParts[1].toUpperCase(); // Extract the surname and convert it to uppercase
+    const firstName = occupantNameParts[0]; // Extract the first name
+    const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
+
+    const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
+
+    // Calculate the center position to horizontally align the occupant name
+    const centerOffsetX = (seatSize - occupantNameWidth) / 6;
+    const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+
+    // Calculate the font size for the occupant name to fit inside the seat box
+    let fontSize = 10;
+    while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
+      fontSize--;
+      ctx.font = `${fontSize}px Arial`;
+    }
+
+    ctx.fillText(occupantName, scaledX + adjustedTextOffsetX, scaledY + textOffsetY);
 
         // Get the acronym of the project name
         const projectNameAcronym = seat.project_name
           .split(' ')
           .map(word => word.charAt(0).toUpperCase())
           .join('');
-        
+    
         // Draw the project name acronym below the occupant
-        ctx.fillText(projectNameAcronym, scaledX + numberBoxSize / 0.7, scaledY + numberBoxSize / 2 + 2);
-
-
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2; // Set the border width
-
-        // Calculate the position for the border rectangle
-        const borderX = scaledX + numberBoxSize / 4 - 5;
-        const borderY = scaledY + numberBoxSize / 2 - 9;
-        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
-        const borderHeight = 21; // Adjust the border height as needed
-
-        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
-
-
-        const seatBoxY = scaledY + numberBoxSize;
-        const seatBoxHeight = seatSize - numberBoxSize;
-        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
-        ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2 / zoomLevel;
-        ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
-        ctx.fillStyle = '#000000';
-  
-        if (seat.isSwapping) {
-          const swappedSeat = filteredSeats.find((s) => String(s.seat_id) === String(seat.occupant));
-          if (swappedSeat) {
-            const maxTextWidth = seatSize - textOffsetX * 2;
-            const text = swappedSeat.occupant;
-            let fontSize = 11 / zoomLevel;
-  
-            while (ctx.measureText(text).width > maxTextWidth) {
-              fontSize -= 1 / zoomLevel;
-              ctx.font = `${fontSize}px Arial`;
-            }
-            ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
-           
-          }
-        } else {
-          const maxTextWidth = seatSize - textOffsetX * 2;
-          const text = seat.occupant;
-          let fontSize = 11 / zoomLevel;
-  
-          while (ctx.measureText(text).width > maxTextWidth) {
-            fontSize -= 1 / zoomLevel;
-            ctx.font = `${fontSize}px Arial`;
-          }
-  
-          // Assuming `seat` is the object containing the seat information
- // Adjust this value as needed
-const textOffsetY = 45; // Adjust this value to create some vertical space between the occupant and project name
-
-// Draw the occupant
-ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
-
-        }
+        ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
+    
+        
   
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
-          ctx.fillStyle = '#FFFFFF';
           ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
         }
       });

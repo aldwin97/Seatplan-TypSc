@@ -742,7 +742,10 @@ useEffect(() => {
         ctx.lineWidth = 2 / zoomLevel;
         ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
         ctx.fillStyle = '#000000';
-  
+
+       
+
+
         if (seat.isSwapping) {
           const swappedSeat = filteredSeats.find((s) => String(s.seat_id) === String(seat.occupant));
           if (swappedSeat) {
@@ -773,7 +776,6 @@ const textOffsetY = 45; // Adjust this value to create some vertical space betwe
 
 // Draw the occupant
 ctx.fillText(seat.occupant, scaledX + textOffsetX, scaledY + textOffsetY);
-
         }
   
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {

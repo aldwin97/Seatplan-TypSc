@@ -308,35 +308,6 @@ body {
 
 }
 
-@media screen and (max-height: 852px) {
-  .container {
-    height: auto; 
-  }
 
-  .cardHello {
-    height: 350px; 
-    width: 100%;
-  }
-
-  .countcontainer {
-    /* Adjust the card grid height to fit within the available space */
-    height: calc(100vh - 350px); /* Calculate the height based on the remaining viewport height after considering the cardHello height */
-  }
-
-  .card1, .card2, .card3, .card4, .card5, .card6 {
-
-    height: 120px; /* Set the height of each card as needed */
-  }
-}
-@media (max-width: 1200px) {
-  .page-sidebar {
-    width: 30%;
-  }
-  .container {
-    padding-left: 20%;
-    padding-right: 20%;
-  }
-  
-}
 
 

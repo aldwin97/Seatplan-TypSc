@@ -218,7 +218,8 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 
   
   return (
-    <body className="backg">
+    <body >
+      <div  className="backg">
     <div>
       <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
         <div className="burgerIcon"></div>
@@ -327,7 +328,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         className="pagination"
       />
   </div>
-  
+  </div>
   </body>
   );
 }

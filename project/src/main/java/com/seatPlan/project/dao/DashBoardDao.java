@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.ProjectModel;
 
 @Mapper
@@ -16,6 +17,8 @@ public interface DashBoardDao {
     int countOccupied();
     int countUnderMaintenance();
     List<ProjectModel> countUsersPerProject();
+
+     List<CommentModel> getAllComment();
 
 
 

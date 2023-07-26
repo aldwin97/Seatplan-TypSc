@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.seatPlan.project.dao.ProfileDao;
-import com.seatPlan.project.dao.UserDao;
 import com.seatPlan.project.model.UserModel;
 
 @Service

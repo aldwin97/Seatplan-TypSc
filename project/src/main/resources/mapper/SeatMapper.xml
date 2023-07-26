@@ -55,7 +55,6 @@
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
         ORDER BY c.created_time DESC
-
     </select>
 
     <update id="swapSeat"  parameterType="com.seatPlan.project.model.SeatModel">

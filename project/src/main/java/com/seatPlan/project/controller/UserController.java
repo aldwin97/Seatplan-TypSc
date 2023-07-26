@@ -32,7 +32,7 @@ public class UserController {
     }
 
 
-// Authentication of user log in
+
     @PostMapping("/login")
     public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel, HttpSession session) {
         String username = userModel.getUsername();
@@ -47,20 +47,20 @@ public class UserController {
         }
     }   
     
-    // count the number of row in the table
+    
      @GetMapping("/count")
     public int countUsers() {
         return userService.countUsers();
     }
 
-    // Delete user by username
+    
     @PostMapping("/delete/{username}")
     public ResponseEntity<String> deleteUserByUsername(@PathVariable String username) {
     userService.deleteUserByUsername(username);
         return ResponseEntity.ok("User deleted successfully");
     }
 
-    //Update logged user info.
+    
     @PutMapping("/updateProfile")
     public ResponseEntity<String> updateUser(HttpSession session, @RequestBody UserModel userModel ) {
         UserModel user = (UserModel) session.getAttribute("userSession");
@@ -114,7 +114,7 @@ public class UserController {
         }
     }
 
-    // Check httpsession
+    
     @GetMapping("/checkSession")
     public Map<String, String> checkSession(HttpSession session) {
         Map<String, String> response = new HashMap<>();
@@ -127,7 +127,7 @@ public class UserController {
         return response;
     }
 
-     // Logout remove httpsession
+     
      @GetMapping("/logout")
      public String logout(HttpSession session) {
          if (session != null) {
@@ -136,7 +136,6 @@ public class UserController {
          return "{\"status\":\"success\"}";
     }
      
-    //show the logged user Info
     @GetMapping("/showLogedUserInfo/{user_id}")
     public List<Map<String, Object>> showUserById(@PathVariable ("user_id") Long user_id  ) {
             List<Map<String, Object>> userInfo = userService.showUserById(user_id);

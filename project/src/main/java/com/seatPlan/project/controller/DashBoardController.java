@@ -24,8 +24,6 @@ public class DashBoardController {
         this.dashBoardService = dashBoardService;
     }
 
-
-    //Count the specific data that needed in the dashboard
    @GetMapping("/display")
     public ResponseEntity<Map<String, Object>> dashboard() {
         
@@ -57,6 +55,18 @@ public class DashBoardController {
         List<Map<String, Object>> userCountList = dashBoardService.countUsersPerProject();
         return userCountList;
     }
+
+
+
+    @GetMapping("/showAllComment")
+    public List<Map<String, Object>> allComment(){
+            List<Map<String, Object>> comments = dashBoardService.getAllComment();
+            return comments;
+        }
+
+
+
+
 
 
 }

@@ -59,10 +59,7 @@ public class DashBoardController {
         data.put("countUnassignedEmpTrainee",countUnassignedEmpTrainee);
         data.put("countUnassignedEmpRegular",countUnassignedEmpRegular);
         data.put("countUnassignedEmpContractual",countUnassignedEmpContractual);
-
-
-
-
+        
         return ResponseEntity.ok(data);
        
     }

@@ -42,4 +42,8 @@ public class UserModel {
     private String usertype_name;
     private String staffstatus_name;
     private String project_name;
+
+    public UserModel(String username,String Password){
+        
+    }
 }

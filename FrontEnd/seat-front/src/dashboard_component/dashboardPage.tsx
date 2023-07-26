@@ -20,6 +20,7 @@
   }
 
   const DashboardPage: React.FC = () => {
+    const [dashboardData, setDashboardData] = useState<any>({});
     const [last_name, setLastName] = useState('');
     const [first_name, setFirstName] = useState('');
     const chartHeight = 320; 
@@ -36,7 +37,20 @@
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
+    useEffect(() => {
+      const fetchDashboardData = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/dashboard/display');
+          if (response && response.data) {
+            setDashboardData(response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        }
+      };
     
+      fetchDashboardData();
+    }, []);
     useEffect(() => {
       
       const storedLastname = window.sessionStorage.getItem('last_name');
@@ -62,7 +76,7 @@
               datasets: [
                 {
                   label: 'Seat Conditions',
-                  data: [100, 60, 200],
+                  data: [dashboardData.countOccupied,dashboardData.countSeatAvailable, dashboardData.countUnderMaintenance],
                   backgroundColor: [ 'rgba(47, 167, 58, 0.5)',
                   'rgba(47, 167, 58, 0.5)',
                   'rgba(47, 167, 58, 0.5)'],
@@ -264,13 +278,13 @@
 
             <div className={styles.card2}>
               <div className={styles.cardicon}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
-              <div className={styles.cardcount}>150</div>
+              <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
               <div className={styles.cardtitle}>OCCUPIED SEAT</div>
             </div>
             
             <div className={styles.card3}>
             <div className={styles.cardicon}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount }>350</div>
+            <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
               <div className={styles.cardtitle}>AVAILABLE SEAT</div>
             </div>
             

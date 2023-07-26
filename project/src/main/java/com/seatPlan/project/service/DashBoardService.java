@@ -30,13 +30,6 @@ public class DashBoardService {
         return  dashBoardDao.countSeatAvailable();
     }
 
-    public int countTrainee(){
-        return dashBoardDao.countTrainee();
-    }
-
-    public int countRegular(){
-        return dashBoardDao.countRegular();
-    }
 
     public int countOccupied(){
         return dashBoardDao.countOccupied();
@@ -79,5 +72,32 @@ public class DashBoardService {
         return filteredComments;
     }
 
+    public int countAssignedEmpIntern() {
+        return dashBoardDao.countAssignedEmpIntern();
+    }
 
+    public int countAssignedEmpTrainee() {
+        return dashBoardDao.countAssignedEmpTrainee();
+    }
+    public int countAssignedEmpRegular() {
+        return dashBoardDao.countAssignedEmpRegular();
+    }
+    public int countAssignedEmpContractual() {
+        return dashBoardDao.countAssignedEmpContractual();
+    }
+
+
+    public int countUnassignedEmpIntern() {
+        return dashBoardDao.countUnassignedEmpIntern();
+    }
+    
+    public int countUnassignedEmpTrainee() {
+        return dashBoardDao.countUnassignedEmpTrainee();
+    }
+    public int countUnassignedEmpRegular() {
+        return dashBoardDao.countUnassignedEmpRegular();
+    }
+    public int countUnassignedEmpContractual() {
+        return dashBoardDao.countUnassignedEmpContractual();
+    }
 }

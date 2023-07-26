@@ -93,10 +93,11 @@ const LogInPage: React.FC = () => {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <div className={styles.shape}></div>
-            <button className={styles.closeButton} onClick={closeModal}>
+          <button className={styles.closeButton} onClick={closeModal}>
               Cancel
             </button>
+            <div className={styles.shape}></div>
+            
             <h2>SIGN IN</h2>
 
             <div className={`${styles['input-group']} ${error && !username && styles.errorInput}`}>

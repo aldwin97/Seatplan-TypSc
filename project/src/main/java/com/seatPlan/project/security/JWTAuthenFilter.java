@@ -1,6 +1,8 @@
 package com.seatPlan.project.security;
 
+import java.io.IOException;
 import java.util.Collections;
+
 
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,7 +15,7 @@ import org.springframework.util.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seatPlan.project.security.Service.UserDetailsImpl;
 
-import io.jsonwebtoken.io.IOException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +37,7 @@ public class JWTAuthenFilter extends UsernamePasswordAuthenticationFilter {
                 Collections.emptyList()
                 ));
         }catch(IOException e){
-            throw new AuthenticationServiceException("Authentication failed",e)
+            throw new AuthenticationServiceException("Authentication failed",e);
         }
 
 
@@ -46,7 +48,7 @@ public class JWTAuthenFilter extends UsernamePasswordAuthenticationFilter {
         HttpServletRequest request,
         HttpServletResponse response,
         FilterChain chain,
-        Authentication authResult) throws IOException, ServletException, java.io.IOException{
+        Authentication authResult) throws IOException, ServletException {
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
             String token = TokenUtils.createToken(userDetails.getUsername());

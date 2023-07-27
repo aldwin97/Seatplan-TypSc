@@ -78,12 +78,16 @@ function SeatPopup({ seat, onClose }: SeatPopupProps): JSX.Element {
   return (
     <div className={styles.seatPopupContainer}>
       <div className={styles.seatPopupContent}>
-        <h3>{seat.seat_id}</h3>
-        <label>
+        <h3 className={styles.header}>Seat {seat.seat_id}</h3>
+        <label className={styles.label}>
           Occupant:
           <input type="text" value={seat.occupant} readOnly />
         </label>
-        <label>
+        <label className={styles.label}>
+          Position:
+          <input type="text" value={seat.position_name} readOnly />
+        </label>
+        <label className={styles.label}>
           Project:
           <input type="text" value={seat.project} readOnly />
         </label>
@@ -325,7 +329,7 @@ function ViewSeatPage() {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
+        ctx.fillText(projectNameAcronym, scaledX + seatSize /  2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
             .split(' ')

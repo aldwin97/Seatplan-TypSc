@@ -29,13 +29,13 @@
             ts.*, 
             CASE 
                 WHEN ts.seatstatus_id = 3 THEN 'Under'
-                WHEN tu.is_deleted = 1 THEN 'Free'
-                ELSE COALESCE(tu.first_name, 'Free')
+                WHEN tu.is_deleted = 1 THEN 'SPACE'
+                ELSE COALESCE(tu.first_name, 'SPACE')
             END AS first_name,
             CASE 
                 WHEN ts.seatstatus_id = 3 THEN 'Repair'
-                WHEN tu.is_deleted = 1 THEN 'Space'
-                ELSE COALESCE(tu.last_name, 'Space')
+                WHEN tu.is_deleted = 1 THEN 'FREE'
+                ELSE COALESCE(tu.last_name, 'FREE')
             END AS last_name, 
             ta.area_name,
             CASE WHEN tu.is_deleted = 1 THEN 0 ELSE COALESCE(tu.project_id, 0) END AS project_id,

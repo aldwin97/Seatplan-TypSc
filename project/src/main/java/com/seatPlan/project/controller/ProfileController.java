@@ -44,7 +44,7 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        if (profileService.isUserEmailExists(userModel.getEmail())) {
+        if (profileService.isUserEmailExists(userModel.getEmail(),user_id)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
         }
 

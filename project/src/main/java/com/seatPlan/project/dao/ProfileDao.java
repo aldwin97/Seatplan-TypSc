@@ -18,6 +18,6 @@ public interface ProfileDao {
 
     void updateUserPassword(UserModel userModel);
 
-    UserInputModel getUserByEmail(String email);
+    UserInputModel getUserByEmail(String email, Long user_id);
     
 }

@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './logInPage.module.css';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./logInPage.module.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LogInPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [redirectToDashboard, setRedirectToDashboard] = useState(false);
 
   useEffect(() => {
     if (redirectToDashboard) {
-      navigate('/dashboardPage');
+      navigate("/dashboardPage");
     }
   }, [redirectToDashboard, navigate]);
 
@@ -32,7 +32,7 @@ const LogInPage: React.FC = () => {
   // };
 
   const viewSeatPageHandleClick = () => {
-    navigate('/viewSeatPage');
+    navigate("/viewSeatPage");
   };
 
   const togglePasswordVisibility = () => {
@@ -52,39 +52,37 @@ const LogInPage: React.FC = () => {
       setError(true);
       return;
     }
-  
+
     try {
-      const response = await fetch('http://localhost:8080/user/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/user/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
-        
+
       if (!response.ok) {
         setError(true);
         return;
       }
-  
-    const responseData = await response.json();
-    const { user_id,last_name, first_name } = responseData; // Extract the user_id from responseData
-    console.log(user_id);
-    console.log(last_name);
-    console.log(first_name);
-    setRedirectToDashboard(true);
-  
+
+      const responseData = await response.json();
+      const { user_id, last_name, first_name } = responseData; // Extract the user_id from responseData
+      console.log(user_id);
+      console.log(last_name);
+      console.log(first_name);
+      setRedirectToDashboard(true);
+
       // Save session data to Session Storage
-      window.sessionStorage.setItem('user_id', user_id);
-      window.sessionStorage.setItem('last_name', last_name);
-      window.sessionStorage.setItem('first_name', first_name);
+      window.sessionStorage.setItem("user_id", user_id);
+      window.sessionStorage.setItem("last_name", last_name);
+      window.sessionStorage.setItem("first_name", first_name);
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
-  
-  
 
   return (
     <div className={styles.body}>
@@ -103,9 +101,13 @@ const LogInPage: React.FC = () => {
             </button>
             <h2>SIGN IN</h2>
 
-            <div className={`${styles['input-group']} ${error && !username && styles.errorInput}`}>
+            <div
+              className={`${styles["input-group"]} ${
+                error && !username && styles.errorInput
+              }`}
+            >
               <input
-                required 
+                required
                 type="text"
                 name="text"
                 autoComplete="off"
@@ -113,22 +115,28 @@ const LogInPage: React.FC = () => {
                 value={username}
                 onChange={handleUsernameChange}
               />
-              <label className={styles['user-label']}>Username</label>
+              <label className={styles["user-label"]}>Username</label>
             </div>
 
-            <div className={`${styles['input-group']} ${error && !password && styles.errorInput}`}>
+            <div
+              className={`${styles["input-group"]} ${
+                error && !password && styles.errorInput
+              }`}
+            >
               <input
                 required
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 autoComplete="off"
                 className={styles.input}
                 value={password}
                 onChange={handlePasswordChange}
               />
-              <label className={styles['user-label']}>Password</label>
+              <label className={styles["user-label"]}>Password</label>
               <span
-                className={`${styles['toggle-password']} ${showPassword ? styles.active : ''}`}
+                className={`${styles["toggle-password"]} ${
+                  showPassword ? styles.active : ""
+                }`}
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
@@ -136,10 +144,16 @@ const LogInPage: React.FC = () => {
             </div>
 
             {error && (
-              <div className={styles.errorMessage}>Incorrect username or password.</div>
+              <div className={styles.errorMessage}>
+                Incorrect username or password.
+              </div>
             )}
 
-            <button onClick={dashboardPageHandleClick} className={styles.sub2} type="submit">
+            <button
+              onClick={dashboardPageHandleClick}
+              className={styles.sub2}
+              type="submit"
+            >
               SIGN IN
             </button>
           </div>
@@ -159,7 +173,11 @@ const LogInPage: React.FC = () => {
           <div className={`${styles.text3} ${styles.line}`}>MANAGEMENT</div>
         </div>
         <div className={styles.viewButton}>
-          <button onClick={viewSeatPageHandleClick} className={styles.button} type="button">
+          <button
+            onClick={viewSeatPageHandleClick}
+            className={styles.button}
+            type="button"
+          >
             View Seatplan
           </button>
         </div>
@@ -174,4 +192,3 @@ const LogInPage: React.FC = () => {
 };
 
 export default LogInPage;
-

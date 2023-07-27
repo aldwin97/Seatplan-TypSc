@@ -10,7 +10,6 @@ interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
   color: string;
-  position_id:number;
   position_name:string;
   occupant: string;
   project: string;
@@ -41,7 +40,6 @@ interface SeatPopupProps {
 }
 interface Occupant {
   user_id: number;
-    position_id: number;
   position_name: string;
   name: string;
   first_name: string;
@@ -378,7 +376,7 @@ return (
             </div>
             <div className={styles.labelsContainer}>
               <label className={styles.labels}>Position:</label>
-              <input type="text" value={seat.position_id} readOnly={!isSeatOccupied} />
+              <input type="text" value={seat.position_name} readOnly={!isSeatOccupied} />
             </div>
             <div className={styles.labelsContainer}>
               <label className={styles.labels}>Project:</label>

@@ -769,7 +769,7 @@ margin-top: 40px;
 }
 
 /* Styles for input elements */
-input[type="text"] {
+.input[type="text"] {
   flex: 1;
   padding: 5px;
 }
@@ -778,7 +778,7 @@ input[type="text"] {
 /* Existing styles */
 
 /* Styles for select elements */
-select {
+.select {
   padding: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
@@ -789,7 +789,7 @@ select {
 }
 
 /* Styles for option elements */
-option {
+.option {
   padding: 5px;
   font-size: 14px;
   color: #000000;
@@ -797,7 +797,7 @@ option {
 }
 
 /* Styles for the default (placeholder) option */
-option[value=""] {
+.option[value=""] {
   color: #888; /* Change the color to your desired placeholder color */
 }
 .addCommentButton {

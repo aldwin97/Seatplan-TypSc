@@ -46,8 +46,8 @@ public class ProfileService {
     }
 
 
-    public boolean isUserEmailExists(String email) {
-        return profileDao.getUserByEmail(email) != null;
+    public boolean isUserEmailExists(String email,Long user_id) {
+        return profileDao.getUserByEmail(email,user_id) != null;
     }
 
     public void updateUser(UserModel userModel) {

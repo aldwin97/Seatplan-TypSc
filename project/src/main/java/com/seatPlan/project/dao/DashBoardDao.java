@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.ProjectModel;
+import com.seatPlan.project.model.UserModel;
 
 @Mapper
 public interface DashBoardDao {
@@ -29,6 +30,8 @@ public interface DashBoardDao {
     int countUnassignedEmpTrainee();
     int countUnassignedEmpRegular();
     int countUnassignedEmpContractual();
+
+    List<UserModel> showUserById(Long user_id);
           
 
 

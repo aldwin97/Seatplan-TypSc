@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.service.DashBoardService;
@@ -77,7 +78,13 @@ public class DashBoardController {
             List<Map<String, Object>> comments = dashBoardService.getAllComment();
             return comments;
         }
+    
 
+    @GetMapping("/showLogedUserInfo/{user_id}")
+    public List<Map<String, Object>> showUserById(@PathVariable ("user_id") Long user_id  ) {
+            List<Map<String, Object>> userInfo = dashBoardService.showUserById(user_id);
+            return userInfo;
+    }
 
 
 

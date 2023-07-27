@@ -1,0 +1,32 @@
+<svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+   <metadata>
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+         <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
+            <dc:title>
+               <rdf:Alt>
+                  <rdf:li xml:lang="x-default">Armchair</rdf:li>
+               </rdf:Alt>
+            </dc:title>
+            <dc:description>
+               <rdf:Alt>
+                  <rdf:li xml:lang="x-default"></rdf:li>
+               </rdf:Alt>
+            </dc:description>
+            <dc:subject>
+               <rdf:Bag>
+                  <rdf:li>armchair</rdf:li>
+                  <rdf:li>furniture</rdf:li>
+                  <rdf:li>chair</rdf:li>
+                  <rdf:li>seat</rdf:li>
+                  <rdf:li>office</rdf:li>
+                  <rdf:li>interior</rdf:li>
+                  <rdf:li>household</rdf:li>
+                  <rdf:li>living room</rdf:li>
+                  <rdf:li>ergonomic</rdf:li>
+               </rdf:Bag>
+            </dc:subject>
+         </rdf:Description>
+      </rdf:RDF>
+   </metadata>
+<path d="M75.586,38.332l-2.93,23.434c-2.278-2.702-10.286-4.76-20.156-5.059v-6.706h11.364c3.665,0,6.416-2.992,6.113-6.646  l-2.227-26.713c-0.303-3.653-3.555-6.644-7.221-6.644H39.469c-3.667,0-6.915,2.99-7.22,6.644l-2.227,26.713  c-0.305,3.653,2.446,6.646,6.113,6.646H47.5v6.706c-9.87,0.299-17.876,2.356-20.158,5.059l-2.928-23.434H13.333v5H20l3.333,26.669  H47.5v7.715l-20.834,7.585l1.711,4.7l19.123-6.96v6.96h5v-6.96l19.121,6.96l1.712-4.7L52.5,77.716v-7.715h24.167L80,43.332h6.667v-5  H75.586z M36.714,43.332l2.225-26.666h22.126l2.22,26.666H36.714z" />
+</svg>

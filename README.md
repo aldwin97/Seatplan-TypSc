@@ -12,8 +12,14 @@ verify dependencies are installed using 'npm install'
 start the application with 'npm start'
 
 Environment:
+
 JDK 17
+
 Springboot 3.1.1
+
 MyBatis
+
 Node 18
+
 MySQL
+

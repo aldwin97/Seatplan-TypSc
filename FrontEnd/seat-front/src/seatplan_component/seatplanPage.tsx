@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
   color: string;
-
+  position_id:number;
+  position_name:string;
   occupant: string;
   project: string;
   comments: string[];
@@ -27,6 +28,9 @@ interface Seat {
   user_id: number;
   userId1: number;
   userId2: number;
+
+
+  
 }
 
 interface SeatPopupProps {
@@ -37,7 +41,8 @@ interface SeatPopupProps {
 }
 interface Occupant {
   user_id: number;
-  
+    position_id: number;
+  position_name: string;
   name: string;
   first_name: string;
   last_name: string;
@@ -45,33 +50,17 @@ interface Occupant {
   // Add other properties if available in the response
 }
 
-interface Position{
-  position_id: number;
-  position_name: string;
-}
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
 
-  const [showComments, setShowComments] = useState(false);
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
-  const [positions, setPositions] = useState<Position[]>([]);
 
-  useEffect(() => {
-    // Fetch positions data from the backend API
-    fetch('/showAllPosition')
-      .then((response) => response.json())
-      .then((data) => {
-        setPositions(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching positions:', error);
-      });
-  }, []);
+
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
 
@@ -240,34 +229,6 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   }, []);
   
 
-  const handleViewComments = () => {
-    setShowComments(!showComments);
-    setSelectedViewerIndex(-1);
-    setReply('');
-  };
-
-  const handleViewerClick = (viewerIndex: number) => {
-    setSelectedViewerIndex(viewerIndex);
-  };
-
-  const handleReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setReply(event.target.value);
-  };
-
-  const handleReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const updatedSeats = seats.map((s) => {
-      if (s.seat_id === seat.seat_id) {
-        const updatedComments = [...s.comments];
-        updatedComments[selectedViewerIndex] += ` (Admin): ${reply}`;
-        return { ...s, comments: updatedComments };
-      }
-      return s;
-    });
-    setSeats(updatedSeats);
-    setReply('');
-  };
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleEdit = () => {
@@ -297,13 +258,47 @@ const fetchOccupants = async () => {
     console.error('Error occurred while fetching occupants:', error);
   }
 };
+const [showComments, setShowComments] = useState(false);
+
+const toggleCommentsSection = () => {
+  setShowComments((prevShowComments) => !prevShowComments);
+  setSelectedViewerIndex(-1); // Reset the selected viewer index when toggling the section
+};
 
 
-  return (
-    <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
-      <div className={styles.seatPopupContent}>
-        <h3>{seat.seat_id}</h3>
-        <form onSubmit={handleFormSubmit}>
+const handleViewerClick = (viewerIndex: number) => {
+  setSelectedViewerIndex(viewerIndex);
+};
+
+const handleReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setReply(event.target.value);
+};
+
+const handleReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  const updatedSeats = seats.map((s) => {
+    if (s.seat_id === seat.seat_id) {
+      const updatedComments = [...s.comments];
+      updatedComments[selectedViewerIndex] += ` (Admin): ${reply}`;
+      return { ...s, comments: updatedComments };
+    }
+    return s;
+  });
+  setSeats(updatedSeats);
+  setReply('');
+};
+
+
+
+useEffect(() => {
+  setShowComments(false);
+}, []);
+
+return (
+  <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
+    <div className={styles.seatPopupContent}>
+      <h3>Seat {seat.seat_id}</h3>
+      <form onSubmit={handleFormSubmit}>
         {isEditMode ? (
           <>
             <select
@@ -314,116 +309,137 @@ const fetchOccupants = async () => {
               <option value="">Select an occupant</option>
               {occupantsList.map((occupant) => (
                 <option key={occupant.user_id} value={occupant.user_id}>
-                   {`${occupant.last_name} ${occupant.first_name}`}
+                  {`${occupant.last_name} ${occupant.first_name}`}
                 </option>
               ))}
             </select>
             {errorMsg && (
-  <div className={styles.errorPopup}>
-    <p>{errorMsg}</p>
-    <button
-      onClick={() => {
-        setErrorMsg('');
-        window.location.reload();
-      }}
-    >
-      Close
-    </button>
-  </div>
-)}
-
-              {isSeatOccupied ? (
-                <>
-                  <button type="submit">Save</button>
-                  <div>
-                    <p>Select a seat to swap:</p>
-                    <select
-                      className={styles.value}
-                      value={selectedSeatId || ''} // Use the nullish coalescing operator to fallback to an empty string if selectedSeatId is null
-                      onChange={(e) => handleSeatSelect(Number(e.target.value))} // Parse selected value as a number
-                    >
-                      <option className={styles.value} value="">
-                        Select a seat
-                      </option>
-                      {seats.map((seat) => (
-                        <option key={seat.seat_id} value={seat.seat_id}>
-                          {seat.seat_id}
-                        </option>
-                  ))}
-                </select>
-                <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
-                  Swap Now
+              <div className={styles.errorPopup}>
+                <p>{errorMsg}</p>
+                <button
+                  onClick={() => {
+                    setErrorMsg('');
+                    window.location.reload();
+                  }}
+                >
+                  Close
                 </button>
               </div>
-                </>
-              ) : (
-                <>
-                  <button type="submit">Save</button>
-                  {!isSeatOccupied && (
-                    <button type="button" className={styles.editButton} onClick={handleEdit}>
-                      Edit
-                    </button>
-                  )}
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <label>
-                Occupant:
-                <input type="text" value={seat.occupant} readOnly={!isSeatOccupied} />
-              </label>
-              <label>
-                Project:
-                <input type="text" value={seat.project} readOnly={!isSeatOccupied} />
-              </label>
-              {isSeatOccupied && (
-                <button type="button" className={styles.editButton} onClick={handleEdit}>
-                  Edit
-                </button>
-              )}
-            </>
-          )}
-          <button type="button" className={styles.editButton} onClick={handleViewComments}>
-            {showComments ? 'Hide Comments' : 'View Comments'}
+            )}
+
+            {isSeatOccupied ? (
+              <>
+                <button type="submit">Save</button>
+                <div>
+                  <p>Select a seat to swap:</p>
+                  <select
+                    className={styles.value}
+                    value={selectedSeatId || ''}
+                    onChange={(e) => handleSeatSelect(Number(e.target.value))}
+                  >
+                    <option className={styles.value} value="">
+                      Select a seat
+                    </option>
+                    {seats.map((seat) => (
+                      <option key={seat.seat_id} value={seat.seat_id}>
+                        {seat.seat_id}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className={styles.swapButton}
+                    onClick={handleSwapSeats}
+                  >
+                    Swap Now
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <button type="submit">Save</button>
+                {!isSeatOccupied && (
+                  <button
+                    type="button"
+                    className={styles.editButton}
+                    onClick={handleEdit}
+                  >
+                    Edit
+                  </button>
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>Occupant:</label>
+              <input type="text" value={seat.occupant} readOnly={!isSeatOccupied} />
+            </div>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>Position:</label>
+              <input type="text" value={seat.position_id} readOnly={!isSeatOccupied} />
+            </div>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>Project:</label>
+              <input type="text" value={seat.project} readOnly={!isSeatOccupied} />
+            </div>
+            {isSeatOccupied && (
+              <button type="button" className={styles.editButton} onClick={handleEdit}>
+                Edit
+              </button>
+            )}
+          </>
+        )}
+        <button type="button" className={styles.closeButton} onClick={onClose}>
+          <FontAwesomeIcon icon={faClose} />
+        </button>
+        <div className={styles.arrowToggle} onClick={toggleCommentsSection}>
+          <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
+          {showComments && seat.viewerNames?.length > 0 && (
+            <button
+            className={styles.addCommentButton}
+            onClick={() => console.log('Add Comment clicked')}
+          >
+            Add Comment
           </button>
-          <button type="button" className={styles.closeButton} onClick={onClose}>
-            Close
-          </button>
-          {showComments && (
-            <>
-              <h4>Comments:</h4>
-              <ul>
-                {seat.viewerNames.map((viewerName, index) => (
-                  <li key={index} onClick={() => handleViewerClick(index)}>
-                    <span className={styles.viewerName}>{viewerName}</span>
-                  </li>
-                ))}
-              </ul>
-              {selectedViewerIndex >= 0 && (
-                <>
-                  <h4>Comment:</h4>
-                  <p>{seat.comments[selectedViewerIndex]}</p>
-                  <form onSubmit={handleReplySubmit}>
-                    <label>
-                      Reply:
-                      <input
-                        type="text"
-                        value={reply}
-                        onChange={handleReplyChange}
-                        placeholder="Type your reply..."
-                      />
-                    </label>
-                    <button type="submit">Send Reply</button>
-                  </form>
-                </>
-              )}
-            </>
+          
           )}
-        </form>
-      </div>
+        </div>
+        {showComments && seat.viewerNames?.length > 0 && (
+          <>
+            <h4>Comments:</h4>
+            <ul>
+              {seat.viewerNames.map((viewerName, index) => (
+                <li key={index} onClick={() => handleViewerClick(index)}>
+                  <span className={styles.viewerName}>{viewerName}</span>
+                </li>
+              ))}
+            </ul>
+            {selectedViewerIndex >= 0 && (
+              <>
+                <h4>Comment:</h4>
+                <p>{seat.comments[selectedViewerIndex]}</p>
+                <form onSubmit={handleReplySubmit}>
+                  <label>
+                    Reply:
+                    <input
+                      type="text"
+                      value={reply}
+                      onChange={handleReplyChange}
+                      placeholder="Type your reply..."
+                    />
+                  </label>
+                  <button type="submit">Send Reply</button>
+                </form>
+              </>
+            )}
+          </>
+        )}
+      </form>
     </div>
-  );
+  </div>
+);
 }
 
 function SeatplanPage() {
@@ -730,7 +746,7 @@ useEffect(() => {
 
     // Draw the occupant's name
     const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
-    const surname = occupantNameParts[1].toUpperCase(); // Extract the surname and convert it to uppercase
+    const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
     const firstName = occupantNameParts[0]; // Extract the first name
     const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
 

@@ -393,10 +393,7 @@
 
 .seatPopupContent input[type="text"] {
   padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-shadow: 2px 2px 0px rgb(136, 136, 136);
-  transition-duration: .3s;
+border: none;
 }
 
 .seatPopupContent input[type="color"] {
@@ -404,7 +401,6 @@
   border: none;
   outline: none;
   cursor: pointer;
-  box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
 }
 
@@ -508,6 +504,7 @@
   .seatPopupContent input[type="text"],
   .seatPopupContent input[type="color"],
   .seatPopupContent select {
+    border: none;
     width: 100%; /* Make the inputs and select full width */
   }
 
@@ -743,4 +740,13 @@ margin-top: 40px;
 
 .errorPopup button:hover {
   background-color: #b6b6b6;
+}
+.header{
+
+  font-size: 30px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}.label {
+  font-weight: bold;
+  margin-right: 10px;
 }

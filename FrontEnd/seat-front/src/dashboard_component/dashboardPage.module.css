@@ -172,11 +172,19 @@ body {
   font-weight: bold;
   color: #000000;
   text-align: left;
-  font-size: 32px;
-  margin-top: 20px;
+  font-size: 35px;
+  margin-top: 52px;
+
 }
 
+.Hellotitle1 {
+  width: 450px;
+  color: #308a38;
+  text-align: left;
+  font-size: 24px;
+  font-family:'League Spartan Regular';
 
+}
 /*counts card and containers*/
 .countcontainer {
   display: grid;

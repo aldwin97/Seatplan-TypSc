@@ -375,9 +375,8 @@
 
 .seatPopupContent input[type="text"] {
   padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  border: none;
+  font-size: 15px;
   transition-duration: .3s;
 }
 

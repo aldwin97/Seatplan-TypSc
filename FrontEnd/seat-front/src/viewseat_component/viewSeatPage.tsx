@@ -308,7 +308,7 @@ function ViewSeatPage() {
     const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
 
     // Calculate the center position to horizontally align the occupant name
-    const centerOffsetX = (seatSize - occupantNameWidth) / 1;
+    const centerOffsetX = (seatSize - occupantNameWidth) / 2;
     const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
     // Calculate the font size for the occupant name to fit inside the seat box

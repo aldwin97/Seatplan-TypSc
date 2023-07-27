@@ -148,7 +148,7 @@ const ProfilePage: React.FC = () => {
             email: inputValues.Email,
             mobile_num: inputValues.ContactNumber,
           });
-          window.location.reload();
+         
           setPersonalEditMode(false);
           setPersonalFormValid(true);
         } else {
@@ -315,7 +315,7 @@ const ProfilePage: React.FC = () => {
 
           <div className={styles.inputDisplay}>
             <h3>
-              {profileData.last_name} {profileData.first_name}
+              {profileData.first_name} {profileData.last_name} 
             </h3>
             <h4>{profileData.position_name}</h4>
             <h5>{profileData.username}</h5>

@@ -2,6 +2,7 @@
 Seatplan management system using React TypeScript, Java Springboot
 
 To Run
+
 Run the back-end Java Application first with prefered IDE
 
 Using terminal or cmd navigate to the FrontEnd/seat-front folder location

@@ -371,16 +371,13 @@ return (
         ) : (
           <>
             <div className={styles.labelsContainer}>
-              <label className={styles.labels}>Occupant:</label>
-              <input type="text" value={seat.occupant} readOnly={!isSeatOccupied} />
+              <label className={styles.labels}>Occupant: <input type="text" value={seat.occupant} readOnly={!isSeatOccupied} /></label>
             </div>
             <div className={styles.labelsContainer}>
-              <label className={styles.labels}>Position:</label>
-              <input type="text" value={seat.position_name} readOnly={!isSeatOccupied} />
+              <label className={styles.labels}>Position: <input type="text" value={seat.position_name} readOnly={!isSeatOccupied} /></label>
             </div>
             <div className={styles.labelsContainer}>
-              <label className={styles.labels}>Project:</label>
-              <input type="text" value={seat.project} readOnly={!isSeatOccupied} />
+              <label className={styles.labels}>Project: <input type="text" value={seat.project} readOnly={!isSeatOccupied} /></label>
             </div>
             {isSeatOccupied && (
               <button type="button" className={styles.editButton} onClick={handleEdit}>
@@ -777,7 +774,7 @@ useEffect(() => {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
+        ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
             .split(' ')

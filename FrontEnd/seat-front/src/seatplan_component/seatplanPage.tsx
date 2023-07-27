@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-
+import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
   color: string;
-
+  position_name:string;
   occupant: string;
   project: string;
   comments: string[];
@@ -27,6 +27,9 @@ interface Seat {
   user_id: number;
   userId1: number;
   userId2: number;
+
+
+  
 }
 
 interface SeatPopupProps {
@@ -37,7 +40,7 @@ interface SeatPopupProps {
 }
 interface Occupant {
   user_id: number;
-  
+  position_name: string;
   name: string;
   first_name: string;
   last_name: string;
@@ -45,33 +48,17 @@ interface Occupant {
   // Add other properties if available in the response
 }
 
-interface Position{
-  position_id: number;
-  position_name: string;
-}
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
 
-  const [showComments, setShowComments] = useState(false);
   const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
   const [reply, setReply] = useState('');
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
-  const [positions, setPositions] = useState<Position[]>([]);
 
-  useEffect(() => {
-    // Fetch positions data from the backend API
-    fetch('/showAllPosition')
-      .then((response) => response.json())
-      .then((data) => {
-        setPositions(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching positions:', error);
-      });
-  }, []);
+
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
 
@@ -240,34 +227,6 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   }, []);
   
 
-  const handleViewComments = () => {
-    setShowComments(!showComments);
-    setSelectedViewerIndex(-1);
-    setReply('');
-  };
-
-  const handleViewerClick = (viewerIndex: number) => {
-    setSelectedViewerIndex(viewerIndex);
-  };
-
-  const handleReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setReply(event.target.value);
-  };
-
-  const handleReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const updatedSeats = seats.map((s) => {
-      if (s.seat_id === seat.seat_id) {
-        const updatedComments = [...s.comments];
-        updatedComments[selectedViewerIndex] += ` (Admin): ${reply}`;
-        return { ...s, comments: updatedComments };
-      }
-      return s;
-    });
-    setSeats(updatedSeats);
-    setReply('');
-  };
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleEdit = () => {
@@ -297,13 +256,47 @@ const fetchOccupants = async () => {
     console.error('Error occurred while fetching occupants:', error);
   }
 };
+const [showComments, setShowComments] = useState(false);
+
+const toggleCommentsSection = () => {
+  setShowComments((prevShowComments) => !prevShowComments);
+  setSelectedViewerIndex(-1); // Reset the selected viewer index when toggling the section
+};
 
 
-  return (
-    <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
-      <div className={styles.seatPopupContent}>
-        <h3>{seat.seat_id}</h3>
-        <form onSubmit={handleFormSubmit}>
+const handleViewerClick = (viewerIndex: number) => {
+  setSelectedViewerIndex(viewerIndex);
+};
+
+const handleReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setReply(event.target.value);
+};
+
+const handleReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  const updatedSeats = seats.map((s) => {
+    if (s.seat_id === seat.seat_id) {
+      const updatedComments = [...s.comments];
+      updatedComments[selectedViewerIndex] += ` (Admin): ${reply}`;
+      return { ...s, comments: updatedComments };
+    }
+    return s;
+  });
+  setSeats(updatedSeats);
+  setReply('');
+};
+
+
+
+useEffect(() => {
+  setShowComments(false);
+}, []);
+
+return (
+  <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
+    <div className={styles.seatPopupContent}>
+      <h3>Seat {seat.seat_id}</h3>
+      <form onSubmit={handleFormSubmit}>
         {isEditMode ? (
           <>
             <select
@@ -314,116 +307,137 @@ const fetchOccupants = async () => {
               <option value="">Select an occupant</option>
               {occupantsList.map((occupant) => (
                 <option key={occupant.user_id} value={occupant.user_id}>
-                   {`${occupant.last_name} ${occupant.first_name}`}
+                  {`${occupant.last_name} ${occupant.first_name}`}
                 </option>
               ))}
             </select>
             {errorMsg && (
-  <div className={styles.errorPopup}>
-    <p>{errorMsg}</p>
-    <button
-      onClick={() => {
-        setErrorMsg('');
-        window.location.reload();
-      }}
-    >
-      Close
-    </button>
-  </div>
-)}
-
-              {isSeatOccupied ? (
-                <>
-                  <button type="submit">Save</button>
-                  <div>
-                    <p>Select a seat to swap:</p>
-                    <select
-                      className={styles.value}
-                      value={selectedSeatId || ''} // Use the nullish coalescing operator to fallback to an empty string if selectedSeatId is null
-                      onChange={(e) => handleSeatSelect(Number(e.target.value))} // Parse selected value as a number
-                    >
-                      <option className={styles.value} value="">
-                        Select a seat
-                      </option>
-                      {seats.map((seat) => (
-                        <option key={seat.seat_id} value={seat.seat_id}>
-                          {seat.seat_id}
-                        </option>
-                  ))}
-                </select>
-                <button type="button" className={styles.swapButton} onClick={handleSwapSeats}>
-                  Swap Now
+              <div className={styles.errorPopup}>
+                <p>{errorMsg}</p>
+                <button
+                  onClick={() => {
+                    setErrorMsg('');
+                    window.location.reload();
+                  }}
+                >
+                  Close
                 </button>
               </div>
-                </>
-              ) : (
-                <>
-                  <button type="submit">Save</button>
-                  {!isSeatOccupied && (
-                    <button type="button" className={styles.editButton} onClick={handleEdit}>
-                      Edit
-                    </button>
-                  )}
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <label>
-                Occupant:
-                <input type="text" value={seat.occupant} readOnly={!isSeatOccupied} />
-              </label>
-              <label>
-                Project:
-                <input type="text" value={seat.project} readOnly={!isSeatOccupied} />
-              </label>
-              {isSeatOccupied && (
-                <button type="button" className={styles.editButton} onClick={handleEdit}>
-                  Edit
-                </button>
-              )}
-            </>
-          )}
-          <button type="button" className={styles.editButton} onClick={handleViewComments}>
-            {showComments ? 'Hide Comments' : 'View Comments'}
+            )}
+
+            {isSeatOccupied ? (
+              <>
+                <button type="submit">Save</button>
+                <div>
+                  <p>Select a seat to swap:</p>
+                  <select
+                    className={styles.value}
+                    value={selectedSeatId || ''}
+                    onChange={(e) => handleSeatSelect(Number(e.target.value))}
+                  >
+                    <option className={styles.value} value="">
+                      Select a seat
+                    </option>
+                    {seats.map((seat) => (
+                      <option key={seat.seat_id} value={seat.seat_id}>
+                        {seat.seat_id}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className={styles.swapButton}
+                    onClick={handleSwapSeats}
+                  >
+                    Swap Now
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <button type="submit">Save</button>
+                {!isSeatOccupied && (
+                  <button
+                    type="button"
+                    className={styles.editButton}
+                    onClick={handleEdit}
+                  >
+                    Edit
+                  </button>
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>Occupant:</label>
+              <input type="text" value={seat.occupant} readOnly={!isSeatOccupied} />
+            </div>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>Position:</label>
+              <input type="text" value={seat.position_name} readOnly={!isSeatOccupied} />
+            </div>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>Project:</label>
+              <input type="text" value={seat.project} readOnly={!isSeatOccupied} />
+            </div>
+            {isSeatOccupied && (
+              <button type="button" className={styles.editButton} onClick={handleEdit}>
+                Edit
+              </button>
+            )}
+          </>
+        )}
+        <button type="button" className={styles.closeButton} onClick={onClose}>
+          <FontAwesomeIcon icon={faClose} />
+        </button>
+        <div className={styles.arrowToggle} onClick={toggleCommentsSection}>
+          <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
+          {showComments && seat.viewerNames?.length > 0 && (
+            <button
+            className={styles.addCommentButton}
+            onClick={() => console.log('Add Comment clicked')}
+          >
+            Add Comment
           </button>
-          <button type="button" className={styles.closeButton} onClick={onClose}>
-            Close
-          </button>
-          {showComments && (
-            <>
-              <h4>Comments:</h4>
-              <ul>
-                {seat.viewerNames.map((viewerName, index) => (
-                  <li key={index} onClick={() => handleViewerClick(index)}>
-                    <span className={styles.viewerName}>{viewerName}</span>
-                  </li>
-                ))}
-              </ul>
-              {selectedViewerIndex >= 0 && (
-                <>
-                  <h4>Comment:</h4>
-                  <p>{seat.comments[selectedViewerIndex]}</p>
-                  <form onSubmit={handleReplySubmit}>
-                    <label>
-                      Reply:
-                      <input
-                        type="text"
-                        value={reply}
-                        onChange={handleReplyChange}
-                        placeholder="Type your reply..."
-                      />
-                    </label>
-                    <button type="submit">Send Reply</button>
-                  </form>
-                </>
-              )}
-            </>
+          
           )}
-        </form>
-      </div>
+        </div>
+        {showComments && seat.viewerNames?.length > 0 && (
+          <>
+            <h4>Comments:</h4>
+            <ul>
+              {seat.viewerNames.map((viewerName, index) => (
+                <li key={index} onClick={() => handleViewerClick(index)}>
+                  <span className={styles.viewerName}>{viewerName}</span>
+                </li>
+              ))}
+            </ul>
+            {selectedViewerIndex >= 0 && (
+              <>
+                <h4>Comment:</h4>
+                <p>{seat.comments[selectedViewerIndex]}</p>
+                <form onSubmit={handleReplySubmit}>
+                  <label>
+                    Reply:
+                    <input
+                      type="text"
+                      value={reply}
+                      onChange={handleReplyChange}
+                      placeholder="Type your reply..."
+                    />
+                  </label>
+                  <button type="submit">Send Reply</button>
+                </form>
+              </>
+            )}
+          </>
+        )}
+      </form>
     </div>
-  );
+  </div>
+);
 }
 
 function SeatplanPage() {
@@ -497,7 +511,7 @@ useEffect(() => {
       ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9'; // Set default color to light gray
       ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
       ctx.strokeStyle = '#000000'; // Set the border color to black
-      ctx.lineWidth = 1 / zoomLevel; // Adjust the border width as needed
+      ctx.lineWidth = 2 / zoomLevel; // Adjust the border width as needed
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
 
       // Draw numbering box
@@ -707,17 +721,25 @@ useEffect(() => {
         ctx.fillStyle = '#000000';
         ctx.font = `${11 / zoomLevel}px Arial`;
         ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
-    
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1; // Set the border width
-    
-        // Calculate the position for the border rectangle
-        const borderX = scaledX + numberBoxSize / 18 - 5;
-        const borderY = scaledY + numberBoxSize / 9.5 - 9;
-        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
-        const borderHeight = 21; // Adjust the border height as needed
-    
-        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+        
+        const borderWidth = 2; // Adjust the border width as needed
+
+          // Draw the seat
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = borderWidth;
+          ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+
+          // Draw the border rectangle
+          ctx.strokeStyle = '#000000';
+
+          // Calculate the position for the border rectangle
+          const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
+          const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
+          const borderRectWidth = ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
+          const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
+
+          ctx.lineWidth = borderWidth;
+          ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
     
         const seatBoxY = scaledY + numberBoxSize;
         const seatBoxHeight = seatSize - numberBoxSize;
@@ -730,18 +752,18 @@ useEffect(() => {
 
     // Draw the occupant's name
     const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
-    const surname = occupantNameParts[1].toUpperCase(); // Extract the surname and convert it to uppercase
+    const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
     const firstName = occupantNameParts[0]; // Extract the first name
     const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
 
     const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
 
     // Calculate the center position to horizontally align the occupant name
-    const centerOffsetX = (seatSize - occupantNameWidth) / 6;
+    const centerOffsetX = (seatSize - occupantNameWidth) / 1;
     const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
     // Calculate the font size for the occupant name to fit inside the seat box
-    let fontSize = 10;
+    let fontSize = 11;
     while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
       fontSize--;
       ctx.font = `${fontSize}px Arial`;
@@ -755,9 +777,29 @@ useEffect(() => {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        // Draw the project name acronym below the occupant
         ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
-    
+        if (seat.position_name) {
+          const positionNameAcronym = seat.position_name
+            .split(' ')
+            .map((word) => word.charAt(0).toUpperCase())
+            .join('');
+        
+          // Calculate the center position to horizontally align the position name acronym
+          const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
+          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
+          const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+        
+          // Calculate the font size for the position name acronym to fit inside the seat box
+          let fontSize = 10;
+          while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
+            fontSize--;
+            ctx.font = `${fontSize}px Arial`;
+          }
+        
+          // Draw the position name acronym below the seat
+          ctx.fillText(positionNameAcronym, scaledX + + seatSize / 2.3,+ scaledY + textOffsetY / 3.4 + 1);
+        }
+        
         
   
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {

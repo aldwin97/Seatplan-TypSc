@@ -3,11 +3,14 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,Button,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { Dashboard,Chair,CheckCircle, AccountCircle, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
+  import { Dashboard,Chair,CheckCircle, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
   import { useNavigate } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
   import 'chartjs-plugin-datalabels';
+  import occupied from './asset/occupied.png'
+  import available from './asset/available.png'
+
 
 
 
@@ -322,20 +325,20 @@
                 <div className={styles.card1}>
                 <div className={styles.cardicon}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
                 <div className={styles.cardcount }>{dashboardData.countOccupied+dashboardData.countSeatAvailable+dashboardData.countUnderMaintenance}</div>
-                <div className={styles.cardtitle}>TOTAL SEAT</div>
+                <div className={styles.cardtitle}>TOTAL SEATS</div>
               </div>
           
 
             <div className={styles.card2}>
-              <div className={styles.cardicon}><AccountCircle style={{ fontSize: 42 }}/></div>
+              <div className={styles.cardicon}><img src={occupied} alt='Profile Background'/></div>
               <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
-              <div className={styles.cardtitle}>OCCUPIED SEAT</div>
+              <div className={styles.cardtitle}>OCCUPIED SEATS</div>
             </div>
             
             <div className={styles.card3}>
-            <div className={styles.cardicon}>< CheckCircle style={{ fontSize: 42 }}/></div>
+            <div className={styles.cardicon}><img src={available} alt='Profile Background'/></div>
             <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
-              <div className={styles.cardtitle}>AVAILABLE SEAT</div>
+              <div className={styles.cardtitle}>AVAILABLE SEATS</div>
             </div>
             
 
@@ -344,7 +347,7 @@
             <div className={styles.card4}>
             <div className={styles.cardicon}><GroupsRounded style={{ fontSize: 42 }}/></div>
             <div className={styles.cardcount}>{dashboardData.countUser}</div>
-            <div className={styles.cardtitle}>TOTAL EMPLOYEE</div>
+            <div className={styles.cardtitle}>TOTAL ASSOCIATES</div>
             </div>
 
             <div className={styles.card5}>
@@ -355,40 +358,40 @@
             <div className={styles.tooltipContent}>
              
               
-              <span>Intern:{dashboardData.countAssignedEmpIntern}</span>
+             <span>Regular:{dashboardData.countAssignedEmpRegular} </span>
               <br />
               <span>Trainee:{dashboardData.countAssignedEmpTrainee}</span>
               <br />
-              <span>Regular:{dashboardData.countAssignedEmpRegular} </span>
+              <span>Intern:{dashboardData.countAssignedEmpIntern}</span>
               <br />
-              <span>Contractual:{dashboardData.countAssignedEmpContractual}</span>
+              <span>Business Partner:{dashboardData.countAssignedEmpContractual}</span>
             </div>
           }
           arrow
         >
-            <div className={styles.cardtitle}>ASSIGNED EMPLOYEE</div>
+            <div className={styles.cardtitle}>ASSIGNED SEATS</div>
         </Tooltip>
             
             </div>
 
             <div className={styles.card6}>
               <div className={styles.cardicon}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount}>{dashboardData.countUnassignedEmpIntern}</div>
+            <div className={styles.cardcount}>{dashboardData.countUnassignedEmpIntern + dashboardData.countUnassignedEmpTrainee + dashboardData.countUnassignedEmpRegular + dashboardData.countUnassignedEmpContractual}</div>
             <Tooltip
           title={
             <div className={styles.tooltipContent}>
-            <span>Intern:{dashboardData.countUnassignedEmpIntern}</span>
+            <span>Regular:{dashboardData.countUnassignedEmpRegular} </span>
               <br />
               <span>Trainee:{dashboardData.countUnassignedEmpTrainee}</span>
               <br />
-              <span>Regular:{dashboardData.countUnassignedEmpRegular} </span>
+              <span>Intern:{dashboardData.countUnassignedEmpIntern}</span>
               <br />
-              <span>Contractual:{dashboardData.countUnassignedEmpContractual}</span>
+              <span>Business Partner:{dashboardData.countUnassignedEmpContractual}</span>
             </div>
           }
           arrow
         >
-          <div className={styles.cardtitle}>UNASSIGNED EMPLOYEE</div>
+          <div className={styles.cardtitle}>UNASSIGNED SEATS</div>
         </Tooltip>
             </div>
             

@@ -35,6 +35,11 @@ const ProfilePage: React.FC = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
+
+
+
+
+
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: '',
     LastName: '',
@@ -140,6 +145,7 @@ const handlePersonalSaveChanges = async () => {
         last_name: inputValues.LastName,
         email: inputValues.Email,
         mobile_num: inputValues.ContactNumber
+        
       };
 
       
@@ -152,23 +158,24 @@ const handlePersonalSaveChanges = async () => {
        
         setProfileData({
           ...profileData,
-          
+          first_name: inputValues.FirstName,
+          last_name: inputValues.LastName,
           email: inputValues.Email,
           mobile_num: inputValues.ContactNumber
         });
-
-        setPersonalEditMode(false); // Once changes are saved, exit edit mode
-        setPersonalFormValid(true); // Reset form validity state
+        window.location.reload(); 
+        setPersonalEditMode(false); 
+        setPersonalFormValid(true); 
       } else {
         console.error('Error updating user:', response.data);
-        // Handle error scenario here (e.g., show error message)
+  
       }
     } catch (error) {
       console.error('Error updating user:', error);
-      // Handle error scenario here (e.g., show error message)
+    
     }
   } else {
-    // Set form validity state to false to show the error
+   
     setPersonalFormValid(false);
   }
 };
@@ -178,7 +185,7 @@ const handlePersonalSaveChanges = async () => {
   const handlePersonalCancelChanges = () => {
     setInputValues(savedPersonalInfo);
     setPersonalEditMode(false);
-    setPersonalFormValid(true); // Reset form validity state when changes are canceled
+    setPersonalFormValid(true); 
   };
 
   const handlePersonalEditClick = () => {
@@ -192,13 +199,13 @@ const handlePersonalSaveChanges = async () => {
 // ACCOUNT SETTINGS BUTTON //
 
   const handleAccountSaveChanges = (): void => {
-    // Validate the confirm password
+    
     const { newPassword, confirmPassword } = accountValues;
     if (newPassword !== confirmPassword) {
       setConfirmPasswordError('Passwords do not match.');
-      setPasswordMismatchSnackbar(true); // Show the Snackbar for password mismatch
+      setPasswordMismatchSnackbar(true);
     } else {
-      setConfirmPasswordError(''); // Reset the error state if the passwords match
+      setConfirmPasswordError('');
       setAccountEditMode(false);
     }
   };
@@ -428,15 +435,15 @@ const handlePersonalSaveChanges = async () => {
             <div className={styles['name-group']}>
               <label className={styles.readLabel}>First Name *</label>
               <input
-                required
-                type="text"
-                name="FirstName"
-                autoComplete="off"
-                className={styles.nameInput}
-                readOnly={!editPersonalMode}
-                value={inputValues.FirstName}
-                onChange={handleInputChange}
-              />
+          required
+          type="text"
+          name="FirstName"
+          autoComplete="off"
+          className={styles.nameInput}
+          readOnly={!editPersonalMode}
+          value={inputValues.FirstName}
+          onChange={handleInputChange}
+        />
             </div>
 
 
@@ -566,12 +573,9 @@ const handlePersonalSaveChanges = async () => {
       <label className={styles.readLabel2}>Username</label>
         <input
           required
-          type="text"
-          name="username"
-          autoComplete="off"
           className={styles.input}
           readOnly={true} 
-          // value={username} // Set the value with the retrieved username from the database 
+          value={profileData.username}
         />
       </div>
 

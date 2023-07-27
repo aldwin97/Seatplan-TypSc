@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from './viewSeatPage.module.css';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from "./viewSeatPage.module.css";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
   color: string;
-  position_name:string;
+  position_name: string;
   occupant: string;
   project: string;
   comments: string[];
@@ -26,11 +25,7 @@ interface Seat {
   user_id: number;
   userId1: number;
   userId2: number;
-
-
-  
 }
-
 
 interface SeatPopupProps {
   seat: Seat;
@@ -47,73 +42,75 @@ interface Occupant {
   // Add other properties if available in the response
 }
 
-function SeatPopup({ seat, onClose, }: SeatPopupProps): JSX.Element {
-  
-  const [ , setOccupantsList] = useState<Occupant[]>([]);
-  
+function SeatPopup({ seat, onClose }: SeatPopupProps): JSX.Element {
+  const [, setOccupantsList] = useState<Occupant[]>([]);
+
   useEffect(() => {
-    document.body.classList.toggle('popupOpen', true);
+    document.body.classList.toggle("popupOpen", true);
     return () => {
-      document.body.classList.toggle('popupOpen', false);
+      document.body.classList.toggle("popupOpen", false);
     };
   }, []);
-  
 
   useEffect(() => {
     fetchOccupants();
   }, []);
-  
+
   useEffect(() => {
     fetchOccupants();
   }, []);
 
   /// Function to fetch the list of occupants from the backend
-const fetchOccupants = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/seat/showAllUser');
-    if (response.ok) {
-      const occupantsData: Occupant[] = await response.json();
-      setOccupantsList(occupantsData);
-    } else {
-      console.error('Failed to fetch occupants');
+  const fetchOccupants = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/seat/showAllUser");
+      if (response.ok) {
+        const occupantsData: Occupant[] = await response.json();
+        setOccupantsList(occupantsData);
+      } else {
+        console.error("Failed to fetch occupants");
+      }
+    } catch (error) {
+      console.error("Error occurred while fetching occupants:", error);
     }
-  } catch (error) {
-    console.error('Error occurred while fetching occupants:', error);
-  }
-};
+  };
 
-return (
-  <div className={styles.seatPopupContainer}>
-    <div className={styles.seatPopupContent}>
-      <h3>{seat.seat_id}</h3>
-      <label>
-        Occupant:
-        <input type="text" value={seat.occupant} readOnly />
-      </label>
-      <label>
-        Project:
-        <input type="text" value={seat.project} readOnly />
-      </label>
-      <button type="button" className={styles.closeButton} onClick={onClose}>
-        Close
-      </button>
+  return (
+    <div className={styles.seatPopupContainer}>
+      <div className={styles.seatPopupContent}>
+        <h3 className={styles.header}>Seat {seat.seat_id}</h3>
+        <label className={styles.label}>
+          Occupant:
+          <input type="text" value={seat.occupant} readOnly />
+        </label>
+        <label className={styles.label}>
+          Position:
+          <input type="text" value={seat.position_name} readOnly />
+        </label>
+        <label className={styles.label}>
+          Project:
+          <input type="text" value={seat.project} readOnly />
+        </label>
+        <button type="button" className={styles.closeButton} onClick={onClose}>
+          Close
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 function ViewSeatPage() {
   const navigate = useNavigate();
 
   const viewSeatPageHandleClick = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
-    fetch('http://localhost:8080/seat/showAllSeat')
+    fetch("http://localhost:8080/seat/showAllSeat")
       .then((response) => response.json())
       .then((data) => {
         // Update the position and other properties of each seat based on the data received from the backend
@@ -130,46 +127,49 @@ function ViewSeatPage() {
         });
         setSeats(updatedSeats);
       })
-      .catch((error) => console.error('Error fetching seat data:', error));
+      .catch((error) => console.error("Error fetching seat data:", error));
   }, []);
 
-  
-  
   const [zoomLevel] = useState(1);
   const [canvasOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const lastClickTimeRef = useRef<number>(0);
   const [doubleClickFlag, setDoubleClickFlag] = useState(false);
   const [draggingSeatIndex, setDraggingSeatIndex] = useState(-1);
-  
+
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
     const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
-  
+
     const clickedSeatIndex = seats.findIndex((seat) => {
       const { x, y } = seat.position;
       const seatWidth = 50 / zoomLevel;
       const seatHeight = 50 / zoomLevel;
       const seatRight = x + seatWidth;
       const seatBottom = y + seatHeight;
-  
-      return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
+
+      return (
+        offsetX >= x &&
+        offsetX <= seatRight &&
+        offsetY >= y &&
+        offsetY <= seatBottom
+      );
     });
-  
+
     if (clickedSeatIndex > -1) {
       const now = new Date().getTime();
       const doubleClickThreshold = 300;
-  
+
       if (now - lastClickTimeRef.current <= doubleClickThreshold) {
         const clickedSeat = seats[clickedSeatIndex];
         setSelectedSeat(clickedSeat);
         setDoubleClickFlag(true); // Set the double-click flag
       } else {
         lastClickTimeRef.current = now;
-  
+
         const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
-  
+
         if (!isAnySeatSwapping) {
           setDraggingSeatIndex(clickedSeatIndex);
           const updatedSeats = seats.map((seat, index) => {
@@ -187,17 +187,22 @@ function ViewSeatPage() {
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
     const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
-  
+
     const clickedSeatIndex = seats.findIndex((seat) => {
       const { x, y } = seat.position;
       const seatWidth = 50 / zoomLevel;
       const seatHeight = 50 / zoomLevel;
       const seatRight = x + seatWidth;
       const seatBottom = y + seatHeight;
-  
-      return offsetX >= x && offsetX <= seatRight && offsetY >= y && offsetY <= seatBottom;
+
+      return (
+        offsetX >= x &&
+        offsetX <= seatRight &&
+        offsetY >= y &&
+        offsetY <= seatBottom
+      );
     });
-  
+
     if (draggingSeatIndex > -1 && clickedSeatIndex > -1) {
       const draggingSeat = seats[draggingSeatIndex];
       const clickedSeat = seats[clickedSeatIndex];
@@ -212,16 +217,16 @@ function ViewSeatPage() {
       });
       setSeats(updatedSeats);
     }
-  
+
     if (!doubleClickFlag) {
       setSelectedSeat(null);
     }
-  
+
     setDoubleClickFlag(false); // Reset the double-click flag
     setDraggingSeatIndex(-1); // Reset the dragging seat index
   };
-  
-  const [searchQuery, setSearchQuery] = useState('');
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -230,17 +235,15 @@ function ViewSeatPage() {
     };
     setSearchQuery(target.search.value);
   };
-  
+
   const filteredSeats = seats.filter((seat) => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
     return (
       seat.occupant?.toLowerCase().includes(lowerCaseSearchQuery) ||
-      (seat.seat_id.toString().includes(lowerCaseSearchQuery))
+      seat.seat_id.toString().includes(lowerCaseSearchQuery)
     );
   });
-  
-  
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
@@ -326,7 +329,7 @@ function ViewSeatPage() {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
+        ctx.fillText(projectNameAcronym, scaledX + seatSize /  2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
             .split(' ')
@@ -335,11 +338,11 @@ function ViewSeatPage() {
         
           // Calculate the center position to horizontally align the position name acronym
           const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
-          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 1;
+          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
           const adjustedTextOffsetX = textOffsetX + centerOffsetX;
         
           // Calculate the font size for the position name acronym to fit inside the seat box
-          let fontSize = 11;
+          let fontSize = 10;
           while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
             fontSize--;
             ctx.font = `${fontSize}px Arial`;
@@ -358,72 +361,80 @@ function ViewSeatPage() {
       });
     }
   }, [filteredSeats, zoomLevel, selectedSeat]);
-  
+
   const handleSeatClick = (seat: Seat) => {
     setSelectedSeat(seat);
   };
   return (
-   <body className={styles.body}> <div className={styles.container}>
-      {selectedSeat && (
-        <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} setSeats={setSeats} seats={seats} />
-      )}
-<div className={styles.title}>SEAT PLAN VIEW</div>
-<div className={styles.canvasWrapper} ref={containerRef}>
-  <div className={styles.root} ref={containerRef}>
-    <div className={styles.scrollableCanvas}>
-      <canvas
-        ref={canvasRef}
-        width={2800}
-        height={1400}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-      ></canvas>
-    </div>
-  </div>
+    <body className={styles.body}>
+      {" "}
+      <div className={styles.container}>
+        {selectedSeat && (
+          <SeatPopup
+            seat={selectedSeat}
+            onClose={() => setSelectedSeat(null)}
+            setSeats={setSeats}
+            seats={seats}
+          />
+        )}
+        <div className={styles.title}>SEAT PLAN VIEW</div>
+        <div className={styles.canvasWrapper} ref={containerRef}>
+          <div className={styles.root} ref={containerRef}>
+            <div className={styles.scrollableCanvas}>
+              <canvas
+                ref={canvasRef}
+                width={2800}
+                height={1400}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+              ></canvas>
+            </div>
+          </div>
 
-  <form onSubmit={handleFormSubmit} className={styles.searchForm}>
-    <input
-      type="text"
-      name="search"
-      placeholder="Search seat"
-      className={styles.searchInput}
-    />
-    <button type="submit" className={styles.searchButton}>
-      <FontAwesomeIcon icon={faSearch} />
-    </button>
-  </form>
-  <button className={styles.sign} type="submit" onClick={viewSeatPageHandleClick}>
+          <form onSubmit={handleFormSubmit} className={styles.searchForm}>
+            <input
+              type="text"
+              name="search"
+              placeholder="Search seat"
+              className={styles.searchInput}
+            />
+            <button type="submit" className={styles.searchButton}>
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
+          </form>
+          <button
+            className={styles.sign}
+            type="submit"
+            onClick={viewSeatPageHandleClick}
+          >
             SIGN IN
           </button>
-  {/* Render seats on the canvas */}
-  {seats.map((seat) => (
-    <div
-      key={seat.seat_id}
-      className={styles.seat}
-      style={{ left: seat.position_x, top: seat.position_y }}
-      onClick={() => handleSeatClick(seat)}
-    >
-      {seat.seat_num}
-    </div>
-  ))}
+          {/* Render seats on the canvas */}
+          {seats.map((seat) => (
+            <div
+              key={seat.seat_id}
+              className={styles.seat}
+              style={{ left: seat.position_x, top: seat.position_y }}
+              onClick={() => handleSeatClick(seat)}
+            >
+              {seat.seat_num}
+            </div>
+          ))}
+        </div>
 
-</div>
-
-<div className={styles.legend}>
-  <div className={styles.legendItem}>
-    <div className={`${styles.colorBox} ${styles.available}`}></div>
-    <span className={styles.label}>Available Seats</span>
-  </div>
-  <div className={styles.legendItem}>
-    <div className={`${styles.colorBox} ${styles.unavailable}`}></div>
-    <span className={styles.label}>Unavailable/Maintained Seats</span>
-  </div>
-</div>
-
-
-</div>
-</body>
-);
+        <div className={styles.legend}>
+          <div className={styles.legendItem}>
+            <div className={`${styles.colorBox} ${styles.available}`}></div>
+            <span className={styles.label}>Available Seats</span>
+          </div>
+          <div className={styles.legendItem}>
+            <div className={`${styles.colorBox} ${styles.unavailable}`}></div>
+            <span className={styles.label}>Unavailable/Maintained Seats</span>
+          </div>
+        </div>
+      </div>
+    </body>
+  );
 }
 
 export default ViewSeatPage;

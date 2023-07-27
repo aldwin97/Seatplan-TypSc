@@ -3,7 +3,7 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,Button,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { Dashboard,Chair,CheckCircle, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
+  import { Dashboard,Chair, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
   import { useNavigate } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
@@ -35,6 +35,7 @@
     const myChart = useRef<Chart | null>(null);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [UserData, setUserData] = useState<UserData | null>(null);
 
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
@@ -55,6 +56,29 @@
       seat_id:number;
     }
     
+    interface UserData {
+      first_name: string;
+      last_name: string;
+      position_name: string;
+    }
+  
+  
+    useEffect(() => {
+      const user_id = window.sessionStorage.getItem('user_id');
+  
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+  
+          const responseData: UserData = response.data[0];
+          setUserData(responseData);
+        } catch (error) {
+          console.error('Error fetching profile data:', error);
+        }
+      };
+  
+      fetchUserData();
+    }, []);
 
     useEffect(() => {
       // Fetch the data from the endpoint
@@ -63,14 +87,14 @@
           const response = await axios.get('http://localhost:8080/dashboard/showAllComment');
           const data: Comments[] = response.data;
   
-          // Set the 'com' state with the new data
+          
           setComments(data);
         } catch (error) {
           console.error('Error fetching showAllComment:', error);
         }
       };
   
-      // Fetch the data when the component mounts
+      
       fetchData();
     }, []);
 
@@ -103,7 +127,7 @@
 
         if (ctx) {
           if (myChart.current) {
-            myChart.current.destroy(); // Destroy the previo us chart
+            myChart.current.destroy();
           }
 
           myChart.current = new Chart(ctx, {
@@ -162,7 +186,7 @@
 
   const columns: readonly Column[] = [
     { id: 'ProjectName', label: 'Project Name', minWidth: 180},
-    { id: 'seatCount', label: 'Occupied Seat', minWidth: 30 ,},
+    { id: 'seatCount', label: 'Seats', minWidth: 30 ,},
     
   
   ];
@@ -316,10 +340,19 @@
         <div className={styles.container}>
           <div className={styles.main}>
 
-            <div className={styles.cardHello}>
-              <svg className={styles.Helloimg}></svg>
-              <div className={styles.Hellotitle}>HELLO <br/>{first_name} {last_name}</div>
-            </div>
+          <div className={styles.cardHello}>
+      <svg className={styles.Helloimg}></svg>
+      {UserData ? (
+        <div className={styles.Hellotitle}>
+          {UserData.first_name} {UserData.last_name}
+          <div className={styles.Hellotitle1}>{UserData.position_name}</div>
+        </div>
+        
+      ) : (
+        <div>Loading...</div>
+      )}
+       
+    </div>
               
               <div className={styles.countcontainer}>
                 <div className={styles.card1}>
@@ -340,10 +373,7 @@
             <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
               <div className={styles.cardtitle}>AVAILABLE SEATS</div>
             </div>
-            
 
-            
-            
             <div className={styles.card4}>
             <div className={styles.cardicon}><GroupsRounded style={{ fontSize: 42 }}/></div>
             <div className={styles.cardcount}>{dashboardData.countUser}</div>
@@ -406,9 +436,7 @@
             <div className={styles.cardcomment}>
                   <div className={styles.cardtitle2}>RECENT COMMENT</div>
                   <div className={styles.commentcontent}>
-                  
-                  
-              
+             
                   <List>
       {com.map((comment, index) => (
         <React.Fragment key={index}>
@@ -466,7 +494,7 @@
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
-                    align={column.align}
+                    align={column.align}  
                     style={{ minWidth: column.minWidth }}
                   >
                     {column.label}

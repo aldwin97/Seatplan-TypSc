@@ -511,7 +511,7 @@ useEffect(() => {
       ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9'; // Set default color to light gray
       ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
       ctx.strokeStyle = '#000000'; // Set the border color to black
-      ctx.lineWidth = 1 / zoomLevel; // Adjust the border width as needed
+      ctx.lineWidth = 2 / zoomLevel; // Adjust the border width as needed
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
 
       // Draw numbering box
@@ -721,17 +721,25 @@ useEffect(() => {
         ctx.fillStyle = '#000000';
         ctx.font = `${11 / zoomLevel}px Arial`;
         ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
-    
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1; // Set the border width
-    
-        // Calculate the position for the border rectangle
-        const borderX = scaledX + numberBoxSize / 18 - 5;
-        const borderY = scaledY + numberBoxSize / 9.5 - 9;
-        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
-        const borderHeight = 21; // Adjust the border height as needed
-    
-        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+        
+        const borderWidth = 2; // Adjust the border width as needed
+
+          // Draw the seat
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = borderWidth;
+          ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+
+          // Draw the border rectangle
+          ctx.strokeStyle = '#000000';
+
+          // Calculate the position for the border rectangle
+          const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
+          const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
+          const borderRectWidth = ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
+          const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
+
+          ctx.lineWidth = borderWidth;
+          ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
     
         const seatBoxY = scaledY + numberBoxSize;
         const seatBoxHeight = seatSize - numberBoxSize;
@@ -751,11 +759,11 @@ useEffect(() => {
     const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
 
     // Calculate the center position to horizontally align the occupant name
-    const centerOffsetX = (seatSize - occupantNameWidth) / 6;
+    const centerOffsetX = (seatSize - occupantNameWidth) / 1;
     const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
     // Calculate the font size for the occupant name to fit inside the seat box
-    let fontSize = 10;
+    let fontSize = 11;
     while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
       fontSize--;
       ctx.font = `${fontSize}px Arial`;
@@ -769,9 +777,29 @@ useEffect(() => {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        // Draw the project name acronym below the occupant
         ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
-    
+        if (seat.position_name) {
+          const positionNameAcronym = seat.position_name
+            .split(' ')
+            .map((word) => word.charAt(0).toUpperCase())
+            .join('');
+        
+          // Calculate the center position to horizontally align the position name acronym
+          const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
+          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
+          const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+        
+          // Calculate the font size for the position name acronym to fit inside the seat box
+          let fontSize = 10;
+          while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
+            fontSize--;
+            ctx.font = `${fontSize}px Arial`;
+          }
+        
+          // Draw the position name acronym below the seat
+          ctx.fillText(positionNameAcronym, scaledX + + seatSize / 2.3,+ scaledY + textOffsetY / 3.4 + 1);
+        }
+        
         
   
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {

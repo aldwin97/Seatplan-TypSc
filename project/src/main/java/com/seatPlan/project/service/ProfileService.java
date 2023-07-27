@@ -28,8 +28,8 @@ public class ProfileService {
         .map(userInfo ->{
             Map<String, Object> userInfoMap = new HashMap<>();
             userInfoMap.put("user_id",userInfo.getUser_id());
-            userInfoMap.put("last_name", userInfo.getFirst_name());
-            userInfoMap.put("first_name",userInfo.getLast_name());
+            userInfoMap.put("first_name", userInfo.getFirst_name());
+            userInfoMap.put("last_name",userInfo.getLast_name());
             userInfoMap.put("email",userInfo.getEmail());
             userInfoMap.put("username",userInfo.getUsername());
             userInfoMap.put("mobile_num", userInfo.getMobile_num());

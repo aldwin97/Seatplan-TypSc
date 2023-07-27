@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './viewSeatPage.module.css';
@@ -9,6 +9,7 @@ interface Seat {
   position: { x: number; y: number };
   isSwapping: boolean;
   color: string;
+  position_name:string;
   occupant: string;
   project: string;
   comments: string[];
@@ -25,7 +26,11 @@ interface Seat {
   user_id: number;
   userId1: number;
   userId2: number;
+
+
+  
 }
+
 
 interface SeatPopupProps {
   seat: Seat;
@@ -106,8 +111,6 @@ function ViewSeatPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch('http://localhost:8080/seat/showAllSeat')
@@ -267,17 +270,25 @@ function ViewSeatPage() {
         ctx.fillStyle = '#000000';
         ctx.font = `${11 / zoomLevel}px Arial`;
         ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
-    
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1; // Set the border width
-    
-        // Calculate the position for the border rectangle
-        const borderX = scaledX + numberBoxSize / 18 - 5;
-        const borderY = scaledY + numberBoxSize / 9.5 - 9;
-        const borderWidth = ctx.measureText(seat.seat_id.toString()).width + 13; // Adjust the border width based on the text width
-        const borderHeight = 21; // Adjust the border height as needed
-    
-        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+        
+        const borderWidth = 2; // Adjust the border width as needed
+
+          // Draw the seat
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = borderWidth;
+          ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+
+          // Draw the border rectangle
+          ctx.strokeStyle = '#000000';
+
+          // Calculate the position for the border rectangle
+          const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
+          const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
+          const borderRectWidth = ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
+          const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
+
+          ctx.lineWidth = borderWidth;
+          ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
     
         const seatBoxY = scaledY + numberBoxSize;
         const seatBoxHeight = seatSize - numberBoxSize;
@@ -290,18 +301,18 @@ function ViewSeatPage() {
 
     // Draw the occupant's name
     const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
-    const surname = occupantNameParts[1].toUpperCase(); // Extract the surname and convert it to uppercase
+    const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
     const firstName = occupantNameParts[0]; // Extract the first name
     const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
 
     const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
 
     // Calculate the center position to horizontally align the occupant name
-    const centerOffsetX = (seatSize - occupantNameWidth) / 6;
+    const centerOffsetX = (seatSize - occupantNameWidth) / 2;
     const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
     // Calculate the font size for the occupant name to fit inside the seat box
-    let fontSize = 10;
+    let fontSize = 11;
     while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
       fontSize--;
       ctx.font = `${fontSize}px Arial`;
@@ -315,9 +326,29 @@ function ViewSeatPage() {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        // Draw the project name acronym below the occupant
         ctx.fillText(projectNameAcronym, scaledX + seatSize / 3, scaledY + seatSize - textOffsetY/ 1 + 40);
-    
+        if (seat.position_name) {
+          const positionNameAcronym = seat.position_name
+            .split(' ')
+            .map((word) => word.charAt(0).toUpperCase())
+            .join('');
+        
+          // Calculate the center position to horizontally align the position name acronym
+          const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
+          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 1;
+          const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+        
+          // Calculate the font size for the position name acronym to fit inside the seat box
+          let fontSize = 11;
+          while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
+            fontSize--;
+            ctx.font = `${fontSize}px Arial`;
+          }
+        
+          // Draw the position name acronym below the seat
+          ctx.fillText(positionNameAcronym, scaledX + + seatSize / 2.3,+ scaledY + textOffsetY / 3.4 + 1);
+        }
+        
         
   
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {

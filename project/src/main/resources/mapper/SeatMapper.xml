@@ -24,7 +24,7 @@
         LEFT JOIN table_seatstatus tss ON ts.seatstatus_id = tss.seatstatus_id
     </select> -->
 
-    <select id="getAllSeatModels" resultType="com.seatPlan.project.model.SeatModel">
+     <select id="getAllSeatModels" resultType="com.seatPlan.project.model.SeatModel">
         SELECT 
         ts.*, 
         CASE 
@@ -55,7 +55,6 @@
     LEFT JOIN table_seatstatus tss ON ts.seatstatus_id = tss.seatstatus_id
     LEFT JOIN table_position tpn ON tu.position_id = tpn.position_id;
     </select>
-    
 
 
     <insert id="insertComment"  parameterType="com.seatPlan.project.model.CommentInputModel">

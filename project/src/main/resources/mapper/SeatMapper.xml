@@ -26,32 +26,34 @@
 
     <select id="getAllSeatModels" resultType="com.seatPlan.project.model.SeatModel">
         SELECT 
-            ts.*, 
-            CASE 
-                WHEN ts.seatstatus_id = 3 THEN 'Under'
-                WHEN tu.is_deleted = 1 THEN 'Free'
-                ELSE COALESCE(tu.first_name, 'Free')
-            END AS first_name,
-            CASE 
-                WHEN ts.seatstatus_id = 3 THEN 'Repair'
-                WHEN tu.is_deleted = 1 THEN 'Space'
-                ELSE COALESCE(tu.last_name, 'Space')
-            END AS last_name, 
-            ta.area_name,
-            CASE WHEN tu.is_deleted = 1 THEN 0 ELSE COALESCE(tu.project_id, 0) END AS project_id,
-            CASE WHEN tu.is_deleted = 1 THEN 'No Project' ELSE COALESCE(tp.project_name, 'No Project') END AS project_name,
-            CASE 
-                WHEN ts.seatstatus_id = 3 THEN '#FF0000'
-                WHEN tu.is_deleted = 1 THEN '#FFFFFF'
-                ELSE COALESCE(tc.color_code, '#FFFFFF')
-            END AS color_code,
-            COALESCE(tss.seat_status, 'No Seat Status') AS seat_status
-        FROM table_seat ts
-        LEFT JOIN table_user tu ON ts.user_id = tu.user_id
-        LEFT JOIN table_area ta ON ts.area_id = ta.area_id
-        LEFT JOIN table_project tp ON tu.project_id = tp.project_id
-        LEFT JOIN table_color tc ON tp.color_id = tc.color_id
-        LEFT JOIN table_seatstatus tss ON ts.seatstatus_id = tss.seatstatus_id
+        ts.*, 
+        CASE 
+            WHEN ts.seatstatus_id = 3 THEN 'Under'
+            WHEN tu.is_deleted = 1 THEN 'SPACE'
+            ELSE COALESCE(tu.first_name, 'SPACE')
+        END AS first_name,
+        CASE 
+            WHEN ts.seatstatus_id = 3 THEN 'Repair'
+            WHEN tu.is_deleted = 1 THEN 'FREE'
+            ELSE COALESCE(tu.last_name, 'FREE')
+        END AS last_name, 
+        ta.area_name,
+        CASE WHEN tu.is_deleted = 1 THEN 0 ELSE COALESCE(tu.project_id, 0) END AS project_id,
+        CASE WHEN tu.is_deleted = 1 THEN 'No Project' ELSE COALESCE(tp.project_name, 'No Project') END AS project_name,
+        CASE 
+            WHEN ts.seatstatus_id = 3 THEN '#FF0000'
+            WHEN tu.is_deleted = 1 THEN '#FFFFFF'
+            ELSE COALESCE(tc.color_code, '#FFFFFF')
+        END AS color_code,
+        COALESCE(tss.seat_status, 'No Seat Status') AS seat_status,
+        tpn.position_name  -- New column to get the position_name
+    FROM table_seat ts
+    LEFT JOIN table_user tu ON ts.user_id = tu.user_id
+    LEFT JOIN table_area ta ON ts.area_id = ta.area_id
+    LEFT JOIN table_project tp ON tu.project_id = tp.project_id
+    LEFT JOIN table_color tc ON tp.color_id = tc.color_id
+    LEFT JOIN table_seatstatus tss ON ts.seatstatus_id = tss.seatstatus_id
+    LEFT JOIN table_position tpn ON tu.position_id = tpn.position_id;
     </select>
     
 

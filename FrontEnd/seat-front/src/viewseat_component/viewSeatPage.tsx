@@ -337,11 +337,11 @@ function ViewSeatPage() {
         
           // Calculate the center position to horizontally align the position name acronym
           const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
-          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
+          const centerOffsetX = (seatSize - positionNameAcronymWidth) / 1;
           const adjustedTextOffsetX = textOffsetX + centerOffsetX;
         
           // Calculate the font size for the position name acronym to fit inside the seat box
-          let fontSize = 10;
+          let fontSize = 11;
           while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
             fontSize--;
             ctx.font = `${fontSize}px Arial`;

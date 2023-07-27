@@ -50,64 +50,100 @@
     </select>
 
     <select id="countAssignedEmpIntern" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        SELECT COUNT(DISTINCT seat.user_id) AS seat_count
+        FROM table_seat seat
+        INNER JOIN table_user u ON seat.user_id = u.user_id
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
-        LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'intern' AND u.is_deleted = 0
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'intern';
       </select>
 
 
     <select id="countAssignedEmpTrainee" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        <!-- SELECT COUNT(*) FROM table_user u
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
         LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'trainee' AND u.is_deleted = 0
+        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'trainee' AND u.is_deleted = 0 -->
+
+        SELECT COUNT(DISTINCT seat.user_id) AS seat_count
+        FROM table_seat seat
+        INNER JOIN table_user u ON seat.user_id = u.user_id
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'trainee';
     </select> 
 
 
     <select id="countAssignedEmpRegular" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        <!-- SELECT COUNT(*) FROM table_user u
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
         LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'regular' AND u.is_deleted = 0
+        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'regular' AND u.is_deleted = 0 -->
+
+        SELECT COUNT(DISTINCT seat.user_id) AS seat_count
+        FROM table_seat seat
+        INNER JOIN table_user u ON seat.user_id = u.user_id
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'regular';
         </select>
 
     <select id="countAssignedEmpContractual" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        SELECT COUNT(DISTINCT seat.user_id) AS seat_count
+        FROM table_seat seat
+        INNER JOIN table_user u ON seat.user_id = u.user_id
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
-        LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) != 'no project' AND LOWER(s.staffstatus_name) = 'contractual' AND u.is_deleted = 0
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'Business partner';
     </select> 
 
 
     <select id="countUnassignedEmpIntern" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        <!-- SELECT COUNT(*) FROM table_user u
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
         LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'intern' AND u.is_deleted = 0
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'intern' AND u.is_deleted = 0 -->
+
+        SELECT COUNT(DISTINCT u.user_id) AS not_in_seat_count
+        FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_seat seat ON u.user_id = seat.user_id
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'intern' AND seat.user_id IS NULL;
+
       </select>
 
 
     <select id="countUnassignedEmpTrainee" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        <!-- SELECT COUNT(*) FROM table_user u
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
         LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'trainee' AND u.is_deleted = 0
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'trainee' AND u.is_deleted = 0 -->
+        SELECT COUNT(DISTINCT u.user_id) AS not_in_seat_count
+        FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_seat seat ON u.user_id = seat.user_id
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'trainee' AND seat.user_id IS NULL;
     </select> 
 
 
     <select id="countUnassignedEmpRegular" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        <!-- SELECT COUNT(*) FROM table_user u
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
         LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'regular' AND u.is_deleted = 0
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'regular' AND u.is_deleted = 0 -->
+        SELECT COUNT(DISTINCT u.user_id) AS not_in_seat_count
+        FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_seat seat ON u.user_id = seat.user_id
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'regular' AND seat.user_id IS NULL;
     </select> 
 
     <select id="countUnassignedEmpContractual" resultType="int">
-        SELECT COUNT(*) FROM table_user u
+        <!-- SELECT COUNT(*) FROM table_user u
         INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
         LEFT JOIN table_project p ON u.project_id = p.project_id
-        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'contractual' AND u.is_deleted = 0
+        WHERE LOWER(p.project_name) = 'no project' AND LOWER(s.staffstatus_name) = 'contractual' AND u.is_deleted = 0 -->
+        SELECT COUNT(DISTINCT u.user_id) AS not_in_seat_count
+        FROM table_user u
+        INNER JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+        LEFT JOIN table_seat seat ON u.user_id = seat.user_id
+        WHERE u.is_deleted = 0 AND LOWER(s.staffstatus_name) = 'business partner' AND seat.user_id IS NULL;
     </select> 
 
 

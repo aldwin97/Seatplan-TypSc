@@ -138,62 +138,40 @@
 }
 
 
-/* .inputDisplay {
+.inputDisplay {
   position: absolute;
   margin-top: 55%;
-} */
+}
 
 
 
-
-/* 
-.nameContainer {
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-} 
-
-
-.nameContainer h2 {
-  color: #525252;
-  font-size: 45px;
+h3 {
+  color: #10530e;
+  font-size: 50px;
   font-family: 'League Spartan Bold';
   margin: 0 7px; 
   text-align: center;
 }
 
-h3{
+h4 {
   text-align: center;
-  color: #525252;
-  font-size: 26px;
+  color: #267900;
+  font-size: 27px;
   font-family: 'League Spartan Light';
- margin-bottom: 91px;
-position: relative;
-
+  margin: -18px auto 0; /* Add a top margin to create space between h3 and h4 */
+  position: relative;
+  margin-bottom: 20px;
 }
 
-
-
-h4{
+h5 {
   text-align: center;
   color: #525252;
-  font-size: 16px;
+  font-size: 18px;
   font-family: 'League Spartan Light';
-  margin-bottom: -8%;
-  bottom: 100px;
+  margin: auto 0;
   position: relative;
+  margin-top: -5px;
 }
-
-
-h5{
-  text-align: center;
-  color: #525252;
-  font-size: 30px;
-  font-family: 'League Spartan Light';
-  margin-bottom: -8%;
-  bottom: 250px;
-  position: relative;
-} */
 
 .seatButton{
   display:flex;
@@ -378,8 +356,6 @@ input:valid {
   outline: none;
   border: 1px solid #2da738;
 }
-
-
 
 
 

@@ -341,6 +341,7 @@
 /* Popup content */
 .seatPopupContent {
   display: flex;
+  width: 300px;
   background-color: white;
   flex-direction: column;
   align-items: center;
@@ -355,6 +356,7 @@
   scale: 0.99;
 }
 .seatPopupContent h3 {
+  font-size: 30px;
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -404,6 +406,7 @@
   background-color: #28a745;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
+  width: 80px;
 }
 .seatPopupContent button:hover[type="submit"] {
   background-color: #0056b3;
@@ -419,6 +422,7 @@
 }
 .editButton
 {
+  width: 80px;
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
@@ -441,13 +445,13 @@
 
 /* Close button */
 .seatPopupContent .closeButton {
+  position: absolute;
   top: 10px;
   right: 10px;
   background-color: transparent;
   border: none;
   color: #ff0000;
   cursor: pointer;
-  transition: color 0.3s ease;
   font-size: 12px;
 }
 
@@ -723,4 +727,85 @@ margin-top: 40px;
 
 .errorPopup button:hover {
   background-color: #b6b6b6;
+}
+.arrowToggle {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+
+/* Optional styles to change the arrow icon appearance */
+.arrowToggle svg {
+  width: 16px;
+  height: 16px;
+  color: #333; /* Change the color to your desired icon color */
+}
+
+/* Styles for the expanded view of the arrow toggle */
+.arrowToggle.expanded {
+  background-color: #e0e0e0; /* Change the background color when expanded */
+}
+
+/* Styles for the arrow icon when the toggle is expanded */
+.arrowToggle.expanded svg {
+  transform: rotate(180deg); /* Rotate the arrow icon 180 degrees when expanded */
+}
+
+
+
+/* Styles for labels */
+.labels {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Styles for input elements */
+.input[type="text"] {
+  flex: 1;
+  padding: 5px;
+}
+/* seatplanPage.module.css */
+
+/* Existing styles */
+
+/* Styles for select elements */
+.select {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 100%;
+  max-width: 220px; /* Adjust the max-width as needed */
+}
+
+/* Styles for option elements */
+.option {
+  padding: 5px;
+  font-size: 14px;
+  color: #000000;
+  background-color: #fff;
+}
+
+/* Styles for the default (placeholder) option */
+.option[value=""] {
+  color: #888; /* Change the color to your desired placeholder color */
+}
+.addCommentButton {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
 }

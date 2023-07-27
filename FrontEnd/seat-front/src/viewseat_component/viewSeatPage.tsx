@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './viewSeatPage.module.css';
@@ -111,8 +111,6 @@ function ViewSeatPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch('http://localhost:8080/seat/showAllSeat')

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, ChangeEvent } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faSmile, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';

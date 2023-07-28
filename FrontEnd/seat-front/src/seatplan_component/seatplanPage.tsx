@@ -6,8 +6,8 @@ import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
-import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
+import domtoimage from 'dom-to-image';
 
 interface Seat {
   position: { x: number; y: number };
@@ -816,7 +816,8 @@ useEffect(() => {
 
 
 
-const exportToExcel = async () => {
+ // Helper function to convert data URL to Buffer-like object
+ const exportToExcel = async () => {
   if (!containerRef.current || !canvasRef.current) {
     return;
   }
@@ -826,12 +827,9 @@ const exportToExcel = async () => {
     containerRef.current.style.width = '2800px';
     containerRef.current.style.height = '1400px';
 
-    // Capture the entire canvas using html2canvas
+    // Capture the entire canvas using dom-to-image
     const container = containerRef.current;
-    const containerImage = await html2canvas(container, { scrollY: window.scrollY });
-
-    const dataURL = containerImage.toDataURL('image/png');
-    console.log('DataURL:', dataURL); // Log the dataURL to check if it contains the image data
+    const containerImage = await domtoimage.toPng(container);
 
     const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
@@ -840,7 +838,7 @@ const exportToExcel = async () => {
     const worksheet = workbook.addWorksheet('SeatPlanData');
 
     // Convert the data URL to a Buffer
-    const imageData = dataURLToBuffer(dataURL);
+    const imageData = await dataURLToBuffer(containerImage);
 
     // Add the image to the worksheet
     const imageId = workbook.addImage({
@@ -850,30 +848,24 @@ const exportToExcel = async () => {
 
     worksheet.addImage(imageId, {
       tl: { col: 0, row: 0 },
-      ext: { width: 2800, height: 1400 },
+      ext: { width: 5000, height: 5000 },
     });
 
     // Save the workbook as an Excel file
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), fileName);
+    window.location.reload();
   } catch (error) {
     console.error('Error exporting to Excel:', error);
   }
 };
 
-// Helper function to convert data URL to Buffer
-const dataURLToBuffer = (dataURL: string): Buffer => {
-  const arr = dataURL.split(',');
-  const bstr = atob(arr[1]);
-  let n = bstr.length; // Use 'let' instead of 'const' for n
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return Buffer.from(u8arr);
+// Helper function to convert data URL to Buffer-like object
+const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
+  const response = await fetch(dataURL);
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
 };
-
-
 
 
   return (
@@ -928,7 +920,6 @@ const dataURLToBuffer = (dataURL: string): Buffer => {
 <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>
     <div className={styles.scrollableCanvas}>
-    <div className={styles.canvasWrapper} ref={containerRef}>
       <canvas
         ref={canvasRef}
         width={2800}
@@ -937,7 +928,6 @@ const dataURLToBuffer = (dataURL: string): Buffer => {
         onMouseUp={handleMouseUp}
       ></canvas>
       </div>
-    </div>
   </div>
 
   <form onSubmit={handleFormSubmit} className={styles.searchForm}>

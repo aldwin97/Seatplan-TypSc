@@ -48,7 +48,7 @@
             <update id="updateUserPicture" parameterType="com.seatPlan.project.model.UserModel">
                 UPDATE table_user
                 <set>
-                <if test="user_picture != null">user_picture = #{user_picture},</if>
+                user_picture = #{user_picture}
                 </set>
                 WHERE user_id = #{user_id}
             </update>

@@ -11,9 +11,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProfileService;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 
 @RestController
@@ -110,26 +122,56 @@ public ResponseEntity<String> updateUserPassword(@PathVariable("user_id") Long u
 
 
 
- @PutMapping("/updatePicture/{user_id}")
-    public ResponseEntity<String> updateUserPicture(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
+@PutMapping("/updatePicture/{user_id}")
+public ResponseEntity<String> updateUserPicture(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel, @RequestParam("user_picture") MultipartFile user_picture) {
+
     try {
         UserModel existingUser = profileService.getUserById(user_id);
         if (existingUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        if (userModel.getUser_picture() != null) {
-            existingUser.setUser_picture(userModel.getUser_picture());
-        }
+        long maxFileSize = 5 * 1024 * 1024;
+        if (user_picture != null && !user_picture.isEmpty()) {
 
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+            // Set the target directory where you want to copy the uploaded image
+            String targetDirectory = "C:\\Storage\\Profile"; // Replace with the desired local storage path
+
+            File directory = new File(targetDirectory);
+
+            if (!directory.exists()) {
+                directory.mkdirs();
+            } 
+            
+            if (user_picture.getSize() > maxFileSize) {
+                return ResponseEntity.badRequest().body("File size exceeds the maximum limit.");
+            }else{
+                // Save the profile picture file to a desired location
+                String originalFilename = user_picture.getOriginalFilename();
+                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+                String newFilename = timeStamp + fileExtension;
+    
+                
+                Path targetPath = Paths.get(targetDirectory, newFilename);
+
+                // Copy the uploaded image to the target path
+                Files.copy(user_picture.getInputStream(), targetPath);
+    
+                // Update the profile picture field in the existing user object
+                existingUser.setUser_picture(newFilename);
+
+            }
+
+        }
         profileService.updateUserPicture(existingUser);
         return ResponseEntity.ok("User picture uploaded successfully");
-
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload user picture");
-    }
+} catch (Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload user picture");
 }
 
+}
 
 
 

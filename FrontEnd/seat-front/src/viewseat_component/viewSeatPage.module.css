@@ -361,6 +361,7 @@
 /* Popup content */
 .seatPopupContent {
   display: flex;
+  width: 300px;
   background-color: white;
   flex-direction: column;
   align-items: center;
@@ -370,11 +371,24 @@
   padding: 30px; /* Add padding to create some space between the border and content */
   transition: 0.2s .3s ease-in-out;
 }
+
 .seatPopupContent:hover {
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   scale: 0.99;
 }
 .seatPopupContent h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.seatPopupContent form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seatPopupContent h3 {
+  font-size: 30px;
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -393,7 +407,9 @@
 
 .seatPopupContent input[type="text"] {
   padding: 8px;
-border: none;
+  border: none;
+  font-size: 15px;
+  transition-duration: .3s;
 }
 
 .seatPopupContent input[type="color"] {
@@ -401,6 +417,7 @@ border: none;
   border: none;
   outline: none;
   cursor: pointer;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
 }
 
@@ -420,6 +437,7 @@ border: none;
   background-color: #28a745;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
+  width: 80px;
 }
 .seatPopupContent button:hover[type="submit"] {
   background-color: #0056b3;
@@ -435,6 +453,7 @@ border: none;
 }
 .editButton
 {
+  width: 80px;
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
@@ -457,14 +476,18 @@ border: none;
 
 /* Close button */
 .seatPopupContent .closeButton {
+  position: absolute;
   top: 10px;
   right: 10px;
   background-color: transparent;
   border: none;
   color: #ff0000;
   cursor: pointer;
-  transition: color 0.3s ease;
   font-size: 12px;
+}
+
+.seatPopupContent .closeButton:hover {
+  color: #777;
 }
 
 .seatPopupContent .closeButton:hover {

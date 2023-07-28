@@ -39,6 +39,7 @@
         FROM table_project p
         LEFT JOIN table_user u ON p.project_id = u.project_id
         GROUP BY p.project_id, p.project_name
+        ORDER BY seatCount DESC
     </select>
 
 

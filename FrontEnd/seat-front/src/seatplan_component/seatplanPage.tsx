@@ -5,6 +5,9 @@ import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff,
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import ExcelJS from 'exceljs';
+import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
 
 interface Seat {
   position: { x: number; y: number };
@@ -810,6 +813,69 @@ useEffect(() => {
   const handleSeatClick = (seat: Seat) => {
     setSelectedSeat(seat);
   };
+
+
+
+const exportToExcel = async () => {
+  if (!containerRef.current || !canvasRef.current) {
+    return;
+  }
+
+  try {
+    // Ensure the container is large enough to contain the entire canvas
+    containerRef.current.style.width = '2800px';
+    containerRef.current.style.height = '1400px';
+
+    // Capture the entire canvas using html2canvas
+    const container = containerRef.current;
+    const containerImage = await html2canvas(container, { scrollY: window.scrollY });
+
+    const dataURL = containerImage.toDataURL('image/png');
+    console.log('DataURL:', dataURL); // Log the dataURL to check if it contains the image data
+
+    const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+    // Create a new workbook
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('SeatPlanData');
+
+    // Convert the data URL to a Buffer
+    const imageData = dataURLToBuffer(dataURL);
+
+    // Add the image to the worksheet
+    const imageId = workbook.addImage({
+      buffer: imageData,
+      extension: 'png',
+    });
+
+    worksheet.addImage(imageId, {
+      tl: { col: 0, row: 0 },
+      ext: { width: 2800, height: 1400 },
+    });
+
+    // Save the workbook as an Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), fileName);
+  } catch (error) {
+    console.error('Error exporting to Excel:', error);
+  }
+};
+
+// Helper function to convert data URL to Buffer
+const dataURLToBuffer = (dataURL: string): Buffer => {
+  const arr = dataURL.split(',');
+  const bstr = atob(arr[1]);
+  let n = bstr.length; // Use 'let' instead of 'const' for n
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return Buffer.from(u8arr);
+};
+
+
+
+
   return (
    <body className={styles.body}> <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
@@ -862,6 +928,7 @@ useEffect(() => {
 <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>
     <div className={styles.scrollableCanvas}>
+    <div className={styles.canvasWrapper} ref={containerRef}>
       <canvas
         ref={canvasRef}
         width={2800}
@@ -869,6 +936,7 @@ useEffect(() => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       ></canvas>
+      </div>
     </div>
   </div>
 
@@ -882,6 +950,9 @@ useEffect(() => {
     <button type="submit" className={styles.searchButton}>
       <FontAwesomeIcon icon={faSearch} />
     </button>
+    <button onClick={exportToExcel} className={styles.searchButton}>
+        Export to Excel
+      </button>
   </form>
 
   {/* Render seats on the canvas */}

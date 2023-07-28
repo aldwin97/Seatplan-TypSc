@@ -239,6 +239,7 @@ body {
   grid-column: 3;
 }
 .cardicon {
+  width:50;
   align-items: center;
   color:  #20770E;
   background-size: cover; /* Adjust the background size as needed */

@@ -5,8 +5,9 @@ import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff,
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
 
 interface Seat {
   position: { x: number; y: number };
@@ -813,47 +814,67 @@ useEffect(() => {
     setSelectedSeat(seat);
   };
 
-  const exportToExcel = async () => {
-    if (!containerRef.current) {
-      return;
-    }
-  
-    try {
-      const container = containerRef.current;
-      const containerImage = await html2canvas(container);
-  
-      const dataURL = containerImage.toDataURL('image/png');
-      const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
-  
-      // Create a new workbook
-      const workbook = XLSX.utils.book_new();
-  
-      // Create a new worksheet
-      const worksheet = XLSX.utils.aoa_to_sheet([['Seat Plan Image']]);
-  
-      // Add the image as a link to the workbook
-      worksheet['A1'] = { t: 's', v: 'Click the link to view the Seat Plan Image', l: { Target: dataURL, Tooltip: 'Click to view image' } };
-  
-      // Add the worksheet to the workbook
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'SeatPlanData');
-  
-      // Save the workbook as an Excel file
-      XLSX.writeFile(workbook, fileName);
-    } catch (error) {
-      console.error('Error exporting to Excel:', error);
-    }
-  };
-  
-  const dataURLtoBuffer = (dataURL: string): Uint8Array => {
-    const base64String = dataURL.split(',')[1];
-    const binaryString = atob(base64String);
-    const length = binaryString.length;
-    const uint8Array = new Uint8Array(length);
-    for (let i = 0; i < length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
-    }
-    return uint8Array;
-  };
+
+
+const exportToExcel = async () => {
+  if (!containerRef.current || !canvasRef.current) {
+    return;
+  }
+
+  try {
+    // Ensure the container is large enough to contain the entire canvas
+    containerRef.current.style.width = '2800px';
+    containerRef.current.style.height = '1400px';
+
+    // Capture the entire canvas using html2canvas
+    const container = containerRef.current;
+    const containerImage = await html2canvas(container, { scrollY: window.scrollY });
+
+    const dataURL = containerImage.toDataURL('image/png');
+    console.log('DataURL:', dataURL); // Log the dataURL to check if it contains the image data
+
+    const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+    // Create a new workbook
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('SeatPlanData');
+
+    // Convert the data URL to a Buffer
+    const imageData = dataURLToBuffer(dataURL);
+
+    // Add the image to the worksheet
+    const imageId = workbook.addImage({
+      buffer: imageData,
+      extension: 'png',
+    });
+
+    worksheet.addImage(imageId, {
+      tl: { col: 0, row: 0 },
+      ext: { width: 2800, height: 1400 },
+    });
+
+    // Save the workbook as an Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), fileName);
+  } catch (error) {
+    console.error('Error exporting to Excel:', error);
+  }
+};
+
+// Helper function to convert data URL to Buffer
+const dataURLToBuffer = (dataURL: string): Buffer => {
+  const arr = dataURL.split(',');
+  const bstr = atob(arr[1]);
+  let n = bstr.length; // Use 'let' instead of 'const' for n
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return Buffer.from(u8arr);
+};
+
+
+
 
   return (
    <body className={styles.body}> <div className={styles.container}>

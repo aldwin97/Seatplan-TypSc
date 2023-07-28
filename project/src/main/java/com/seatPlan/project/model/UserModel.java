@@ -1,6 +1,7 @@
 //Kenneth Christian B. Gutierrez
 package com.seatPlan.project.model;
 
+
 import java.sql.Blob;
 import java.time.LocalDateTime;
 
@@ -28,7 +29,7 @@ public class UserModel {
     private Long staffstatus_id;
     private Long usertype_id;
     private Long position_id;
-    private Blob user_picture;    
+    private String user_picture;    
     private int is_deleted;
     private LocalDateTime created_time;
     private Long created_by;

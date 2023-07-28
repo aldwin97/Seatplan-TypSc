@@ -84,7 +84,31 @@ const ProfilePage: React.FC = () => {
         );
 
         const responseData: UserProfile = response.data[0];
-        setProfileData(responseData);
+
+        const contactNumberInt = parseInt(responseData.mobile_num, 10);
+
+        setInputValues({
+          FirstName: responseData.first_name,
+          LastName: responseData.last_name,
+          Email: responseData.email,
+          ContactNumber: contactNumberInt.toString(),
+        });
+
+        setSavedPersonalInfo({
+          FirstName: responseData.first_name,
+          LastName: responseData.last_name,
+          Email: responseData.email,
+          ContactNumber: contactNumberInt.toString(),
+        });
+
+        setProfileData({
+          first_name: responseData.first_name,
+          last_name: responseData.last_name,
+          email: responseData.email,
+          position_name: responseData.position_name,
+          username: responseData.username,
+          mobile_num: responseData.mobile_num,
+        });
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -148,7 +172,7 @@ const ProfilePage: React.FC = () => {
             email: inputValues.Email,
             mobile_num: inputValues.ContactNumber,
           });
-         
+
           setPersonalEditMode(false);
           setPersonalFormValid(true);
         } else {
@@ -186,15 +210,13 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleAccountCancelChanges = (): void => {
-    // Restore the initial account values when the "Cancel" button is clicked
     setAccountValues({ ...initialAccountValues });
-    setConfirmPasswordError(""); // Reset the confirmPasswordError state
-    setPasswordMismatchSnackbar(false); // Hide the Snackbar for password mismatch when cancelled
+    setConfirmPasswordError("");
+    setPasswordMismatchSnackbar(false);
     setAccountEditMode(false);
   };
 
   const handleAccountEditClick = () => {
-    // Save the current account values when entering edit mode
     setInitialAccountValues({ ...accountValues });
     setAccountEditMode(true);
   };
@@ -205,7 +227,7 @@ const ProfilePage: React.FC = () => {
     const { name, value } = event.target;
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: String(value), // Convert value to a string
     }));
   };
 
@@ -219,9 +241,8 @@ const ProfilePage: React.FC = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    event.target.value = ""; // Reset the value of the file input
+    event.target.value = "";
     if (file) {
-      // Check if the file is an image based on the MIME type or file extension
       if (
         !file.type.startsWith("image/") ||
         !/\.(jpg|jpeg|png)$/i.test(file.name)
@@ -231,27 +252,21 @@ const ProfilePage: React.FC = () => {
         return;
       }
 
-      // Handle the file here if needed
       console.log("Selected file:", file);
 
-      // Check if the file is a Blob
       if (file instanceof Blob) {
-        // console.log('File is a Blob!');
+        console.log("File is a Blob!");
 
-        // Generate a Blob URL for the selected file
         const blobUrl = URL.createObjectURL(file);
-        // console.log('Blob URL:', blobUrl);
+        console.log("Blob URL:", blobUrl);
 
-        // Use the blobUrl directly to display the image (e.g., set it as an image src)
         setSelectedImage(blobUrl);
       }
 
-      // Read the selected file as a data URL (base64-encoded string)
       const reader = new FileReader();
       reader.onload = () => {
         const base64File = reader.result as string;
 
-        // Set the base64File as the image URL to be displayed
         setSelectedImage(base64File);
         console.log(base64File);
       };
@@ -282,7 +297,6 @@ const ProfilePage: React.FC = () => {
 
     if (isPersonalFormValid) {
       console.log("yes");
-      // Show success Snackbar when the form is valid
       setPersonalFormValidSnackbar(true);
     } else {
       console.log("no");
@@ -296,8 +310,8 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleSnackbarClose = () => {
-    setPersonalFormValid(true); // Reset the form validity state when Snackbar is closed
-    setPersonalFormValidSnackbar(false); // Hide the success Snackbar when it's closed
+    setPersonalFormValid(true);
+    setPersonalFormValidSnackbar(false);
   };
 
   const handleAccountSnackbarClose = () => {
@@ -315,7 +329,7 @@ const ProfilePage: React.FC = () => {
 
           <div className={styles.inputDisplay}>
             <h3>
-              {profileData.first_name} {profileData.last_name} 
+              {profileData.first_name} {profileData.last_name}
             </h3>
             <h4>{profileData.position_name}</h4>
             <h5>{profileData.username}</h5>
@@ -353,10 +367,8 @@ const ProfilePage: React.FC = () => {
             </Snackbar>
 
             {selectedImage ? (
-              // Render the selected image if available with circular styling
               <img src={selectedImage} alt="Profile" />
             ) : (
-              // Render a default image or placeholder if no file is selected with circular styling
               <img
                 src={selectedImage ?? "default"}
                 alt="Profile"

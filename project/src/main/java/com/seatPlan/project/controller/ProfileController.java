@@ -44,7 +44,7 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        if (profileService.isUserEmailExists(userModel.getEmail())) {
+        if (profileService.isUserEmailExists(userModel.getEmail(),user_id)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
         }
 
@@ -105,6 +105,28 @@ public ResponseEntity<String> updateUserPassword(@PathVariable("user_id") Long u
 
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
+    }
+}
+
+
+
+ @PutMapping("/updatePicture/{user_id}")
+    public ResponseEntity<String> updateUserPicture(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
+    try {
+        UserModel existingUser = profileService.getUserById(user_id);
+        if (existingUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        if (userModel.getUser_picture() != null) {
+            existingUser.setUser_picture(userModel.getUser_picture());
+        }
+
+        profileService.updateUserPicture(existingUser);
+        return ResponseEntity.ok("User picture uploaded successfully");
+
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload user picture");
     }
 }
 

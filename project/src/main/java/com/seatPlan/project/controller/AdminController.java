@@ -53,7 +53,6 @@ public class AdminController {
     }
 
 
-
     //To show all the user in the Database.
     @GetMapping("/showAllUser")
     public List<Map<String, Object>> allUser(){

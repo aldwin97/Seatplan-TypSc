@@ -188,7 +188,7 @@
         height: 100%; /* Adjust the height as needed */
         overflow: auto;
         background-size: 100% 100%;
-        background-image: url('../assets/BG1.jpg');
+        background-image: url('../assets/SEATMGT.jpg');
         background-repeat: no-repeat;
         background-position: center;
       }
@@ -361,6 +361,7 @@
 /* Popup content */
 .seatPopupContent {
   display: flex;
+  width: 300px;
   background-color: white;
   flex-direction: column;
   align-items: center;
@@ -370,11 +371,24 @@
   padding: 30px; /* Add padding to create some space between the border and content */
   transition: 0.2s .3s ease-in-out;
 }
+
 .seatPopupContent:hover {
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   scale: 0.99;
 }
 .seatPopupContent h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.seatPopupContent form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seatPopupContent h3 {
+  font-size: 30px;
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -393,9 +407,8 @@
 
 .seatPopupContent input[type="text"] {
   padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  border: none;
+  font-size: 15px;
   transition-duration: .3s;
 }
 
@@ -424,6 +437,7 @@
   background-color: #28a745;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
+  width: 80px;
 }
 .seatPopupContent button:hover[type="submit"] {
   background-color: #0056b3;
@@ -439,6 +453,7 @@
 }
 .editButton
 {
+  width: 80px;
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
@@ -461,14 +476,18 @@
 
 /* Close button */
 .seatPopupContent .closeButton {
+  position: absolute;
   top: 10px;
   right: 10px;
   background-color: transparent;
   border: none;
   color: #ff0000;
   cursor: pointer;
-  transition: color 0.3s ease;
   font-size: 12px;
+}
+
+.seatPopupContent .closeButton:hover {
+  color: #777;
 }
 
 .seatPopupContent .closeButton:hover {
@@ -508,6 +527,7 @@
   .seatPopupContent input[type="text"],
   .seatPopupContent input[type="color"],
   .seatPopupContent select {
+    border: none;
     width: 100%; /* Make the inputs and select full width */
   }
 
@@ -743,4 +763,13 @@ margin-top: 40px;
 
 .errorPopup button:hover {
   background-color: #b6b6b6;
+}
+.header{
+
+  font-size: 30px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}.label {
+  font-weight: bold;
+  margin-right: 10px;
 }

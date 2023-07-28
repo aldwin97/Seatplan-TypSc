@@ -3,40 +3,95 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,Button,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { Dashboard,Chair, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, PersonPinCircleRounded, PersonAddAltRounded, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded, BoltRounded, Margin } from '@mui/icons-material';
+  import { Dashboard,Chair, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
   import { useNavigate } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
+  import 'chartjs-plugin-datalabels';
+  import occupied from './asset/occupied.png'
+  import available from './asset/available.png'
+  import totalseat from './asset/totalseat.png'
 
 
-
-  
-  interface Column {
-    id: 'ProjectName' | 'seatCount' ;
-    label: string;
-    minWidth?: number;
-    align?: 'right';
-    format?: (value: number) => string;
+  interface ProjectSummary {
+    project_name: string;
+    seatCount: number;
   }
 
   const DashboardPage: React.FC = () => {
+    const [com, setComments] =  useState<Comments[]>([]);
     const [dashboardData, setDashboardData] = useState<any>({});
-    const [last_name, setLastName] = useState('');
-    const [first_name, setFirstName] = useState('');
     const chartHeight = 320; 
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const myChart = useRef<Chart | null>(null);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
+    const [UserData, setUserData] = useState<UserData | null>(null);
+    const [projectSummary, setProjectSummary] = useState<ProjectSummary[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+    interface CommentCardProps {
+      com: Comments[];
+    }
+    
+    interface Comments {
+      full_name: string;
+      comment: string;
+      created_time: string;
+      seat_id:number;
+    }
+    
+    interface UserData {
+      first_name: string;
+      last_name: string;
+      position_name: string;
+    }
+  
+  
+    useEffect(() => {
+      const user_id = window.sessionStorage.getItem('user_id');
+  
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+  
+          const responseData: UserData = response.data[0];
+          setUserData(responseData);
+        } catch (error) {
+          console.error('Error fetching profile data:', error);
+        }
+      };
+  
+      fetchUserData();
+    }, []);
+
+    useEffect(() => {
+      // Fetch the data from the endpoint
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/dashboard/showAllComment');
+          const data: Comments[] = response.data;
+  
+          
+          setComments(data);
+        } catch (error) {
+          console.error('Error fetching showAllComment:', error);
+        }
+      };
+  
+      
+      fetchData();
+    }, []);
+
+
     useEffect(() => {
       const fetchDashboardData = async () => {
         try {
@@ -51,12 +106,9 @@
     
 
       fetchDashboardData();
-      const storedLastname = window.sessionStorage.getItem('last_name');
-      setLastName(storedLastname ?? ''); 
-      const storedFirstname = window.sessionStorage.getItem('first_name');
-      setFirstName(storedFirstname ?? '');
     }, []);
- 
+
+    
     useEffect(() => {
 
       if (chartRef.current) {
@@ -64,7 +116,7 @@
 
         if (ctx) {
           if (myChart.current) {
-            myChart.current.destroy(); // Destroy the previo us chart
+            myChart.current.destroy();
           }
 
           myChart.current = new Chart(ctx, {
@@ -75,13 +127,9 @@
                 {
                   label: 'Seat Conditions',
                   data: [dashboardData.countOccupied, dashboardData.countSeatAvailable, dashboardData.countUnderMaintenance],
-                  backgroundColor: [ 'rgba(47, 167, 58, 0.5)',
-                  'rgba(47, 167, 58, 0.5)',
-                  'rgba(47, 167, 58, 0.5)'],
+                  backgroundColor: ['rgba(47, 167, 58, 0.5)', 'rgba(47, 167, 58, 0.5)', 'rgba(47, 167, 58, 0.5)'],
                   borderColor: '#2FA73A',
                   borderWidth: 2,
-                  
-                
                 },
               ],
             },
@@ -90,13 +138,19 @@
               scales: {
                 x: {
                   beginAtZero: true,
-                  
                 },
-              
               },
               plugins: {
                 legend: {
-                  display: false, 
+                  display: false,
+                },
+                datalabels: { 
+                  anchor: 'end',
+                  align: 'top',
+                  formatter: (value: number) => {
+                    // Add your formatting logic here if needed
+                    return value.toString();
+                  },
                 },
               },
             },
@@ -109,7 +163,7 @@
           myChart.current.destroy(); 
         }
       };
-    }, []); 
+    }, ); 
     const [isDrawerOpen, setDrawerOpen] = useState(false);
 
     const toggleDrawer = () => {
@@ -118,46 +172,25 @@
   
     
   /*table for project overview*/
+  useEffect(() => {
 
-  const columns: readonly Column[] = [
-    { id: 'ProjectName', label: 'Project Name', minWidth: 180},
-    { id: 'seatCount', label: 'Seats', minWidth: 30 ,},
-    
-  
-  ];
+    const fetchProjectSummary = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/dashboard/countPerProject');
+        const data = response.data;
 
-  interface Data {
-    ProjectName: string;
-    seatCount: number;
-  
-  }
+        // Set the project summary state with the fetched data
+        setProjectSummary(data);
+      } catch (error) {
+        console.error('Error fetching project summary data:', error);
+      }
+    };
 
-  function createData(
-    ProjectName: string,
-    seatCount: number,
-    
-    ): Data {
-    return {ProjectName, seatCount};
-  }
+    // Call the function to fetch project summary data
+    fetchProjectSummary();
+  }, []);
 
-  const rows = [
-    createData('HSC-Inv',24),
-    createData('HSC-CONVERT',37),
-    createData('Hitachi-Tool',24),
-    createData('Hitachi-INS', 67),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49),
-    createData('NRI',49)
-  
-  ];
+
   const navigate = useNavigate();
 
   const projectPageHandleClick = () => {
@@ -174,6 +207,18 @@
   };
   const SeatplanPageHandleClick = () => {
     navigate('/seatPlanPage');
+  };
+  const formatTime = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+    return date.toLocaleString('en-US', options);
   };
     return (
       <>
@@ -261,82 +306,88 @@
         <div className={styles.container}>
           <div className={styles.main}>
 
-            <div className={styles.cardHello}>
-              <svg className={styles.Helloimg}></svg>
-              <div className={styles.Hellotitle}>HELLO <br/>{first_name} {last_name}</div>
-            </div>
+          <div className={styles.cardHello}>
+      <svg className={styles.Helloimg}></svg>
+      {UserData ? (
+        <div className={styles.Hellotitle}>
+          {UserData.first_name} {UserData.last_name}
+          <div className={styles.Hellotitle1}>{UserData.position_name}</div>
+        </div>
+        
+      ) : (
+        <div>Loading...</div>
+      )}
+       
+    </div>
               
               <div className={styles.countcontainer}>
                 <div className={styles.card1}>
-                <div className={styles.cardicon}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
-                <div className={styles.cardcount }>500</div>
-                <div className={styles.cardtitle}>TOTAL SEAT</div>
+                <div className={styles.cardicon}><img src={totalseat} alt='Profile Background'/></div>
+                <div className={styles.cardcount }>{dashboardData.countOccupied+dashboardData.countSeatAvailable+dashboardData.countUnderMaintenance}</div>
+                <div className={styles.cardtitle}>TOTAL SEATS</div>
               </div>
           
 
             <div className={styles.card2}>
-              <div className={styles.cardicon}><PersonPinCircleRounded style={{ fontSize: 42 }}/></div>
+              <div className={styles.cardicon}><img src={occupied} alt='Profile Background'/></div>
               <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
-              <div className={styles.cardtitle}>OCCUPIED SEAT</div>
+              <div className={styles.cardtitle}>OCCUPIED SEATS</div>
             </div>
             
             <div className={styles.card3}>
-            <div className={styles.cardicon}>< PersonAddAltRounded style={{ fontSize: 42 }}/></div>
+            <div className={styles.cardicon}><img src={available} alt='Profile Background'/></div>
             <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
-              <div className={styles.cardtitle}>AVAILABLE SEAT</div>
+              <div className={styles.cardtitle}>AVAILABLE SEATS</div>
             </div>
-            
 
-            
-            
             <div className={styles.card4}>
             <div className={styles.cardicon}><GroupsRounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount}>150</div>
-            <div className={styles.cardtitle}>TOTAL EMPLOYEE</div>
+            <div className={styles.cardcount}>{dashboardData.countUser}</div>
+            <div className={styles.cardtitle}>TOTAL ASSOCIATES</div>
             </div>
 
             <div className={styles.card5}>
             <div className={styles.cardicon}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount }>45</div>
+            <div className={styles.cardcount }>{dashboardData.countAssignedEmpIntern + dashboardData.countAssignedEmpTrainee + dashboardData.countAssignedEmpRegular + dashboardData.countAssignedEmpContractual} </div>
             <Tooltip
           title={
             <div className={styles.tooltipContent}>
              
               
-              <span>Intern: 4</span>
+             <span>Regular:{dashboardData.countAssignedEmpRegular} </span>
               <br />
-              <span>Trainee: 5</span>
+              <span>Trainee:{dashboardData.countAssignedEmpTrainee}</span>
               <br />
-              <span>Regular: 5</span>
+              <span>Intern:{dashboardData.countAssignedEmpIntern}</span>
               <br />
-              <span>Contractual: 3</span>
+              <span>Business Partner:{dashboardData.countAssignedEmpContractual}</span>
             </div>
           }
           arrow
         >
-            <div className={styles.cardtitle}>ASSIGNED EMPLOYEE</div>
+            <div className={styles.cardtitle}>WITH ASSIGNED SEATS</div>
         </Tooltip>
             
             </div>
 
             <div className={styles.card6}>
               <div className={styles.cardicon}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
-            <div className={styles.cardcount}>45</div>
+            <div className={styles.cardcount}>{dashboardData.countUnassignedEmpIntern + dashboardData.countUnassignedEmpTrainee + dashboardData.countUnassignedEmpRegular + dashboardData.countUnassignedEmpContractual}</div>
             <Tooltip
           title={
             <div className={styles.tooltipContent}>
-            <span>Intern: 4</span>
+            <span>Regular:{dashboardData.countUnassignedEmpRegular} </span>
               <br />
-              <span>Trainee: 5</span>
+              <span>Trainee:{dashboardData.countUnassignedEmpTrainee}</span>
               <br />
-              <span>Regular: 5</span>
+              <span>Intern:{dashboardData.countUnassignedEmpIntern}</span>
               <br />
-              <span>Contractual: 3</span>
+              <span>Business Partner:{dashboardData.countUnassignedEmpContractual}</span>
             </div>
           }
           arrow
         >
-          <div className={styles.cardtitle}>UNASSIGNED EMPLOYEE</div>
+          <div className={styles.cardtitle}>WITHOUT ASSIGNED SEATS</div>
         </Tooltip>
             </div>
             
@@ -351,74 +402,49 @@
             <div className={styles.cardcomment}>
                   <div className={styles.cardtitle2}>RECENT COMMENT</div>
                   <div className={styles.commentcontent}>
-                  <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Brunch this weekend?"
-            secondary={
-              <React.Fragment>
+             
+                  <List>
+      {com.map((comment, index) => (
+        <React.Fragment key={index}>
+          <ListItem alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar alt={comment.full_name} src="/static/images/avatar.jpg" />
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                <>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.primary"
+                    fontWeight="bold"
+                  >
+                    {comment.full_name}
+                  </Typography>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    <div>{formatTime(comment.created_time)} Located at Seat No.{comment.seat_id}</div>
+                  </Typography>
+                </>
+              }
+              secondary={
                 <Typography
-                  sx={{ display: 'inline' }}
                   component="span"
                   variant="body2"
                   color="text.primary"
                 >
-                  Ali Connors
+                  {comment.comment}
                 </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Summer BBQ"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                {" — Wish I could come, but I'm out of town this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  Sandra Adams
-                </Typography>
-                {' — Do you have Paris recommendations? Have you ever…'}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      </List>
-        
+              }
+            />
+          </ListItem>
+          {index !== com.length - 1 && <Divider variant="inset" component="li" />}
+        </React.Fragment>
+      ))}
+    </List>
                   
                   </div>
             </div>
@@ -426,55 +452,36 @@
             <div className={styles.cardtitle2}>SUMMARY</div>
             <div className={styles.projectcontent}>
               
-            <Paper sx={{ width: '100%', overflow: 'hidden',borderRadius: '10px' }}>
-        <TableContainer sx={{ maxHeight: 440, marginLeft:'20px', }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.seatCount}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell style={{color:'gray', fontSize:'13px', }} key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                              
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper></div>
+            <TableContainer component={Paper} sx={{ width: '100%', height: 400 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Project Name</TableCell>
+              <TableCell>Seats</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {projectSummary
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((project) => (
+                <TableRow key={project.project_name}>
+                  <TableCell >{project.project_name}</TableCell>
+                  <TableCell>{project.seatCount}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={projectSummary.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      /></div>
       
       </div>
             </div>

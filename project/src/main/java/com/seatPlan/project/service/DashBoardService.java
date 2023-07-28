@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.seatPlan.project.dao.DashBoardDao;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.ProjectModel;
+import com.seatPlan.project.model.UserModel;
 
 
 
@@ -101,4 +102,28 @@ public class DashBoardService {
     public int countUnassignedEmpContractual() {
         return dashBoardDao.countUnassignedEmpContractual();
     }
+
+     public List<Map<String, Object>>  showUserById(Long user_id){
+        List<UserModel> userInfos = dashBoardDao. showUserById(user_id);
+        List<Map<String, Object>> filteredUserInfo = userInfos.stream()
+        .map(userInfo ->{
+            Map<String, Object> userInfoMap = new HashMap<>();
+            userInfoMap.put("user_id",userInfo.getUser_id());
+            userInfoMap.put("first_name", userInfo.getFirst_name());
+            userInfoMap.put("last_name",userInfo.getLast_name());
+            userInfoMap.put("email",userInfo.getEmail());
+            userInfoMap.put("username",userInfo.getUsername());
+            userInfoMap.put("mobile_num", userInfo.getMobile_num());
+            userInfoMap.put("position_name", userInfo.getPosition_name());
+            return userInfoMap;
+
+        }).collect(Collectors.toList());
+
+        return filteredUserInfo;
+    }
+
+
+
+
+
 }

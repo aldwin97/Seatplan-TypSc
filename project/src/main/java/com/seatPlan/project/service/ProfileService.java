@@ -28,12 +28,13 @@ public class ProfileService {
         .map(userInfo ->{
             Map<String, Object> userInfoMap = new HashMap<>();
             userInfoMap.put("user_id",userInfo.getUser_id());
-            userInfoMap.put("last_name", userInfo.getFirst_name());
-            userInfoMap.put("first_name",userInfo.getLast_name());
+            userInfoMap.put("first_name", userInfo.getFirst_name());
+            userInfoMap.put("last_name",userInfo.getLast_name());
             userInfoMap.put("email",userInfo.getEmail());
             userInfoMap.put("username",userInfo.getUsername());
             userInfoMap.put("mobile_num", userInfo.getMobile_num());
             userInfoMap.put("position_name", userInfo.getPosition_name());
+            userInfoMap.put("user_picture",userInfo.getUser_picture());
             return userInfoMap;
 
         }).collect(Collectors.toList());
@@ -46,8 +47,8 @@ public class ProfileService {
     }
 
 
-    public boolean isUserEmailExists(String email) {
-        return profileDao.getUserByEmail(email) != null;
+    public boolean isUserEmailExists(String email,Long user_id) {
+        return profileDao.getUserByEmail(email,user_id) != null;
     }
 
     public void updateUser(UserModel userModel) {
@@ -56,6 +57,11 @@ public class ProfileService {
 
      public void updateUserPassword(UserModel userModel) {
         profileDao.updateUserPassword(userModel);
+    }
+
+
+    public void updateUserPicture(UserModel userModel) {
+         profileDao.updateUserPicture(userModel);
     }
 
 

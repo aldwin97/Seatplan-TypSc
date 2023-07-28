@@ -1,6 +1,8 @@
 //Kenneth Christian B. Gutierrez
 package com.seatPlan.project.model;
 
+
+import java.sql.Blob;
 import java.time.LocalDateTime;
 
 

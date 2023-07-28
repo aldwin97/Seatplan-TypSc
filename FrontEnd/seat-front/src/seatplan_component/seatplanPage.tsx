@@ -848,7 +848,7 @@ useEffect(() => {
 
     worksheet.addImage(imageId, {
       tl: { col: 0, row: 0 },
-      ext: { width: 5000, height: 5000 },
+      ext: { width: 2800, height: 1400 },
     });
 
     // Save the workbook as an Excel file

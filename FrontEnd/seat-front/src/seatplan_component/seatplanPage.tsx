@@ -5,6 +5,8 @@ import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff,
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import * as XLSX from 'xlsx';
+import html2canvas from 'html2canvas';
 
 interface Seat {
   position: { x: number; y: number };
@@ -810,6 +812,49 @@ useEffect(() => {
   const handleSeatClick = (seat: Seat) => {
     setSelectedSeat(seat);
   };
+
+  const exportToExcel = async () => {
+    if (!containerRef.current) {
+      return;
+    }
+  
+    try {
+      const container = containerRef.current;
+      const containerImage = await html2canvas(container);
+  
+      const dataURL = containerImage.toDataURL('image/png');
+      const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+  
+      // Create a new workbook
+      const workbook = XLSX.utils.book_new();
+  
+      // Create a new worksheet
+      const worksheet = XLSX.utils.aoa_to_sheet([['Seat Plan Image']]);
+  
+      // Add the image as a link to the workbook
+      worksheet['A1'] = { t: 's', v: 'Click the link to view the Seat Plan Image', l: { Target: dataURL, Tooltip: 'Click to view image' } };
+  
+      // Add the worksheet to the workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'SeatPlanData');
+  
+      // Save the workbook as an Excel file
+      XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+    }
+  };
+  
+  const dataURLtoBuffer = (dataURL: string): Uint8Array => {
+    const base64String = dataURL.split(',')[1];
+    const binaryString = atob(base64String);
+    const length = binaryString.length;
+    const uint8Array = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      uint8Array[i] = binaryString.charCodeAt(i);
+    }
+    return uint8Array;
+  };
+
   return (
    <body className={styles.body}> <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
@@ -862,6 +907,7 @@ useEffect(() => {
 <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>
     <div className={styles.scrollableCanvas}>
+    <div className={styles.canvasWrapper} ref={containerRef}>
       <canvas
         ref={canvasRef}
         width={2800}
@@ -869,6 +915,7 @@ useEffect(() => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       ></canvas>
+      </div>
     </div>
   </div>
 
@@ -882,6 +929,9 @@ useEffect(() => {
     <button type="submit" className={styles.searchButton}>
       <FontAwesomeIcon icon={faSearch} />
     </button>
+    <button onClick={exportToExcel} className={styles.searchButton}>
+        Export to Excel
+      </button>
   </form>
 
   {/* Render seats on the canvas */}

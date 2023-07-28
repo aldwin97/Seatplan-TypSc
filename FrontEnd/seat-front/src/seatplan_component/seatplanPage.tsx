@@ -5,6 +5,9 @@ import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff,
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+import domtoimage from 'dom-to-image';
 
 interface Seat {
   position: { x: number; y: number };
@@ -810,6 +813,61 @@ useEffect(() => {
   const handleSeatClick = (seat: Seat) => {
     setSelectedSeat(seat);
   };
+
+
+
+ // Helper function to convert data URL to Buffer-like object
+ const exportToExcel = async () => {
+  if (!containerRef.current || !canvasRef.current) {
+    return;
+  }
+
+  try {
+    // Ensure the container is large enough to contain the entire canvas
+    containerRef.current.style.width = '2800px';
+    containerRef.current.style.height = '1400px';
+
+    // Capture the entire canvas using dom-to-image
+    const container = containerRef.current;
+    const containerImage = await domtoimage.toPng(container);
+
+    const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+    // Create a new workbook
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('SeatPlanData');
+
+    // Convert the data URL to a Buffer
+    const imageData = await dataURLToBuffer(containerImage);
+
+    // Add the image to the worksheet
+    const imageId = workbook.addImage({
+      buffer: imageData,
+      extension: 'png',
+    });
+
+    worksheet.addImage(imageId, {
+      tl: { col: 0, row: 0 },
+      ext: { width: 2800, height: 1400 },
+    });
+
+    // Save the workbook as an Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), fileName);
+    window.location.reload();
+  } catch (error) {
+    console.error('Error exporting to Excel:', error);
+  }
+};
+
+// Helper function to convert data URL to Buffer-like object
+const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
+  const response = await fetch(dataURL);
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
+};
+
+
   return (
    <body className={styles.body}> <div className={styles.container}>
       <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
@@ -869,7 +927,7 @@ useEffect(() => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       ></canvas>
-    </div>
+      </div>
   </div>
 
   <form onSubmit={handleFormSubmit} className={styles.searchForm}>
@@ -882,6 +940,9 @@ useEffect(() => {
     <button type="submit" className={styles.searchButton}>
       <FontAwesomeIcon icon={faSearch} />
     </button>
+    <button onClick={exportToExcel} className={styles.searchButton}>
+        Export to Excel
+      </button>
   </form>
 
   {/* Render seats on the canvas */}

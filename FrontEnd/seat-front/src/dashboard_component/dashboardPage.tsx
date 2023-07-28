@@ -10,41 +10,34 @@
   import 'chartjs-plugin-datalabels';
   import occupied from './asset/occupied.png'
   import available from './asset/available.png'
+  import totalseat from './asset/totalseat.png'
 
 
-
-
-  
-  
-  interface Column {
-    id: 'ProjectName' | 'seatCount' ;
-    label: string;
-    minWidth?: number;
-    align?: 'right';
-    format?: (value: number) => string;
+  interface ProjectSummary {
+    project_name: string;
+    seatCount: number;
   }
 
   const DashboardPage: React.FC = () => {
-    const [rows, setRows] = useState<Data[]>([]);
     const [com, setComments] =  useState<Comments[]>([]);
     const [dashboardData, setDashboardData] = useState<any>({});
-    const [last_name, setLastName] = useState('');
-    const [first_name, setFirstName] = useState('');
     const chartHeight = 320; 
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const myChart = useRef<Chart | null>(null);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
     const [UserData, setUserData] = useState<UserData | null>(null);
+    const [projectSummary, setProjectSummary] = useState<ProjectSummary[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
     interface CommentCardProps {
       com: Comments[];
     }
@@ -113,10 +106,6 @@
     
 
       fetchDashboardData();
-      const storedLastname = window.sessionStorage.getItem('last_name');
-      setLastName(storedLastname ?? ''); 
-      const storedFirstname = window.sessionStorage.getItem('first_name');
-      setFirstName(storedFirstname ?? '');
     }, []);
 
     
@@ -183,47 +172,24 @@
   
     
   /*table for project overview*/
-
-  const columns: readonly Column[] = [
-    { id: 'ProjectName', label: 'Project Name', minWidth: 180},
-    { id: 'seatCount', label: 'Seats', minWidth: 30 ,},
-    
-  
-  ];
-
-  interface Data {
-    ProjectName: string;
-    seatCount: number;
-  }
-  function createData(projectName: string, seatCount: number): Data {
-    return { ProjectName: projectName, seatCount: seatCount };
-  }
-  
-
   useEffect(() => {
-    // Fetch the data from the endpoint
-    const fetchData = async () => {
+
+    const fetchProjectSummary = async () => {
       try {
         const response = await axios.get('http://localhost:8080/dashboard/countPerProject');
         const data = response.data;
-        
-        // Loop through the data and create the 'rows' array
-        const newRows: Data[] = data.map((item: any) =>
-          createData(item.project_name, item.seatCount)
-        );
-        
-        // Set the 'rows' state with the new data
-        setRows(newRows);
+
+        // Set the project summary state with the fetched data
+        setProjectSummary(data);
       } catch (error) {
-        console.error('Error fetching countPerProject data:', error);
+        console.error('Error fetching project summary data:', error);
       }
     };
 
-    // Call the function to fetch data
-    fetchData();
+    // Call the function to fetch project summary data
+    fetchProjectSummary();
   }, []);
 
-  
 
   const navigate = useNavigate();
 
@@ -356,7 +322,7 @@
               
               <div className={styles.countcontainer}>
                 <div className={styles.card1}>
-                <div className={styles.cardicon}><SupervisedUserCircle style={{ fontSize: 42 }}/></div>
+                <div className={styles.cardicon}><img src={totalseat} alt='Profile Background'/></div>
                 <div className={styles.cardcount }>{dashboardData.countOccupied+dashboardData.countSeatAvailable+dashboardData.countUnderMaintenance}</div>
                 <div className={styles.cardtitle}>TOTAL SEATS</div>
               </div>
@@ -399,7 +365,7 @@
           }
           arrow
         >
-            <div className={styles.cardtitle}>ASSIGNED SEATS</div>
+            <div className={styles.cardtitle}>WITH ASSIGNED SEATS</div>
         </Tooltip>
             
             </div>
@@ -421,7 +387,7 @@
           }
           arrow
         >
-          <div className={styles.cardtitle}>UNASSIGNED SEATS</div>
+          <div className={styles.cardtitle}>WITHOUT ASSIGNED SEATS</div>
         </Tooltip>
             </div>
             
@@ -486,55 +452,36 @@
             <div className={styles.cardtitle2}>SUMMARY</div>
             <div className={styles.projectcontent}>
               
-            <Paper sx={{ width: '100%', overflow: 'hidden',borderRadius: '10px' }}>
-        <TableContainer sx={{ maxHeight: 440, marginLeft:'20px', }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}  
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.seatCount}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell style={{color:'gray', fontSize:'13px', }} key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                              
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper></div>
+            <TableContainer component={Paper} sx={{ width: '100%', height: 400 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Project Name</TableCell>
+              <TableCell>Seats</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {projectSummary
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((project) => (
+                <TableRow key={project.project_name}>
+                  <TableCell >{project.project_name}</TableCell>
+                  <TableCell>{project.seatCount}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 50]}
+        component="div"
+        count={projectSummary.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      /></div>
       
       </div>
             </div>

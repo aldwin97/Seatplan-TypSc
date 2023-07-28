@@ -40,9 +40,7 @@ public class UserModel {
     private Long usertype_id;
 
     private Long position_id;
-
-    private String user_picture;   
-
+    private String user_picture;    
     private int is_deleted;
 
     private LocalDateTime created_time;

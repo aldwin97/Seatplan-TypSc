@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./viewSeatPage.module.css";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faClose } from "@fortawesome/free-solid-svg-icons";
 
 interface Seat {
   position: { x: number; y: number };
@@ -92,7 +92,7 @@ function SeatPopup({ seat, onClose }: SeatPopupProps): JSX.Element {
           <input type="text" value={seat.project} readOnly />
         </label>
         <button type="button" className={styles.closeButton} onClick={onClose}>
-          Close
+          <FontAwesomeIcon icon={faClose} />
         </button>
       </div>
     </div>
@@ -108,6 +108,106 @@ function ViewSeatPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false); // Add const for isDragging
+  const isPanning = useRef(false); // Add const for isPanning
+  const lastPosition = useRef({ x: 0, y: 0 }); // Add const for lastPosition
+  const lastMousePosition = useRef({ x: 0, y: 0 }); // Add const for lastMousePosition
+
+  
+  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  
+
+
+    if (isDragging.current) {
+       if (isDragging.current) {
+    const deltaX = event.clientX - lastPosition.current.x;
+    const deltaY = event.clientY - lastPosition.current.y;
+
+    // Use 'canvasOffset' instead of 'setCanvasOffset'
+    canvasOffset.x += deltaX / zoomLevel;
+    canvasOffset.y += deltaY / zoomLevel;
+
+    lastPosition.current = { x: event.clientX, y: event.clientY };
+  }
+
+  if (isPanning.current) {
+    const deltaX = event.clientX - lastMousePosition.current.x;
+    const deltaY = event.clientY - lastMousePosition.current.y;
+
+    // Use 'canvasOffset' instead of 'setCanvasOffset'
+    canvasOffset.x -= deltaX / zoomLevel;
+    canvasOffset.y -= deltaY / zoomLevel;
+
+    lastMousePosition.current = { x: event.clientX, y: event.clientY };
+  }
+};
+}
+  const handleMouseLeave = () => {
+    isDragging.current = false;
+    isPanning.current = false;
+  };
+  
+  
+  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
+    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
+  
+    const clickedSeatIndex = seats.findIndex((seat) => {
+      const { x, y } = seat.position;
+      const seatWidth = 50 / zoomLevel;
+      const seatHeight = 50 / zoomLevel;
+      const seatRight = x + seatWidth;
+      const seatBottom = y + seatHeight;
+  
+      return (
+        offsetX >= x &&
+        offsetX <= seatRight &&
+        offsetY >= y &&
+        offsetY <= seatBottom
+      );
+    });
+  
+    if (clickedSeatIndex > -1) {
+      const now = new Date().getTime();
+      const doubleClickThreshold = 300;
+  
+      if (now - lastClickTimeRef.current <= doubleClickThreshold) {
+        const clickedSeat = seats[clickedSeatIndex];
+        setSelectedSeat(clickedSeat);
+        setDoubleClickFlag(true); // Set the double-click flag
+      } else {
+        lastClickTimeRef.current = now;
+  
+        const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
+  
+        if (!isAnySeatSwapping) {
+          setDraggingSeatIndex(clickedSeatIndex);
+          const updatedSeats = seats.map((seat, index) => {
+            if (index === clickedSeatIndex) {
+              return { ...seat, isSwapping: true };
+            }
+            return seat;
+          });
+          setSeats(updatedSeats);
+          isDragging.current = true; // Mark as dragging a seat
+        }
+      }
+    } else {
+      isPanning.current = true; // Mark as panning the canvas
+      lastMousePosition.current = { x: event.clientX, y: event.clientY };
+    }
+  };
+
+
+
+
+
+
+
+
+
+  
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch("http://localhost:8080/seat/showAllSeat")
@@ -137,52 +237,7 @@ function ViewSeatPage() {
   const [doubleClickFlag, setDoubleClickFlag] = useState(false);
   const [draggingSeatIndex, setDraggingSeatIndex] = useState(-1);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
-    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
-
-    const clickedSeatIndex = seats.findIndex((seat) => {
-      const { x, y } = seat.position;
-      const seatWidth = 50 / zoomLevel;
-      const seatHeight = 50 / zoomLevel;
-      const seatRight = x + seatWidth;
-      const seatBottom = y + seatHeight;
-
-      return (
-        offsetX >= x &&
-        offsetX <= seatRight &&
-        offsetY >= y &&
-        offsetY <= seatBottom
-      );
-    });
-
-    if (clickedSeatIndex > -1) {
-      const now = new Date().getTime();
-      const doubleClickThreshold = 300;
-
-      if (now - lastClickTimeRef.current <= doubleClickThreshold) {
-        const clickedSeat = seats[clickedSeatIndex];
-        setSelectedSeat(clickedSeat);
-        setDoubleClickFlag(true); // Set the double-click flag
-      } else {
-        lastClickTimeRef.current = now;
-
-        const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
-
-        if (!isAnySeatSwapping) {
-          setDraggingSeatIndex(clickedSeatIndex);
-          const updatedSeats = seats.map((seat, index) => {
-            if (index === clickedSeatIndex) {
-              return { ...seat, isSwapping: true };
-            }
-            return seat;
-          });
-          setSeats(updatedSeats);
-        }
-      }
-    }
-  };
+  
   const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
@@ -381,11 +436,13 @@ function ViewSeatPage() {
         <div className={styles.canvasWrapper} ref={containerRef}>
           <div className={styles.root} ref={containerRef}>
             <div className={styles.scrollableCanvas}>
-              <canvas
+            <canvas
                 ref={canvasRef}
                 width={2800}
                 height={1400}
                 onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
                 onMouseUp={handleMouseUp}
               ></canvas>
             </div>

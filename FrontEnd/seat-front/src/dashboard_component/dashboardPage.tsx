@@ -28,8 +28,6 @@
     const [rows, setRows] = useState<Data[]>([]);
     const [com, setComments] =  useState<Comments[]>([]);
     const [dashboardData, setDashboardData] = useState<any>({});
-    const [last_name, setLastName] = useState('');
-    const [first_name, setFirstName] = useState('');
     const chartHeight = 320; 
     const chartRef = useRef<HTMLCanvasElement | null>(null);
     const myChart = useRef<Chart | null>(null);
@@ -113,10 +111,6 @@
     
 
       fetchDashboardData();
-      const storedLastname = window.sessionStorage.getItem('last_name');
-      setLastName(storedLastname ?? ''); 
-      const storedFirstname = window.sessionStorage.getItem('first_name');
-      setFirstName(storedFirstname ?? '');
     }, []);
 
     

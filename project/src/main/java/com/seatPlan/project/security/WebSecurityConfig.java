@@ -41,7 +41,7 @@ public class WebSecurityConfig {
         AuthenticationManager authManager) throws Exception{
             JWTAuthenFilter jwtAuthenFilter = new JWTAuthenFilter();
             jwtAuthenFilter.setAuthenticationManager(authManager);
-            jwtAuthenFilter.setFilterProcessesUrl("/api/login");
+            jwtAuthenFilter.setFilterProcessesUrl("/login");
 
             return http
                 .csrf().disable()

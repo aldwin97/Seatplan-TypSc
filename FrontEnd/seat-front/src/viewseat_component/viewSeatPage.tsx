@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,7 +40,7 @@ interface Occupant {
   first_name: string;
   last_name: string;
 
-  // Add other properties if available in the response
+  
 }
 
 function SeatPopup({ seat, onClose }: SeatPopupProps): JSX.Element {

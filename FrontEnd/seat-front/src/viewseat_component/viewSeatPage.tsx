@@ -110,42 +110,21 @@ function ViewSeatPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false); // Add const for isDragging
-  const isPanning = useRef(false); // Add const for isPanning
-  const lastPosition = useRef({ x: 0, y: 0 }); // Add const for lastPosition
-  const lastMousePosition = useRef({ x: 0, y: 0 }); // Add const for lastMousePosition
 
-  
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
   
 
 
     if (isDragging.current) {
        if (isDragging.current) {
-    const deltaX = event.clientX - lastPosition.current.x;
-    const deltaY = event.clientY - lastPosition.current.y;
 
-    // Use 'canvasOffset' instead of 'setCanvasOffset'
-    canvasOffset.x += deltaX / zoomLevel;
-    canvasOffset.y += deltaY / zoomLevel;
 
-    lastPosition.current = { x: event.clientX, y: event.clientY };
   }
 
-  if (isPanning.current) {
-    const deltaX = event.clientX - lastMousePosition.current.x;
-    const deltaY = event.clientY - lastMousePosition.current.y;
-
-    // Use 'canvasOffset' instead of 'setCanvasOffset'
-    canvasOffset.x -= deltaX / zoomLevel;
-    canvasOffset.y -= deltaY / zoomLevel;
-
-    lastMousePosition.current = { x: event.clientX, y: event.clientY };
-  }
 };
 }
   const handleMouseLeave = () => {
     isDragging.current = false;
-    isPanning.current = false;
   };
   
   
@@ -194,10 +173,7 @@ function ViewSeatPage() {
           isDragging.current = true; // Mark as dragging a seat
         }
       }
-    } else {
-      isPanning.current = true; // Mark as panning the canvas
-      lastMousePosition.current = { x: event.clientX, y: event.clientY };
-    }
+    } 
   };
 
 
@@ -300,7 +276,7 @@ function ViewSeatPage() {
     );
   });
 
-  useEffect(() => {
+ useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
   
@@ -385,7 +361,7 @@ function ViewSeatPage() {
           .map(word => word.charAt(0).toUpperCase())
           .join('');
     
-        ctx.fillText(projectNameAcronym, scaledX + seatSize /  2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
+        ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
             .split(' ')

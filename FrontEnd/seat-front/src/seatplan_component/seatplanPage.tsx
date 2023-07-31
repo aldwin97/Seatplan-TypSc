@@ -889,7 +889,7 @@ const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
 
   return (
    <body className={styles.body}> <div className={styles.container}>
-      <i className={style['menu-out']}onClick={toggleDrawer}>
+      <i className={styles['menu-out']}onClick={toggleDrawer}>
             <Menu  style={{ fontSize: '28px' }} />
           </i>
       

@@ -79,18 +79,18 @@ public class AdminController {
         }    
     }
     @PostMapping("/insert")
-public ResponseEntity<String> insertUser(@RequestBody UserInputModel userInputModel) {
+    public ResponseEntity<String> insertUser(@RequestBody UserInputModel userInputModel) {
     try {
-        if (adminService.isUsernameExists(userInputModel.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
-        }
+            if (adminService.isUsernameExists(userInputModel.getUsername())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+            }
 
-        if (adminService.isUserEmailExists(userInputModel.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-        }
+            if (adminService.isUserEmailExists(userInputModel.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+            }
 
-        adminService.insertUser(userInputModel);
-        return ResponseEntity.ok("User inserted successfully");
+            adminService.insertUser(userInputModel);
+            return ResponseEntity.ok("User inserted successfully");
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
     }

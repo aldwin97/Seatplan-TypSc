@@ -836,3 +836,7 @@ margin-top: 40px;
   font-family: 'Montserrat', sans-serif;
   z-index: 2;
 }
+.menu-out:hover, .menu:hover {
+  
+  color: #076307;
+}

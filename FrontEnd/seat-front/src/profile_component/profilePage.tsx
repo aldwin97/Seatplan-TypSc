@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import style from '../dashboard_component/dashboardPage.module.css';
-import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
+import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./profilePage.module.css";
@@ -327,7 +327,9 @@ const ProfilePage: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
-
+  const MachinePageHandleClick = () => {
+    navigate('/machinetablePage');
+  };
   const projectPageHandleClick = () => {
     navigate('/ProjectPage');
   };
@@ -403,6 +405,14 @@ const ProfilePage: React.FC = () => {
                         <WorkOutlineOutlined/>
                       </i>
                       Project
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <BusinessCenterOutlined/>
+                      </i>
+                      Machine 
                     </a>
                   </li>
                   <li>

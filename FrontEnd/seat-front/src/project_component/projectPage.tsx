@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import styles from '../dashboard_component/dashboardPage.module.css';
-import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
+import {BusinessCenterOutlined, DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import { faUser, faFaceSmile, faChartBar, faUsers, faPlus, faPowerOff, faEdit, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import {
   Select,
@@ -98,7 +98,9 @@ function ProjectPage() {
 
 
 //sidebar
-
+const MachinePageHandleClick = () => {
+  navigate('/machinetablePage');
+};
   const projectPageHandleClick = () => {
     navigate('/ProjectPage');
   };
@@ -273,6 +275,14 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
                         <WorkOutlineOutlined/>
                       </i>
                       Project
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <BusinessCenterOutlined/>
+                      </i>
+                      Machine 
                     </a>
                   </li>
                   <li >

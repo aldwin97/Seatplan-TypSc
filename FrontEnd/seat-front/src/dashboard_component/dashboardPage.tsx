@@ -3,7 +3,7 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+  import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
   import { useNavigate, } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
@@ -182,7 +182,9 @@
       setDrawerOpen(!isDrawerOpen);
     };
     const navigate = useNavigate();
-
+    const MachinePageHandleClick = () => {
+      navigate('/machinetablePage');
+    };
     const projectPageHandleClick = () => {
       navigate('/ProjectPage');
     };
@@ -290,6 +292,16 @@
                     </a>
                   </li>
                   <li>
+                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <BusinessCenterOutlined/>
+                      </i>
+                      Machine 
+                    </a>
+                  </li>
+                  <li></li>
+                  <li>
+                    
                     <a onClick={adminPageHandleClick} className={styles['material-icons']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <GroupsOutlined/>

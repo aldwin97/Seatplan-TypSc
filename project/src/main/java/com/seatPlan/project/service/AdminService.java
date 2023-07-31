@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.seatPlan.project.dao.AdminDao;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
@@ -19,6 +21,7 @@ import com.seatPlan.project.model.UserInputModel;
 
 
 @Service
+@Transactional
 public class AdminService {
 
     private AdminDao adminDao;

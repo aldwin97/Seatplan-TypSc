@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import style from '../dashboard_component/dashboardPage.module.css';
+import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
@@ -443,6 +446,14 @@ return (
 function SeatplanPage() {
   const navigate = useNavigate();
 
+  const SeatplanPageHandleClick = () => {
+    navigate('/seatPlanPage');
+  };
+  const ProfilePageHandleClick = () => {
+    navigate('/ProfilePage');
+  };
+
+
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
   };
@@ -575,15 +586,23 @@ useEffect(() => {
 }, [seats, zoomLevel, selectedSeat]);
   
 
+//sidebar
+
+const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+const toggleDrawer = () => {
+  setDrawerOpen(!isDrawerOpen);
+};
+
+const handleLogout = () => {
+  // Clear any user-related data from the session/local storage
+  sessionStorage.removeItem('user_id');
 
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
+  // Redirect to the login page
+  navigate('/');
+};
 
-  const toggleProfileDropdown = () => {
-    setProfileDropdownOpen(!isProfileDropdownOpen);
-  };
 
   const lastClickTimeRef = useRef<number>(0);
   const [doubleClickFlag, setDoubleClickFlag] = useState(false);
@@ -870,49 +889,83 @@ const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
 
   return (
    <body className={styles.body}> <div className={styles.container}>
-      <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-      </button>
-     
-      {isDropdownOpen && (
-        <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
-          <button onClick={dashboardPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
-            Dashboard
-          </button>
-          <button onClick={adminPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
-            Members
-          </button>
-          <button className={styles.sub}>
-          <FontAwesomeIcon icon={faEdit} className={styles.icon} />
-            Seat Plan Management
-          </button>
-          <button onClick={projectPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
-           Projects
-          </button>
-        </div>
-      )}
+      <i className={styles['menu-out']}onClick={toggleDrawer}>
+            <Menu  style={{ fontSize: '28px' }} />
+          </i>
+      
+        <SwipeableDrawer
+          anchor="left"
+          open={isDrawerOpen}
+          onClose={toggleDrawer}
+          onOpen={toggleDrawer}
+          variant="persistent"
+          className={isDrawerOpen ? style['sidebar-open'] : style['sidebar-closed']}
+        >
+        
+          <div className={style['page-sidebar']}>
+            <div className={style['logo-box']}>
+              <span className={style['logo-text']}>Seat</span>
+              <i className={style['menu']} onClick={toggleDrawer}>
+                <Menu style={{ fontSize: '28px' }}/>
+              </i>
+              <div className={`${style['page-sidebar-inner']} ${style['slimscroll']}`}>
+                
+                <ul className={style['accordion-menu']}>
+                  <li className={style['sidebar-title']}>Apps</li>
+                  <li >
+                    <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
+                      <i className={styles['material-icons']}>
+                        <DashboardOutlined/>
+                      </i>
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={ProfilePageHandleClick} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <AccountCircleOutlined/>
+                      </i>
+                      Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={projectPageHandleClick} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <WorkOutlineOutlined/>
+                      </i>
+                      Project
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={adminPageHandleClick} className={style['active']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <GroupsOutlined/>
+                      </i>
+                      Members
+                    </a>
+                  </li>
+                  <li  className={style['active-page']}>
+                    <a onClick={SeatplanPageHandleClick} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <ChairOutlined/>
+                      </i>
+                      Seat
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={handleLogout} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <Logout/>
+                      </i>
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </SwipeableDrawer>
 
-      <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
-      </button>
-
-      {isProfileDropdownOpen && (
-        <div className={styles.dropdownMenu2}>
-          <button className={styles.sub}>
-            <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
-            Profile
-          </button>
-          <button onClick={logInPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
-            Logout
-          </button>
-        </div>
-      )}
       {selectedSeat && (
         <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} setSeats={setSeats} seats={seats} />
       )}

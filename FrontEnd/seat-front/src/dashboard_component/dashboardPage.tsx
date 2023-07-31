@@ -1,10 +1,10 @@
 
   import React, { useState,  useEffect, useRef } from 'react';
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-  import {Tooltip,Button,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
+  import {Tooltip,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardPage.module.css';
-  import { Dashboard,Chair, Groups, Work, AccountBox, Menu, Logout, SupervisedUserCircle, GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
-  import { useNavigate } from 'react-router-dom';
+  import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+  import { useNavigate, } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
   import 'chartjs-plugin-datalabels';
@@ -29,7 +29,7 @@
     const [projectSummary, setProjectSummary] = useState<ProjectSummary[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+ 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -38,6 +38,18 @@
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+
+
+  const handleLogout = () => {
+    // Clear any user-related data from the session/local storage
+    sessionStorage.removeItem('user_id');
+
+
+    // Redirect to the login page
+    navigate('/');
+  };
+
     interface CommentCardProps {
       com: Comments[];
     }
@@ -169,6 +181,26 @@
     const toggleDrawer = () => {
       setDrawerOpen(!isDrawerOpen);
     };
+    const navigate = useNavigate();
+
+    const projectPageHandleClick = () => {
+      navigate('/ProjectPage');
+    };
+    const dashboardPageHandleClick = () => {
+      navigate('/DashboardPage');
+    };
+    const adminPageHandleClick = () => {
+      navigate('/AdminPage');
+    };
+    const ProfilePageHandleClick = () => {
+      navigate('/ProfilePage');
+    };
+    const SeatplanPageHandleClick = () => {
+      navigate('/seatPlanPage');
+    };
+    const logInPageHandleClick = (): void => {
+      navigate("/");
+    };
   
     
   /*table for project overview*/
@@ -191,23 +223,7 @@
   }, []);
 
 
-  const navigate = useNavigate();
-
-  const projectPageHandleClick = () => {
-    navigate('/ProjectPage');
-  };
-  const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
-  };
-  const adminPageHandleClick = () => {
-    navigate('/AdminPage');
-  };
-  const ProfilePageHandleClick = () => {
-    navigate('/ProfilePage');
-  };
-  const SeatplanPageHandleClick = () => {
-    navigate('/seatPlanPage');
-  };
+  
   const formatTime = (isoDate: string): string => {
     const date = new Date(isoDate);
     const options: Intl.DateTimeFormatOptions = {
@@ -220,15 +236,16 @@
     };
     return date.toLocaleString('en-US', options);
   };
+  
+
     return (
       <>
         <body>
           
-        <Button onClick={toggleDrawer}>
-          <i className={styles['menu-out']}>
-            <Menu />
+          <i className={styles['menu-out']}onClick={toggleDrawer}>
+            <Menu  style={{ fontSize: '28px' }} />
           </i>
-        </Button>
+      
         <SwipeableDrawer
           anchor="left"
           open={isDrawerOpen}
@@ -242,7 +259,7 @@
             <div className={styles['logo-box']}>
               <span className={styles['logo-text']}>Seat</span>
               <i className={styles['menu']} onClick={toggleDrawer}>
-                <Menu />
+                <Menu style={{ fontSize: '28px' }}/>
               </i>
               <div className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}>
                 
@@ -250,46 +267,46 @@
                   <li className={styles['sidebar-title']}>Apps</li>
                   <li className={styles['active-page']}>
                     <a onClick={dashboardPageHandleClick} className={styles['active']}>
-                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Dashboard/>
+                      <i className={styles['material-icons']}>
+                        <DashboardOutlined/>
                       </i>
                       Dashboard
                     </a>
                   </li>
                   <li>
-                    <a onClick={ProfilePageHandleClick} className={styles['active']}>
+                    <a onClick={ProfilePageHandleClick} className={styles['material-icons']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <AccountBox/>
+                        <AccountCircleOutlined/>
                       </i>
                       Profile
                     </a>
                   </li>
                   <li>
-                    <a onClick={projectPageHandleClick} className={styles['active']}>
+                    <a onClick={projectPageHandleClick} className={styles['material-icons']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Work/>
+                        <WorkOutlineOutlined/>
                       </i>
                       Project
                     </a>
                   </li>
                   <li>
-                    <a onClick={adminPageHandleClick} className={styles['active']}>
+                    <a onClick={adminPageHandleClick} className={styles['material-icons']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Groups/>
+                        <GroupsOutlined/>
                       </i>
                       Members
                     </a>
                   </li>
                   <li>
-                    <a onClick={SeatplanPageHandleClick} className={styles['active']}>
+                    <a onClick={SeatplanPageHandleClick} className={styles['material-icons']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Chair/>
+                        <ChairOutlined/>
                       </i>
                       Seat
                     </a>
                   </li>
                   <li>
-                    <a href="index.html" className={styles['active']}>
+                    <a onClick={handleLogout} className={styles['material-icons']}>
                       <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
                         <Logout/>
                       </i>
@@ -315,27 +332,27 @@
         </div>
         
       ) : (
-        <div>Loading...</div>
+        <div></div>
       )}
        
     </div>
               
               <div className={styles.countcontainer}>
                 <div className={styles.card1}>
-                <div className={styles.cardicon}><img src={totalseat} alt='Profile Background'/></div>
+                <div className={styles.cardicon}><img src={totalseat} /></div>
                 <div className={styles.cardcount }>{dashboardData.countOccupied+dashboardData.countSeatAvailable+dashboardData.countUnderMaintenance}</div>
                 <div className={styles.cardtitle}>TOTAL SEATS</div>
               </div>
           
 
             <div className={styles.card2}>
-              <div className={styles.cardicon}><img src={occupied} alt='Profile Background'/></div>
+              <div className={styles.cardicon}><img src={occupied}/></div>
               <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
               <div className={styles.cardtitle}>OCCUPIED SEATS</div>
             </div>
             
             <div className={styles.card3}>
-            <div className={styles.cardicon}><img src={available} alt='Profile Background'/></div>
+            <div className={styles.cardicon}><img src={available} /></div>
             <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
               <div className={styles.cardtitle}>AVAILABLE SEATS</div>
             </div>
@@ -400,7 +417,7 @@
                   </div>
                   
             <div className={styles.cardcomment}>
-                  <div className={styles.cardtitle2}>RECENT COMMENT</div>
+                  <div className={styles.cardtitle3}>RECENT COMMENT</div>
                   <div className={styles.commentcontent}>
              
                   <List>
@@ -449,15 +466,15 @@
                   </div>
             </div>
             <div className={styles.projectCard}>
-            <div className={styles.cardtitle2}>SUMMARY</div>
+            <div className={styles.cardtitle3}>SUMMARY</div>
             <div className={styles.projectcontent}>
               
             <TableContainer component={Paper} sx={{ width: '100%', height: 400 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Project Name</TableCell>
-              <TableCell>Seats</TableCell>
+              <TableCell><div className={styles.cardtitle2}>Project Name</div></TableCell>
+              <TableCell><div className={styles.cardtitle2}>Seats</div></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -465,8 +482,8 @@
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((project) => (
                 <TableRow key={project.project_name}>
-                  <TableCell >{project.project_name}</TableCell>
-                  <TableCell>{project.seatCount}</TableCell>
+                  <TableCell ><div className={styles.cardtext}>{project.project_name}</div></TableCell>
+                  <TableCell><div className={styles.cardtext}>{project.seatCount}</div></TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -497,5 +514,3 @@
   };
 
   export default DashboardPage;
-
-

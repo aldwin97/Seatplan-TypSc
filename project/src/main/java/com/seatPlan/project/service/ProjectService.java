@@ -4,6 +4,7 @@ package com.seatPlan.project.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.seatPlan.project.dao.ProjectDao;
 import com.seatPlan.project.model.ColorModel;
@@ -12,6 +13,7 @@ import com.seatPlan.project.model.ProjectModel;
 
 
 @Service
+@Transactional
 public class ProjectService {
 
      public ProjectDao projectDao;
@@ -34,7 +36,6 @@ public class ProjectService {
 
     public void deleteProjectById(Long project_id) {
         projectDao.deleteProjectById(project_id);
-
     }
 
      public List<ColorModel> getAllColors() {

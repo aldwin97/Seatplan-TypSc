@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import styles from '../dashboard_component/dashboardPage.module.css';
+import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import {
   Select,
   MenuItem,
@@ -27,17 +30,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUser,
-  faBell,
-  faChartBar,
-  faUsers,
-  faProjectDiagram,
-  faPowerOff,
-  faFaceSmile,
-  faEdit,
-} from '@fortawesome/free-solid-svg-icons';
+
 import './adminMembersPage.css';
 
 interface User {
@@ -381,33 +374,6 @@ console.log('Data being updated:', updatedUserModel);
   }, []);
   
   
-  
-  const projectPageHandleClick = () => {
-    navigate('/ProjectPage');
-  };
-  const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
-  };
-  const adminPageHandleClick = () => {
-    navigate('/AdminPage');
-  };
-  const seatplanPageHandleClick = () => {
-    navigate('/SeatplanPage');
-  };
-  const logInPageHandleClick = () => {
-    navigate('/');
-  };
-
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
-
-  const toggleProfileDropdown = () => {
-    setProfileDropdownOpen(!isProfileDropdownOpen);
-  };
 
   const [usertypes, setUserTypes] = useState<UserType[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
@@ -467,56 +433,124 @@ console.log('Data being updated:', updatedUserModel);
     return nameA.localeCompare(nameB);
   });
 
+//sidebar
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setDrawerOpen(!isDrawerOpen);
+  };
+
+
+
+  const projectPageHandleClick = () => {
+    navigate('/ProjectPage');
+  };
+  const dashboardPageHandleClick = () => {
+    navigate('/DashboardPage');
+  };
+  const adminPageHandleClick = () => {
+    navigate('/AdminPage');
+  };
+  const ProfilePageHandleClick = () => {
+    navigate('/ProfilePage');
+  };
+  const SeatplanPageHandleClick = () => {
+    navigate('/seatPlanPage');
+  };
+  const logInPageHandleClick = (): void => {
+    navigate("/");
+  };
+
+  const handleLogout = () => {
+    // Clear any user-related data from the session/local storage
+    sessionStorage.removeItem('user_id');
+
+
+    // Redirect to the login page
+    navigate('/');
+  };
+
   return (
+   
     <div className="container">
-      <button className={`burgerButton ${isDropdownOpen ? 'open' : ''}`} onClick={toggleDropdown}>
-        <div className="burgerIcon"></div>
-        <div className="burgerIcon"></div>
-        <div className="burgerIcon"></div>
-      </button>
+      
 
-      {isDropdownOpen && (
-        <div className="dropdownMenu dropdownRows">
-          <button onClick={dashboardPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faChartBar} className="icon" />
-            Dashboard
-          </button>
-          <button onClick={adminPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faUsers} className="icon" />
-            Members
-          </button>
-          <button onClick={seatplanPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faEdit} className="icon" />
-            Seat Plan Management
-          </button>
-          <button onClick={projectPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
-           Projects
-          </button>
-        </div>
-      )}
-
-      <button className={`profile ${isProfileDropdownOpen ? 'open2' : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
-      </button>
-
-      {isProfileDropdownOpen && (
-        <div className="dropdownMenu2">
-          <button className="sub">
-            <FontAwesomeIcon icon={faFaceSmile} className="icon" />
-            Profile
-          </button>
-          <button onClick={logInPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faPowerOff} className="icon" />
-            Logout
-          </button>
-        </div>
-      )}
-
-      <button className="notif">
-        <FontAwesomeIcon icon={faBell} />
-      </button>
-
+      <i className={styles['menu-out']}onClick={toggleDrawer}>
+            <Menu  style={{ fontSize: '28px' }} />
+          </i>
+      
+        <SwipeableDrawer
+          anchor="left"
+          open={isDrawerOpen}
+          onClose={toggleDrawer}
+          onOpen={toggleDrawer}
+          variant="persistent"
+          className={isDrawerOpen ? styles['sidebar-open'] : styles['sidebar-closed']}
+        >
+        
+          <div className={styles['page-sidebar']}>
+            <div className={styles['logo-box']}>
+              <span className={styles['logo-text']}>Seat</span>
+              <i className={styles['menu']} onClick={toggleDrawer}>
+                <Menu style={{ fontSize: '28px' }}/>
+              </i>
+              <div className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}>
+                
+                <ul className={styles['accordion-menu']}>
+                  <li className={styles['sidebar-title']}>Apps</li>
+                  <li >
+                    <a onClick={dashboardPageHandleClick} className={styles['material-icons']}>
+                      <i className={styles['material-icons']}>
+                        <DashboardOutlined/>
+                      </i>
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={ProfilePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <AccountCircleOutlined/>
+                      </i>
+                      Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={projectPageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <WorkOutlineOutlined/>
+                      </i>
+                      Project
+                    </a>
+                  </li>
+                  <li className={styles['active-page']}>
+                    <a onClick={adminPageHandleClick} className={styles['active']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <GroupsOutlined/>
+                      </i>
+                      Members
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={SeatplanPageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <ChairOutlined/>
+                      </i>
+                      Seat
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={handleLogout} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <Logout/>
+                      </i>
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </SwipeableDrawer>
       <Box className="action-buttons" display="flex" justifyContent="flex-end">
         <IconButton
           className={`delete-button ${selectedUsers.length > 0 ? 'active' : ''}`}

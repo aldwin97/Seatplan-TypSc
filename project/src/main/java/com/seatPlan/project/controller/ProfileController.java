@@ -157,7 +157,6 @@ public ResponseEntity<String> updateUserPicture(
 
             existingUser.setUser_picture(newFilename);
 
-            System.out.println(newFilename);
 
             profileService.updateUserPicture(existingUser);
             return ResponseEntity.ok("User picture uploaded successfully");

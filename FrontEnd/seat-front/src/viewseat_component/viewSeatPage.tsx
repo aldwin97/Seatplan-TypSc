@@ -339,9 +339,8 @@ function ViewSeatPage() {
     const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
     const firstName = occupantNameParts[0]; // Extract the first name
     const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
-
     const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
-
+    
     // Calculate the center position to horizontally align the occupant name
     const centerOffsetX = (seatSize - occupantNameWidth) / 2;
     const adjustedTextOffsetX = textOffsetX + centerOffsetX;

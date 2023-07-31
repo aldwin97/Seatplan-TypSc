@@ -181,6 +181,26 @@
     const toggleDrawer = () => {
       setDrawerOpen(!isDrawerOpen);
     };
+    const navigate = useNavigate();
+
+    const projectPageHandleClick = () => {
+      navigate('/ProjectPage');
+    };
+    const dashboardPageHandleClick = () => {
+      navigate('/DashboardPage');
+    };
+    const adminPageHandleClick = () => {
+      navigate('/AdminPage');
+    };
+    const ProfilePageHandleClick = () => {
+      navigate('/ProfilePage');
+    };
+    const SeatplanPageHandleClick = () => {
+      navigate('/seatPlanPage');
+    };
+    const logInPageHandleClick = (): void => {
+      navigate("/");
+    };
   
     
   /*table for project overview*/
@@ -203,27 +223,7 @@
   }, []);
 
 
-  const navigate = useNavigate();
-
-  const projectPageHandleClick = () => {
-    navigate('/ProjectPage');
-  };
-  const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
-  };
-  const adminPageHandleClick = () => {
-    navigate('/AdminPage');
-  };
-  const ProfilePageHandleClick = () => {
-    navigate('/ProfilePage');
-  };
-  const SeatplanPageHandleClick = () => {
-    navigate('/seatPlanPage');
-  };
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
-
+  
   const formatTime = (isoDate: string): string => {
     const date = new Date(isoDate);
     const options: Intl.DateTimeFormatOptions = {

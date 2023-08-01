@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.tomcat.util.http.parser.MediaType;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
@@ -92,6 +92,7 @@ public class ProfileService {
             return ResponseEntity
                     .ok()
                     .header("Content-Disposition", "inline; filename=\"" + filename + "\"")
+                    .contentType(MediaType.parseMediaType("image/jpeg"))
                     .body(new FileSystemResource(pictureFile));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

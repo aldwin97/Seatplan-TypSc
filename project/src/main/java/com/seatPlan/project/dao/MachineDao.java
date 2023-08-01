@@ -15,4 +15,8 @@ public interface MachineDao {
     List<MachineModel> getAllMachine();
     
     void deleteMachineById(Long machine_id);
+
+    MachineModel getMachineById(Long machine_id);
+
+    void updateMachine(MachineModel machineModel);
 }

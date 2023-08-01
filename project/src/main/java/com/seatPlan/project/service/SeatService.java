@@ -52,8 +52,8 @@ public class SeatService {
     seatDao.insertComment(comment);
     }
 
-    public List<Map<String, Object>> getCommentByUserId(Long user_id) {
-        List<CommentModel> comments =seatDao.getCommentByUserId(user_id);
+    public List<Map<String, Object>> getCommentByUserId(Long user_id, Long seat_id) {
+        List<CommentModel> comments =seatDao.getCommentByUserId(user_id, seat_id);
         List<Map<String, Object>> filteredComment = comments.stream()
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();

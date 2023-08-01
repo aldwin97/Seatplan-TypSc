@@ -29,19 +29,13 @@ public class DashBoardController {
     public ResponseEntity<Map<String, Object>> dashboard() {
         
        int countUser = dashBoardService.countUser();
-
        int countSeatAvailable = dashBoardService.countSeatAvailable();
-
        int countUnderMaintenance = dashBoardService.countUnderMaintenance();
-
        int countOccupied = dashBoardService.countOccupied(); 
-
        int countAssignedEmpIntern = dashBoardService.countAssignedEmpIntern();
        int countAssignedEmpTrainee = dashBoardService.countAssignedEmpTrainee();
        int countAssignedEmpRegular = dashBoardService.countAssignedEmpRegular();
        int countAssignedEmpContractual = dashBoardService.countAssignedEmpContractual();
-
-
        int countUnassignedEmpIntern = dashBoardService.countUnassignedEmpIntern();
        int countUnassignedEmpTrainee = dashBoardService.countUnassignedEmpTrainee();
        int countUnassignedEmpRegular = dashBoardService.countUnassignedEmpRegular();
@@ -60,9 +54,7 @@ public class DashBoardController {
         data.put("countUnassignedEmpTrainee",countUnassignedEmpTrainee);
         data.put("countUnassignedEmpRegular",countUnassignedEmpRegular);
         data.put("countUnassignedEmpContractual",countUnassignedEmpContractual);
-        
         return ResponseEntity.ok(data);
-       
     }
 
     @GetMapping("/countPerProject")

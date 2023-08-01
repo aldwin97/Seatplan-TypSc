@@ -41,4 +41,6 @@ public interface AdminDao {
     UserInputModel getUserByEmail(String email);
 
     void insertComment(CommentModel comment);
+
+    List<CommentModel> getCommentBySeatId(Long seat_id);
 }

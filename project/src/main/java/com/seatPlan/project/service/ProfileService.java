@@ -1,11 +1,16 @@
 package com.seatPlan.project.service;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +69,33 @@ public class ProfileService {
 
     public void updateUserPicture(UserModel userModel) {
          profileDao.updateUserPicture(userModel);
+    }
+
+
+    public ResponseEntity<FileSystemResource> getUserPicture(Long user_id) {
+        try {
+            UserModel user = profileDao.getUserById(user_id);
+            if (user == null || user.getUser_picture() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String targetDirectory = "C:\\Storage\\Profile";
+            String filename = user.getUser_picture();
+
+            File pictureFile = new File(targetDirectory, filename);
+
+            if (!pictureFile.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Set the Content-Disposition header to "inline" to display the image in the browser.
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Disposition", "inline; filename=\"" + filename + "\"")
+                    .body(new FileSystemResource(pictureFile));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 

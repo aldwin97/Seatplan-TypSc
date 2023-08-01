@@ -11,6 +11,7 @@ import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import domtoimage from 'dom-to-image';
+import { Button } from '@mui/material';
 
 interface Seat {
   position: { x: number; y: number };
@@ -57,9 +58,6 @@ interface Occupant {
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
-
-  const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
-  const [reply, setReply] = useState('');
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
@@ -153,13 +151,6 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
       }
     }
   };
-  
-  
-  
-  
-  
-  
-  
   
 
  useEffect(() => {
@@ -262,41 +253,20 @@ const fetchOccupants = async () => {
     console.error('Error occurred while fetching occupants:', error);
   }
 };
-const [showComments, setShowComments] = useState(false);
-
-const toggleCommentsSection = () => {
-  setShowComments((prevShowComments) => !prevShowComments);
-  setSelectedViewerIndex(-1); // Reset the selected viewer index when toggling the section
-};
-
-
-const handleViewerClick = (viewerIndex: number) => {
-  setSelectedViewerIndex(viewerIndex);
-};
-
-const handleReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  setReply(event.target.value);
-};
-
-const handleReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  const updatedSeats = seats.map((s) => {
-    if (s.seat_id === seat.seat_id) {
-      const updatedComments = [...s.comments];
-      updatedComments[selectedViewerIndex] += ` (Admin): ${reply}`;
-      return { ...s, comments: updatedComments };
-    }
-    return s;
-  });
-  setSeats(updatedSeats);
-  setReply('');
-};
 
 
 
 useEffect(() => {
   setShowComments(false);
 }, []);
+
+
+const [showComments, setShowComments] = useState(false);
+
+// Function to toggle the comments section
+const toggleCommentsSection = () => {
+  setShowComments((prevShowComments) => !prevShowComments);
+};
 
 return (
   <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
@@ -395,53 +365,146 @@ return (
         <button type="button" className={styles.closeButton} onClick={onClose}>
           <FontAwesomeIcon icon={faClose} />
         </button>
-        <div className={styles.arrowToggle} onClick={toggleCommentsSection}>
+       <div className={styles.arrowToggle} onClick={toggleCommentsSection}>
           <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
-          {showComments && seat.viewerNames?.length > 0 && (
-            <button
-            className={styles.addCommentButton}
-            onClick={() => console.log('Add Comment clicked')}
-          >
-            Add Comment
-          </button>
-          
-          )}
+          {/* Optionally, you can add a button to add a new comment */}
+        
         </div>
-        {showComments && seat.viewerNames?.length > 0 && (
-          <>
-            <h4>Comments:</h4>
-            <ul>
-              {seat.viewerNames.map((viewerName, index) => (
-                <li key={index} onClick={() => handleViewerClick(index)}>
-                  <span className={styles.viewerName}>{viewerName}</span>
-                </li>
-              ))}
-            </ul>
-            {selectedViewerIndex >= 0 && (
-              <>
-                <h4>Comment:</h4>
-                <p>{seat.comments[selectedViewerIndex]}</p>
-                <form onSubmit={handleReplySubmit}>
-                  <label>
-                    Reply:
-                    <input
-                      type="text"
-                      value={reply}
-                      onChange={handleReplyChange}
-                      placeholder="Type your reply..."
-                    />
-                  </label>
-                  <button type="submit">Send Reply</button>
-                </form>
-              </>
-            )}
-          </>
-        )}
+        {/* Render the comments section */}
+        {showComments && seat.seat_id && <SeatPopupComments seatId={seat.seat_id} />}
       </form>
+      
+      </div>
     </div>
-  </div>
-);
+    
+  );
 }
+
+interface Comment {
+  comment_id: number;
+  user_id: number;
+  seat_id: number;
+  comment: string;
+  created_time: string;
+  created_by: number;
+}
+
+const SeatPopupComments = ({ seatId }: { seatId: number }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    fetchCommentsBySeatId(seatId);
+  }, [seatId]);
+
+  const fetchCommentsBySeatId = (seatId: number) => {
+    fetch(`http://localhost:8080/seat/showAllCommentBy/${seatId}`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error('Failed to fetch comments for seat:', response.statusText);
+          return [];
+        }
+      })
+      .then((data) => {
+        // Update the comments state with the fetched comments
+        setComments(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching comments for seat:', error);
+      });
+  };
+
+  const handleNewCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewComment(event.target.value);
+  };
+
+  const handleCommentSubmit = () => {
+    if (!newComment.trim()) {
+      setError('Comment cannot be empty'); // Set the error message
+      return;
+    }
+
+    const userId = sessionStorage.getItem('user_id');
+    if (!userId) {
+      setError('User ID not found in session storage'); // Set the error message
+      return;
+    }
+
+    // Reset the error message if there was no error
+    setError('');
+    // Prepare the comment data
+    const commentData = {
+      user_id: parseInt(userId, 10),
+      seat_id: seatId,
+      comment: newComment,
+      created_time: new Date().toISOString(),
+      created_by: parseInt(userId, 10),
+    };
+
+    // Send the comment data to the backend API
+    fetch('http://localhost:8080/seat/insertComment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(commentData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Comment inserted successfully
+          console.log('Comment inserted successfully');
+          // Fetch updated comments after submitting a new comment
+          fetchCommentsBySeatId(seatId);
+          // Reset the new comment input field
+          setNewComment('');
+        } else {
+          // Failed to insert comment
+          console.error('Failed to insert comment');
+        }
+      })
+      .catch((error) => {
+        console.error('Error inserting comment:', error);
+      });
+  };
+
+  return (
+    <div>
+      <form >
+        <label>
+          Add Comment:
+          <textarea
+            value={newComment}
+            onChange={handleNewCommentChange}
+            placeholder="Type your comment..."
+            className={styles.largeInput} // Apply the CSS class to the textarea element
+            required // Add the 'required' attribute to make the textarea required
+          />
+        </label>
+        <Button className={styles.sub} type="button" onClick={handleCommentSubmit}>Add</Button> {/* Use type="button" to prevent form submission */}
+      </form>
+ {/* Display Error Message */}
+ {error && <p className={styles.error}>{error}</p>}
+      {/* Display Comments */}
+      {comments.length > 0 && (
+        <div>
+          <h4>Comments:</h4>
+          <ul>
+            {comments.map((comment) => (
+              <li key={comment.comment_id}>
+                <span>{comment.comment}</span>
+                {/* Optionally, display comment author, creation time, etc. */}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 function SeatplanPage() {
   const navigate = useNavigate();

@@ -432,7 +432,19 @@
   background-color: #0056b3 !important;
   color: white;
 }
-
+.sub
+{
+  width: 80px;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  background-color: #28a745 !important;
+}
+.sub:hover {
+  background-color: #0056b3 !important;
+  color: white;
+}
 .seatPopupContent select {
   padding: 8px;
   border: 1px solid #ccc;
@@ -839,4 +851,58 @@ margin-top: 40px;
 .menu-out:hover, .menu:hover {
   
   color: #076307;
+}
+/* seatplanPage.css */
+.commentsContainer {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.commentsContainer h4 {
+  margin-bottom: 5px;
+}
+
+.commentsContainer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.commentsContainer li {
+  margin-bottom: 5px;
+}
+
+.viewCommentsButton,
+.hideCommentsButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.hideCommentsButton {
+  background-color: #dc3545;
+}
+
+.viewCommentsButton:hover,
+.hideCommentsButton:hover {
+  background-color: #0056b3;
+}
+
+.largeInput {
+  width: 300px;
+  height: 100px;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f3f3f3;
+  border: 2px solid #ccc; /* Add border with a color */
+  border-radius: 8px; /* Add border radius to create rounded corners */
+  /* You can add more styles here to customize the appearance further */
+}
+/* seatplanPage.module.css */
+.error {
+margin-left: 65px;
+color: #f44336;
 }

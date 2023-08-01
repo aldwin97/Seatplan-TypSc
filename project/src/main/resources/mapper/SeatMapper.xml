@@ -55,7 +55,7 @@
         SELECT c.*, u.first_name, u.last_name
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
-        WHERE c.user_id = #{user_id} OR recipient_id = #{user_id} AND seat_id = #{seat_id}
+        WHERE (c.user_id = #{user_id} OR recipient_id = #{user_id}) AND seat_id = #{seat_id}
         ORDER BY c.created_time DESC
     </select>
 

@@ -205,10 +205,10 @@ justify-content: center;
 .defaultImage,
 .profilePicture img {
   border-radius: 50%;
-  width: 270px; /* Set your desired width */
-  height: 270px; /* Set your desired height */
-  object-fit: cover; /* Maintain the aspect ratio and cover the container */
-  background-color: #838383; /* Add a background color in case the image is not available */
+  width: 270px; 
+  height: 270px; 
+  object-fit: cover; 
+  background-color: #838383; 
   right: -135px;
   top: 60px;
   position: absolute;
@@ -216,7 +216,6 @@ justify-content: center;
 }
 
 .defaultImage{
-background-image: url('../assets/default.png');
 position: absolute;
 background-size: cover;
 }

@@ -1,19 +1,12 @@
 import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import style from '../dashboard_component/dashboardPage.module.css';
-import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./profilePage.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import {
-  faUser,
-  faBell,
-  faPowerOff,
-  faFaceSmile,
-} from "@fortawesome/free-solid-svg-icons";
 import profileBackg from "./assets/profileBackg.jpg";
+import defaulImage from "../assets/default.png"
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -35,11 +28,9 @@ const ProfilePage: React.FC = () => {
   const [passwordMismatchSnackbar, setPasswordMismatchSnackbar] =
     useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Change the type to string | null
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Change the state type to string | null
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [isProfileDropdownOpen, setProfileDropdownOpen] =
-    useState<boolean>(false);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
@@ -95,6 +86,7 @@ const ProfilePage: React.FC = () => {
           LastName: responseData.last_name,
           Email: responseData.email,
           ContactNumber: contactNumberInt.toString(),
+       
         });
 
         setSavedPersonalInfo({
@@ -201,65 +193,16 @@ const ProfilePage: React.FC = () => {
 
   // ACCOUNT SETTINGS BUTTON //
 
-  // const handleAccountSaveChanges = (): void => {
-  //   const { newPassword, confirmPassword } = accountValues;
-  //   if (newPassword !== confirmPassword) {
-  //     setConfirmPasswordError("Passwords do not match.");
-  //     setPasswordMismatchSnackbar(true);
-  //   } else {
-  //     setConfirmPasswordError("");
-  //     setAccountEditMode(false);
-  //   }
-  // };
-
-
-  const handleAccountSaveChanges = async (): Promise<void> => {
+  const handleAccountSaveChanges = (): void => {
     const { newPassword, confirmPassword } = accountValues;
     if (newPassword !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match.");
       setPasswordMismatchSnackbar(true);
     } else {
       setConfirmPasswordError("");
-  
-      const user_id = window.sessionStorage.getItem("user_id");
-  
-      const userModel = {
-        oldPassword: "oldPasswordValue", // The old password value
-        password: newPassword, // The new password value
-      };
-  
-      try {
-        const response = await fetch(`/updatePassword/${user_id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userModel),
-        });
-  
-        const data = await response.json();
-  
-        if (response.ok) {
-          // Password update was successful. Handle any success logic here.
-          setAccountEditMode(false);
-        } else {
-          // Password update failed. Handle the error message.
-          console.error(data);
-          // Display an error message to the user if needed.
-        }
-      } catch (error) {
-        console.error('Error occurred while updating password:', error);
-        // Display an error message to the user if needed.
-      }
+      setAccountEditMode(false);
     }
   };
-  
-
-
-
-
-
-
 
   
   const handleAccountCancelChanges = (): void => {
@@ -280,7 +223,7 @@ const ProfilePage: React.FC = () => {
     const { name, value } = event.target;
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: String(value), // Convert value to a string
+      [name]: String(value),
     }));
   };
 
@@ -292,29 +235,38 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
+
+
+
+  
+
+
+  
   const handleFileChangeAndUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
+    const user_picture = event.target.files?.[0];
     event.target.value = "";
-    if (file) {
+    if (user_picture) {
       if (
-        !file.type.startsWith("image/") ||
-        !/\.(jpg|jpeg|png)$/i.test(file.name)
+        !user_picture.type.startsWith("image/") ||
+        !/\.(jpg|jpeg|png)$/i.test(user_picture.name)
       ) {
-        setErrorMsg("File not supported. Please upload an image file (jpg, jpeg, or png).");
+        setErrorMsg(
+          "File not supported. Please upload an image file (jpg, jpeg, or png)."
+        );
         return;
       }
 
-      // Check for file size
-      const maxFileSize = 5 * 1024 * 1024; // 5 MB (adjust as needed)
-      if (file.size > maxFileSize) {
+      
+      const maxFileSize = 5 * 1024 * 1024; 
+      if (user_picture.size > maxFileSize) {
         setErrorMsg("File size exceeds the maximum limit (5 MB).");
         return;
       }
 
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("user_picture", user_picture);
 
       const userId = sessionStorage.getItem("user_id");
 
@@ -322,12 +274,15 @@ const ProfilePage: React.FC = () => {
         const response = await axios.put(
           `http://localhost:8080/profile/updatePicture/${userId}`,
           formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
+        
 
         if (response.data && response.data.imageUrl) {
+          console.log("Selected image URL (before):", selectedImage);
           setSelectedImage(response.data.imageUrl);
+          console.log("Selected image URL (after):", selectedImage);
         }
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -335,8 +290,6 @@ const ProfilePage: React.FC = () => {
       }
     }
   };
-
-  
 
   const validatePersonalInfo = () => {
     const { FirstName, LastName, Email, ContactNumber } = inputValues;
@@ -380,8 +333,6 @@ const ProfilePage: React.FC = () => {
 
   //sidebar
 
- 
-
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
@@ -389,31 +340,26 @@ const ProfilePage: React.FC = () => {
     navigate('/machinetablePage');
   };
   const projectPageHandleClick = () => {
-    navigate('/ProjectPage');
+    navigate("/ProjectPage");
   };
   const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
+    navigate("/DashboardPage");
   };
   const adminPageHandleClick = () => {
-    navigate('/AdminPage');
+    navigate("/AdminPage");
   };
   const ProfilePageHandleClick = () => {
-    navigate('/ProfilePage');
+    navigate("/ProfilePage");
   };
   const SeatplanPageHandleClick = () => {
-    navigate('/seatPlanPage');
+    navigate("/seatPlanPage");
   };
-  
 
   const handleLogout = () => {
-    // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem('user_id');
-
-
-    // Redirect to the login page
-    navigate('/');
+    sessionStorage.removeItem("user_id");
+    navigate("/");
   };
-  
+
   return (
     <div className={styles.backg}>
 
@@ -463,14 +409,6 @@ const ProfilePage: React.FC = () => {
                         <WorkOutlineOutlined/>
                       </i>
                       Project
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
-                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <BusinessCenterOutlined/>
-                      </i>
-                      Machine 
                     </a>
                   </li>
                   <li>
@@ -552,7 +490,7 @@ const ProfilePage: React.FC = () => {
               <img src={selectedImage} alt="Profile" />
             ) : (
               <img
-                src="default" // Provide the path to your default image here
+                src= {defaulImage} // Provide the path to your default image here
                 alt="Profile"
                 className={styles.defaultImage}
               />
@@ -874,8 +812,6 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* for notification and profile */}
-
-      
     </div>
   );
 };

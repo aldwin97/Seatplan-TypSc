@@ -371,7 +371,7 @@ return (
         
         </div>
         {/* Render the comments section */}
-        {showComments && seat.seat_id && <SeatPopupComments userId={seat.user_id} seatId={seat.seat_id} />}
+        {showComments && seat.seat_id && <SeatPopupComments userId={parseInt(sessionStorage.getItem('user_id') || '0', 10)} seatIds={[seat.seat_id]} />}
       </form>
       
       </div>
@@ -392,20 +392,38 @@ interface Comment {
 
 interface SeatPopupCommentsProps {
   userId: number;
-  seatId: number;
+  seatIds: number[]; // Change to an array of seatIds
 }
 
-const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
+  const [commentsMap, setCommentsMap] = useState<{ [seatId: number]: Comment[] }>({});
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetchCommentsBySeatId(userId, seatId);
-  }, [userId, seatId]);
+    fetchCommentsForAllSeats(userId, seatIds);
+  }, [userId, seatIds]);
+
+  const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
+    const fetchPromises = seatIds.map((seatId) => {
+      return fetchCommentsBySeatId(userId, seatId);
+    });
+
+    Promise.all(fetchPromises)
+      .then((results) => {
+        const commentsMap: { [seatId: number]: Comment[] } = {};
+        results.forEach((comments, index) => {
+          commentsMap[seatIds[index]] = comments;
+        });
+        setCommentsMap(commentsMap);
+      })
+      .catch((error) => {
+        console.error('Error fetching comments for seats:', error);
+      });
+  };
 
   const fetchCommentsBySeatId = (userId: number, seatId: number) => {
-    fetch(`http://localhost:8080/seat/showAllCommentBy/${userId}/${seatId}`)
+    return fetch(`http://localhost:8080/seat/showAllCommentBy/${userId}/${seatId}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -414,12 +432,9 @@ const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
           return [];
         }
       })
-      .then((data) => {
-        // Update the comments state with the fetched comments
-        setComments(data);
-      })
       .catch((error) => {
         console.error('Error fetching comments for seat:', error);
+        return [];
       });
   };
 
@@ -427,7 +442,7 @@ const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
     setNewComment(event.target.value);
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = (seatId: number) => {
     if (!newComment.trim()) {
       setError('Comment cannot be empty'); // Set the error message
       return;
@@ -465,7 +480,7 @@ const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
           // Comment inserted successfully
           console.log('Comment inserted successfully');
           // Fetch updated comments after submitting a new comment
-          fetchCommentsBySeatId(userId, seatId);
+          fetchCommentsForAllSeats(userId, seatIds);
           // Reset the new comment input field
           setNewComment('');
         } else {
@@ -478,10 +493,9 @@ const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
       });
   };
 
-
   return (
     <div>
-      <form >
+      <form>
         <label>
           Add Comment:
           <textarea
@@ -492,27 +506,35 @@ const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
             required // Add the 'required' attribute to make the textarea required
           />
         </label>
-        <Button className={styles.sub} type="button" onClick={handleCommentSubmit}>Add</Button> {/* Use type="button" to prevent form submission */}
+        <button className={styles.sub} type="button" onClick={() => handleCommentSubmit(seatIds[0])}>
+          Add
+        </button> {/* Use type="button" to prevent form submission */}
       </form>
- {/* Display Error Message */}
- {error && <p className={styles.error}>{error}</p>}
-      {/* Display Comments */}
-      {comments.length > 0 && (
-          <div className={styles.commentsContainer}>
-            <h4>Comments:</h4>
-            <div className={styles.commentsScrollContainer}>
-              <ul className={styles.commentsList}>
-                {comments.map((comment) => (
-                  <li key={comment.comment_id}>
-                    <span className={styles.boldName}>{comment.full_name}: </span>
-                    <span  className={styles.text} >{comment.comment}</span>
-                    {/* Optionally, display comment author, creation time, etc. */}
-                  </li>
-                ))}
-              </ul>
+      {/* Display Error Message */}
+      {error && <p className={styles.error}>{error}</p>}
+      {/* Display Comments for Each Seat */}
+      {seatIds.map((seatId) => (
+        <div key={seatId}>
+          {/* Display seat information here */}
+          {/* Display Comments */}
+          {commentsMap[seatId]?.length > 0 && (
+            <div className={styles.commentsContainer}>
+              <h4>Comments:</h4>
+              <div className={styles.commentsScrollContainer}>
+                <ul className={styles.commentsList}>
+                  {commentsMap[seatId].map((comment) => (
+                    <li key={comment.comment_id}>
+                      <span className={styles.boldName}>{comment.full_name}: </span>
+                      <span className={styles.text}>{comment.comment}</span>
+                      {/* Optionally, display comment author, creation time, etc. */}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+      ))}
     </div>
   );
 };

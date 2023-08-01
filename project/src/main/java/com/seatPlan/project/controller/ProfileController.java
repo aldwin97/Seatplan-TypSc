@@ -123,8 +123,8 @@ public ResponseEntity<String> updateUserPassword(@PathVariable("user_id") Long u
 @PutMapping("/updatePicture/{user_id}")
 public ResponseEntity<String> updateUserPicture(
         @PathVariable("user_id") Long user_id,
-        @RequestParam("user_picture") MultipartFile user_picture
-) {
+        @RequestParam("user_picture") MultipartFile user_picture) {
+    
     try {
         UserModel existingUser = profileService.getUserById(user_id);
         if (existingUser == null) {
@@ -167,6 +167,7 @@ public ResponseEntity<String> updateUserPicture(
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload user picture");
     }
 }
+
 
 
 

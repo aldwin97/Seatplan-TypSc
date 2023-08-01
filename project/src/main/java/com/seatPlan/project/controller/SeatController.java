@@ -42,9 +42,9 @@ public class SeatController {
         }
     }
 
-    @GetMapping("/showAllCommentBy/{user_id}")
-    public List<Map<String, Object>> getCommentByUserId(@PathVariable ("user_id") Long user_id) {
-        List<Map<String, Object>> comments = seatService.getCommentByUserId(user_id);
+    @GetMapping("/showAllCommentBy/{user_id}/{seat_id}")
+    public List<Map<String, Object>> getCommentByUserId(@PathVariable ("user_id") Long user_id, @PathVariable ("seat_id") Long seat_id) {
+        List<Map<String, Object>> comments = seatService.getCommentByUserId(user_id,seat_id);
         return comments;
     }
 

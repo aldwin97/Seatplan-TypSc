@@ -388,6 +388,7 @@ interface Comment {
   comment: string;
   created_time: string;
   created_by: number;
+  replies?: Comment[]; // Optional field to hold replies to this comment
 }
 
 interface SeatPopupCommentsProps {
@@ -492,6 +493,81 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error('Error inserting comment:', error);
       });
   };
+  const handleReplySubmit = (seatId: number, parentId: number) => {
+    if (!newComment.trim()) {
+      setError('Reply cannot be empty'); // Set the error message
+      return;
+    }
+
+    const replyData = {
+      user_id: userId,
+      seat_id: seatId,
+      comment: newComment,
+      created_time: new Date().toISOString(),
+      created_by: userId,
+      parent_id: parentId, // Set the parent_id to the comment's ID to indicate it's a reply
+    };
+
+    fetch('http://localhost:8080/admin/replyComment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(replyData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // Reply inserted successfully
+          console.log('Reply inserted successfully');
+          // Fetch updated comments after submitting a new reply
+          fetchCommentsForAllSeats(userId, seatIds);
+          // Reset the new comment input field
+          setNewComment('');
+        } else {
+          // Failed to insert reply
+          console.error('Failed to insert reply');
+        }
+      })
+      .catch((error) => {
+        console.error('Error inserting reply:', error);
+      });
+  };
+
+  const renderReplies = (replies: Comment[] | undefined, parentFullName?: string) => {
+    if (!replies || replies.length === 0) {
+      return null;
+    }
+  
+    return (
+      <ul className={styles.replyList}>
+        {replies.map((reply) => (
+          <li key={reply.comment_id}>
+            <table className={styles.replyTable}>
+              <tbody>
+                <tr>
+                  <td>
+                    <span className={styles.replyname}>{reply.full_name}: </span>
+                    <span className={styles.replytext}>{reply.comment}</span>
+                  </td>
+                  <td className={styles.replyButtonCell}>
+                    <button className={styles.replyButton} onClick={() => handleReplySubmit(reply.seat_id, reply.comment_id)}>Reply</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={2}>
+                    {parentFullName && <span className={styles.replyIndicator}>Replied to {parentFullName}:</span>}
+                    {/* Recursively render nested replies */}
+                    {renderReplies(reply.replies, reply.full_name)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+  
 
   return (
     <div>
@@ -526,7 +602,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
                     <li key={comment.comment_id}>
                       <span className={styles.boldName}>{comment.full_name}: </span>
                       <span className={styles.text}>{comment.comment}</span>
-                      {/* Optionally, display comment author, creation time, etc. */}
+                      <button className={styles.replyButton} onClick={() => handleReplySubmit(seatId, comment.comment_id)}>Reply</button>
+                      {/* Render nested replies */}
+                      {renderReplies(comment.replies, comment.full_name)}
                     </li>
                   ))}
                 </ul>
@@ -538,7 +616,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     </div>
   );
 };
-
 
 function SeatplanPage() {
   const navigate = useNavigate();

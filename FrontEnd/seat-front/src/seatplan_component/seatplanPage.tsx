@@ -371,7 +371,7 @@ return (
         
         </div>
         {/* Render the comments section */}
-        {showComments && seat.seat_id && <SeatPopupComments seatId={seat.seat_id} />}
+        {showComments && seat.seat_id && <SeatPopupComments userId={seat.user_id} seatId={seat.seat_id} />}
       </form>
       
       </div>
@@ -382,6 +382,7 @@ return (
 
 interface Comment {
   comment_id: number;
+  full_name: string;
   user_id: number;
   seat_id: number;
   comment: string;
@@ -389,17 +390,22 @@ interface Comment {
   created_by: number;
 }
 
-const SeatPopupComments = ({ seatId }: { seatId: number }) => {
+interface SeatPopupCommentsProps {
+  userId: number;
+  seatId: number;
+}
+
+const SeatPopupComments = ({ userId, seatId }: SeatPopupCommentsProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetchCommentsBySeatId(seatId);
-  }, [seatId]);
+    fetchCommentsBySeatId(userId, seatId);
+  }, [userId, seatId]);
 
-  const fetchCommentsBySeatId = (seatId: number) => {
-    fetch(`http://localhost:8080/seat/showAllCommentBy/${seatId}`)
+  const fetchCommentsBySeatId = (userId: number, seatId: number) => {
+    fetch(`http://localhost:8080/seat/showAllCommentBy/${userId}/${seatId}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -427,21 +433,23 @@ const SeatPopupComments = ({ seatId }: { seatId: number }) => {
       return;
     }
 
-    const userId = sessionStorage.getItem('user_id');
-    if (!userId) {
+    const userIdString = sessionStorage.getItem('user_id');
+    if (!userIdString) {
       setError('User ID not found in session storage'); // Set the error message
       return;
     }
 
+    const userId = parseInt(userIdString, 10); // Convert userId to number
     // Reset the error message if there was no error
     setError('');
+
     // Prepare the comment data
     const commentData = {
-      user_id: parseInt(userId, 10),
+      user_id: userId,
       seat_id: seatId,
       comment: newComment,
       created_time: new Date().toISOString(),
-      created_by: parseInt(userId, 10),
+      created_by: userId,
     };
 
     // Send the comment data to the backend API
@@ -457,7 +465,7 @@ const SeatPopupComments = ({ seatId }: { seatId: number }) => {
           // Comment inserted successfully
           console.log('Comment inserted successfully');
           // Fetch updated comments after submitting a new comment
-          fetchCommentsBySeatId(seatId);
+          fetchCommentsBySeatId(userId, seatId);
           // Reset the new comment input field
           setNewComment('');
         } else {
@@ -469,6 +477,7 @@ const SeatPopupComments = ({ seatId }: { seatId: number }) => {
         console.error('Error inserting comment:', error);
       });
   };
+
 
   return (
     <div>
@@ -489,18 +498,21 @@ const SeatPopupComments = ({ seatId }: { seatId: number }) => {
  {error && <p className={styles.error}>{error}</p>}
       {/* Display Comments */}
       {comments.length > 0 && (
-        <div>
-          <h4>Comments:</h4>
-          <ul>
-            {comments.map((comment) => (
-              <li key={comment.comment_id}>
-                <span>{comment.comment}</span>
-                {/* Optionally, display comment author, creation time, etc. */}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+          <div className={styles.commentsContainer}>
+            <h4>Comments:</h4>
+            <div className={styles.commentsScrollContainer}>
+              <ul className={styles.commentsList}>
+                {comments.map((comment) => (
+                  <li key={comment.comment_id}>
+                    <span className={styles.boldName}>{comment.full_name}: </span>
+                    <span  className={styles.text} >{comment.comment}</span>
+                    {/* Optionally, display comment author, creation time, etc. */}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

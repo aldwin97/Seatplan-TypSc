@@ -854,22 +854,32 @@ margin-top: 40px;
 }
 /* seatplanPage.css */
 .commentsContainer {
+  margin-top: 5px;
+  height: 100px;
+  overflow-y: auto;
   border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 10px;
+}
+
+.commentsScrollContainer {
+  /* Enable vertical scrolling when content overflows the container's height */
+  overflow-y: auto;
+
+  /* Add any other styles you want for the scroll container */
+}
+/* styles.css */
+.boldName {
+  font-size: 12px;
+  font-weight: bold;
+}
+.text{
+
+  font-size: 11px ;
 }
 
 .commentsContainer h4 {
+  margin-top: 5px;
   margin-bottom: 5px;
-}
-
-.commentsContainer ul {
-  list-style: none;
-  padding: 0;
-}
-
-.commentsContainer li {
-  margin-bottom: 5px;
+  font-size: 20px;
 }
 
 .viewCommentsButton,
@@ -906,3 +916,5 @@ margin-top: 40px;
 margin-left: 65px;
 color: #f44336;
 }
+/* Add styles to the comments section */
+

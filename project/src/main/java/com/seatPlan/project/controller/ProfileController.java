@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -138,10 +139,9 @@ public ResponseEntity<String> updateUserPicture(
                 return ResponseEntity.badRequest().body("File size exceeds the maximum limit.");
             }
 
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             String originalFilename = user_picture.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-            String newFilename = timeStamp + fileExtension;
+            String newFilename = timeStamp;
 
             String targetDirectory = "C:\\Storage\\Profile";
 
@@ -169,6 +169,12 @@ public ResponseEntity<String> updateUserPicture(
 }
 
 
+
+ @GetMapping("/userPicture/{user_id}")
+    public ResponseEntity<FileSystemResource> getUserPicture(@PathVariable("user_id") Long user_id) {
+        return profileService.getUserPicture(user_id);
+        
+    }
 
 
 

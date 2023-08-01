@@ -1,17 +1,15 @@
 package com.seatPlan.project.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +31,6 @@ public class ProfileService {
 
      public List<Map<String, Object>>  showUserById(Long user_id){
         List<UserModel> userInfos = profileDao. showUserById(user_id);
-
-        UserModel user = profileDao.getUserById(user_id);
-        String targetDirectory = "C:\\Storage\\Profile";
-        String filename = user.getUser_picture();
-        File pictureFile = new File(targetDirectory, filename);
-
-
-
         List<Map<String, Object>> filteredUserInfo = userInfos.stream()
         .map(userInfo ->{
             Map<String, Object> userInfoMap = new HashMap<>();
@@ -51,23 +41,10 @@ public class ProfileService {
             userInfoMap.put("username",userInfo.getUsername());
             userInfoMap.put("mobile_num", userInfo.getMobile_num());
             userInfoMap.put("position_name", userInfo.getPosition_name());
-            
-            try (InputStream inputStream = new FileInputStream(pictureFile)) {
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                        byte[] imageBytes = outputStream.toByteArray();
-                        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                        userInfoMap.put("user_picture", base64Image);
-                    } catch (IOException e) {
-                        // Handle the exception here
-                    }
+            userInfoMap.put("user_picture",userInfo.getUser_picture());
+            return userInfoMap;
 
-                 return userInfoMap;
-                }).collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
         return filteredUserInfo;
     }
@@ -92,6 +69,33 @@ public class ProfileService {
 
     public void updateUserPicture(UserModel userModel) {
          profileDao.updateUserPicture(userModel);
+    }
+
+
+    public ResponseEntity<FileSystemResource> getUserPicture(Long user_id) {
+        try {
+            UserModel user = profileDao.getUserById(user_id);
+            if (user == null || user.getUser_picture() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String targetDirectory = "C:\\Storage\\Profile";
+            String filename = user.getUser_picture();
+
+            File pictureFile = new File(targetDirectory, filename);
+
+            if (!pictureFile.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Set the Content-Disposition header to "inline" to display the image in the browser.
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Disposition", "inline; filename=\"" + filename + "\"")
+                    .body(new FileSystemResource(pictureFile));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 

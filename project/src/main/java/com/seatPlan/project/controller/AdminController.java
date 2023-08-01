@@ -174,5 +174,16 @@ public class AdminController {
         }
     }
 
+
+    @GetMapping("/showAllCommentBy/{seat_id}")
+    public List<Map<String, Object>> getCommentBySeatId(@PathVariable ("seat_id") Long seat_id) {
+        List<Map<String, Object>> comments = adminService.getCommentBySeatId(seat_id);
+        return comments;
+    }
+
+
+
+  
+
     
 }

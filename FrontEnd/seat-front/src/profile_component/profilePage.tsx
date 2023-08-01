@@ -1,12 +1,20 @@
 import React, { useState, ChangeEvent, useRef, useEffect } from "react";
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import style from '../dashboard_component/dashboardPage.module.css';
-import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import style from "../dashboard_component/dashboardPage.module.css";
+import {
+  DashboardOutlined,
+  ChairOutlined,
+  GroupsOutlined,
+  AccountCircleOutlined,
+  WorkOutlineOutlined,
+  Menu,
+  Logout,
+} from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./profilePage.module.css";
 import profileBackg from "./assets/profileBackg.jpg";
-import defaulImage from "../assets/default.png"
+import defaulImage from "../assets/default.png";
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -32,6 +40,7 @@ const ProfilePage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
+  const [userPicture, setUserPicture] = useState("");
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: "",
@@ -77,7 +86,7 @@ const ProfilePage: React.FC = () => {
           `http://localhost:8080/profile/showLogedUserInfo/${user_id}`
         );
 
-        const responseData: UserProfile = response.data[0];
+        const responseData = response.data[0];
 
         const contactNumberInt = parseInt(responseData.mobile_num, 10);
 
@@ -86,7 +95,6 @@ const ProfilePage: React.FC = () => {
           LastName: responseData.last_name,
           Email: responseData.email,
           ContactNumber: contactNumberInt.toString(),
-       
         });
 
         setSavedPersonalInfo({
@@ -104,6 +112,29 @@ const ProfilePage: React.FC = () => {
           username: responseData.username,
           mobile_num: responseData.mobile_num,
         });
+
+        try {
+          const pictureResponse = await axios.get(
+            `http://localhost:8080/profile/userPicture/${user_id}`,
+            {
+              responseType: "arraybuffer", 
+            }
+          );
+          
+          const base64Data = btoa(
+            new Uint8Array(pictureResponse.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          );
+          const pictureDataUrl = `data:${pictureResponse.headers[
+            "content-type"
+          ].toLowerCase()};base64,${base64Data}`;
+
+          setUserPicture(pictureDataUrl);
+        } catch (error) {
+          console.error("Error fetching profile picture:", error);
+        }
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -117,9 +148,9 @@ const ProfilePage: React.FC = () => {
   }
 
   const viewSeatPageHandleClick = () => {
-    navigate("/viewSeatPage");
-  };
-
+      navigate("/seatPlanPage");
+    };
+    
   const toggleOldPasswordVisibility = () => {
     setShowOldPassword((prevShow) => !prevShow);
   };
@@ -204,7 +235,6 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  
   const handleAccountCancelChanges = (): void => {
     setAccountValues({ ...initialAccountValues });
     setConfirmPasswordError("");
@@ -235,13 +265,6 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
-
-
-
-  
-
-
-  
   const handleFileChangeAndUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -258,8 +281,7 @@ const ProfilePage: React.FC = () => {
         return;
       }
 
-      
-      const maxFileSize = 5 * 1024 * 1024; 
+      const maxFileSize = 5 * 1024 * 1024;
       if (user_picture.size > maxFileSize) {
         setErrorMsg("File size exceeds the maximum limit (5 MB).");
         return;
@@ -277,13 +299,7 @@ const ProfilePage: React.FC = () => {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
-        
-
-        if (response.data && response.data.imageUrl) {
-          console.log("Selected image URL (before):", selectedImage);
-          setSelectedImage(response.data.imageUrl);
-          console.log("Selected image URL (after):", selectedImage);
-        }
+        window.location.reload();
       } catch (error) {
         console.error("Error uploading image:", error);
         setErrorMsg("Error uploading image. Please try again later.");
@@ -337,7 +353,7 @@ const ProfilePage: React.FC = () => {
     setDrawerOpen(!isDrawerOpen);
   };
   const MachinePageHandleClick = () => {
-    navigate('/machinetablePage');
+    navigate("/machinetablePage");
   };
   const projectPageHandleClick = () => {
     navigate("/ProjectPage");
@@ -362,84 +378,106 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className={styles.backg}>
+      <i className={style["menu-out"]} onClick={toggleDrawer}>
+        <Menu style={{ fontSize: "28px" }} />
+      </i>
 
-      
-      <i className={style['menu-out']}onClick={toggleDrawer}>
-            <Menu  style={{ fontSize: '28px' }} />
-          </i>
-      
-        <SwipeableDrawer
-          anchor="left"
-          open={isDrawerOpen}
-          onClose={toggleDrawer}
-          onOpen={toggleDrawer}
-          variant="persistent"
-          className={isDrawerOpen ? style['sidebar-open'] : style['sidebar-closed']}
-        >
-        
-          <div className={style['page-sidebar']}>
-            <div className={style['logo-box']}>
-              <span className={style['logo-text']}>Seat</span>
-              <i className={style['menu']} onClick={toggleDrawer}>
-                <Menu style={{ fontSize: '28px' }}/>
-              </i>
-              <div className={`${style['page-sidebar-inner']} ${style['slimscroll']}`}>
-                
-                <ul className={style['accordion-menu']}>
-                  <li className={style['sidebar-title']}>Apps</li>
-                  <li >
-                    <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
-                      <i className={styles['material-icons']}>
-                        <DashboardOutlined/>
-                      </i>
-                      Dashboard
-                    </a>
-                  </li>
-                  <li className={style['active-page']}>
-                    <a onClick={ProfilePageHandleClick} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <AccountCircleOutlined/>
-                      </i>
-                      Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={projectPageHandleClick} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <WorkOutlineOutlined/>
-                      </i>
-                      Project
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={adminPageHandleClick} className={style['active']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <GroupsOutlined/>
-                      </i>
-                      Members
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={SeatplanPageHandleClick} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <ChairOutlined/>
-                      </i>
-                      Seat
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={handleLogout} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Logout/>
-                      </i>
-                      Logout
-                    </a>
-                  </li>
-                </ul>
-              </div>
+      <SwipeableDrawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={toggleDrawer}
+        onOpen={toggleDrawer}
+        variant="persistent"
+        className={
+          isDrawerOpen ? style["sidebar-open"] : style["sidebar-closed"]
+        }
+      >
+        <div className={style["page-sidebar"]}>
+          <div className={style["logo-box"]}>
+            <span className={style["logo-text"]}>Seat</span>
+            <i className={style["menu"]} onClick={toggleDrawer}>
+              <Menu style={{ fontSize: "28px" }} />
+            </i>
+            <div
+              className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
+            >
+              <ul className={style["accordion-menu"]}>
+                <li className={style["sidebar-title"]}>Apps</li>
+                <li>
+                  <a
+                    onClick={dashboardPageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i className={styles["material-icons"]}>
+                      <DashboardOutlined />
+                    </i>
+                    Dashboard
+                  </a>
+                </li>
+                <li className={style["active-page"]}>
+                  <a
+                    onClick={ProfilePageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <AccountCircleOutlined />
+                    </i>
+                    Profile
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={projectPageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <WorkOutlineOutlined />
+                    </i>
+                    Project
+                  </a>
+                </li>
+                <li>
+                  <a onClick={adminPageHandleClick} className={style["active"]}>
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <GroupsOutlined />
+                    </i>
+                    Members
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={SeatplanPageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <ChairOutlined />
+                    </i>
+                    Seat
+                  </a>
+                </li>
+                <li>
+                  <a onClick={handleLogout} className={style["material-icons"]}>
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <Logout />
+                    </i>
+                    Logout
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
-        </SwipeableDrawer>
+        </div>
+      </SwipeableDrawer>
       <div className={styles.form1}>
         {/* Left Container */}
         <form className={styles.profileSum}>
@@ -486,11 +524,11 @@ const ProfilePage: React.FC = () => {
               </MuiAlert>
             </Snackbar>
 
-            {selectedImage ? (
-              <img src={selectedImage} alt="Profile" />
+            {userPicture ? (
+              <img src={userPicture} alt="User Profile Picture" />
             ) : (
               <img
-                src= {defaulImage} // Provide the path to your default image here
+                src={defaulImage} // Provide the path to your default image here
                 alt="Profile"
                 className={styles.defaultImage}
               />

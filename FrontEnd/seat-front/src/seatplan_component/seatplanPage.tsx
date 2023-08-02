@@ -387,9 +387,12 @@ interface Comment {
   seat_id: number;
   comment: string;
   created_time: string;
+  recipient_id: number;
   created_by: number;
+  parent_id?: number; // Optional field to hold the parent comment's ID
   replies?: Comment[]; // Optional field to hold replies to this comment
 }
+
 
 interface SeatPopupCommentsProps {
   userId: number;
@@ -403,6 +406,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [replyToName, setReplyToName] = useState('');
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
+  const [replyToRecipientId, setReplyToRecipientId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchCommentsForAllSeats(userId, seatIds);
@@ -414,12 +418,14 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     setReplyToCommentId(null);
     setNewComment('');
   };
-
-  const handleShowReplyBox = (name: string, commentId: number) => {
+  const handleShowReplyBox = (name: string, commentId: number, recipientId: number) => {
     setShowReplyBox(true);
     setReplyToName(name);
     setReplyToCommentId(commentId);
+    setReplyToRecipientId(recipientId); // Set the recipientId state when showing the reply box
   };
+  
+
 
   const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
     const fetchPromises = seatIds.map((seatId) => {
@@ -480,6 +486,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       comment: newComment,
       created_time: new Date().toISOString(),
       created_by: userId,
+      recipient_id: userId, // Set the recipient ID to the current user's ID
     };
 
     fetch('http://localhost:8080/seat/insertComment', {
@@ -508,12 +515,12 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       setError('Reply cannot be empty');
       return;
     }
-
+  
     if (replyToCommentId === null) {
       setError('Reply target not specified');
       return;
     }
-
+  
     const replyData = {
       user_id: userId,
       seat_id: seatId,
@@ -521,8 +528,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       created_time: new Date().toISOString(),
       created_by: userId,
       parent_id: replyToCommentId,
+      recipient_id: replyToRecipientId,
     };
-
+  
     fetch('http://localhost:8080/admin/replyComment', {
       method: 'POST',
       headers: {
@@ -533,9 +541,11 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       .then((response) => {
         if (response.ok) {
           console.log('Reply inserted successfully');
-          fetchCommentsForAllSeats(userId, seatIds);
+          setShowReplyBox(false); // Close the reply modal
           setNewComment('');
           setReplyToCommentId(null);
+          // Fetch the updated comments after submitting a reply
+          fetchCommentsForAllSeats(userId, seatIds);
         } else {
           console.error('Failed to insert reply');
         }
@@ -544,13 +554,14 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error('Error inserting reply:', error);
       });
   };
+  
 
   const renderFullConversation = (commentId: number | null) => {
-    const renderReplies = (replies: Comment[] | undefined, parentFullName?: string) => {
+    const renderReplies = (replies: Comment[] | undefined) => {
       if (!replies || replies.length === 0) {
         return null;
       }
-    
+  
       return (
         <ul className={styles.replyList}>
           {replies.map((reply) => (
@@ -563,18 +574,22 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
                       <span className={styles.replytext}>{reply.comment}</span>
                     </td>
                     <td className={styles.replyButtonCell}>
-                      <button className={styles.replyButton} onClick={() => handleShowReplyBox(reply.full_name, reply.comment_id)}>Reply</button>
+                      {/* Check if the reply is from the current user and has replies */}
+                      {reply.user_id !== userId && reply.replies && reply.replies.length > 0 && (
+                        <button className={styles.replyButton} onClick={() => handleShowReplyBox(reply.full_name, reply.comment_id, reply.recipient_id)}>Reply</button>
+                      )}
                     </td>
                   </tr>
                 </tbody>
               </table>
               {/* Recursively render nested replies */}
-              {renderReplies(reply.replies, reply.full_name)}
+              {renderReplies(reply.replies)}
             </li>
           ))}
         </ul>
       );
     };
+  
   
     if (commentId === null || !commentsMap[seatIds[0]]) {
       return null;
@@ -604,6 +619,48 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     return renderReplies([rootComment]);
   };
 
+
+  const renderMainComments = (comments: Comment[]) => {
+    const findOriginalComment = (commentId: number, replies: Comment[]): Comment | null => {
+      for (const reply of replies) {
+        if (reply.comment_id === commentId) {
+          return reply;
+        }
+        if (reply.replies) {
+          const originalComment = findOriginalComment(commentId, reply.replies);
+          if (originalComment) {
+            return originalComment;
+          }
+        }
+      }
+      return null;
+    };
+  
+    return (
+      <ul className={styles.commentsList}>
+        {comments.map((comment) => (
+          <li key={comment.comment_id}>
+            <span className={styles.boldName}>{comment.full_name}: </span>
+            <span className={styles.text}>{comment.comment}</span>
+            {/* Display "Replied to" information */}
+            {comment.parent_id && (
+              <div className={styles.repliedTo}>
+                Replied to {findOriginalComment(comment.parent_id, comments)?.full_name}
+              </div>
+            )}
+            {/* Check if the comment is not written by the current user */}
+            {comment.user_id !== userId && !comment.replies && (
+              <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+  
+
+  
+   
   return (
     <div>
       <form>
@@ -628,47 +685,44 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
             <div className={styles.commentsContainer}>
               <h4>Comments:</h4>
               <div className={styles.commentsScrollContainer}>
-                <ul className={styles.commentsList}>
-                  {commentsMap[seatId].map((comment) => (
-                    <li key={comment.comment_id}>
-                      <span className={styles.boldName}>{comment.full_name}: </span>
-                      <span className={styles.text}>{comment.comment}</span>
-                      <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id)}>Reply</button>
-                    </li>
-                  ))}
-                </ul>
+                {/* Call the renderMainComments function here */}
+                {renderMainComments(commentsMap[seatId])}
               </div>
             </div>
           )}
         </div>
       ))}
-      {showReplyBox && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h2>Replying to {replyToName}</h2>
-              <button className={styles.closeButton2} onClick={handleCloseReplyBox}><FontAwesomeIcon icon={faClose} /></button>
-            </div>
-            <div className={styles.modalBody}>
-              {/* Show the entire conversation (thread) within the modal */}
-              {renderFullConversation(replyToCommentId)}
-              {/* Reply input */}
-              <textarea
-                value={newComment}
-                onChange={handleNewCommentChange}
-                placeholder="Type your reply..."
-                className={styles.replyTextarea}
-                required
-              />
-              <button className={styles.replySubmitButton} onClick={() => handleReplySubmit(seatIds[0])}>Reply</button>
+              {showReplyBox && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <div className={styles.modalHeader}>
+                <h2>Replying to {replyToName}</h2> {/* Use replyToName instead of userId */}
+                <button className={styles.closeButton2} onClick={handleCloseReplyBox}>
+                  <FontAwesomeIcon icon={faClose} />
+                </button>
+              </div>
+              <div className={styles.modalBody}>
+                {/* Show the entire conversation (thread) within the modal */}
+                {renderFullConversation(replyToCommentId)}
+                {/* Reply input */}
+                <textarea
+                  value={newComment}
+                  onChange={handleNewCommentChange}
+                  placeholder="Type your reply..."
+                  className={styles.replyTextarea}
+                  required
+                />
+                <button className={styles.replySubmitButton} onClick={() => handleReplySubmit(seatIds[0])}>
+                  Reply
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
     </div>
   );
 };
-  
 function SeatplanPage() {
   const navigate = useNavigate();
 

@@ -4,14 +4,14 @@ import style from '../dashboard_component/dashboardPage.module.css';
 import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import domtoimage from 'dom-to-image';
-import { Button } from '@mui/material';
+
 
 interface Seat {
   position: { x: number; y: number };
@@ -400,14 +400,30 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   const [commentsMap, setCommentsMap] = useState<{ [seatId: number]: Comment[] }>({});
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState<string>('');
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [replyToName, setReplyToName] = useState('');
+  const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchCommentsForAllSeats(userId, seatIds);
   }, [userId, seatIds]);
 
+  const handleCloseReplyBox = () => {
+    setShowReplyBox(false);
+    setReplyToName('');
+    setReplyToCommentId(null);
+    setNewComment('');
+  };
+
+  const handleShowReplyBox = (name: string, commentId: number) => {
+    setShowReplyBox(true);
+    setReplyToName(name);
+    setReplyToCommentId(commentId);
+  };
+
   const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
     const fetchPromises = seatIds.map((seatId) => {
-      return fetchCommentsBySeatId(userId, seatId);
+      return fetchCommentsBySeatId(seatId);
     });
 
     Promise.all(fetchPromises)
@@ -423,8 +439,8 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       });
   };
 
-  const fetchCommentsBySeatId = (userId: number, seatId: number) => {
-    return fetch(`http://localhost:8080/seat/showAllCommentBy/${userId}/${seatId}`)
+  const fetchCommentsBySeatId = (seatId: number) => {
+    return fetch(`http://localhost:8080/admin/showAllCommentBy/${seatId}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -445,21 +461,19 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
 
   const handleCommentSubmit = (seatId: number) => {
     if (!newComment.trim()) {
-      setError('Comment cannot be empty'); // Set the error message
+      setError('Comment cannot be empty');
       return;
     }
 
     const userIdString = sessionStorage.getItem('user_id');
     if (!userIdString) {
-      setError('User ID not found in session storage'); // Set the error message
+      setError('User ID not found in session storage');
       return;
     }
 
-    const userId = parseInt(userIdString, 10); // Convert userId to number
-    // Reset the error message if there was no error
+    const userId = parseInt(userIdString, 10);
     setError('');
 
-    // Prepare the comment data
     const commentData = {
       user_id: userId,
       seat_id: seatId,
@@ -468,7 +482,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       created_by: userId,
     };
 
-    // Send the comment data to the backend API
     fetch('http://localhost:8080/seat/insertComment', {
       method: 'POST',
       headers: {
@@ -478,14 +491,10 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     })
       .then((response) => {
         if (response.ok) {
-          // Comment inserted successfully
           console.log('Comment inserted successfully');
-          // Fetch updated comments after submitting a new comment
           fetchCommentsForAllSeats(userId, seatIds);
-          // Reset the new comment input field
           setNewComment('');
         } else {
-          // Failed to insert comment
           console.error('Failed to insert comment');
         }
       })
@@ -493,9 +502,15 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error('Error inserting comment:', error);
       });
   };
-  const handleReplySubmit = (seatId: number, parentId: number) => {
+
+  const handleReplySubmit = (seatId: number) => {
     if (!newComment.trim()) {
-      setError('Reply cannot be empty'); // Set the error message
+      setError('Reply cannot be empty');
+      return;
+    }
+
+    if (replyToCommentId === null) {
+      setError('Reply target not specified');
       return;
     }
 
@@ -505,7 +520,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       comment: newComment,
       created_time: new Date().toISOString(),
       created_by: userId,
-      parent_id: parentId, // Set the parent_id to the comment's ID to indicate it's a reply
+      parent_id: replyToCommentId,
     };
 
     fetch('http://localhost:8080/admin/replyComment', {
@@ -517,14 +532,11 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     })
       .then((response) => {
         if (response.ok) {
-          // Reply inserted successfully
           console.log('Reply inserted successfully');
-          // Fetch updated comments after submitting a new reply
           fetchCommentsForAllSeats(userId, seatIds);
-          // Reset the new comment input field
           setNewComment('');
+          setReplyToCommentId(null);
         } else {
-          // Failed to insert reply
           console.error('Failed to insert reply');
         }
       })
@@ -533,41 +545,64 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       });
   };
 
-  const renderReplies = (replies: Comment[] | undefined, parentFullName?: string) => {
-    if (!replies || replies.length === 0) {
+  const renderFullConversation = (commentId: number | null) => {
+    const renderReplies = (replies: Comment[] | undefined, parentFullName?: string) => {
+      if (!replies || replies.length === 0) {
+        return null;
+      }
+    
+      return (
+        <ul className={styles.replyList}>
+          {replies.map((reply) => (
+            <li key={reply.comment_id}>
+              <table className={styles.replyTable}>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className={styles.replyname}>{reply.full_name}: </span>
+                      <span className={styles.replytext}>{reply.comment}</span>
+                    </td>
+                    <td className={styles.replyButtonCell}>
+                      <button className={styles.replyButton} onClick={() => handleShowReplyBox(reply.full_name, reply.comment_id)}>Reply</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {/* Recursively render nested replies */}
+              {renderReplies(reply.replies, reply.full_name)}
+            </li>
+          ))}
+        </ul>
+      );
+    };
+  
+    if (commentId === null || !commentsMap[seatIds[0]]) {
       return null;
     }
   
-    return (
-      <ul className={styles.replyList}>
-        {replies.map((reply) => (
-          <li key={reply.comment_id}>
-            <table className={styles.replyTable}>
-              <tbody>
-                <tr>
-                  <td>
-                    <span className={styles.replyname}>{reply.full_name}: </span>
-                    <span className={styles.replytext}>{reply.comment}</span>
-                  </td>
-                  <td className={styles.replyButtonCell}>
-                    <button className={styles.replyButton} onClick={() => handleReplySubmit(reply.seat_id, reply.comment_id)}>Reply</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan={2}>
-                    {parentFullName && <span className={styles.replyIndicator}>Replied to {parentFullName}:</span>}
-                    {/* Recursively render nested replies */}
-                    {renderReplies(reply.replies, reply.full_name)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </li>
-        ))}
-      </ul>
-    );
-  };
+    const findComment = (commentId: number, comments: Comment[]): Comment | null => {
+      for (const comment of comments) {
+        if (comment.comment_id === commentId) {
+          return comment;
+        }
+        if (comment.replies) {
+          const nestedComment = findComment(commentId, comment.replies);
+          if (nestedComment) {
+            return nestedComment;
+          }
+        }
+      }
+      return null;
+    };
   
+    const rootComment = findComment(commentId, commentsMap[seatIds[0]]);
+    if (!rootComment) {
+      return null;
+    }
+  
+    // Show the entire conversation in the popup modal
+    return renderReplies([rootComment]);
+  };
 
   return (
     <div>
@@ -578,21 +613,17 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
             value={newComment}
             onChange={handleNewCommentChange}
             placeholder="Type your comment..."
-            className={styles.largeInput} // Apply the CSS class to the textarea element
-            required // Add the 'required' attribute to make the textarea required
+            className={styles.largeInput}
+            required
           />
         </label>
         <button className={styles.sub} type="button" onClick={() => handleCommentSubmit(seatIds[0])}>
           Add
-        </button> {/* Use type="button" to prevent form submission */}
+        </button>
       </form>
-      {/* Display Error Message */}
       {error && <p className={styles.error}>{error}</p>}
-      {/* Display Comments for Each Seat */}
       {seatIds.map((seatId) => (
         <div key={seatId}>
-          {/* Display seat information here */}
-          {/* Display Comments */}
           {commentsMap[seatId]?.length > 0 && (
             <div className={styles.commentsContainer}>
               <h4>Comments:</h4>
@@ -602,9 +633,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
                     <li key={comment.comment_id}>
                       <span className={styles.boldName}>{comment.full_name}: </span>
                       <span className={styles.text}>{comment.comment}</span>
-                      <button className={styles.replyButton} onClick={() => handleReplySubmit(seatId, comment.comment_id)}>Reply</button>
-                      {/* Render nested replies */}
-                      {renderReplies(comment.replies, comment.full_name)}
+                      <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id)}>Reply</button>
                     </li>
                   ))}
                 </ul>
@@ -613,10 +642,33 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           )}
         </div>
       ))}
+      {showReplyBox && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>Replying to {replyToName}</h2>
+              <button className={styles.closeButton2} onClick={handleCloseReplyBox}><FontAwesomeIcon icon={faClose} /></button>
+            </div>
+            <div className={styles.modalBody}>
+              {/* Show the entire conversation (thread) within the modal */}
+              {renderFullConversation(replyToCommentId)}
+              {/* Reply input */}
+              <textarea
+                value={newComment}
+                onChange={handleNewCommentChange}
+                placeholder="Type your reply..."
+                className={styles.replyTextarea}
+                required
+              />
+              <button className={styles.replySubmitButton} onClick={() => handleReplySubmit(seatIds[0])}>Reply</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
+  
 function SeatplanPage() {
   const navigate = useNavigate();
 
@@ -636,14 +688,10 @@ function SeatplanPage() {
     navigate('/AdminPage');
   };
 
-  const logInPageHandleClick = () => {
-    navigate('/');
-  };
+  
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch('http://localhost:8080/seat/showAllSeat')

@@ -349,12 +349,8 @@
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
   padding: 30px; /* Add padding to create some space between the border and content */
-  transition: 0.2s .3s ease-in-out;
 }
-.seatPopupContent:hover {
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-  scale: 0.99;
-}
+
 .seatPopupContent h3 {
   font-size: 30px;
   margin-top: 0;
@@ -457,13 +453,26 @@
 /* Close button */
 .seatPopupContent .closeButton {
   position: absolute;
-  top: 10px;
-  right: 10px;
+margin-left: 300px;
+margin-top: -70px ;
   background-color: transparent;
   border: none;
   color: #ff0000;
   cursor: pointer;
   font-size: 12px;
+}
+.seatPopupContent .closeButton2 {
+  position: absolute;
+margin-left: 380px;
+margin-top: -80px ;
+  background-color: transparent;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 12px;
+}
+.seatPopupContent .closeButton2:hover {
+  color: #777;
 }
 
 .seatPopupContent .closeButton:hover {
@@ -942,7 +951,7 @@ color: #f44336;
 }
 
 .replyButton {
-  margin-left: 30% !important;
+  margin-left: 10% !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
@@ -1009,4 +1018,65 @@ color: #f44336;
 .replyTable .replyButtonCell {
   width: 30%;
   text-align: right;
+}
+/* styles.css (or your preferred CSS file) */
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 400px;
+}
+
+/* Modal Header */
+.modalHeader h2{
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Modal Body */
+.modalBody {
+  margin-bottom: 15px;
+}
+
+/* Reply Textarea */
+.replyTextarea {
+  width: 95%;
+  height: 100px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Reply Submit Button */
+.replySubmitButton {
+  background-color: #2fc05b !important;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.replySubmitButton:hover {
+  background-color: #9b9b9b !important;
 }

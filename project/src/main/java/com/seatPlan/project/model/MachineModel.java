@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MachineModel {
 
-    private Long machine_id;
+    private Long user_id;
     private String machine_name;
     private Long project_id;
     private int is_deleted;

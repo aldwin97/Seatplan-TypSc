@@ -1,19 +1,20 @@
 import React, { useState, ChangeEvent, useRef, useEffect } from "react";
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import style from '../dashboard_component/dashboardPage.module.css';
-import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import style from "../dashboard_component/dashboardPage.module.css";
+import {
+  DashboardOutlined,
+  ChairOutlined,
+  GroupsOutlined,
+  AccountCircleOutlined,
+  WorkOutlineOutlined,
+  Menu,
+  Logout,
+} from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./profilePage.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import {
-  faUser,
-  faBell,
-  faPowerOff,
-  faFaceSmile,
-} from "@fortawesome/free-solid-svg-icons";
 import profileBackg from "./assets/profileBackg.jpg";
+import defaulImage from "../assets/default.png";
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -35,12 +36,11 @@ const ProfilePage: React.FC = () => {
   const [passwordMismatchSnackbar, setPasswordMismatchSnackbar] =
     useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Change the type to string | null
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Change the state type to string | null
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [isProfileDropdownOpen, setProfileDropdownOpen] =
-    useState<boolean>(false);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
+  const [userPicture, setUserPicture] = useState("");
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: "",
@@ -86,7 +86,7 @@ const ProfilePage: React.FC = () => {
           `http://localhost:8080/profile/showLogedUserInfo/${user_id}`
         );
 
-        const responseData: UserProfile = response.data[0];
+        const responseData = response.data[0];
 
         const contactNumberInt = parseInt(responseData.mobile_num, 10);
 
@@ -112,6 +112,29 @@ const ProfilePage: React.FC = () => {
           username: responseData.username,
           mobile_num: responseData.mobile_num,
         });
+
+        try {
+          const pictureResponse = await axios.get(
+            `http://localhost:8080/profile/userPicture/${user_id}`,
+            {
+              responseType: "arraybuffer", 
+            }
+          );
+          
+          const base64Data = btoa(
+            new Uint8Array(pictureResponse.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          );
+          const pictureDataUrl = `data:${pictureResponse.headers[
+            "content-type"
+          ].toLowerCase()};base64,${base64Data}`;
+
+          setUserPicture(pictureDataUrl);
+        } catch (error) {
+          console.error("Error fetching profile picture:", error);
+        }
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -125,9 +148,9 @@ const ProfilePage: React.FC = () => {
   }
 
   const viewSeatPageHandleClick = () => {
-    navigate("/viewSeatPage");
-  };
-
+      navigate("/seatPlanPage");
+    };
+    
   const toggleOldPasswordVisibility = () => {
     setShowOldPassword((prevShow) => !prevShow);
   };
@@ -201,67 +224,17 @@ const ProfilePage: React.FC = () => {
 
   // ACCOUNT SETTINGS BUTTON //
 
-  // const handleAccountSaveChanges = (): void => {
-  //   const { newPassword, confirmPassword } = accountValues;
-  //   if (newPassword !== confirmPassword) {
-  //     setConfirmPasswordError("Passwords do not match.");
-  //     setPasswordMismatchSnackbar(true);
-  //   } else {
-  //     setConfirmPasswordError("");
-  //     setAccountEditMode(false);
-  //   }
-  // };
-
-
-  const handleAccountSaveChanges = async (): Promise<void> => {
+  const handleAccountSaveChanges = (): void => {
     const { newPassword, confirmPassword } = accountValues;
     if (newPassword !== confirmPassword) {
       setConfirmPasswordError("Passwords do not match.");
       setPasswordMismatchSnackbar(true);
     } else {
       setConfirmPasswordError("");
-  
-      const user_id = window.sessionStorage.getItem("user_id");
-  
-      const userModel = {
-        oldPassword: "oldPasswordValue", // The old password value
-        password: newPassword, // The new password value
-      };
-  
-      try {
-        const response = await fetch(`/updatePassword/${user_id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userModel),
-        });
-  
-        const data = await response.json();
-  
-        if (response.ok) {
-          // Password update was successful. Handle any success logic here.
-          setAccountEditMode(false);
-        } else {
-          // Password update failed. Handle the error message.
-          console.error(data);
-          // Display an error message to the user if needed.
-        }
-      } catch (error) {
-        console.error('Error occurred while updating password:', error);
-        // Display an error message to the user if needed.
-      }
+      setAccountEditMode(false);
     }
   };
-  
 
-
-
-
-
-
-
-  
   const handleAccountCancelChanges = (): void => {
     setAccountValues({ ...initialAccountValues });
     setConfirmPasswordError("");
@@ -280,7 +253,7 @@ const ProfilePage: React.FC = () => {
     const { name, value } = event.target;
     setInputValues((prevValues) => ({
       ...prevValues,
-      [name]: String(value), // Convert value to a string
+      [name]: String(value),
     }));
   };
 
@@ -295,26 +268,27 @@ const ProfilePage: React.FC = () => {
   const handleFileChangeAndUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
+    const user_picture = event.target.files?.[0];
     event.target.value = "";
-    if (file) {
+    if (user_picture) {
       if (
-        !file.type.startsWith("image/") ||
-        !/\.(jpg|jpeg|png)$/i.test(file.name)
+        !user_picture.type.startsWith("image/") ||
+        !/\.(jpg|jpeg|png)$/i.test(user_picture.name)
       ) {
-        setErrorMsg("File not supported. Please upload an image file (jpg, jpeg, or png).");
+        setErrorMsg(
+          "File not supported. Please upload an image file (jpg, jpeg, or png)."
+        );
         return;
       }
 
-      // Check for file size
-      const maxFileSize = 5 * 1024 * 1024; // 5 MB (adjust as needed)
-      if (file.size > maxFileSize) {
+      const maxFileSize = 5 * 1024 * 1024;
+      if (user_picture.size > maxFileSize) {
         setErrorMsg("File size exceeds the maximum limit (5 MB).");
         return;
       }
 
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("user_picture", user_picture);
 
       const userId = sessionStorage.getItem("user_id");
 
@@ -322,21 +296,16 @@ const ProfilePage: React.FC = () => {
         const response = await axios.put(
           `http://localhost:8080/profile/updatePicture/${userId}`,
           formData,
-          { headers: { 'Content-Type': 'multipart/form-data' } }
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
-
-        if (response.data && response.data.imageUrl) {
-          setSelectedImage(response.data.imageUrl);
-        }
+        window.location.reload();
       } catch (error) {
         console.error("Error uploading image:", error);
         setErrorMsg("Error uploading image. Please try again later.");
       }
     }
   };
-
-  
 
   const validatePersonalInfo = () => {
     const { FirstName, LastName, Email, ContactNumber } = inputValues;
@@ -380,128 +349,135 @@ const ProfilePage: React.FC = () => {
 
   //sidebar
 
- 
-
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
   const MachinePageHandleClick = () => {
-    navigate('/machinetablePage');
+    navigate("/machinetablePage");
   };
   const projectPageHandleClick = () => {
-    navigate('/ProjectPage');
+    navigate("/ProjectPage");
   };
   const dashboardPageHandleClick = () => {
-    navigate('/DashboardPage');
+    navigate("/DashboardPage");
   };
   const adminPageHandleClick = () => {
-    navigate('/AdminPage');
+    navigate("/AdminPage");
   };
   const ProfilePageHandleClick = () => {
-    navigate('/ProfilePage');
+    navigate("/ProfilePage");
   };
   const SeatplanPageHandleClick = () => {
-    navigate('/seatPlanPage');
+    navigate("/seatPlanPage");
   };
-  
 
   const handleLogout = () => {
-    // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem('user_id');
-
-
-    // Redirect to the login page
-    navigate('/');
+    sessionStorage.removeItem("user_id");
+    navigate("/");
   };
-  
+
   return (
     <div className={styles.backg}>
+      <i className={style["menu-out"]} onClick={toggleDrawer}>
+        <Menu style={{ fontSize: "28px" }} />
+      </i>
 
-      
-      <i className={style['menu-out']}onClick={toggleDrawer}>
-            <Menu  style={{ fontSize: '28px' }} />
-          </i>
-      
-        <SwipeableDrawer
-          anchor="left"
-          open={isDrawerOpen}
-          onClose={toggleDrawer}
-          onOpen={toggleDrawer}
-          variant="persistent"
-          className={isDrawerOpen ? style['sidebar-open'] : style['sidebar-closed']}
-        >
-        
-          <div className={style['page-sidebar']}>
-            <div className={style['logo-box']}>
-              <span className={style['logo-text']}>Seat</span>
-              <i className={style['menu']} onClick={toggleDrawer}>
-                <Menu style={{ fontSize: '28px' }}/>
-              </i>
-              <div className={`${style['page-sidebar-inner']} ${style['slimscroll']}`}>
-                
-                <ul className={style['accordion-menu']}>
-                  <li className={style['sidebar-title']}>Apps</li>
-                  <li >
-                    <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
-                      <i className={styles['material-icons']}>
-                        <DashboardOutlined/>
-                      </i>
-                      Dashboard
-                    </a>
-                  </li>
-                  <li className={style['active-page']}>
-                    <a onClick={ProfilePageHandleClick} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <AccountCircleOutlined/>
-                      </i>
-                      Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={projectPageHandleClick} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <WorkOutlineOutlined/>
-                      </i>
-                      Project
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
-                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <BusinessCenterOutlined/>
-                      </i>
-                      Machine 
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={adminPageHandleClick} className={style['active']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <GroupsOutlined/>
-                      </i>
-                      Members
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={SeatplanPageHandleClick} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <ChairOutlined/>
-                      </i>
-                      Seat
-                    </a>
-                  </li>
-                  <li>
-                    <a onClick={handleLogout} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Logout/>
-                      </i>
-                      Logout
-                    </a>
-                  </li>
-                </ul>
-              </div>
+      <SwipeableDrawer
+        anchor="left"
+        open={isDrawerOpen}
+        onClose={toggleDrawer}
+        onOpen={toggleDrawer}
+        variant="persistent"
+        className={
+          isDrawerOpen ? style["sidebar-open"] : style["sidebar-closed"]
+        }
+      >
+        <div className={style["page-sidebar"]}>
+          <div className={style["logo-box"]}>
+            <span className={style["logo-text"]}>Seat</span>
+            <i className={style["menu"]} onClick={toggleDrawer}>
+              <Menu style={{ fontSize: "28px" }} />
+            </i>
+            <div
+              className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
+            >
+              <ul className={style["accordion-menu"]}>
+                <li className={style["sidebar-title"]}>Apps</li>
+                <li>
+                  <a
+                    onClick={dashboardPageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i className={styles["material-icons"]}>
+                      <DashboardOutlined />
+                    </i>
+                    Dashboard
+                  </a>
+                </li>
+                <li className={style["active-page"]}>
+                  <a
+                    onClick={ProfilePageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <AccountCircleOutlined />
+                    </i>
+                    Profile
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={projectPageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <WorkOutlineOutlined />
+                    </i>
+                    Project
+                  </a>
+                </li>
+                <li>
+                  <a onClick={adminPageHandleClick} className={style["active"]}>
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <GroupsOutlined />
+                    </i>
+                    Members
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={SeatplanPageHandleClick}
+                    className={style["material-icons"]}
+                  >
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <ChairOutlined />
+                    </i>
+                    Seat
+                  </a>
+                </li>
+                <li>
+                  <a onClick={handleLogout} className={style["material-icons"]}>
+                    <i
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <Logout />
+                    </i>
+                    Logout
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
-        </SwipeableDrawer>
+        </div>
+      </SwipeableDrawer>
       <div className={styles.form1}>
         {/* Left Container */}
         <form className={styles.profileSum}>
@@ -548,11 +524,11 @@ const ProfilePage: React.FC = () => {
               </MuiAlert>
             </Snackbar>
 
-            {selectedImage ? (
-              <img src={selectedImage} alt="Profile" />
+            {userPicture ? (
+              <img src={userPicture} alt="User Profile Picture" />
             ) : (
               <img
-                src="default" // Provide the path to your default image here
+                src={defaulImage} // Provide the path to your default image here
                 alt="Profile"
                 className={styles.defaultImage}
               />
@@ -874,8 +850,6 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* for notification and profile */}
-
-      
     </div>
   );
 };

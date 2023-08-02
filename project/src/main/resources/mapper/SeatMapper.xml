@@ -55,9 +55,12 @@
         SELECT c.*, u.first_name, u.last_name
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
-        WHERE c.user_id = #{user_id} OR recipient_id = #{user_id}
+        WHERE (c.user_id = #{user_id} OR recipient_id = #{user_id}) AND seat_id = #{seat_id}
         ORDER BY c.created_time DESC
     </select>
+
+
+    
 
     <select id="getAllComment" resultType="com.seatPlan.project.model.CommentModel">
         SELECT c.*, u.first_name, u.last_name
@@ -118,11 +121,14 @@
         WHERE seat_id IN (#{seatId1}, #{seatId2})
     </update>
 
-    
 
-
-
-
+    <select id="getCommentByChatId">
+        SELECT c.*, u.first_name, u.last_name
+        FROM table_comment c
+        JOIN table_user u ON c.user_id = u.user_id
+        WHERE (c.user_id = #{user_id} OR recipient_id = #{recipient_id}) AND seat_id = #{seat_id}
+        ORDER BY c.created_time ASC   
+    </select>
 
     <select id="isUserAlreadyAssigned" resultType="boolean">
         SELECT COUNT(*) FROM table_seat WHERE user_id = #{user_id}

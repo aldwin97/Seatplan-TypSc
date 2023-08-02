@@ -34,5 +34,15 @@ public class MachineService {
     public void deleteMachineById(Long machine_id) {
         machineDao.deleteMachineById(machine_id);
     }
+
+
+    public MachineModel getMachineById(Long machine_id) {
+        return machineDao.getMachineById(machine_id);
+    }
     
+    public void updateMachine(MachineModel machineModel) {
+        machineDao.updateMachine(machineModel);
+    }
+
+
 }

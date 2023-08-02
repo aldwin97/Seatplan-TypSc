@@ -4,8 +4,8 @@
         <mapper namespace="com.seatPlan.project.dao.MachineDao">
 
             <insert id="insertMachine"  parameterType="com.seatPlan.project.model.MachineInputModel">
-                INSERT INTO table_machine (
-                    machine_name, 
+                INSERT INTO table_user (
+                    first_name, 
                     project_id,  
                     created_by)
                 VALUES (
@@ -21,5 +21,24 @@
             <update id="deleteMachineById">
                 UPDATE table_machine SET is_deleted = 1 WHERE machine_id = #{machine_id}
             </update>
+            
+
+
+            <update id="updateMachine" parameterType="com.seatPlan.project.model.MachineModel">
+                UPDATE table_machine
+                <set>
+                    <if test="machine_name != null">machine_name = #{machine_name},</if>
+                    <if test="project_id != null">project_id = #{project_id},</if>
+                    <if test="updated_by != null">updated_by = #{updated_by},</if>
+                </set>
+                WHERE machine_id = #{machine_id}
+            </update>
+
+
+            <select id="getMachineById" resultType="com.seatPlan.project.model.MachineModel">
+                SELECT * FROM table_machine WHERE machine_id = #{machine_id} AND is_deleted = 0
+            </select>
+
+
 
         </mapper>

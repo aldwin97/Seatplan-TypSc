@@ -4,6 +4,8 @@ package com.seatPlan.project.dao;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
@@ -26,6 +28,7 @@ public interface AdminDao {
 
     List<StaffStatusModel> getAllStaffStatusModels();
 
+
     List<UserModel> getAllUser();
 
     void deleteUserById(@Param("user_id") Long user_id);
@@ -41,4 +44,6 @@ public interface AdminDao {
     UserInputModel getUserByEmail(String email);
 
     void insertComment(CommentModel comment);
+
+    List<CommentModel> getCommentBySeatId(Long seat_id);
 }

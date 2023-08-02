@@ -349,12 +349,8 @@
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
   padding: 30px; /* Add padding to create some space between the border and content */
-  transition: 0.2s .3s ease-in-out;
 }
-.seatPopupContent:hover {
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-  scale: 0.99;
-}
+
 .seatPopupContent h3 {
   font-size: 30px;
   margin-top: 0;
@@ -432,7 +428,19 @@
   background-color: #0056b3 !important;
   color: white;
 }
-
+.sub
+{
+  width: 80px;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  background-color: #28a745 !important;
+}
+.sub:hover {
+  background-color: #0056b3 !important;
+  color: white;
+}
 .seatPopupContent select {
   padding: 8px;
   border: 1px solid #ccc;
@@ -445,13 +453,26 @@
 /* Close button */
 .seatPopupContent .closeButton {
   position: absolute;
-  top: 10px;
-  right: 10px;
+margin-left: 300px;
+margin-top: -70px ;
   background-color: transparent;
   border: none;
   color: #ff0000;
   cursor: pointer;
   font-size: 12px;
+}
+.seatPopupContent .closeButton2 {
+  position: absolute;
+margin-left: 380px;
+margin-top: -80px ;
+  background-color: transparent;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 12px;
+}
+.seatPopupContent .closeButton2:hover {
+  color: #777;
 }
 
 .seatPopupContent .closeButton:hover {
@@ -839,4 +860,223 @@ margin-top: 40px;
 .menu-out:hover, .menu:hover {
   
   color: #076307;
+}
+/* seatplanPage.css */
+.commentsContainer {
+  margin-top: 5px;
+  height: 100px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+.commentsScrollContainer {
+  /* Enable vertical scrolling when content overflows the container's height */
+  overflow-y: auto;
+
+  /* Add any other styles you want for the scroll container */
+}
+/* styles.css */
+.boldName {
+  font-size: 12px;
+  font-weight: bold;
+}
+.text{
+
+  font-size: 11px ;
+}
+
+.commentsContainer h4 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.viewCommentsButton,
+.hideCommentsButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.hideCommentsButton {
+  background-color: #dc3545;
+}
+
+.viewCommentsButton:hover,
+.hideCommentsButton:hover {
+  background-color: #0056b3;
+}
+
+.largeInput {
+  width: 300px;
+  height: 60px;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f3f3f3;
+  border: 2px solid #ccc; /* Add border with a color */
+  border-radius: 8px; /* Add border radius to create rounded corners */
+  /* You can add more styles here to customize the appearance further */
+}
+/* seatplanPage.module.css */
+.error {
+margin-left: 65px;
+color: #f44336;
+}
+/* Add styles to the comments section */
+
+/* SeatPopupComments.css */
+
+/* Styles for the reply button */
+/* CSS for comments */
+.commentsContainer {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.commentsList {
+  list-style: none;
+  padding: 0;
+}
+
+.boldName {
+  font-weight: bold;
+}
+
+.text {
+  margin-left: 5px;
+}
+
+.replyButton {
+  margin-left: 10% !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #007bff !important; /* Change the color to the desired hyperlink color */
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 11px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.replyButton:hover {
+  text-decoration: none !important;
+}
+
+/* CSS for replies */
+.replyList {
+  list-style: none;
+  padding: 0;
+  margin-left: 20px; /* Indent replies */
+}
+
+.replyname {
+  font-weight: bold;
+}
+
+.replytext {
+  margin-left: 5px;
+}
+
+.replyButton {
+  background: none;
+  border: none;
+  color: #007bff; /* Change the color to the desired hyperlink color */
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+.replyButton:hover {
+  text-decoration: none;
+}
+
+.replyIndicator {
+  margin-left: 5px;
+  font-style: italic;
+  color: #777;
+}
+.replyIndicator {
+  font-style: italic;
+  color: #777;
+}
+
+.replyTable {
+  width: 100%;
+}
+
+.replyTable td {
+  vertical-align: top;
+}
+
+.replyTable .replyButtonCell {
+  width: 30%;
+  text-align: right;
+}
+/* styles.css (or your preferred CSS file) */
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 400px;
+}
+
+/* Modal Header */
+.modalHeader h2{
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Modal Body */
+.modalBody {
+  margin-bottom: 15px;
+}
+
+/* Reply Textarea */
+.replyTextarea {
+  width: 95%;
+  height: 100px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Reply Submit Button */
+.replySubmitButton {
+  background-color: #2fc05b !important;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.replySubmitButton:hover {
+  background-color: #9b9b9b !important;
 }

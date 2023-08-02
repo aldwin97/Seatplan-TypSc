@@ -18,6 +18,8 @@ public interface SeatDao {
 
     void insertComment(CommentInputModel comment);
     
+    List<CommentModel> getCommentByChatId(Long user_id,Long seat_id, Long recipient_id);
+
     List<CommentModel> getCommentByUserId(Long user_id,Long seat_id);
 
     List<CommentModel> getAllComment();

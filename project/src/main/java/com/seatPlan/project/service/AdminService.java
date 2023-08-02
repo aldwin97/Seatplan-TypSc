@@ -73,6 +73,7 @@ public class AdminService {
 
     public List<Map<String, Object>> getAllUser() {
         List<UserModel> users = adminDao.getAllUser();
+
         List<Map<String, Object>> filteredUserType = users.stream()
                 .map(user -> {
                     Map<String, Object> userMap = new HashMap<>();
@@ -146,6 +147,7 @@ public class AdminService {
         List<Map<String, Object>> filteredComment = comments.stream()
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();
+                commentMap.put("user_id",comment.getUser_id());
                 commentMap.put("comment_id", comment.getComment_id());
                 commentMap.put("seat_id",comment.getSeat_id());
                 commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));

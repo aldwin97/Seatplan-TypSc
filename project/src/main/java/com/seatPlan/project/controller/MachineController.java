@@ -60,10 +60,10 @@ public class MachineController {
 
 
 
-     @PutMapping("/updateMachine/{machine_id}")
-    public ResponseEntity<String> updateMachineInfo(@PathVariable("machine_id") Long machine_id, @RequestBody MachineModel machineModel) {
+     @PutMapping("/updateMachine/{user_id}")
+    public ResponseEntity<String> updateMachineInfo(@PathVariable("user_id") Long user_id, @RequestBody MachineModel machineModel) {
     try {
-        MachineModel existingMachine = machineService.getMachineById(machine_id);
+        MachineModel existingMachine = machineService.getMachineById(user_id);
         if (existingMachine == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Machine not found");
         }

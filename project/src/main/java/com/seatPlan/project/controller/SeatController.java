@@ -101,4 +101,16 @@ public class SeatController {
         }
     }
 
+
+
+
+    @GetMapping("/showChatCommentBy/{user_id}/{recipient_id}/{seat_id}")
+    public List<Map<String, Object>> getCommentByUserId(@PathVariable ("user_id") Long user_id, @PathVariable ("seat_id") Long seat_id,@PathVariable ("recipient_id") Long recipient_id) {
+        List<Map<String, Object>> comments = seatService.getCommentByChatId(user_id,seat_id,recipient_id);
+        return comments;
+    }
+
+
+
+
 }

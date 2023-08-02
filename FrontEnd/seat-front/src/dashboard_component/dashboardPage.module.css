@@ -426,7 +426,7 @@ body {
 
 }
 
-@media (min-width: 1200px) {
+@media (max-width: 1200px) {
 
   .compact-sidebar .page-sidebar {
       width: 80px;
@@ -549,31 +549,244 @@ body.sidebar-open .main {
   transition: margin-left 0.2s ease-in-out;
 }
 
-/* Update styles for the container when the sidebar is open */
 body.sidebar-open .container {
-  max-width: calc(100% - 300px); /* Adjust the value based on your sidebar width */
-}
+  max-width: calc(100% - 300px); 
 
-/* Update styles for the main content when the sidebar is open */
+}
 body.sidebar-open .main {
-  margin-left: 300px; /* Adjust the value based on your sidebar width */
+  margin-left: 300px;
 }
 
-/* Update other styles for responsive view as needed */
-/* For example, you can change font sizes, paddings, etc. */
+@media screen and (max-width: 1200px) {
+  .container{
+    width: 100%;
+   position: relative;
+  }
+ .main{
+  width: 100%;
 
-/* Add media query to apply the responsive styles when the screen width is smaller */
-@media (max-width: 992px) {
-  /* Update the container and main styles to fit smaller screen sizes */
+   position: relative;
+ }
+  .cardHello {
+
+    position: relative;
+    width: 25%; 
+    left: 0;
+  }
+
+  .Hellotitle {
+    position: relative;
+    left: 30%;
+    font-size :20px;
+  }
+  .Hellotitle1 {
+    position: relative;
+    font-size :15px;
+  }
+.card1,.card4{
+  width: 50%;
+  left: 8%;
+
+
+}
+.card2,.card5{
+  width: 50%;
+  left:-12%;
+}
+.card3,.card6{
+  width: 50%;
+  left: -32%;
+}
+.countcontainer{
+  column-gap: 0px;
+}
+  .card1 .card4 {
+    position: relative;
+
+  }
+
+  .cardseat {
+    position: relative;
+    left: -8%;
+    width: 25%; /* Set the width to take the full width of the container */
+  }
+ 
+  .cardcomment{
+    right: 515px;
+    position: absolute;
+    height: 535px;
+    width:180%;
+
+
+
+  }
+  .projectCard{
+    width: 180%;
+    right:-15%
+    
+  }
+}
+@media screen and (max-height: 800px) {
   .container {
-    max-width: 100%;
-    margin: 0;
+    width: 100%;
   }
 
   .main {
-    margin-left: 0;
-    justify-content: center; /* Adjust as needed to center the content */
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    justify-content: center; /* Center the cards horizontally */
+    align-items: center; /* Center the cards vertically */
   }
 
-  /* Add more responsive styles as needed */
+  .cardHello {
+    position: relative;
+    height: 300px;
+    width: 650px;
+    margin-right: 450px;
+    margin-top: 50px;
+    align-self: center; /* Center the card horizontally within .main */
+  }
+
+  .card1, .card2, .card3, .card4, .card5, .card6 {
+    position: relative;
+    top: 20px;
+    width: 82%; /* Adjust the width of the cards to fit two cards in a row */
+    margin: 5px; /* Add some margin between the cards */
+  }
+
+  .card1, .card4 {
+    left: -280px;
+  }
+
+  .card2, .card5 {
+    left: -232px;
+  }
+
+  .card3, .card6 {
+    left: -185px;
+  }
+
+  .cardseat { 
+    height: 380px;
+    width: 650px; /* Adjust the width of the cardseat to match the cards */
+    margin: 5px;
+    top: 60px; /* Position the cardseat below the cards */
+    left: -225px; /* Add some margin between the cards and cardseat */
+    align-self: center; /* Center the card horizontally within .main */
+  }
+  
+  .cardcomment {
+    height: 380px;
+    width: 650px; 
+    position: relative;
+    top: 40px; /* Position the cardcomment below the cardseat */
+    left:5px
+    
+  }
+
+  .projectCard {
+    width: 650px; 
+    position: relative;
+    top: 70px; 
+    left:8px/* Position the projectCard below the cardcomment */
+    /* Your existing styles for projectCard */
+  }
+
+  .chartcontainer {
+    width: 300px;
+  }
+}
+
+
+
+
+
+
+@media screen and (max-width: 1600px) {
+  .container{
+    margin-top: 2%;
+  }
+}
+@media screen and (width: 1920px) {
+  .cardHello{
+    right:140px;
+    width: 550px;
+  
+  }
+  .cardseat{
+    width:400px;
+    left:140px;
+  }
+  .projectCard{
+    width: 910px;
+  }
+  .cardcomment{
+ 
+    width: 850px;
+    right: 930px;
+  }
+  .card1, .card2, .card3, .card4, .card5, .card6{
+    width:210px;
+    right: 120px;
+  }
+ }
+ @media screen and (width: 1024px)  {
+ 
+  .countcontainer{
+    width: 80%;
+    
+  }
+  .cardHello{
+    left: 40px;
+    width: 280px;
+    height:255px;
+
+    
+  }
+  .Hellotitle{
+    left:90px;
+  }
+
+  .card1, .card2,.card3,.card4, .card5,.card6{
+    width: 95px;
+    height: 80px;
+ 
+ }
+ .card1, .card2,.card3{
+  position: relative;
+  top: 73px;
+ }
+.cardcount{
+  font-size: 10px;
+}
+
+ .card1,.card4{
+left:50px
+
+  
+ }
+ .card2, .card5{
+  left:-38px;
+ }
+ .card3,.card6{
+  left: -125px;
+ }
+ .cardseat{
+  width: 218px;
+  left:-215px;
+  height:255px;
+ }
+ .projectCard{
+  right:-1px;
+  width: 465px;
+  height: 500px;
+ }
+ .cardcomment{
+  width: 465px;
+  right:478px;  
+  height: 500px;
+ }
+ .chartcontainer{
+  width:200px;
+ }
 }

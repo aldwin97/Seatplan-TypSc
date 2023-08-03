@@ -15,7 +15,7 @@ import com.seatPlan.project.model.UserTypeModel;
 
 
 
-@Mapper()
+@Mapper
 public interface AdminDao {
 
 

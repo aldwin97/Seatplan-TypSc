@@ -1079,3 +1079,32 @@ color: #f44336;
 .replySubmitButton:hover {
   background-color: #9b9b9b !important;
 }
+.repliedTo{
+color: #777;
+  font-size: 10px;
+}
+ul.commentsList {
+  list-style: none;
+  padding: 0;
+}
+
+/* Style for each comment */
+ul.commentsList > li {
+  margin-bottom: 10px;
+}
+
+/* Style for the replies list */
+ul.replyList {
+  list-style: none;
+  padding: 0;
+}
+
+/* Style for each reply */
+ul.replyList > li {
+  margin-bottom: 5px;
+}
+
+/* Style for the indentation */
+ul.commentsList > li > div {
+  margin-left: 20px; /* Indentation size (adjust as needed) */
+}

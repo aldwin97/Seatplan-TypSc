@@ -147,6 +147,7 @@ public class AdminService {
         List<Map<String, Object>> filteredComment = comments.stream()
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();
+                commentMap.put("recipient_id",comment.getRecipient_id());
                 commentMap.put("user_id",comment.getUser_id());
                 commentMap.put("comment_id", comment.getComment_id());
                 commentMap.put("seat_id",comment.getSeat_id());

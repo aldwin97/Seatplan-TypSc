@@ -20,27 +20,41 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"; // Added import
-import axios from "axios";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import axios, { AxiosError } from "axios";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
   const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] =
     useState(false);
-  const [passwordMismatchSnackbar, setPasswordMismatchSnackbar] =
-    useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Change the state type to string | null
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
+
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [oldPasswordError, setOldPasswordError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  const [oldPassword, setOldPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [response, setResponse] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  
+
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: "",
@@ -75,6 +89,17 @@ const ProfilePage: React.FC = () => {
     position_name: string;
     username: string;
     mobile_num: string;
+  }
+
+  interface UserModel {
+    oldPassword: string;
+    newPassword: string;
+    password: string;
+  }
+
+  interface ErrorResponse {
+    message: string;
+    status: number;
   }
 
   useEffect(() => {
@@ -117,10 +142,10 @@ const ProfilePage: React.FC = () => {
           const pictureResponse = await axios.get(
             `http://localhost:8080/profile/userPicture/${user_id}`,
             {
-              responseType: "arraybuffer", 
+              responseType: "arraybuffer",
             }
           );
-          
+
           const base64Data = btoa(
             new Uint8Array(pictureResponse.data).reduce(
               (data, byte) => data + String.fromCharCode(byte),
@@ -148,9 +173,8 @@ const ProfilePage: React.FC = () => {
   }
 
   const viewSeatPageHandleClick = () => {
-      navigate("/seatPlanPage");
-    };
-    
+    navigate("/seatPlanPage");
+  };
   const toggleOldPasswordVisibility = () => {
     setShowOldPassword((prevShow) => !prevShow);
   };
@@ -224,22 +248,85 @@ const ProfilePage: React.FC = () => {
 
   // ACCOUNT SETTINGS BUTTON //
 
-  const handleAccountSaveChanges = (): void => {
-    const { newPassword, confirmPassword } = accountValues;
-    if (newPassword !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match.");
-      setPasswordMismatchSnackbar(true);
-    } else {
-      setConfirmPasswordError("");
-      setAccountEditMode(false);
+  const handleInputAccountChange = (event: {
+    target: { name: any; value: any };
+  }) => {
+    const { name, value } = event.target;
+    setAccountValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setOldPasswordError(""); 
+  };
+
+ 
+
+  const handleAccountSaveChanges = async () => {
+    const user_id = window.sessionStorage.getItem("user_id");
+    try {
+      if (oldPassword === newPassword) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("New password should be different from the old password.");
+        setSnackbarOpen(true);
+        return;
+      }
+  
+      if (newPassword !== confirmPassword) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("New and confirm passwords do not match.");
+        setSnackbarOpen(true);
+        return;
+      }
+  
+      const requestData: UserModel = {
+        oldPassword,
+        newPassword,
+        password: confirmPassword,
+      };
+  
+      const response = await axios.put(
+        `http://localhost:8080/profile/updatePassword/${user_id}`,
+        requestData
+      );
+  
+      if (response.status === 200) {
+        setSnackbarSeverity("success");
+        setSnackbarMessage("Password updated successfully");
+        setSnackbarOpen(true);
+        handleAccountCancelChanges();
+      } else {
+        setResponse("Failed to update password");
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Incorrect old password");
+        setSnackbarOpen(true);
+      } else {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        if (axiosError?.response?.data?.message) {
+          setSnackbarSeverity("error");
+          setSnackbarMessage(axiosError.response.data.message);
+          setSnackbarOpen(true);
+        } else {
+          setSnackbarSeverity("error");
+          setSnackbarMessage("An error occurred while updating the user");
+          setSnackbarOpen(true);
+        }
+      }
     }
   };
+  
+  
+  
 
   const handleAccountCancelChanges = (): void => {
     setAccountValues({ ...initialAccountValues });
-    setConfirmPasswordError("");
-    setPasswordMismatchSnackbar(false);
+    setAccountValues(initialAccountValues);
     setAccountEditMode(false);
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   const handleAccountEditClick = () => {
@@ -257,15 +344,7 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
-  const handleAccountInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setAccountValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChangeAndUpload = async (
+  const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const user_picture = event.target.files?.[0];
@@ -343,8 +422,9 @@ const ProfilePage: React.FC = () => {
     setPersonalFormValidSnackbar(false);
   };
 
-  const handleAccountSnackbarClose = () => {
-    setPasswordMismatchSnackbar(false);
+
+  const handleSnackbarPasswordClose = () => {
+    setSnackbarOpen(false);
   };
 
   //sidebar
@@ -528,8 +608,8 @@ const ProfilePage: React.FC = () => {
               <img src={userPicture} alt="User Profile Picture" />
             ) : (
               <img
-                src={defaulImage} // Provide the path to your default image here
-                alt="Profile"
+                src={defaulImage}
+                alt="Profile Default"
                 className={styles.defaultImage}
               />
             )}
@@ -539,7 +619,7 @@ const ProfilePage: React.FC = () => {
             <input
               type="file"
               id="file"
-              onChange={handleFileChangeAndUpload}
+              onChange={handleFileUpload}
               className={styles.input}
               style={{ display: "none" }}
             />
@@ -674,9 +754,7 @@ const ProfilePage: React.FC = () => {
           {/* ACCOUNT SETTINGS CONTAINER */}
           <div className={styles.accountS}>
             <div className={styles.line}></div>
-
             <h1>Account Settings</h1>
-
             <div className={styles["input-group"]}>
               <label className={styles.readLabel2}>Username</label>
               <input
@@ -686,9 +764,11 @@ const ProfilePage: React.FC = () => {
                 value={profileData.username}
               />
             </div>
-
             <div className={styles["input-group"]}>
-              <label className={styles.readLabel2}> Old Password </label>
+              <label htmlFor="oldPassword" className={styles.readLabel2}>
+                {" "}
+                Old Password{" "}
+              </label>
               <input
                 required
                 type={
@@ -698,11 +778,14 @@ const ProfilePage: React.FC = () => {
                       : "password"
                     : "password"
                 }
-                name="oldPassword"
+                id="oldPassword"
                 autoComplete="off"
+                onChange={(e) => setOldPassword(e.target.value)}
                 className={styles.input}
+                value={oldPassword}
                 readOnly={!editAccountMode}
               />
+              
 
               {editAccountMode && (
                 <span
@@ -715,25 +798,27 @@ const ProfilePage: React.FC = () => {
                 </span>
               )}
             </div>
-
             <div className={styles["change-group"]}>
-              <label className={styles.readLabel}>New Password</label>
+              <label htmlFor="newPassword" className={styles.readLabel}>
+                New Password
+              </label>
               <input
                 required
                 type={
                   editAccountMode
                     ? showNewPassword
-                      ? "text"
+                      ? "text" 
                       : "password"
                     : "password"
                 }
-                name="newPassword"
+                id="newPassword"
                 autoComplete="off"
                 className={styles.changeInput}
                 readOnly={!editAccountMode}
-                value={accountValues.newPassword}
-                onChange={handleAccountInputChange}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
               />
+              
 
               {editAccountMode && (
                 <span
@@ -746,7 +831,6 @@ const ProfilePage: React.FC = () => {
                 </span>
               )}
             </div>
-
             <div className={styles["change-group"]}>
               <label className={styles.readLabel}>Confirm Password</label>
               <input
@@ -760,18 +844,12 @@ const ProfilePage: React.FC = () => {
                 }
                 name="confirmPassword"
                 autoComplete="off"
-                className={`${styles.changeInput} ${
-                  confirmPasswordError ? styles.errorInput : ""
-                }`}
-                style={{
-                  border: confirmPasswordError
-                    ? "1px solid red"
-                    : "1px solid #9e9e9e",
-                }}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={styles.changeInput}
                 readOnly={!editAccountMode}
-                value={accountValues.confirmPassword}
-                onChange={handleAccountInputChange}
               />
+              {confirmPasswordError && <div>{confirmPasswordError}</div>}
 
               {editAccountMode && (
                 <span
@@ -784,8 +862,7 @@ const ProfilePage: React.FC = () => {
                 </span>
               )}
             </div>
-
-            <Snackbar
+            {/* <Snackbar
               open={passwordMismatchSnackbar}
               autoHideDuration={5000}
               onClose={handleAccountSnackbarClose}
@@ -803,8 +880,127 @@ const ProfilePage: React.FC = () => {
               >
                 Passwords do not match.
               </MuiAlert>
+            </Snackbar> */}
+            {/* Snackbar for password mismatch error */}
+            <Snackbar
+              open={!!successMessage}
+              autoHideDuration={3000}
+              onClose={() => setSuccessMessage(null)}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={() => setSuccessMessage(null)}
+                severity="success"
+                sx={{ width: "290px" }}
+              >
+                {successMessage}
+              </MuiAlert>
+            </Snackbar>
+            <Snackbar
+              open={!!oldPasswordError}
+              autoHideDuration={3000}
+              onClose={() => setOldPasswordError("")}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={() => setOldPasswordError("")}
+                severity="error"
+                sx={{ width: "290px" }}
+              >
+                {oldPasswordError}
+              </MuiAlert>
             </Snackbar>
 
+            <Snackbar
+      open={!!newPasswordError}
+      autoHideDuration={5000}
+      onClose={() => setNewPasswordError("")}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+    >
+      <MuiAlert
+        elevation={6}
+        variant="filled"
+        onClose={() => setNewPasswordError("")}
+        severity="error"
+        sx={{ width: "290px" }}
+      >
+        New password should be different from the old password.
+      </MuiAlert>
+    </Snackbar>
+
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={5000}
+    onClose={handleSnackbarPasswordClose}
+    anchorOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+  >
+    <MuiAlert
+      elevation={6}
+      variant="filled"
+      onClose={handleSnackbarPasswordClose}
+      severity={snackbarSeverity}
+      sx={{ width: "290px" }}
+    >
+      {snackbarMessage}
+    </MuiAlert>
+  </Snackbar>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            ;
             {editAccountMode ? (
               <div className={styles["account-button"]}>
                 <button
@@ -848,8 +1044,6 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* for notification and profile */}
     </div>
   );
 };

@@ -75,7 +75,7 @@ const LogInPage: React.FC = () => {
 
       // Save session data to Session Storage
       window.sessionStorage.setItem("user_id", user_id);
-      
+      window.sessionStorage.setItem("user_name", username);
     } catch (error) {
       console.log(error);
       setError(true);

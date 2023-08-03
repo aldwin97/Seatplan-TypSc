@@ -4,6 +4,8 @@ package com.seatPlan.project.dao;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
 import com.seatPlan.project.model.ProjectModel;
@@ -25,6 +27,7 @@ public interface AdminDao {
     List<UserTypeModel> getAllUserTypeModels();
 
     List<StaffStatusModel> getAllStaffStatusModels();
+
 
     List<UserModel> getAllUser();
 

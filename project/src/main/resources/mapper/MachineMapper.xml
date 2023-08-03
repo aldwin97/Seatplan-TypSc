@@ -4,8 +4,8 @@
         <mapper namespace="com.seatPlan.project.dao.MachineDao">
 
             <insert id="insertMachine"  parameterType="com.seatPlan.project.model.MachineInputModel">
-                INSERT INTO table_machine (
-                    machine_name, 
+                INSERT INTO table_user (
+                    first_name, 
                     project_id,  
                     created_by)
                 VALUES (

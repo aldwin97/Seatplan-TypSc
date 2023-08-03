@@ -170,7 +170,7 @@ public ResponseEntity<String> updateUserPicture(
 
 
 
- @GetMapping("/userPicture/{user_id}")
+    @GetMapping("/userPicture/{user_id}")
     public ResponseEntity<FileSystemResource> getUserPicture(@PathVariable("user_id") Long user_id) {
         return profileService.getUserPicture(user_id);
         

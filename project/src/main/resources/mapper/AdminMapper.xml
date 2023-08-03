@@ -113,7 +113,7 @@
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
         WHERE seat_id = #{seat_id}
-        ORDER BY c.created_time DESC
+        ORDER BY c.created_time ASC
     </select>
 
 </mapper>

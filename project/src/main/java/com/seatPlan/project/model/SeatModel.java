@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class SeatModel {
     private  Long  seat_id;
     private Long user_id;
+    private Long machine_id;
     private Long seatstatus_id;
     private Long area_id;
     private int isDeleted;

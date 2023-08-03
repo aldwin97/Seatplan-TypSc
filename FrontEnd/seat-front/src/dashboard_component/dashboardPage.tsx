@@ -510,7 +510,8 @@
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      /></div>
+      />
+      </div>
       
       </div>
             </div>
@@ -525,4 +526,4 @@
     );
   };
 
-  export default DashboardPage;
+  export default DashboardPage; 

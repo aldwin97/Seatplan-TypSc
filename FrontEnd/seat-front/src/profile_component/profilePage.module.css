@@ -140,7 +140,7 @@
 
 .inputDisplay {
   position: absolute;
-  margin-top: 55%;
+  margin-top: 76%;
 }
 
 
@@ -161,6 +161,7 @@ h4 {
   margin: -18px auto 0; /* Add a top margin to create space between h3 and h4 */
   position: relative;
   margin-bottom: 20px;
+  letter-spacing: 2px;
 }
 
 h5 {
@@ -173,28 +174,28 @@ h5 {
   margin-top: -5px;
 }
 
-.seatButton{
+/* .seatButton{
   display:flex;
   position: absolute;
   font-family: 'League Spartan Regular';
-  font-size: 17px;
+  font-size: 19px;
   letter-spacing: 1px;
   width: 200px;
-  padding: 1.5%;
+  padding: 2.5%;
   background-color: #35a55b;
   color: #fff;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 92%;
+  margin-top: 82%;
   transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-justify-content: center;
+  justify-content: center;
 }
 
 .seatButton:hover {
   background-color: #049613;
   color: #ffffff;
-}
+} */
 
 
 .profilePicture{
@@ -205,12 +206,12 @@ justify-content: center;
 .defaultImage,
 .profilePicture img {
   border-radius: 50%;
-  width: 270px; 
-  height: 270px; 
+  width: 350px; 
+  height: 350px; 
   object-fit: cover; 
   background-color: #838383; 
-  right: -135px;
-  top: 60px;
+  right: -167px;
+  top: 105px;
   position: absolute;
   display: flex;
 }
@@ -223,9 +224,9 @@ background-size: cover;
 .uploadButton {
   position: absolute;
   color: rgb(241, 241, 241);
-  top: 270px;
-  width: 70px; /* Set your desired width */
-  height: 70px; /* Set your desired height */
+  top: 380px;
+  width: 85px; 
+  height: 85px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -235,9 +236,9 @@ background-size: cover;
   right: -120px;
 }
 
-/* Style the icon inside the button */
+
 .uploadButton svg {
-  font-size: 100 px; /* Set the desired icon size */
+  font-size: 30px; 
 }
 
 
@@ -413,7 +414,7 @@ input:not(:read-only):valid ~ .user-label {
   display:flex;
   position: absolute;
   margin-left:33.5%;
-  margin-top: -15.3%;
+  margin-top: -16.7%;
 }
 
 .account-button {

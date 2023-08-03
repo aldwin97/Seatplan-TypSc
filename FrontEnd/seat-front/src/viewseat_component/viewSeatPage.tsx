@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./viewSeatPage.module.css";
 import { faSearch, faClose } from "@fortawesome/free-solid-svg-icons";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface Seat {
   position: { x: number; y: number };
@@ -39,8 +39,6 @@ interface Occupant {
   name: string;
   first_name: string;
   last_name: string;
-
-  
 }
 
 function SeatPopup({ seat, onClose }: SeatPopupProps): JSX.Element {
@@ -112,34 +110,27 @@ function ViewSeatPage() {
   const isDragging = useRef(false); // Add const for isDragging
 
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-  
-
-
     if (isDragging.current) {
-       if (isDragging.current) {
-
-
-  }
-
-};
-}
+      if (isDragging.current) {
+      }
+    }
+  };
   const handleMouseLeave = () => {
     isDragging.current = false;
   };
-  
-  
+
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
     const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
-  
+
     const clickedSeatIndex = seats.findIndex((seat) => {
       const { x, y } = seat.position;
       const seatWidth = 50 / zoomLevel;
       const seatHeight = 50 / zoomLevel;
       const seatRight = x + seatWidth;
       const seatBottom = y + seatHeight;
-  
+
       return (
         offsetX >= x &&
         offsetX <= seatRight &&
@@ -147,20 +138,20 @@ function ViewSeatPage() {
         offsetY <= seatBottom
       );
     });
-  
+
     if (clickedSeatIndex > -1) {
       const now = new Date().getTime();
       const doubleClickThreshold = 300;
-  
+
       if (now - lastClickTimeRef.current <= doubleClickThreshold) {
         const clickedSeat = seats[clickedSeatIndex];
         setSelectedSeat(clickedSeat);
         setDoubleClickFlag(true); // Set the double-click flag
       } else {
         lastClickTimeRef.current = now;
-  
+
         const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
-  
+
         if (!isAnySeatSwapping) {
           setDraggingSeatIndex(clickedSeatIndex);
           const updatedSeats = seats.map((seat, index) => {
@@ -173,18 +164,9 @@ function ViewSeatPage() {
           isDragging.current = true; // Mark as dragging a seat
         }
       }
-    } 
+    }
   };
 
-
-
-
-
-
-
-
-
-  
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch("http://localhost:8080/seat/showAllSeat")
@@ -214,7 +196,79 @@ function ViewSeatPage() {
   const [doubleClickFlag, setDoubleClickFlag] = useState(false);
   const [draggingSeatIndex, setDraggingSeatIndex] = useState(-1);
 
-  
+  // MODAL
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState(false);
+  const [redirectToDashboard, setRedirectToDashboard] = useState(false);
+
+  useEffect(() => {
+    if (redirectToDashboard) {
+      navigate("/dashboardPage");
+    }
+  }, [redirectToDashboard, navigate]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setError(false);
+  };
+
+  const [username, setUsername] = useState("");
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const dashboardPageHandleClick = async () => {
+    if (!username || !password) {
+      setError(true);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        setError(true);
+        return;
+      }
+
+      const responseData = await response.json();
+      const { user_id } = responseData; // Extract the user_id from responseData
+      console.log(user_id);
+
+      setRedirectToDashboard(true);
+
+      // Save session data to Session Storage
+      window.sessionStorage.setItem("user_id", user_id);
+      window.sessionStorage.setItem("user_name", username);
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    }
+  };
+
+  // MODAL END
+
   const handleMouseUp = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
@@ -276,118 +330,144 @@ function ViewSeatPage() {
     );
   });
 
- useEffect(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-  
+    const ctx = canvas?.getContext("2d");
+
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
       ctx.scale(zoomLevel, zoomLevel);
-    
+
       filteredSeats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-    
+
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 98 / zoomLevel;
         const textOffsetX = 2 / zoomLevel;
         const numberBoxSize = 80 / zoomLevel;
-    
-        canvas.style.cursor = 'pointer';
-        ctx.fillStyle = '#ffffff';
+
+        canvas.style.cursor = "pointer";
+        ctx.fillStyle = "#ffffff";
         ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
-        ctx.strokeStyle = '#000000';
+        ctx.strokeStyle = "#000000";
         ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
-    
+
         ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = "#000000";
         ctx.font = `${11 / zoomLevel}px Arial`;
-        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
-        
+        ctx.fillText(
+          seat.seat_id.toString(),
+          scaledX + numberBoxSize / 12,
+          scaledY + numberBoxSize / 7 + 1
+        );
+
         const borderWidth = 2; // Adjust the border width as needed
 
-          // Draw the seat
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = borderWidth;
-          ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+        // Draw the seat
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = borderWidth;
+        ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
 
-          // Draw the border rectangle
-          ctx.strokeStyle = '#000000';
+        // Draw the border rectangle
+        ctx.strokeStyle = "#000000";
 
-          // Calculate the position for the border rectangle
-          const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
-          const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
-          const borderRectWidth = ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
-          const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
+        // Calculate the position for the border rectangle
+        const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
+        const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
+        const borderRectWidth =
+          ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
+        const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
 
-          ctx.lineWidth = borderWidth;
-          ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
-    
+        ctx.lineWidth = borderWidth;
+        ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
+
         const seatBoxY = scaledY + numberBoxSize;
         const seatBoxHeight = seatSize - numberBoxSize;
-        ctx.fillStyle = seat.isSwapping ? '#28a745' : color || '#e9e9e9';
+        ctx.fillStyle = seat.isSwapping ? "#28a745" : color || "#e9e9e9";
         ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
         ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
-        ctx.fillStyle = '#000000';
-    
+        ctx.fillStyle = "#000000";
+
         const textOffsetY = 45; // Adjust this value to create some vertical space between the occupant and project name
 
-    // Draw the occupant's name
-    const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
-    const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
-    const firstName = occupantNameParts[0]; // Extract the first name
-    const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
-    const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
-    
-    // Calculate the center position to horizontally align the occupant name
-    const centerOffsetX = (seatSize - occupantNameWidth) / 2;
-    const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+        // Draw the occupant's name
+        const occupantNameParts = seat.occupant.split(" "); // Assuming the occupant's name is in the format "FirstName LastName"
+        const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
+        const firstName = occupantNameParts[0]; // Extract the first name
+        const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
+        const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
 
-    // Calculate the font size for the occupant name to fit inside the seat box
-    let fontSize = 11;
-    while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
-      fontSize--;
-      ctx.font = `${fontSize}px Arial`;
-    }
+        // Calculate the center position to horizontally align the occupant name
+        const centerOffsetX = (seatSize - occupantNameWidth) / 2;
+        const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
-    ctx.fillText(occupantName, scaledX + adjustedTextOffsetX, scaledY + textOffsetY);
+        // Calculate the font size for the occupant name to fit inside the seat box
+        let fontSize = 11;
+        while (
+          ctx.measureText(occupantName).width >
+          seatSize - adjustedTextOffsetX * 2
+        ) {
+          fontSize--;
+          ctx.font = `${fontSize}px Arial`;
+        }
+
+        ctx.fillText(
+          occupantName,
+          scaledX + adjustedTextOffsetX,
+          scaledY + textOffsetY
+        );
 
         // Get the acronym of the project name
         const projectNameAcronym = seat.project_name
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase())
-          .join('');
-    
-        ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase())
+          .join("");
+
+        ctx.fillText(
+          projectNameAcronym,
+          scaledX + seatSize / 2.7,
+          scaledY + seatSize - textOffsetY / 1 + 40
+        );
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
-            .split(' ')
+            .split(" ")
             .map((word) => word.charAt(0).toUpperCase())
-            .join('');
-        
+            .join("");
+
           // Calculate the center position to horizontally align the position name acronym
-          const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
+          const positionNameAcronymWidth =
+            ctx.measureText(positionNameAcronym).width;
           const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
           const adjustedTextOffsetX = textOffsetX + centerOffsetX;
-        
+
           // Calculate the font size for the position name acronym to fit inside the seat box
           let fontSize = 10;
-          while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
+          while (
+            ctx.measureText(positionNameAcronym).width >
+            seatSize - adjustedTextOffsetX * 2
+          ) {
             fontSize--;
             ctx.font = `${fontSize}px Arial`;
           }
-        
+
           // Draw the position name acronym below the seat
-          ctx.fillText(positionNameAcronym, scaledX + + seatSize / 2.3,+ scaledY + textOffsetY / 3.4 + 1);
+          ctx.fillText(
+            positionNameAcronym,
+            scaledX + +seatSize / 2.3,
+            +scaledY + textOffsetY / 3.4 + 1
+          );
         }
-        
-        
-  
+
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
-          ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
+          ctx.fillText(
+            "Edit",
+            scaledX + seatSize / 2 - 10,
+            scaledY + seatSize / 2 + 5
+          );
         }
       });
     }
@@ -412,7 +492,7 @@ function ViewSeatPage() {
         <div className={styles.canvasWrapper} ref={containerRef}>
           <div className={styles.root} ref={containerRef}>
             <div className={styles.scrollableCanvas}>
-            <canvas
+              <canvas
                 ref={canvasRef}
                 width={2800}
                 height={1400}
@@ -435,13 +515,89 @@ function ViewSeatPage() {
               <FontAwesomeIcon icon={faSearch} />
             </button>
           </form>
-          <button
+
+          {/* <button
             className={styles.sign}
             type="submit"
             onClick={viewSeatPageHandleClick}
           >
             SIGN IN
-          </button>
+          </button> */}
+
+          <div className={styles.signInContainer}>
+            <button onClick={openModal} className={styles.sign} type="submit">
+              SIGN IN
+            </button>
+          </div>
+
+          {isModalOpen && (
+            <div className={styles.modalOverlay}>
+              <div className={styles.modalContent}>
+                <div className={styles.shape}></div>
+                <button className={styles.closeButton} onClick={closeModal}>
+                  Cancel
+                </button>
+                <h2>SIGN IN</h2>
+
+                <div
+                  className={`${styles["input-group"]} ${
+                    error && !username && styles.errorInput
+                  }`}
+                >
+                  <input
+                    required
+                    type="text"
+                    name="text"
+                    autoComplete="off"
+                    className={styles.input}
+                    value={username}
+                    onChange={handleUsernameChange}
+                  />
+                  <label className={styles["user-label"]}>Username</label>
+                </div>
+
+                <div
+                  className={`${styles["input-group"]} ${
+                    error && !password && styles.errorInput
+                  }`}
+                >
+                  <input
+                    required
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    autoComplete="off"
+                    className={styles.input}
+                    value={password}
+                    onChange={handlePasswordChange}
+                  />
+                  <label className={styles["user-label"]}>Password</label>
+                  <span
+                    className={`${styles["toggle-password"]} ${
+                      showPassword ? styles.active : ""
+                    }`}
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                  </span>
+                </div>
+
+                {error && (
+                  <div className={styles.errorMessage}>
+                    Incorrect username or password.
+                  </div>
+                )}
+
+                <button
+                  onClick={dashboardPageHandleClick}
+                  className={styles.sub2}
+                  type="submit"
+                >
+                  SIGN IN
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Render seats on the canvas */}
           {seats.map((seat) => (
             <div

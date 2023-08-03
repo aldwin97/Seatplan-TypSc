@@ -644,7 +644,13 @@ body.sidebar-open .main {
     width: 650px;
     margin-right: 450px;
     margin-top: 50px;
-    align-self: center; /* Center the card horizontally within .main */
+    align-self: center;
+    
+  }
+  .Hellotitle{
+   position: absolute;
+   top: 120px;
+   left: -10px
   }
 
   .card1, .card2, .card3, .card4, .card5, .card6 {
@@ -744,13 +750,16 @@ body.sidebar-open .main {
     
   }
   .Hellotitle{
-    left:90px;
+    left:70px;
   }
 
   .card1, .card2,.card3,.card4, .card5,.card6{
     width: 95px;
     height: 80px;
- 
+    
+
+
+    
  }
  .card1, .card2,.card3{
   position: relative;

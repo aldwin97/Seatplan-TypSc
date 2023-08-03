@@ -620,7 +620,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   };
 
 
-  const renderMainComments = (comments: Comment[]) => {
+  const renderMainComments = (comments: Comment[], userId: number) => {
     const findOriginalComment = (commentId: number, replies: Comment[]): Comment | null => {
       for (const reply of replies) {
         if (reply.comment_id === commentId) {
@@ -636,6 +636,31 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       return null;
     };
   
+    const findFullNameById = (userId: number): string | undefined => {
+      const comment = comments.find((c) => c.user_id === userId);
+      return comment ? comment.full_name : undefined;
+    };
+  
+    const findReplyingTo = (commentId: number): string | undefined => {
+      const originalComment = findOriginalComment(commentId, comments);
+      return originalComment ? findFullNameById(originalComment.user_id) : undefined;
+    };
+  
+    const findReplyToUser = (commentId: number, replies: Comment[]): Comment | undefined => {
+      for (const reply of replies) {
+        if (reply.comment_id === commentId) {
+          return reply;
+        }
+        if (reply.replies) {
+          const userReply = findReplyToUser(commentId, reply.replies);
+          if (userReply) {
+            return userReply;
+          }
+        }
+      }
+      return undefined;
+    };
+  
     return (
       <ul className={styles.commentsList}>
         {comments.map((comment) => (
@@ -645,12 +670,30 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
             {/* Display "Replied to" information */}
             {comment.parent_id && (
               <div className={styles.repliedTo}>
-                Replied to {findOriginalComment(comment.parent_id, comments)?.full_name}
+                {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
               </div>
             )}
             {/* Check if the comment is not written by the current user */}
             {comment.user_id !== userId && !comment.replies && (
               <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
+            )}
+            {/* Display "Replied to" information based on recipient_id */}
+            {comment.user_id === userId && comment.recipient_id !== userId && (
+              <div className={styles.repliedTo}>
+                You replied to {findFullNameById(comment.recipient_id) || "this seat"}
+              </div>
+            )}
+            {/* Display indicator for third-party users */}
+            {comment.user_id !== userId && comment.parent_id && (
+              <div className={styles.repliedTo}>
+                {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
+              </div>
+            )}
+            {/* Display indicator for the user who received the reply */}
+            {comment.recipient_id === userId && (
+              <div className={styles.repliedTo}>
+                {findFullNameById(comment.user_id)} replied to you
+              </div>
             )}
           </li>
         ))}
@@ -686,7 +729,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
               <h4>Comments:</h4>
               <div className={styles.commentsScrollContainer}>
                 {/* Call the renderMainComments function here */}
-                {renderMainComments(commentsMap[seatId])}
+                {renderMainComments(commentsMap[seatId], userId)}
               </div>
             </div>
           )}
@@ -723,6 +766,10 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     </div>
   );
 };
+
+
+
+
 function SeatplanPage() {
   const navigate = useNavigate();
 

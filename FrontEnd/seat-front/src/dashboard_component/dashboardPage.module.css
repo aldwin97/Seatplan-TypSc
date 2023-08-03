@@ -349,6 +349,7 @@ body {
 }
 .cardtitle{
   color:#000000;
+  
   font-weight: bold;
 }
 .cardtitle1{
@@ -384,7 +385,7 @@ body {
   background-clip: border-box;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  
+  overflow-y: scroll;
 }
 
 .projectCard {
@@ -412,7 +413,7 @@ body {
   text-align: left;
   margin-top: 20px;
   margin-left: 20px;
-  
+  position: sticky;
 }
 .tooltipContent {
   font-size: 16px;

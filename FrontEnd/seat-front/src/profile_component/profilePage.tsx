@@ -740,7 +740,7 @@ const ProfilePage: React.FC = () => {
                 {emailError}
               </MuiAlert>
             </Snackbar>
-            ;
+            
             <Snackbar
               open={isContactNumberError}
               autoHideDuration={5000}

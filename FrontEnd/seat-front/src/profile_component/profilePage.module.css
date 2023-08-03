@@ -414,7 +414,7 @@ input:not(:read-only):valid ~ .user-label {
   display:flex;
   position: absolute;
   margin-left:33.5%;
-  margin-top: -16.7%;
+  margin-top: -15.2%;
 }
 
 .account-button {

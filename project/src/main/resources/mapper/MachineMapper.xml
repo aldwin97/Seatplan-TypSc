@@ -7,21 +7,26 @@
                 INSERT INTO table_user (
                     first_name, 
                     project_id,  
-                    created_by)
+                    created_by,
+                    is_machine)
                 VALUES (
-                    #{machine_name}, 
+                    #{first_name}, 
                     #{project_id},
-                    #{created_by})
+                    #{created_by},
+                    1)
             </insert>
 
             <select id="getAllMachine" resultType="com.seatPlan.project.model.MachineModel">
-                SELECT * FROM table_machine WHERE is_deleted = 0
+                SELECT tu.user_id, tu.first_name,  pt.project_name
+                FROM table_user tu
+                INNER JOIN table_project pt ON tu.project_id = pt.project_id
+                WHERE tu.is_deleted = 0 AND tu.is_machine = 1
             </select>
 
             <update id="deleteMachineById">
-                UPDATE table_machine SET is_deleted = 1 WHERE machine_id = #{machine_id}
+                UPDATE table_user SET is_deleted = 1 WHERE user_id = #{user_id}
             </update>
-            
+
 
 
             <update id="updateMachine" parameterType="com.seatPlan.project.model.MachineModel">
@@ -35,10 +40,7 @@
             </update>
 
 
-            <select id="getMachineById" resultType="com.seatPlan.project.model.MachineModel">
-                SELECT * FROM table_machine WHERE machine_id = #{machine_id} AND is_deleted = 0
+            <select id="getMachineById" >
+                SELECT * FRORM table_user WHERE user_id = #{user_id}
             </select>
-
-
-
-        </mapper>
+</mapper>

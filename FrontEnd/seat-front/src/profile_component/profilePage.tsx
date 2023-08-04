@@ -22,6 +22,8 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
+import Grid from '@mui/material/Grid';
+
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -55,7 +57,9 @@ const ProfilePage: React.FC = () => {
     useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
   const [isContactNumberError, setContactNumberError] = useState(false);
-
+  const [contactNumberLengthError, setContactNumberLengthError] =
+    useState(false);
+  const MAX_CONTACT_NUMBER_LENGTH = 11;
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [oldPasswordError, setOldPasswordError] = useState("");
   const [newPasswordError, setNewPasswordError] = useState("");
@@ -121,14 +125,14 @@ const ProfilePage: React.FC = () => {
           FirstName: responseData.first_name,
           LastName: responseData.last_name,
           Email: responseData.email,
-          ContactNumber: contactNumberInt.toString(),
+          ContactNumber: "0" + contactNumberInt.toString(),
         });
 
         setSavedPersonalInfo({
           FirstName: responseData.first_name,
           LastName: responseData.last_name,
           Email: responseData.email,
-          ContactNumber: contactNumberInt.toString(),
+          ContactNumber: "0" + contactNumberInt.toString(),
         });
 
         setProfileData({
@@ -197,13 +201,23 @@ const ProfilePage: React.FC = () => {
     const isPersonalInfoValid = validatePersonalInfo();
 
     if (isPersonalInfoValid) {
-      if (isNaN(Number(inputValues.ContactNumber))) {
+      const contactNumber = inputValues.ContactNumber;
+
+      if (isNaN(Number(contactNumber))) {
         setContactNumberError(true);
+        setContactNumberLengthError(false);
         return;
-      } else {
-        setContactNumberError(false);
       }
 
+      if (contactNumber.length !== MAX_CONTACT_NUMBER_LENGTH) {
+        setContactNumberError(false);
+        setContactNumberLengthError(true);
+        return;
+      }
+
+      // If the code reaches this point, it means the contact number is valid.
+      setContactNumberError(false);
+      setContactNumberLengthError(false);
       try {
         const user_id = window.sessionStorage.getItem("user_id");
 
@@ -589,18 +603,7 @@ const ProfilePage: React.FC = () => {
               {capitalizeFirstLetter(profileData.last_name)}
             </h3>
             <h4>{profileData.position_name}</h4>
-            {/* <h5>{profileData.username}</h5>
-            <h5>{profileData.email}</h5>
-            <h5>{profileData.mobile_num}</h5> */}
           </div>
-          {/* 
-          <button
-            type="button"
-            className={styles.seatButton}
-            onClick={viewSeatPageHandleClick}
-          >
-            View Seatplan
-          </button> */}
 
           <div className={styles.profilePicture}>
             <Snackbar
@@ -740,7 +743,7 @@ const ProfilePage: React.FC = () => {
                 {emailError}
               </MuiAlert>
             </Snackbar>
-            
+
             <Snackbar
               open={isContactNumberError}
               autoHideDuration={5000}
@@ -760,6 +763,28 @@ const ProfilePage: React.FC = () => {
                 Contact number must be a number.
               </MuiAlert>
             </Snackbar>
+
+            <Snackbar
+              open={contactNumberLengthError}
+              autoHideDuration={5000}
+              onClose={() => setContactNumberLengthError(false)}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={() => setContactNumberLengthError(false)}
+                severity="error"
+                sx={{ width: "290px" }}
+              >
+                Contact number should be {MAX_CONTACT_NUMBER_LENGTH} digits
+                long.
+              </MuiAlert>
+            </Snackbar>
+
             {editPersonalMode ? (
               <div className={styles["personal-button"]}>
                 <button

@@ -11,6 +11,7 @@ import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import domtoimage from 'dom-to-image';
+import { FaInfoCircle } from 'react-icons/fa';
 
 
 interface Seat {
@@ -365,11 +366,15 @@ return (
         <button type="button" className={styles.closeButton} onClick={onClose}>
           <FontAwesomeIcon icon={faClose} />
         </button>
-       <div className={styles.arrowToggle} onClick={toggleCommentsSection}>
-          <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
-          {/* Optionally, you can add a button to add a new comment */}
-        
-        </div>
+        <div
+        className={styles.arrowToggle}
+        onClick={toggleCommentsSection}
+        title={showComments ? 'Hide comments' : 'Show comments'}
+      >
+        <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
+        {/* Optionally, you can add a button to add a new comment */}
+      </div>
+
         {/* Render the comments section */}
         {showComments && seat.seat_id && <SeatPopupComments userId={parseInt(sessionStorage.getItem('user_id') || '0', 10)} seatIds={[seat.seat_id]} />}
       </form>
@@ -680,7 +685,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
             {/* Display "Replied to" information based on recipient_id */}
             {comment.user_id === userId && comment.recipient_id !== userId && (
               <div className={styles.repliedTo}>
-                You replied to {findFullNameById(comment.recipient_id) || "this seat"}
+                You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
               </div>
             )}
             {/* Display indicator for third-party users */}
@@ -692,7 +697,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
             {/* Display indicator for the user who received the reply */}
             {comment.recipient_id === userId && (
               <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} replied to you
+                {findFullNameById(comment.user_id)} replied to you ↶
               </div>
             )}
           </li>
@@ -706,20 +711,23 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
    
   return (
     <div>
-      <form>
-        <label>
-          Add Comment:
+      <form >
+       
           <textarea
             value={newComment}
             onChange={handleNewCommentChange}
-            placeholder="Type your comment..."
+            placeholder="Leave a comment..."
             className={styles.largeInput}
             required
           />
-        </label>
-        <button className={styles.sub} type="button" onClick={() => handleCommentSubmit(seatIds[0])}>
+        <button
+          className={styles.addComment}
+          type="button"
+          onClick={() => handleCommentSubmit(seatIds[0])}
+        >
           Add
         </button>
+
       </form>
       {error && <p className={styles.error}>{error}</p>}
       {seatIds.map((seatId) => (
@@ -790,7 +798,7 @@ function SeatplanPage() {
   };
 
   
-
+  const [showInfoGuide, setShowInfoGuide] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [seats, setSeats] = useState<Seat[]>([]);
@@ -1040,46 +1048,56 @@ const handleLogout = () => {
   
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+  
       ctx.scale(zoomLevel, zoomLevel);
-    
+  
       filteredSeats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-    
+  
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 98 / zoomLevel;
         const textOffsetX = 2 / zoomLevel;
         const numberBoxSize = 80 / zoomLevel;
-    
+  
         canvas.style.cursor = 'pointer';
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
-        ctx.strokeStyle = '#000000';
-        ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
-    
-        ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
-        ctx.fillStyle = '#000000';
-        ctx.font = `${11 / zoomLevel}px Arial`;
-        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
-        
-        const borderWidth = 2; // Adjust the border width as needed
 
+        // Draw the background shadow at the very back of the seat
+      ctx.save();
+      ctx.shadowColor = '#000000';
+      ctx.shadowBlur = 20; // Adjust the shadow blur size as needed
+      ctx.fillStyle = '#ffffff';
+      // Draw the seat box
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.strokeStyle = '#000000';
+      ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.restore();
+      ctx.fillStyle = '#ffffff';
+      // Draw the seat number box
+      ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
+      ctx.fillStyle = '#000000';
+      ctx.font = `${11 / zoomLevel}px Arial`;
+      ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
+
+      ctx.fillStyle = '#ffffff';
+        const borderWidth = 2; // Adjust the border width as needed
+        ctx.fillStyle = '#ffffff';
           // Draw the seat
           ctx.strokeStyle = '#000000';
           ctx.lineWidth = borderWidth;
           ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
-
+          ctx.fillStyle = '#ffffff';
           // Draw the border rectangle
           ctx.strokeStyle = '#000000';
-
+          ctx.fillStyle = '#ffffff';
           // Calculate the position for the border rectangle
           const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
           const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
           const borderRectWidth = ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
           const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
-
+          ctx.fillStyle = '#ffffff';
           ctx.lineWidth = borderWidth;
           ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
     
@@ -1209,7 +1227,13 @@ const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
   return new Uint8Array(buffer);
 };
 
+const handleInfoButtonClick = () => {
+  setShowInfoGuide(true);
+};
 
+const handleInfoGuideClose = () => {
+  setShowInfoGuide(false);
+};
   return (
    <body className={styles.body}> <div className={styles.container}>
       <i className={styles['menu-out']}onClick={toggleDrawer}>
@@ -1319,6 +1343,7 @@ const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
     <button onClick={exportToExcel} className={styles.searchButton}>
         Export to Excel
       </button>
+      
   </form>
 
   {/* Render seats on the canvas */}
@@ -1344,11 +1369,30 @@ const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
     <div className={`${styles.colorBox} ${styles.unavailable}`}></div>
     <span className={styles.label}>Unavailable/Maintained Seats</span>
   </div>
+  {showInfoGuide && <div className={styles['backdrop-blur']}></div>}
+  <button className={styles['handleInfoButtonClick']} onClick={handleInfoButtonClick}>
+        <FaInfoCircle size={20} />
+      </button>
+      {showInfoGuide && (
+        <div className={styles['infoguide']}>
+          {/* Popup content */}
+          <span className={styles['close']} onClick={handleInfoGuideClose}>
+            &times;
+          </span>
+          <h2>Information Guide</h2>
+          <p>This is a simple guide on how to use the page.</p><br></br>
+          <p>• Use the middle mouse hold and drag to move around the canvas of the page.</p>
+          <p>• To open and view the seats information, point the mouse on the seat number and double left click.</p>
+          <p>• When swapping seats, you can select the seat to be swap on the current seat you are editing.</p>
+        </div>
+      )}
 </div>
 
 
 </div>
+
 </body>
+
 );
 }
 

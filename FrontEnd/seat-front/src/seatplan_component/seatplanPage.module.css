@@ -341,7 +341,7 @@
 /* Popup content */
 .seatPopupContent {
   display: flex;
-  width: 300px;
+  width: 500px;
   background-color: white;
   flex-direction: column;
   align-items: center;
@@ -353,6 +353,7 @@
 
 .seatPopupContent h3 {
   font-size: 30px;
+  margin-left: -400px;
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -367,10 +368,15 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  padding: 8px;
+  border: none;
+  font-size: 15px;
+  transition-duration: .3s;
 }
 
 .seatPopupContent input[type="text"] {
   padding: 8px;
+  width: 500px;
   border: none;
   font-size: 15px;
   transition-duration: .3s;
@@ -410,7 +416,7 @@
   background-color: #28a745 !important;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
-  margin-left: 23%;
+  margin-left: 29%;
 }
 .swapButton:hover {
   background-color: #0056b3 !important;
@@ -443,6 +449,7 @@
 }
 .seatPopupContent select {
   padding: 8px;
+  width: 200px;
   border: 1px solid #ccc;
   border-radius: 3px;
   appearance: none;
@@ -453,8 +460,8 @@
 /* Close button */
 .seatPopupContent .closeButton {
   position: absolute;
-margin-left: 300px;
-margin-top: -70px ;
+  margin-left: 470px;
+  margin-top: -70px ;
   background-color: transparent;
   border: none;
   color: #ff0000;
@@ -779,8 +786,8 @@ margin-top: 40px;
 /* Styles for the arrow icon when the toggle is expanded */
 .arrowToggle.expanded svg {
   transform: rotate(180deg); /* Rotate the arrow icon 180 degrees when expanded */
+  transition: transform 0.3s ease; /* Add a smooth transition to the rotation animation */
 }
-
 
 
 /* Styles for labels */
@@ -887,7 +894,7 @@ margin-top: 40px;
 
 .commentsContainer h4 {
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: -15px;
   font-size: 20px;
 }
 
@@ -911,8 +918,8 @@ margin-top: 40px;
 }
 
 .largeInput {
-  width: 300px;
-  height: 60px;
+  width: 500px;
+  height: 90px;
   font-size: 16px;
   padding: 10px;
   background-color: #f3f3f3;
@@ -1080,31 +1087,116 @@ color: #f44336;
   background-color: #9b9b9b !important;
 }
 .repliedTo{
+
+font-size: 10px;
+margin-left: 20px;
 color: #777;
-  font-size: 10px;
-}
-ul.commentsList {
-  list-style: none;
-  padding: 0;
 }
 
-/* Style for each comment */
-ul.commentsList > li {
+.addComment
+{
+  background-color: #28a745 !important;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+width: 90px;
+}
+.addComment:hover {
+  background-color: #0056b3 !important;
+}
+
+/* Add this CSS to create the tooltip-like effect */
+div[title]:hover:after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+div[title]:after {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+div[title]:hover:after {
+  opacity: 1;
+}
+/* SeatplanPage.module.css */
+
+/* Your existing styles */
+
+/* SeatplanPage.module.css */
+
+/* Your existing styles */
+
+.handleInfoButtonClick {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  transform: translateX(50%);
+  background-color: transparent;
+  color: #45a049;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.handleInfoButtonClick:hover {
+  background-color: #f0f0f0;
+}
+
+.infoguide {
+  /* Styles for the backdrop blur effect */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2; /* Ensure the popup is above the backdrop blur */
+
+  /* Additional styles for the info guide content */
+  text-align: center;
+  font-size: 16px;
+}
+
+.infoguide .close {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.infoguide .close:hover{
+  color: red;
+}
+.infoguide h2 {
+  font-size: 30px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.infoguide p {
+  margin: 0;
   margin-bottom: 10px;
 }
-
-/* Style for the replies list */
-ul.replyList {
-  list-style: none;
-  padding: 0;
-}
-
-/* Style for each reply */
-ul.replyList > li {
-  margin-bottom: 5px;
-}
-
-/* Style for the indentation */
-ul.commentsList > li > div {
-  margin-left: 20px; /* Indentation size (adjust as needed) */
+.backdrop-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity of the backdrop blur */
+  backdrop-filter: blur(8px); /* Adjust the blur strength as needed */
+  z-index: 1;
 }

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useRef, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import style from "../dashboard_component/dashboardPage.module.css";
 import {
@@ -13,7 +13,7 @@ import {
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styles from "./profilePage.module.css";
-import profileBackg from "./assets/profileBackg.jpg";
+import profileBackg from "./assets/profileBackg.png";
 import defaulImage from "../assets/default.png";
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
 import IconButton from "@mui/material/IconButton";
@@ -22,16 +22,17 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
+import Grid from '@mui/material/Grid';
+
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
+
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
-  const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] =
-    useState(false);
-  const [isPersonalFormValid, setPersonalFormValid] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
 
@@ -39,22 +40,29 @@ const ProfilePage: React.FC = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [oldPasswordError, setOldPasswordError] = useState("");
-  const [newPasswordError, setNewPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+
   const [response, setResponse] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  const [emailError, setEmailError] = useState("");
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
-  
-
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
+  const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] =
+    useState(false);
+  const [isPersonalFormValid, setPersonalFormValid] = useState(true);
+  const [isContactNumberError, setContactNumberError] = useState(false);
+  const [contactNumberLengthError, setContactNumberLengthError] =
+    useState(false);
+  const MAX_CONTACT_NUMBER_LENGTH = 11;
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [oldPasswordError, setOldPasswordError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
 
   const [savedPersonalInfo, setSavedPersonalInfo] = useState({
     FirstName: "",
@@ -85,10 +93,8 @@ const ProfilePage: React.FC = () => {
   interface UserProfile {
     first_name: string;
     last_name: string;
-    email: string;
     position_name: string;
     username: string;
-    mobile_num: string;
   }
 
   interface UserModel {
@@ -119,23 +125,21 @@ const ProfilePage: React.FC = () => {
           FirstName: responseData.first_name,
           LastName: responseData.last_name,
           Email: responseData.email,
-          ContactNumber: contactNumberInt.toString(),
+          ContactNumber: "0" + contactNumberInt.toString(),
         });
 
         setSavedPersonalInfo({
           FirstName: responseData.first_name,
           LastName: responseData.last_name,
           Email: responseData.email,
-          ContactNumber: contactNumberInt.toString(),
+          ContactNumber: "0" + contactNumberInt.toString(),
         });
 
         setProfileData({
           first_name: responseData.first_name,
           last_name: responseData.last_name,
-          email: responseData.email,
           position_name: responseData.position_name,
           username: responseData.username,
-          mobile_num: responseData.mobile_num,
         });
 
         try {
@@ -197,6 +201,23 @@ const ProfilePage: React.FC = () => {
     const isPersonalInfoValid = validatePersonalInfo();
 
     if (isPersonalInfoValid) {
+      const contactNumber = inputValues.ContactNumber;
+
+      if (isNaN(Number(contactNumber))) {
+        setContactNumberError(true);
+        setContactNumberLengthError(false);
+        return;
+      }
+
+      if (contactNumber.length !== MAX_CONTACT_NUMBER_LENGTH) {
+        setContactNumberError(false);
+        setContactNumberLengthError(true);
+        return;
+      }
+
+      // If the code reaches this point, it means the contact number is valid.
+      setContactNumberError(false);
+      setContactNumberLengthError(false);
       try {
         const user_id = window.sessionStorage.getItem("user_id");
 
@@ -219,17 +240,21 @@ const ProfilePage: React.FC = () => {
             ...profileData,
             first_name: inputValues.FirstName,
             last_name: inputValues.LastName,
-            email: inputValues.Email,
-            mobile_num: inputValues.ContactNumber,
           });
 
           setPersonalEditMode(false);
           setPersonalFormValid(true);
         } else {
-          console.error("Error updating user:", response.data);
+          // Handle other response status codes here if needed
         }
-      } catch (error) {
-        console.error("Error updating user:", error);
+      } catch (error: any) {
+        if (error.response && error.response.status === 400) {
+          setEmailError(
+            "Email already exists. Please choose a different email address."
+          );
+        } else {
+          setEmailError("Error updating user. Please try again later.");
+        }
       }
     } else {
       setPersonalFormValid(false);
@@ -248,47 +273,50 @@ const ProfilePage: React.FC = () => {
 
   // ACCOUNT SETTINGS BUTTON //
 
-  const handleInputAccountChange = (event: {
-    target: { name: any; value: any };
-  }) => {
-    const { name, value } = event.target;
-    setAccountValues((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    setOldPasswordError(""); 
-  };
-
- 
-
   const handleAccountSaveChanges = async () => {
     const user_id = window.sessionStorage.getItem("user_id");
     try {
-      if (oldPassword === newPassword) {
+      if (!oldPassword || !newPassword || !confirmPassword) {
         setSnackbarSeverity("error");
-        setSnackbarMessage("New password should be different from the old password.");
+        setSnackbarMessage("All password fields are required.");
         setSnackbarOpen(true);
         return;
       }
-  
-      if (newPassword !== confirmPassword) {
+
+      if (oldPassword.trim() === newPassword.trim()) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage(
+          "New password should be different from the old password."
+        );
+        setSnackbarOpen(true);
+        return;
+      }
+
+      if (newPassword.trim() !== confirmPassword.trim()) {
         setSnackbarSeverity("error");
         setSnackbarMessage("New and confirm passwords do not match.");
         setSnackbarOpen(true);
         return;
       }
-  
+
+      if (/\s/.test(newPassword) || /\s/.test(confirmPassword)) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Spaces are not allowed in the passwords.");
+        setSnackbarOpen(true);
+        return;
+      }
+
       const requestData: UserModel = {
         oldPassword,
         newPassword,
         password: confirmPassword,
       };
-  
+
       const response = await axios.put(
         `http://localhost:8080/profile/updatePassword/${user_id}`,
         requestData
       );
-  
+
       if (response.status === 200) {
         setSnackbarSeverity("success");
         setSnackbarMessage("Password updated successfully");
@@ -316,9 +344,6 @@ const ProfilePage: React.FC = () => {
       }
     }
   };
-  
-  
-  
 
   const handleAccountCancelChanges = (): void => {
     setAccountValues({ ...initialAccountValues });
@@ -381,7 +406,7 @@ const ProfilePage: React.FC = () => {
         window.location.reload();
       } catch (error) {
         console.error("Error uploading image:", error);
-        setErrorMsg("Error uploading image. Please try again later.");
+        setErrorMsg("File size is too big.");
       }
     }
   };
@@ -404,10 +429,10 @@ const ProfilePage: React.FC = () => {
     event.preventDefault();
 
     if (isPersonalFormValid) {
-      console.log("yes");
+      console.log("Personal Form Valid");
       setPersonalFormValidSnackbar(true);
     } else {
-      console.log("no");
+      console.log("Personal Form Invalid");
     }
   };
 
@@ -422,9 +447,12 @@ const ProfilePage: React.FC = () => {
     setPersonalFormValidSnackbar(false);
   };
 
-
   const handleSnackbarPasswordClose = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleEmailSnackbarClose = () => {
+    setEmailError(""); // Clear the emailError state when the Snackbar is closed
   };
 
   //sidebar
@@ -454,6 +482,10 @@ const ProfilePage: React.FC = () => {
   const handleLogout = () => {
     sessionStorage.removeItem("user_id");
     navigate("/");
+  };
+
+  const capitalizeFirstLetter = (name: string) => {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
   return (
@@ -559,7 +591,7 @@ const ProfilePage: React.FC = () => {
         </div>
       </SwipeableDrawer>
       <div className={styles.form1}>
-        {/* Left Container */}
+        {/* Display Container */}
         <form className={styles.profileSum}>
           <div className={styles.cover}>
             <img src={profileBackg} alt="Profile Background" />
@@ -567,21 +599,11 @@ const ProfilePage: React.FC = () => {
 
           <div className={styles.inputDisplay}>
             <h3>
-              {profileData.first_name} {profileData.last_name}
+              {capitalizeFirstLetter(profileData.first_name)}{" "}
+              {capitalizeFirstLetter(profileData.last_name)}
             </h3>
             <h4>{profileData.position_name}</h4>
-            <h5>{profileData.username}</h5>
-            <h5>{profileData.email}</h5>
-            <h5>{profileData.mobile_num}</h5>
           </div>
-
-          <button
-            type="button"
-            className={styles.seatButton}
-            onClick={viewSeatPageHandleClick}
-          >
-            View Seatplan
-          </button>
 
           <div className={styles.profilePicture}>
             <Snackbar
@@ -630,9 +652,7 @@ const ProfilePage: React.FC = () => {
           {/* PERSONAL INFORMATION CONTAINER */}
           <form className={styles.personal} onSubmit={handlePersonalSubmit}>
             <div className={styles.line}></div>
-
             <h1>Personal Information</h1>
-
             <div className={styles["name-group"]}>
               <label className={styles.readLabel}>First Name *</label>
               <input
@@ -646,7 +666,6 @@ const ProfilePage: React.FC = () => {
                 onChange={handleInputChange}
               />
             </div>
-
             <div className={styles["name-group"]}>
               <label className={styles.readLabel}>Last Name *</label>
               <input
@@ -660,7 +679,6 @@ const ProfilePage: React.FC = () => {
                 onChange={handleInputChange}
               />
             </div>
-
             <div className={styles["input-group"]}>
               <label className={styles.readLabel2}>Email Address *</label>
               <input
@@ -674,7 +692,6 @@ const ProfilePage: React.FC = () => {
                 onChange={handleInputChange}
               />
             </div>
-
             <div className={styles["input-group"]}>
               <label className={styles.readLabel2}>Mobile Number *</label>
               <input
@@ -688,7 +705,6 @@ const ProfilePage: React.FC = () => {
                 onChange={handleInputChange}
               />
             </div>
-
             <Snackbar
               open={!isPersonalFormValid}
               autoHideDuration={5000}
@@ -706,6 +722,66 @@ const ProfilePage: React.FC = () => {
                 sx={{ width: "290px" }}
               >
                 Please fill in all the required fields.
+              </MuiAlert>
+            </Snackbar>
+            <Snackbar
+              open={!!emailError}
+              autoHideDuration={5000}
+              onClose={handleEmailSnackbarClose}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={handleEmailSnackbarClose}
+                severity="error"
+                sx={{ width: "290px" }}
+              >
+                {emailError}
+              </MuiAlert>
+            </Snackbar>
+
+            <Snackbar
+              open={isContactNumberError}
+              autoHideDuration={5000}
+              onClose={() => setContactNumberError(false)}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={() => setContactNumberError(false)}
+                severity="error"
+                sx={{ width: "290px" }}
+              >
+                Contact number must be a number.
+              </MuiAlert>
+            </Snackbar>
+
+            <Snackbar
+              open={contactNumberLengthError}
+              autoHideDuration={5000}
+              onClose={() => setContactNumberLengthError(false)}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={() => setContactNumberLengthError(false)}
+                severity="error"
+                sx={{ width: "290px" }}
+              >
+                Contact number should be {MAX_CONTACT_NUMBER_LENGTH} digits
+                long.
               </MuiAlert>
             </Snackbar>
 
@@ -752,7 +828,7 @@ const ProfilePage: React.FC = () => {
           </form>
 
           {/* ACCOUNT SETTINGS CONTAINER */}
-          <div className={styles.accountS}>
+          <form className={styles.accountS}>
             <div className={styles.line}></div>
             <h1>Account Settings</h1>
             <div className={styles["input-group"]}>
@@ -785,7 +861,6 @@ const ProfilePage: React.FC = () => {
                 value={oldPassword}
                 readOnly={!editAccountMode}
               />
-              
 
               {editAccountMode && (
                 <span
@@ -807,7 +882,7 @@ const ProfilePage: React.FC = () => {
                 type={
                   editAccountMode
                     ? showNewPassword
-                      ? "text" 
+                      ? "text"
                       : "password"
                     : "password"
                 }
@@ -818,7 +893,6 @@ const ProfilePage: React.FC = () => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
-              
 
               {editAccountMode && (
                 <span
@@ -849,7 +923,6 @@ const ProfilePage: React.FC = () => {
                 className={styles.changeInput}
                 readOnly={!editAccountMode}
               />
-              {confirmPasswordError && <div>{confirmPasswordError}</div>}
 
               {editAccountMode && (
                 <span
@@ -862,29 +935,9 @@ const ProfilePage: React.FC = () => {
                 </span>
               )}
             </div>
-            {/* <Snackbar
-              open={passwordMismatchSnackbar}
-              autoHideDuration={5000}
-              onClose={handleAccountSnackbarClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                onClose={handleAccountSnackbarClose}
-                severity="error"
-                sx={{ width: "290px" }}
-              >
-                Passwords do not match.
-              </MuiAlert>
-            </Snackbar> */}
-            {/* Snackbar for password mismatch error */}
             <Snackbar
               open={!!successMessage}
-              autoHideDuration={3000}
+              autoHideDuration={5000}
               onClose={() => setSuccessMessage(null)}
               anchorOrigin={{
                 vertical: "top",
@@ -903,7 +956,7 @@ const ProfilePage: React.FC = () => {
             </Snackbar>
             <Snackbar
               open={!!oldPasswordError}
-              autoHideDuration={3000}
+              autoHideDuration={5000}
               onClose={() => setOldPasswordError("")}
               anchorOrigin={{
                 vertical: "top",
@@ -920,86 +973,44 @@ const ProfilePage: React.FC = () => {
                 {oldPasswordError}
               </MuiAlert>
             </Snackbar>
-
             <Snackbar
-      open={!!newPasswordError}
-      autoHideDuration={5000}
-      onClose={() => setNewPasswordError("")}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-    >
-      <MuiAlert
-        elevation={6}
-        variant="filled"
-        onClose={() => setNewPasswordError("")}
-        severity="error"
-        sx={{ width: "290px" }}
-      >
-        New password should be different from the old password.
-      </MuiAlert>
-    </Snackbar>
-
-    <Snackbar
-    open={snackbarOpen}
-    autoHideDuration={5000}
-    onClose={handleSnackbarPasswordClose}
-    anchorOrigin={{
-      vertical: "top",
-      horizontal: "right",
-    }}
-  >
-    <MuiAlert
-      elevation={6}
-      variant="filled"
-      onClose={handleSnackbarPasswordClose}
-      severity={snackbarSeverity}
-      sx={{ width: "290px" }}
-    >
-      {snackbarMessage}
-    </MuiAlert>
-  </Snackbar>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              open={!!newPasswordError}
+              autoHideDuration={5000}
+              onClose={() => setNewPasswordError("")}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={() => setNewPasswordError("")}
+                severity="error"
+                sx={{ width: "290px" }}
+              >
+                New password should be different from the old password.
+              </MuiAlert>
+            </Snackbar>
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={5000}
+              onClose={handleSnackbarPasswordClose}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={handleSnackbarPasswordClose}
+                severity={snackbarSeverity}
+                sx={{ width: "290px" }}
+              >
+                {snackbarMessage}
+              </MuiAlert>
+            </Snackbar>
             ;
             {editAccountMode ? (
               <div className={styles["account-button"]}>
@@ -1041,7 +1052,7 @@ const ProfilePage: React.FC = () => {
                 </IconButton>
               </Tooltip>
             )}
-          </div>
+          </form>
         </div>
       </div>
     </div>

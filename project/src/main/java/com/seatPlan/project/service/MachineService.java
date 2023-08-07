@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.seatPlan.project.dao.MachineDao;
 import com.seatPlan.project.model.MachineInputModel;
 import com.seatPlan.project.model.MachineModel;
-import com.seatPlan.project.model.UserModel;
 
 @Service
 @Transactional

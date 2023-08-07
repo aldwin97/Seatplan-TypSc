@@ -127,10 +127,6 @@ public class AdminController {
 
                 adminService.deleteExistingProject(user_id);
                 adminService.insertMultipleProject(user_id,existingUser.getProject_id());
-
-
-
-
             }
 
             if (userModel.getPassword() != null) {

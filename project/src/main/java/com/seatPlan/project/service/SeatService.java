@@ -94,6 +94,7 @@ public class SeatService {
         .map(comment ->{
             Map<String, Object> commentMap = new HashMap<>();
             commentMap.put("user_id",comment.getUser_id());
+            commentMap.put("recipient_id",comment.getRecipient_id());
             commentMap.put("comment_id",comment.getComment_id());
             commentMap.put("seat_id",comment.getSeat_id());
             commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));

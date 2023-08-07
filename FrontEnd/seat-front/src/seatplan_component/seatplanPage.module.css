@@ -341,7 +341,7 @@
 /* Popup content */
 .seatPopupContent {
   display: flex;
-  width: 300px;
+  width: 500px;
   background-color: white;
   flex-direction: column;
   align-items: center;
@@ -349,14 +349,11 @@
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
   padding: 30px; /* Add padding to create some space between the border and content */
-  transition: 0.2s .3s ease-in-out;
 }
-.seatPopupContent:hover {
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-  scale: 0.99;
-}
+
 .seatPopupContent h3 {
   font-size: 30px;
+  margin-left: -400px;
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -371,10 +368,15 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
+  padding: 8px;
+  border: none;
+  font-size: 15px;
+  transition-duration: .3s;
 }
 
 .seatPopupContent input[type="text"] {
   padding: 8px;
+  width: 500px;
   border: none;
   font-size: 15px;
   transition-duration: .3s;
@@ -414,7 +416,7 @@
   background-color: #28a745 !important;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
-  margin-left: 23%;
+  margin-left: 29%;
 }
 .swapButton:hover {
   background-color: #0056b3 !important;
@@ -447,6 +449,7 @@
 }
 .seatPopupContent select {
   padding: 8px;
+  width: 200px;
   border: 1px solid #ccc;
   border-radius: 3px;
   appearance: none;
@@ -457,13 +460,26 @@
 /* Close button */
 .seatPopupContent .closeButton {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  margin-left: 470px;
+  margin-top: -70px ;
   background-color: transparent;
   border: none;
   color: #ff0000;
   cursor: pointer;
   font-size: 12px;
+}
+.seatPopupContent .closeButton2 {
+  position: absolute;
+margin-left: 380px;
+margin-top: -80px ;
+  background-color: transparent;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 12px;
+}
+.seatPopupContent .closeButton2:hover {
+  color: #777;
 }
 
 .seatPopupContent .closeButton:hover {
@@ -540,7 +556,7 @@
   border: none;
   padding: 10px;
   width: 100%;
-  color: white;
+  color: rgb(0, 0, 0);
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
@@ -548,37 +564,7 @@
   cursor: pointer;
   border-radius: 4px;
 }
-.value:not(:active):hover,
-.value:focus {
-  background-color: #21262C;
-}
 
-.value:focus,
-.value:active {
-  background-color: #1A1F24;
-  outline: none;
-}
-
-.value::before {
-  content: "";
-  position: absolute;
-  top: 5px;
-  left: -10px;
-  width: 5px;
-  height: 80%;
-  background-color: #2F81F7;
-  border-radius: 5px;
-  opacity: 0;
-}
-
-.value:focus::before,
-.value:active::before {
-  opacity: 1;
-}
-
-.value svg {
-  width: 15px
-}
 .legend {
   position: absolute;
   bottom: 0px;
@@ -770,8 +756,8 @@ margin-top: 40px;
 /* Styles for the arrow icon when the toggle is expanded */
 .arrowToggle.expanded svg {
   transform: rotate(180deg); /* Rotate the arrow icon 180 degrees when expanded */
+  transition: transform 0.3s ease; /* Add a smooth transition to the rotation animation */
 }
-
 
 
 /* Styles for labels */
@@ -878,7 +864,7 @@ margin-top: 40px;
 
 .commentsContainer h4 {
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: -15px;
   font-size: 20px;
 }
 
@@ -902,8 +888,8 @@ margin-top: 40px;
 }
 
 .largeInput {
-  width: 300px;
-  height: 60px;
+  width: 500px;
+  height: 90px;
   font-size: 16px;
   padding: 10px;
   background-color: #f3f3f3;
@@ -942,7 +928,6 @@ color: #f44336;
 }
 
 .replyButton {
-  margin-left: 30% !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
@@ -1009,4 +994,207 @@ color: #f44336;
 .replyTable .replyButtonCell {
   width: 30%;
   text-align: right;
+}
+/* styles.css (or your preferred CSS file) */
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 400px;
+}
+
+/* Modal Header */
+.modalHeader h2{
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Modal Body */
+.modalBody {
+  margin-bottom: 15px;
+}
+
+/* Reply Textarea */
+.replyTextarea {
+  width: 95%;
+  height: 100px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Reply Submit Button */
+.replySubmitButton {
+  background-color: #2fc05b !important;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.replySubmitButton:hover {
+  background-color: #9b9b9b !important;
+}
+.repliedTo{
+
+font-size: 10px;
+margin-left: 20px;
+color: #777;
+}
+
+.addComment
+{
+  background-color: #28a745 !important;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+width: 90px;
+}
+.addComment:hover {
+  background-color: #0056b3 !important;
+}
+
+/* Add this CSS to create the tooltip-like effect */
+div[title]:hover:after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+div[title]:after {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+div[title]:hover:after {
+  opacity: 1;
+}
+/* SeatplanPage.module.css */
+
+/* Your existing styles */
+
+/* SeatplanPage.module.css */
+
+/* Your existing styles */
+
+.handleInfoButtonClick {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  transform: translateX(50%);
+  background-color: transparent;
+  color: #45a049;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.handleInfoButtonClick:hover {
+  background-color: #f0f0f0;
+}
+
+.infoguide {
+  /* Styles for the backdrop blur effect */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2; /* Ensure the popup is above the backdrop blur */
+
+  /* Additional styles for the info guide content */
+  text-align: center;
+  font-size: 16px;
+}
+
+.infoguide .close {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.infoguide .close:hover{
+  color: red;
+}
+.infoguide h2 {
+  font-size: 30px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.infoguide p {
+  margin: 0;
+  margin-bottom: 10px;
+}
+.backdrop-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity of the backdrop blur */
+  backdrop-filter: blur(8px); /* Adjust the blur strength as needed */
+  z-index: 1;
+}
+/* Add these styles to your existing CSS file */
+
+/* Styling for the backdrop behind the success message */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent black color */
+  z-index: 999; /* Below the success message */
+  backdrop-filter: blur(4px); /* Apply a blur effect to the backdrop */
+}
+
+/* Styling for the success message pop-up */
+.successMessage {
+  position: fixed;
+  top: 50%; /* Center the pop-up vertically */
+  left: 50%; /* Center the pop-up horizontally */
+  transform: translate(-50%, -50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Make sure it appears on top of other content */
+  text-align: center;
 }

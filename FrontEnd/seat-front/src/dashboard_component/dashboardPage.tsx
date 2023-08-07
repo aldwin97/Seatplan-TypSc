@@ -11,8 +11,36 @@
   import occupied from './asset/occupied.png'
   import available from './asset/available.png'
   import totalseat from './asset/totalseat.png'
+  import { Grid, Box, useMediaQuery} from '@mui/material';
+  import { createTheme,  Theme } from '@mui/material/styles';
+  import { makeStyles } from '@mui/styles';
 
 
+  const useStyles = makeStyles((theme: Theme) => ({
+    mainContainer: {
+      [theme.breakpoints.down('md')]: {
+        flexDirection: 'column',
+      },
+    },
+  cardContainer: {
+    padding: theme.spacing(2),
+  },
+  commentContainer: {
+    [theme.breakpoints.down('md')]: {
+      marginTop: theme.spacing(2),
+    },
+  },
+  projectCardContainer: {
+    [theme.breakpoints.down('md')]: {
+      marginTop: theme.spacing(2),
+    },
+  },
+  chartContainer: {
+    [theme.breakpoints.down('md')]: {
+      marginTop: theme.spacing(2),
+    },
+  },
+}));
   interface ProjectSummary {
     project_name: string;
     seatCount: number;
@@ -243,7 +271,7 @@
     return (
       <>
         <body>
-          
+        <Box>
           <i className={styles['menu-out']}onClick={toggleDrawer}>
             <Menu  style={{ fontSize: '28px' }} />
           </i>
@@ -331,11 +359,11 @@
           </div>
         </SwipeableDrawer>
               
-            
+       
         <div className={styles.container}>
           <div className={styles.main}>
-
-          <div className={styles.cardHello}>
+          <Grid container spacing={2} alignItems="center" justifyContent="center" className={styles.mainContainer}>
+          <Box className={styles.cardHello}>
       <svg className={styles.Helloimg}></svg>
       {UserData ? (
         <div className={styles.Hellotitle}>
@@ -347,35 +375,45 @@
         <div></div>
       )}
        
-    </div>
-              
+    </Box>
+        
+             </Grid> 
               <div className={styles.countcontainer}>
-                <div className={styles.card1}>
+              <Grid item xs={12} sm={6} md={4} className={styles.cardContainer}>
+              <Box className={styles.card1}>
                 <div className={styles.cardicon}><img src={totalseat} /></div>
                 <div className={styles.cardcount }>{dashboardData.countOccupied+dashboardData.countSeatAvailable+dashboardData.countUnderMaintenance}</div>
                 <div className={styles.cardtitle}>TOTAL SEATS</div>
-              </div>
+                </Box>
           
-
-            <div className={styles.card2}>
+                </Grid>
+           
+              <Grid item xs={12} sm={6} md={4} className={styles.cardContainer}>
+              <Box className={styles.card2}>
               <div className={styles.cardicon}><img src={occupied}/></div>
               <div className={styles.cardcount}>{dashboardData.countOccupied}</div>
               <div className={styles.cardtitle}>OCCUPIED SEATS</div>
-            </div>
-            
-            <div className={styles.card3}>
+            </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} className={styles.cardContainer}>
+            <Box className={styles.card3}>
             <div className={styles.cardicon}><img src={available} /></div>
             <div className={styles.cardcount }>{dashboardData.countSeatAvailable}</div>
               <div className={styles.cardtitle}>AVAILABLE SEATS</div>
-            </div>
+            </Box>
+            </Grid>
 
-            <div className={styles.card4}>
+            <Grid item xs={12} sm={6} md={4} className={styles.cardContainer}>
+            <Box className={styles.card4}>
             <div className={styles.cardicon}><GroupsRounded style={{ fontSize: 42 }}/></div>
             <div className={styles.cardcount}>{dashboardData.countUser}</div>
             <div className={styles.cardtitle}>TOTAL ASSOCIATES</div>
-            </div>
+            </Box>
+            </Grid>
+          
 
-            <div className={styles.card5}>
+            <Grid item xs={12} sm={6} md={4} className={styles.cardContainer}>
+            <Box className={styles.card5}>
             <div className={styles.cardicon}><Diversity3Rounded style={{ fontSize: 42 }}/></div>
             <div className={styles.cardcount }>{dashboardData.countAssignedEmpIntern + dashboardData.countAssignedEmpTrainee + dashboardData.countAssignedEmpRegular + dashboardData.countAssignedEmpContractual} </div>
             <Tooltip
@@ -397,9 +435,11 @@
             <div className={styles.cardtitle}>WITH ASSIGNED SEATS</div>
         </Tooltip>
             
-            </div>
+            </Box>
+            </Grid>
 
-            <div className={styles.card6}>
+            <Grid item xs={12} sm={6} md={4} className={styles.cardContainer}>
+            <Box className={styles.card6}>
               <div className={styles.cardicon}><PeopleOutlineRounded style={{ fontSize: 42 }}/></div>
             <div className={styles.cardcount}>{dashboardData.countUnassignedEmpIntern + dashboardData.countUnassignedEmpTrainee + dashboardData.countUnassignedEmpRegular + dashboardData.countUnassignedEmpContractual}</div>
             <Tooltip
@@ -418,16 +458,21 @@
         >
           <div className={styles.cardtitle}>WITHOUT ASSIGNED SEATS</div>
         </Tooltip>
-            </div>
+            </Box>
+            </Grid>
             
               </div>
             
-              <div className={styles.cardseat}>
+              <Grid item xs={12} className={styles.chartContainer}>
+                <Box className={styles.cardseat}>
                   <div className={styles.cardtitle1}>SEAT CONDITIONS </div>
                   <div className={styles.chartcontainer}>
                   <canvas ref={chartRef} style={{ height: `${chartHeight}px` , marginTop:'55px' }} />
                   </div>
-                  
+                  </Box>
+                  </Grid>
+                  <Grid container spacing={2} alignItems="center" justifyContent="center" className={styles.mainContainer}>
+                  <Box className={styles.commentContainer}>   
             <div className={styles.cardcomment}>
                   <div className={styles.cardtitle3}>RECENT COMMENT</div>
                   <div className={styles.commentcontent}>
@@ -476,7 +521,11 @@
     </List>
                   
                   </div>
-            </div>
+                  </div>
+            </Box>
+            </Grid>
+            <Grid container spacing={2} alignItems="center" justifyContent="center" className={styles.mainContainer}>
+            <Box className={styles.projectCardContainer}>   
             <div className={styles.projectCard}>
             <div className={styles.cardtitle3}>SUMMARY</div>
             <div className={styles.projectcontent}>
@@ -510,19 +559,22 @@
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      /></div>
+      />
+      </div>
       
       </div>
+      </Box>
+      </Grid>
             </div>
             
           </div>
-        </div>
+     
         
     
-        
+        </Box>
         </body>
       </>
     );
   };
 
-  export default DashboardPage;
+  export default DashboardPage; 

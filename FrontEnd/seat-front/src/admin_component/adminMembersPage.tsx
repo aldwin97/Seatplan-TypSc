@@ -150,28 +150,23 @@ const AdminMembersPage: React.FC = () => {
     handleViewUserInfo(userId);
   };
 
-  const handleDeleteSelected = () => {
-    // Make the DELETE request to delete selected users
-    selectedUsers.forEach((userId) => {
-      fetch(`http://localhost:8080/admin/delete/${userId}`, { method: 'POST' })
-        .then((response) => {
-          if (response.ok) {
-            console.log(`User with ID ${userId} deleted successfully`);
-          } else {
-            console.log(`Failed to delete user with ID ${userId}`);
-          }
-        })
-        .catch((error) => {
-          console.log(`Error while deleting user with ID ${userId}`, error);
-        });
-    });
-
-    // Update the users state to remove the deleted users
-    const remainingUsers = users.filter((user) => !selectedUsers.includes(user.user_id));
-    setSelectedUsers([]);
-    setCurrentPage(1);
-    setUsers(remainingUsers);
+  const handleDeleteUser = (userId: number) => {
+    fetch(`http://localhost:8080/admin/delete/${userId}`, { method: 'POST' })
+      .then((response) => {
+        if (response.ok) {
+          console.log(`User with ID ${userId} deleted successfully`);
+          // Remove the deleted user from the state
+          const updatedUsers = users.filter((user) => user.user_id !== userId);
+          setUsers(updatedUsers);
+        } else {
+          console.log(`Failed to delete user with ID ${userId}`);
+        }
+      })
+      .catch((error) => {
+        console.log(`Error while deleting user with ID ${userId}`, error);
+      });
   };
+  
 
   const handleAddUser = () => {
     setAddUserDialogOpen(true); // Set the flag to open the dialog
@@ -562,19 +557,6 @@ console.log('Data being updated:', updatedUserModel);
             </div>
           </div>
         </SwipeableDrawer>
-      <Box className="action-buttons" display="flex" justifyContent="flex-end">
-        <IconButton
-          className={`delete-button ${selectedUsers.length > 0 ? 'active' : ''}`}
-          color="primary"
-          onClick={handleDeleteSelected}
-          disabled={selectedUsers.length === 0}
-        >
-          <DeleteIcon />
-        </IconButton>
-        <Button className="add-user-button" color="primary" variant="contained" onClick={handleAddUser}>
-          Add User
-        </Button>
-      </Box>
 
       <div className="title">
         <Typography className="title-main" variant="h5" gutterBottom>
@@ -595,38 +577,41 @@ console.log('Data being updated:', updatedUserModel);
 
       <TableContainer className="table-container" component={Paper}>
         <Table>
-          <TableHead className="table-header">
-            <TableRow>
-            <TableCell></TableCell>
-              <TableCell className="table-header">Name</TableCell>
-              <TableCell className="table-header">Username</TableCell>
-              <TableCell className="table-header">Email</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            
-          {sortedCurrentUsers.map((user) => {
-    return (
-      <TableRow className="table-cell" key={user.user_id} hover>
-        <TableCell className="checkbox-btn" padding="checkbox">
-          <Checkbox
-            className="checkmark"
-            checked={selectedUsers.includes(user.user_id)}
-            onChange={(event) => handleUserCheckboxChange(event, user.user_id)}
-          />
-        </TableCell>
-        <TableCell>
-          <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
-            {`${user.first_name} ${user.last_name}`}
-          </a>
-        </TableCell>
-        <TableCell>{user.username}</TableCell>
-        <TableCell>{user.email}</TableCell>
+        <TableHead className="table-header">
+  <TableRow>
+    <TableCell></TableCell>
+    <TableCell className="table-header">Name</TableCell>
+    <TableCell className="table-header">Username</TableCell>
+    <TableCell className="table-header">Email</TableCell>
+    <TableCell className="table-header">Actions</TableCell> {/* Add this cell */}
+  </TableRow>
+</TableHead>
 
-      </TableRow>
-    );
-  })}
+<TableBody>
+  {sortedCurrentUsers.map((user) => (
+    <TableRow className="table-cell" key={user.user_id} hover>
+      <TableCell className="checkbox-btn" padding="checkbox">
+      </TableCell>
+      <TableCell>
+        <a className="user-link" href="#" onClick={() => handleUserClick(user.user_id)}>
+          {`${user.first_name} ${user.last_name}`}
+        </a>
+      </TableCell>
+      <TableCell>{user.username}</TableCell>
+      <TableCell>{user.email}</TableCell>
+      <TableCell>
+      <IconButton
+        onClick={() => handleDeleteUser(user.user_id)}
+        color="primary"
+        aria-label="delete"
+      >
+        <DeleteIcon style={{ color: 'red' }} />
+      </IconButton>
+    </TableCell>
+    </TableRow>
+  ))}
 </TableBody>
+
 
         </Table>
       </TableContainer>

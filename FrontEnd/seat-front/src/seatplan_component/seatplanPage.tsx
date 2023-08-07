@@ -1059,10 +1059,64 @@ const handleLogout = () => {
   
   
   
+  const customBorders = [
+    { x: 199, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 225, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+ 
+    { x: 199, y1: 899, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 199, y1: 1299, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 560, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 585, y1: 99, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 920, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 945, y1: 99, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1280, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1305, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1640, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1665, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2000, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2025, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2360, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2385, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2720, y1: 99, y2: 299, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+  ];
+  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-  
+ 
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
   
@@ -1080,16 +1134,25 @@ const handleLogout = () => {
   
         canvas.style.cursor = 'pointer';
 
+// Draw custom border lines
+customBorders.forEach((border) => {
+  ctx.beginPath();
+  ctx.moveTo(border.x, border.y1);
+  ctx.lineTo(border.x, border.y2);
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = border.lineWidth;
+  ctx.stroke();
+});
         // Draw the background shadow at the very back of the seat
       ctx.save();
-      ctx.shadowColor = '#000000';
-      ctx.shadowBlur = 20; // Adjust the shadow blur size as needed
+      
       ctx.fillStyle = '#ffffff';
       // Draw the seat box
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
       ctx.strokeStyle = '#000000';
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.lineWidth = 1;
       ctx.restore();
       ctx.fillStyle = '#ffffff';
       // Draw the seat number box
@@ -1194,55 +1257,74 @@ const handleLogout = () => {
 
 
  // Helper function to convert data URL to Buffer-like object
- const exportToExcel = async () => {
-  if (!containerRef.current || !canvasRef.current) {
-    return;
-  }
+ // Helper function to convert a hex color code to Excel-compatible ARGB format
+const convertColorCodeToArgb = (colorCode: string): string => {
+  // Assuming colorCode is in the format "#RRGGBB"
+  const hexValue = colorCode.substring(1); // Remove the "#" character
+  const alpha = 'FF'; // Set alpha to FF (fully opaque)
+  return alpha + hexValue.toUpperCase();
+};
 
+const exportToExcel = async () => {
   try {
-    // Ensure the container is large enough to contain the entire canvas
-    containerRef.current.style.width = '2800px';
-    containerRef.current.style.height = '1400px';
-
-    // Capture the entire canvas using dom-to-image
-    const container = containerRef.current;
-    const containerImage = await domtoimage.toPng(container);
-
-    const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const fileName = `SeatData_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
     // Create a new workbook
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('SeatPlanData');
+    const worksheet = workbook.addWorksheet('SeatData');
 
-    // Convert the data URL to a Buffer
-    const imageData = await dataURLToBuffer(containerImage);
+    // Define headers for the Excel sheet
+    const headers = [
+      'Seat ID',
+      'Occupant',
+      'Position Name',
+      'Project',
+      // Add more headers as needed
+    ];
 
-    // Add the image to the worksheet
-    const imageId = workbook.addImage({
-      buffer: imageData,
-      extension: 'png',
+    // Add headers to the worksheet
+    worksheet.addRow(headers);
+
+    // Add seat data to the worksheet
+    seats.forEach((seat) => {
+      const rowData = [
+        seat.seat_id,
+        seat.occupant,
+        seat.position_name,
+        seat.project,
+        // Add more data fields as needed
+      ];
+      const row = worksheet.addRow(rowData);
+
+      // Set background color based on the seat color
+      if (seat.color_code) {
+        const argbColor = convertColorCodeToArgb(seat.color_code);
+        const colorStyle: ExcelJS.Fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: argbColor },
+        };
+
+        // Apply cell style to the "Project" column
+        const projectCell = row.getCell(headers.indexOf('Project') + 1); // +1 because Excel column index starts from 1
+        projectCell.fill = colorStyle;
+      }
     });
 
-    worksheet.addImage(imageId, {
-      tl: { col: 0, row: 0 },
-      ext: { width: 2800, height: 1400 },
+    // Auto-fit column widths
+    worksheet.columns.forEach((column) => {
+      column.width = 15; // You can adjust the column width as needed
     });
 
     // Save the workbook as an Excel file
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), fileName);
-    window.location.reload();
   } catch (error) {
     console.error('Error exporting to Excel:', error);
   }
 };
 
-// Helper function to convert data URL to Buffer-like object
-const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
-  const response = await fetch(dataURL);
-  const buffer = await response.arrayBuffer();
-  return new Uint8Array(buffer);
-};
+
 
 const handleInfoButtonClick = () => {
   setShowInfoGuide(true);

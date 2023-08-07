@@ -92,7 +92,6 @@
             <if test="last_name != null">last_name = #{last_name},</if>
             <if test="email != null">email = #{email},</if>
             <if test="mobile_num != null">mobile_num = #{mobile_num},</if>
-            <if test="project_id != null">project_id = #{project_id},</if>
             <if test="password != null">password = #{password},</if>
             <if test="staffstatus_id != null">staffstatus_id = #{staffstatus_id},</if>
             <if test="usertype_id != null">usertype_id = #{usertype_id},</if>

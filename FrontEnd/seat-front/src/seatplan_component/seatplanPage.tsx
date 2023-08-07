@@ -62,6 +62,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [swapSuccess, setSwapSuccess] = useState(false);
 
 
   // Add selectedOccupant state with a default value
@@ -138,14 +139,16 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   
           // Update the frontend with the swapped seats
           setSeats(updatedSeats);
-  
+          setSwapSuccess(true);
           console.log('Seats swapped successfully');
           console.log('Data being swapped:');
           console.log('Current Seat:', updatedCurrentSeat);
           console.log('Swap Seat:', updatedSwapSeat);
   
           // Refresh the page to fetch the updated seat data
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         } catch (error) {
           console.error('Failed to swap seats:', error);
         }
@@ -220,11 +223,6 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   }
 };
 
-  useEffect(() => {
-    fetchOccupants();
-  }, []);
-  
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleEdit = () => {
@@ -235,26 +233,34 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   };
   
   // Function to fetch occupants and projects from the backend
- 
   useEffect(() => {
     fetchOccupants();
-  }, []);
+  }, [seats]); // Make sure to include 'seats' in the dependency array
+  
 
   /// Function to fetch the list of occupants from the backend
-const fetchOccupants = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/seat/showAllUser');
-    if (response.ok) {
-      const occupantsData: Occupant[] = await response.json();
-      setOccupantsList(occupantsData);
-    } else {
-      console.error('Failed to fetch occupants');
+  const fetchOccupants = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/seat/showAllUser');
+      if (response.ok) {
+        const occupantsData: Occupant[] = await response.json();
+  
+        // Filter out occupants who are already assigned to a seat
+        const unassignedOccupants = occupantsData.filter((occupant) => {
+          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+        });
+  
+        setOccupantsList(unassignedOccupants);
+      } else {
+        console.error('Failed to fetch occupants');
+      }
+    } catch (error) {
+      console.error('Error occurred while fetching occupants:', error);
     }
-  } catch (error) {
-    console.error('Error occurred while fetching occupants:', error);
-  }
-};
-
+  };
+  
+  
+  
 
 
 useEffect(() => {
@@ -274,20 +280,26 @@ return (
     <div className={styles.seatPopupContent}>
       <h3>Seat {seat.seat_id}</h3>
       <form onSubmit={handleFormSubmit}>
-        {isEditMode ? (
-          <>
-            <select
-              value={selectedOccupant}
-              onChange={handleOccupantChange}
-              required
-            >
-              <option value="">Select an occupant</option>
-              {occupantsList.map((occupant) => (
-                <option key={occupant.user_id} value={occupant.user_id}>
-                  {`${occupant.last_name} ${occupant.first_name}`}
-                </option>
-              ))}
-            </select>
+      {isEditMode ? (
+  <>
+    <p>Select a User to be assigned:</p>
+    <select
+      value={selectedOccupant}
+      onChange={handleOccupantChange}
+      required
+    >
+      <option value="">Assign an Occupant</option>
+      {occupantsList
+        .filter((occupant) => {
+          // Filter out occupants who are already assigned to a seat
+          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+        })
+        .map((occupant) => (
+          <option key={occupant.user_id} value={occupant.user_id}>
+            {`${occupant.last_name} ${occupant.first_name}`}
+          </option>
+        ))}
+    </select>
             {errorMsg && (
               <div className={styles.errorPopup}>
                 <p>{errorMsg}</p>
@@ -312,15 +324,14 @@ return (
                     value={selectedSeatId || ''}
                     onChange={(e) => handleSeatSelect(Number(e.target.value))}
                   >
-                    <option className={styles.value} value="">
-                      Select a seat
-                    </option>
+                    <option value="">Select Seat Number</option>
                     {seats.map((seat) => (
                       <option key={seat.seat_id} value={seat.seat_id}>
-                        {seat.seat_id}
+                        {`Seat ${seat.seat_id} (${seat.occupant})`}
                       </option>
                     ))}
                   </select>
+
                   <button
                     type="button"
                     className={styles.swapButton}
@@ -328,6 +339,12 @@ return (
                   >
                     Swap Now
                   </button>
+                  {swapSuccess && (
+                    <div className={styles.backdrop}>
+                    <div className={styles.successMessage}>
+                      Swapping is successful!
+                    </div></div>
+                  )}
                 </div>
               </>
             ) : (
@@ -1383,6 +1400,7 @@ const handleInfoGuideClose = () => {
           <p>This is a simple guide on how to use the page.</p><br></br>
           <p>• Use the middle mouse hold and drag to move around the canvas of the page.</p>
           <p>• To open and view the seats information, point the mouse on the seat number and double left click.</p>
+          <p>• On Edit Mode, there are two things you can do, assigning an occupant to the current selected seat or swap the current user on another user on a different seat.</p>
           <p>• When swapping seats, you can select the seat to be swap on the current seat you are editing.</p>
         </div>
       )}

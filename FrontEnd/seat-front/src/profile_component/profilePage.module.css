@@ -111,7 +111,9 @@
   display: flex;
   background-color: #ffffff;
   border-radius: 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
   width: 450px;
   height: 638px;
   margin-bottom: 0.1%;
@@ -204,6 +206,7 @@ h5 {
   justify-content: space-between;
   margin-left: 40%;
   margin-top: 1.5%;
+  
 }
 
 
@@ -211,20 +214,22 @@ h5 {
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   width: 900px;
   height: 305px;
   margin-bottom: 3%;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
 
 .accountS {
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   width: 900px;
   height: 305px;
   margin-bottom: 3%;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
 
 h1 {
@@ -495,8 +500,8 @@ input:not(:read-only):valid ~ .change-label {
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  border-top-left-radius: 20px; /* Add radius to top left corner */
-  border-top-right-radius: 20px; /* Add radius to top right corner */
+  border-top-left-radius: 40px; /* Add radius to top left corner */
+  border-top-right-radius: 40px; /* Add radius to top right corner */
 }
 
 .cover img {

@@ -4,7 +4,7 @@
         <mapper namespace="com.seatPlan.project.dao.ProfileDao">
 
             <select id="showUserById" resultType="com.seatPlan.project.model.UserModel">
-                SELECT u.*, p.position_name, s.staffstatus_name
+                SELECT u.user_id,u.first_name,u.last_name,u.email,u.username,u.mobile_num, p.position_name, s.staffstatus_name
                 FROM table_user u
                 LEFT JOIN table_position p ON u.position_id = p.position_id
                 LEFT JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
@@ -13,7 +13,7 @@
 
 
             <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
-                SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
+                SELECT user_id FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
             </select>
 
             <update id="updateUser" parameterType="com.seatPlan.project.model.UserModel">
@@ -29,7 +29,7 @@
             </update>
 
             <select id="getUserByEmail" resultType="com.seatPlan.project.model.UserInputModel">
-                SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0 AND user_id != #{user_id}
+                SELECT email FROM table_user WHERE email = #{email} AND is_deleted = 0 AND user_id != #{user_id}
             </select>
             
 

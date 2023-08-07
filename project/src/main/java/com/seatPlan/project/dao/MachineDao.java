@@ -19,4 +19,6 @@ public interface MachineDao {
     MachineModel getMachineById(Long user_id);
 
     void updateMachine(MachineModel machineModel);
+
+    void insertMultipleProject(long generatedUserId, List<Long> project_id);
 }

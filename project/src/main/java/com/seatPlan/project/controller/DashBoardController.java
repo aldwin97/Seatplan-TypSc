@@ -17,13 +17,9 @@ import com.seatPlan.project.service.DashBoardService;
 public class DashBoardController {
     
 
-    
-    private final DashBoardService dashBoardService;
+    @Autowired
+    private  DashBoardService dashBoardService;
 
-
-    public DashBoardController (@Autowired DashBoardService dashBoardService){
-        this.dashBoardService = dashBoardService;
-    }
 
    @GetMapping("/display")
     public ResponseEntity<Map<String, Object>> dashboard() {

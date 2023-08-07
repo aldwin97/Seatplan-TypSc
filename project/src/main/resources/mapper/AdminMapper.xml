@@ -5,64 +5,84 @@
 
 
     <select id="getAllPosition" resultType="com.seatPlan.project.model.PositionModel">
-        SELECT * FROM table_position WHERE is_deleted = 0
+        SELECT position_id, position_name FROM table_position WHERE is_deleted = 0
     </select>
 
     <select id="getAllProject" resultType="com.seatPlan.project.model.ProjectModel">
-        SELECT * FROM table_project WHERE is_deleted = 0
+        SELECT project_id, project_name FROM table_project WHERE is_deleted = 0
     </select>
 
     <select id="getAllUserTypeModels" resultType="com.seatPlan.project.model.UserTypeModel">
-        SELECT * FROM table_usertype WHERE is_deleted = 0
+        SELECT usertype_id, usertype_name FROM table_usertype WHERE is_deleted = 0
     </select>
 
     <select id="getAllStaffStatusModels" resultType="com.seatPlan.project.model.StaffStatusModel">
-        SELECT * FROM table_staffstatus
+        SELECT staffstatus_id, staffstatus_name FROM table_staffstatus WHERE is_deleted = 0
     </select>
 
     <select id="getAllUser" resultType="com.seatPlan.project.model.UserModel">
-        SELECT u.*, p.position_name, t.usertype_name, pr.project_name, s.staffstatus_name
-        FROM table_user u
-        JOIN table_position p ON u.position_id = p.position_id
-        JOIN table_usertype t ON u.usertype_id = t.usertype_id
-        JOIN table_project pr ON u.project_id = pr.project_id
-        JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
-        WHERE u.is_deleted = 0
+        SELECT
+        u.user_id,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.mobile_num,
+        u.username,
+        u.password, 
+        p.position_name,
+        t.usertype_name, 
+        (
+            SELECT GROUP_CONCAT(pr.project_name SEPARATOR ', ')
+            FROM table_userproject up
+            JOIN table_project pr ON up.project_id = pr.project_id
+            WHERE up.user_id = u.user_id
+        ) AS project_name,
+        s.staffstatus_name
+    FROM
+        table_user u
+    JOIN
+        table_position p ON u.position_id = p.position_id
+    JOIN
+        table_usertype t ON u.usertype_id = t.usertype_id
+    JOIN
+        table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
+    WHERE
+        u.is_deleted = 0 AND u.is_machine = 0;
+    
     </select>
 
     <update id="deleteUserById">
         UPDATE table_user SET is_deleted = 1 WHERE user_id = #{user_id}
     </update>
 
-    <insert id="insertUser" parameterType="com.seatPlan.project.model.UserInputModel">
-        INSERT INTO table_user
-            (first_name, 
-            last_name, 
-            email, 
-            mobile_num, 
-            username, 
-            password,
-            staffstatus_id, 
-            project_id, 
-            usertype_id, 
-            position_id, 
-            created_by)
-        VALUES 
-            (#{first_name}, 
-            #{last_name}, 
-            #{email}, 
-            #{mobile_num},
-            #{username},
-            #{password},
-            #{staffstatus_id},
-            #{project_id}, 
-            #{usertype_id},
-            #{position_id},
-            #{created_by})
-    </insert>
+    <insert id="insertUser" parameterType="com.seatPlan.project.model.UserInputModel"
+        useGeneratedKeys="true" keyProperty="user_id">
+    INSERT INTO table_user
+        (first_name, 
+        last_name, 
+        email, 
+        mobile_num, 
+        username, 
+        password,
+        staffstatus_id, 
+        usertype_id, 
+        position_id, 
+        created_by)
+    VALUES 
+        (#{first_name}, 
+        #{last_name}, 
+        #{email}, 
+        #{mobile_num},
+        #{username},
+        #{password},
+        #{staffstatus_id}, 
+        #{usertype_id},
+        #{position_id},
+        #{created_by}) 
+</insert>
 
     <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
-        SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
+        SELECT user_id FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
     </select>
 
     <update id="updateUser" parameterType="com.seatPlan.project.model.UserModel">
@@ -84,11 +104,11 @@
 
 
     <select id="getUserByUsername" resultType="com.seatPlan.project.model.UserInputModel">
-        SELECT * FROM table_user WHERE username = #{username} AND is_deleted = 0
+        SELECT username FROM table_user WHERE username = #{username} AND is_deleted = 0
     </select>
 
     <select id="getUserByEmail" resultType="com.seatPlan.project.model.UserInputModel">
-        SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0
+        SELECT email FROM table_user WHERE email = #{email} AND is_deleted = 0
     </select>
 
     <insert id="insertComment" parameterType="com.seatPlan.project.model.CommentModel">
@@ -109,11 +129,24 @@
 
 
     <select id="getCommentBySeatId" resultType="com.seatPlan.project.model.CommentModel">
-        SELECT c.*, u.first_name, u.last_name
+        SELECT c.user_id, c.comment_id, c.seat_id, c.comment, c.created_time, u.first_name, u.last_name
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
         WHERE seat_id = #{seat_id}
         ORDER BY c.created_time DESC
     </select>
 
+    
+    <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.UserInputModel">
+        INSERT INTO table_userproject (user_id, project_id) VALUES
+        <foreach collection="project_id" item="project_id" separator=",">
+            (#{generatedUserId}, #{project_id})
+        </foreach>
+    </insert>
+
+    <!-- deleteExistingProject --> 
+
+    <delete id="deleteExistingProject" parameterType="com.seatPlan.project.model.UserModel">
+        DELETE FROM table_userproject WHERE user_id = #{generatedUserId}
+    </delete>
 </mapper>

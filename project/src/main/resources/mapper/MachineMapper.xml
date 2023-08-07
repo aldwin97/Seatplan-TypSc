@@ -3,24 +3,35 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         <mapper namespace="com.seatPlan.project.dao.MachineDao">
 
-            <insert id="insertMachine"  parameterType="com.seatPlan.project.model.MachineInputModel">
+            <insert id="insertMachine"  parameterType="com.seatPlan.project.model.MachineInputModel"
+            useGeneratedKeys="true" keyProperty="user_id" >
                 INSERT INTO table_user (
                     first_name, 
-                    project_id,  
                     created_by,
                     is_machine)
                 VALUES (
                     #{first_name}, 
-                    #{project_id},
                     #{created_by},
                     1)
             </insert>
 
             <select id="getAllMachine" resultType="com.seatPlan.project.model.MachineModel">
-                SELECT tu.user_id, tu.first_name,  pt.project_name
-                FROM table_user tu
-                INNER JOIN table_project pt ON tu.project_id = pt.project_id
-                WHERE tu.is_deleted = 0 AND tu.is_machine = 1
+                SELECT
+                    tu.user_id,
+                    tu.first_name,
+                    GROUP_CONCAT(DISTINCT up.project_id) AS project_ids,
+                    GROUP_CONCAT(DISTINCT pr.project_name SEPARATOR ', ') AS project_name
+                FROM
+                    table_user tu
+                LEFT JOIN
+                    table_userproject up ON tu.user_id = up.user_id
+                LEFT JOIN
+                    table_project pr ON up.project_id = pr.project_id
+                WHERE
+                    tu.is_deleted = 0 AND tu.is_machine = 1
+                GROUP BY
+                    tu.user_id, tu.first_name;
+
             </select>
 
             <update id="deleteMachineById">
@@ -41,6 +52,15 @@
 
 
             <select id="getMachineById" >
-                SELECT * FRORM table_user WHERE user_id = #{user_id}
+                SELECT user_id FRORM table_user WHERE user_id = #{user_id}
             </select>
+            
+            <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.UserInputModel">
+                INSERT INTO table_userproject (user_id, project_id) VALUES
+                <foreach collection="project_id" item="project_id" separator=",">
+                    (#{generatedUserId}, #{project_id})
+                </foreach>
+            </insert>
+
+            
 </mapper>

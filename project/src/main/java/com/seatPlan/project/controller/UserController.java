@@ -24,15 +24,10 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class UserController {
     
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     
-    public UserController(@Autowired UserService userService) {
-        this.userService = userService;
-    }
-
-
-
     @PostMapping("/login")
     public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel, HttpSession session) {
         String username = userModel.getUsername();

@@ -1,6 +1,7 @@
 package com.seatPlan.project.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,19 +22,16 @@ import com.seatPlan.project.service.MachineService;
 @RequestMapping("/machine")
 public class MachineController {
 
-
-     private final MachineService machineService;
-
-    
-    public MachineController(@Autowired MachineService machineService) {
-        this.machineService = machineService;
-    }
-    
+     @Autowired
+     private  MachineService machineService;
+   
 
     @PostMapping("/insertNewMachine")
     public ResponseEntity<String> createMachine(@RequestBody MachineInputModel machineInputModel) {
         try {
             machineService.insertMachine(machineInputModel);
+            long generatedUserId = machineInputModel.getUser_id();
+            machineService.insertMultipleProject(generatedUserId, machineInputModel.getProject_id());
             return ResponseEntity.ok("Machine created successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create machine");
@@ -43,8 +41,9 @@ public class MachineController {
 
 
     @GetMapping("/showAllMachine")
-    public List<MachineModel> getAllMachine() {
-        return machineService.getAllMachine();
+    public List<Map<String, Object>> getAllMachine(){
+        List<Map<String, Object>> machine = machineService.getAllMachine();
+        return machine;
     }
 
 

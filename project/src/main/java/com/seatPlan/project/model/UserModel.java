@@ -3,7 +3,7 @@ package com.seatPlan.project.model;
 
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class UserModel {
     
     private Long user_id;
 
-    private Long project_id;
+    private List<Long> project_id;
 
     private String first_name;
 

@@ -32,14 +32,11 @@ import java.util.Date;
 @RequestMapping("/profile")
 public class ProfileController {
 
-
-     private final ProfileService profileService;
+    @Autowired
+     private ProfileService profileService;
 
     
-    public ProfileController(@Autowired ProfileService profileService) {
-        this.profileService = profileService;
-    }
-    
+   
     @GetMapping("/showLogedUserInfo/{user_id}")
     public List<Map<String, Object>> showUserById(@PathVariable ("user_id") Long user_id  ) {
             List<Map<String, Object>> userInfo = profileService.showUserById(user_id);
@@ -175,11 +172,5 @@ public ResponseEntity<String> updateUserPicture(
         return profileService.getUserPicture(user_id);
         
     }
-
-
-
-
-
-
 
 }

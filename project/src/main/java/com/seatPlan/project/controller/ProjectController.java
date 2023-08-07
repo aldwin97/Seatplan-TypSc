@@ -23,12 +23,10 @@ import com.seatPlan.project.service.ProjectService;
 @RequestMapping("/project")
 public class ProjectController {
     
-      private final ProjectService projectService;
+    @Autowired
+    private ProjectService projectService;
 
-    public ProjectController(@Autowired ProjectService projectService) {
-        this.projectService = projectService;
-
-    }
+   
 
     @PostMapping("/insertNewProject")
     public ResponseEntity<String> createProject(@RequestBody ProjectInputModel projectInputModel) {

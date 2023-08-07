@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 public class MachineModel {
 
     private Long user_id;
-    private String machine_name;
+    private String first_name;
     private Long project_id;
-    private int is_deleted;
+    private String project_name;
     private LocalDateTime created_time;
     private Long created_by;
     private LocalDateTime updated_time;

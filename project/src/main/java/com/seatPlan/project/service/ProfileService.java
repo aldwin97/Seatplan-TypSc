@@ -41,7 +41,7 @@ public class ProfileService {
             userInfoMap.put("username",userInfo.getUsername());
             userInfoMap.put("mobile_num", userInfo.getMobile_num());
             userInfoMap.put("position_name", userInfo.getPosition_name());
-            userInfoMap.put("user_picture",userInfo.getUser_picture());
+            // userInfoMap.put("user_picture",userInfo.getUser_picture());
             return userInfoMap;
 
         }).collect(Collectors.toList());

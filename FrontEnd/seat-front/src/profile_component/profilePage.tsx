@@ -593,9 +593,10 @@ const ProfilePage: React.FC = () => {
       <div className={styles.form1}>
         {/* Display Container */}
         <form className={styles.profileSum}>
-          <div className={styles.cover}>
-            <img src={profileBackg} alt="Profile Background" />
-          </div>
+        <div className={styles.cover}>
+        <img className={styles["resizable-image"]} src={profileBackg} alt="Profile Background" />
+      </div>
+
 
           <div className={styles.inputDisplay}>
             <h3>

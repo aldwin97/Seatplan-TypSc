@@ -61,54 +61,6 @@ function ViewSeatPage() {
     isDragging.current = false;
   };
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const offsetX = (event.clientX - rect.left) / zoomLevel - canvasOffset.x;
-    const offsetY = (event.clientY - rect.top) / zoomLevel - canvasOffset.y;
-
-    const clickedSeatIndex = seats.findIndex((seat) => {
-      const { x, y } = seat.position;
-      const seatWidth = 50 / zoomLevel;
-      const seatHeight = 50 / zoomLevel;
-      const seatRight = x + seatWidth;
-      const seatBottom = y + seatHeight;
-
-      return (
-        offsetX >= x &&
-        offsetX <= seatRight &&
-        offsetY >= y &&
-        offsetY <= seatBottom
-      );
-    });
-
-    if (clickedSeatIndex > -1) {
-      const now = new Date().getTime();
-      const doubleClickThreshold = 300;
-
-      if (now - lastClickTimeRef.current <= doubleClickThreshold) {
-        const clickedSeat = seats[clickedSeatIndex];
-        setSelectedSeat(clickedSeat);
-        setDoubleClickFlag(true); // Set the double-click flag
-      } else {
-        lastClickTimeRef.current = now;
-
-        const isAnySeatSwapping = seats.some((seat) => seat.isSwapping);
-
-        if (!isAnySeatSwapping) {
-          setDraggingSeatIndex(clickedSeatIndex);
-          const updatedSeats = seats.map((seat, index) => {
-            if (index === clickedSeatIndex) {
-              return { ...seat, isSwapping: true };
-            }
-            return seat;
-          });
-          setSeats(updatedSeats);
-          isDragging.current = true; // Mark as dragging a seat
-        }
-      }
-    }
-  };
-
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch("http://localhost:8080/seat/showAllSeat")
@@ -434,7 +386,6 @@ function ViewSeatPage() {
                 ref={canvasRef}
                 width={2800}
                 height={1400}
-                onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
                 onMouseUp={handleMouseUp}

@@ -205,9 +205,13 @@
 }
 .title {
   display: flex;
-  justify-content: flex-start;
-  font-weight: bolder!important;
+  margin-left: 35px;
+  justify-content: center; /* Align horizontally at the center */
+  align-items: center; /* Align vertically at the center */
+  font-weight: bolder !important;
+  height: 80px; /* Set the desired height */
 }
+
 .title-main{
   display: flex;
   justify-content: flex-start;
@@ -596,6 +600,3 @@
   border-width: 7px 5px 0 5px;
   border-color: #000000 transparent transparent transparent;
 }
-
-
-

@@ -48,10 +48,10 @@ public class MachineController {
     }
 
 
-    @PostMapping("/delete/{machine_id}")
-    public ResponseEntity<String> deleteMachineById(@PathVariable Long machine_id) {
+    @PostMapping("/delete/{user_id}")
+    public ResponseEntity<String> deleteMachineById(@PathVariable Long user_id) {
           try {
-              machineService.deleteMachineById(machine_id);
+              machineService.deleteMachineById(user_id);
            return ResponseEntity.ok("Machine deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete machine");
@@ -69,8 +69,8 @@ public class MachineController {
         }
 
 
-        if (machineModel.getMachine_name() != null) {
-            existingMachine.setMachine_name(machineModel.getMachine_name());
+        if (machineModel.getFirst_name() != null) {
+            existingMachine.setFirst_name(machineModel.getFirst_name());
         }
 
         if (machineModel.getProject_id() != null) {

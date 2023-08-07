@@ -176,10 +176,4 @@ public ResponseEntity<String> updateUserPicture(
         
     }
 
-
-
-
-
-
-
 }

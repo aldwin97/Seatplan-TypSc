@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MachineInputModel {
 
-    private String machine_name;
+    private String first_name;
     private Long project_id;
     private Long created_by;
     

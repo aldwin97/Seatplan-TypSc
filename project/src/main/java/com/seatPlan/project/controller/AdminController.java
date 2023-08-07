@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.UserInputModel;
 import com.seatPlan.project.model.UserModel;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import com.seatPlan.project.service.AdminService;
 
 @RestController

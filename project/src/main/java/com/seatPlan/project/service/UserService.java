@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.seatPlan.project.dao.UserDao;
 import com.seatPlan.project.model.UserModel;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 
 
 @Service

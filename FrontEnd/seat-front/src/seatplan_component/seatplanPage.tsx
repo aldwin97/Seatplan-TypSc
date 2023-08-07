@@ -62,6 +62,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [swapSuccess, setSwapSuccess] = useState(false);
 
 
   // Add selectedOccupant state with a default value
@@ -138,14 +139,16 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   
           // Update the frontend with the swapped seats
           setSeats(updatedSeats);
-  
+          setSwapSuccess(true);
           console.log('Seats swapped successfully');
           console.log('Data being swapped:');
           console.log('Current Seat:', updatedCurrentSeat);
           console.log('Swap Seat:', updatedSwapSeat);
   
           // Refresh the page to fetch the updated seat data
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         } catch (error) {
           console.error('Failed to swap seats:', error);
         }
@@ -220,11 +223,6 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   }
 };
 
-  useEffect(() => {
-    fetchOccupants();
-  }, []);
-  
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleEdit = () => {
@@ -235,26 +233,34 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   };
   
   // Function to fetch occupants and projects from the backend
- 
   useEffect(() => {
     fetchOccupants();
-  }, []);
+  }, [seats]); // Make sure to include 'seats' in the dependency array
+  
 
   /// Function to fetch the list of occupants from the backend
-const fetchOccupants = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/seat/showAllUser');
-    if (response.ok) {
-      const occupantsData: Occupant[] = await response.json();
-      setOccupantsList(occupantsData);
-    } else {
-      console.error('Failed to fetch occupants');
+  const fetchOccupants = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/seat/showAllUser');
+      if (response.ok) {
+        const occupantsData: Occupant[] = await response.json();
+  
+        // Filter out occupants who are already assigned to a seat
+        const unassignedOccupants = occupantsData.filter((occupant) => {
+          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+        });
+  
+        setOccupantsList(unassignedOccupants);
+      } else {
+        console.error('Failed to fetch occupants');
+      }
+    } catch (error) {
+      console.error('Error occurred while fetching occupants:', error);
     }
-  } catch (error) {
-    console.error('Error occurred while fetching occupants:', error);
-  }
-};
-
+  };
+  
+  
+  
 
 
 useEffect(() => {
@@ -274,20 +280,26 @@ return (
     <div className={styles.seatPopupContent}>
       <h3>Seat {seat.seat_id}</h3>
       <form onSubmit={handleFormSubmit}>
-        {isEditMode ? (
-          <>
-            <select
-              value={selectedOccupant}
-              onChange={handleOccupantChange}
-              required
-            >
-              <option value="">Select an occupant</option>
-              {occupantsList.map((occupant) => (
-                <option key={occupant.user_id} value={occupant.user_id}>
-                  {`${occupant.last_name} ${occupant.first_name}`}
-                </option>
-              ))}
-            </select>
+      {isEditMode ? (
+  <>
+    <p>Select a User to be assigned:</p>
+    <select
+      value={selectedOccupant}
+      onChange={handleOccupantChange}
+      required
+    >
+      <option value="">Assign an Occupant</option>
+      {occupantsList
+        .filter((occupant) => {
+          // Filter out occupants who are already assigned to a seat
+          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+        })
+        .map((occupant) => (
+          <option key={occupant.user_id} value={occupant.user_id}>
+            {`${occupant.last_name} ${occupant.first_name}`}
+          </option>
+        ))}
+    </select>
             {errorMsg && (
               <div className={styles.errorPopup}>
                 <p>{errorMsg}</p>
@@ -312,15 +324,14 @@ return (
                     value={selectedSeatId || ''}
                     onChange={(e) => handleSeatSelect(Number(e.target.value))}
                   >
-                    <option className={styles.value} value="">
-                      Select a seat
-                    </option>
+                    <option value="">Select Seat Number</option>
                     {seats.map((seat) => (
                       <option key={seat.seat_id} value={seat.seat_id}>
-                        {seat.seat_id}
+                        {`Seat ${seat.seat_id} (${seat.occupant})`}
                       </option>
                     ))}
                   </select>
+
                   <button
                     type="button"
                     className={styles.swapButton}
@@ -328,6 +339,12 @@ return (
                   >
                     Swap Now
                   </button>
+                  {swapSuccess && (
+                    <div className={styles.backdrop}>
+                    <div className={styles.successMessage}>
+                      Swapping is successful!
+                    </div></div>
+                  )}
                 </div>
               </>
             ) : (
@@ -1042,10 +1059,64 @@ const handleLogout = () => {
   
   
   
+  const customBorders = [
+    { x: 199, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 225, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+ 
+    { x: 199, y1: 899, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 199, y1: 1299, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 560, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 585, y1: 99, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 920, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 945, y1: 99, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1280, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1305, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1640, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1665, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2000, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2025, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2360, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2385, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2720, y1: 99, y2: 299, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+  ];
+  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-  
+ 
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
   
@@ -1063,16 +1134,25 @@ const handleLogout = () => {
   
         canvas.style.cursor = 'pointer';
 
+// Draw custom border lines
+customBorders.forEach((border) => {
+  ctx.beginPath();
+  ctx.moveTo(border.x, border.y1);
+  ctx.lineTo(border.x, border.y2);
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = border.lineWidth;
+  ctx.stroke();
+});
         // Draw the background shadow at the very back of the seat
       ctx.save();
-      ctx.shadowColor = '#000000';
-      ctx.shadowBlur = 20; // Adjust the shadow blur size as needed
+      
       ctx.fillStyle = '#ffffff';
       // Draw the seat box
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
       ctx.strokeStyle = '#000000';
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.lineWidth = 1;
       ctx.restore();
       ctx.fillStyle = '#ffffff';
       // Draw the seat number box
@@ -1177,55 +1257,74 @@ const handleLogout = () => {
 
 
  // Helper function to convert data URL to Buffer-like object
- const exportToExcel = async () => {
-  if (!containerRef.current || !canvasRef.current) {
-    return;
-  }
+ // Helper function to convert a hex color code to Excel-compatible ARGB format
+const convertColorCodeToArgb = (colorCode: string): string => {
+  // Assuming colorCode is in the format "#RRGGBB"
+  const hexValue = colorCode.substring(1); // Remove the "#" character
+  const alpha = 'FF'; // Set alpha to FF (fully opaque)
+  return alpha + hexValue.toUpperCase();
+};
 
+const exportToExcel = async () => {
   try {
-    // Ensure the container is large enough to contain the entire canvas
-    containerRef.current.style.width = '2800px';
-    containerRef.current.style.height = '1400px';
-
-    // Capture the entire canvas using dom-to-image
-    const container = containerRef.current;
-    const containerImage = await domtoimage.toPng(container);
-
-    const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const fileName = `SeatData_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
     // Create a new workbook
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('SeatPlanData');
+    const worksheet = workbook.addWorksheet('SeatData');
 
-    // Convert the data URL to a Buffer
-    const imageData = await dataURLToBuffer(containerImage);
+    // Define headers for the Excel sheet
+    const headers = [
+      'Seat ID',
+      'Occupant',
+      'Position Name',
+      'Project',
+      // Add more headers as needed
+    ];
 
-    // Add the image to the worksheet
-    const imageId = workbook.addImage({
-      buffer: imageData,
-      extension: 'png',
+    // Add headers to the worksheet
+    worksheet.addRow(headers);
+
+    // Add seat data to the worksheet
+    seats.forEach((seat) => {
+      const rowData = [
+        seat.seat_id,
+        seat.occupant,
+        seat.position_name,
+        seat.project,
+        // Add more data fields as needed
+      ];
+      const row = worksheet.addRow(rowData);
+
+      // Set background color based on the seat color
+      if (seat.color_code) {
+        const argbColor = convertColorCodeToArgb(seat.color_code);
+        const colorStyle: ExcelJS.Fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: argbColor },
+        };
+
+        // Apply cell style to the "Project" column
+        const projectCell = row.getCell(headers.indexOf('Project') + 1); // +1 because Excel column index starts from 1
+        projectCell.fill = colorStyle;
+      }
     });
 
-    worksheet.addImage(imageId, {
-      tl: { col: 0, row: 0 },
-      ext: { width: 2800, height: 1400 },
+    // Auto-fit column widths
+    worksheet.columns.forEach((column) => {
+      column.width = 15; // You can adjust the column width as needed
     });
 
     // Save the workbook as an Excel file
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), fileName);
-    window.location.reload();
   } catch (error) {
     console.error('Error exporting to Excel:', error);
   }
 };
 
-// Helper function to convert data URL to Buffer-like object
-const dataURLToBuffer = async (dataURL: string): Promise<Uint8Array> => {
-  const response = await fetch(dataURL);
-  const buffer = await response.arrayBuffer();
-  return new Uint8Array(buffer);
-};
+
 
 const handleInfoButtonClick = () => {
   setShowInfoGuide(true);
@@ -1383,6 +1482,7 @@ const handleInfoGuideClose = () => {
           <p>This is a simple guide on how to use the page.</p><br></br>
           <p>• Use the middle mouse hold and drag to move around the canvas of the page.</p>
           <p>• To open and view the seats information, point the mouse on the seat number and double left click.</p>
+          <p>• On Edit Mode, there are two things you can do, assigning an occupant to the current selected seat or swap the current user on another user on a different seat.</p>
           <p>• When swapping seats, you can select the seat to be swap on the current seat you are editing.</p>
         </div>
       )}

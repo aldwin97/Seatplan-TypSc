@@ -23,12 +23,8 @@ import com.seatPlan.project.service.AdminService;
 @RequestMapping("/admin")
 public class AdminController {
     
+    @Autowired
     private AdminService adminService;
-
-
-    public AdminController(@Autowired AdminService adminService){
-        this.adminService = adminService;
-    }
 
 
     // To show all the Position in the Database.
@@ -78,6 +74,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete user");
         }    
     }
+
     @PostMapping("/insert")
     public ResponseEntity<String> insertUser(@RequestBody UserInputModel userInputModel) {
         try {
@@ -88,14 +85,14 @@ public class AdminController {
                 if (adminService.isUserEmailExists(userInputModel.getEmail())) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
                 }
-
                 adminService.insertUser(userInputModel);
+                long generatedUserId = userInputModel.getUser_id();
+                adminService.insertMultipleProject(generatedUserId, userInputModel.getProject_id());
                 return ResponseEntity.ok("User inserted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
         }
     }
-
 
     @PutMapping("/update/{user_id}")
     public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
@@ -127,6 +124,13 @@ public class AdminController {
 
             if (userModel.getProject_id() != null) {
                 existingUser.setProject_id(userModel.getProject_id());
+
+                adminService.deleteExistingProject(user_id);
+                adminService.insertMultipleProject(user_id,existingUser.getProject_id());
+
+
+
+
             }
 
             if (userModel.getPassword() != null) {
@@ -142,6 +146,7 @@ public class AdminController {
             }
 
             if (userModel.getPosition_id() != null) {
+
                 existingUser.setPosition_id(userModel.getPosition_id());
             }
 
@@ -153,6 +158,7 @@ public class AdminController {
             if (userModel.getUpdated_by() != null) {
                 existingUser.setUpdated_by(userModel.getUpdated_by());
             }
+
 
             adminService.updateUser(existingUser);
             return ResponseEntity.ok("User updated successfully");
@@ -180,10 +186,4 @@ public class AdminController {
         List<Map<String, Object>> comments = adminService.getCommentBySeatId(seat_id);
         return comments;
     }
-
-
-
-  
-
-    
 }

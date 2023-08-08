@@ -62,5 +62,8 @@
                 </foreach>
             </insert>
 
+            <delete id="deleteExistingProject" parameterType="com.seatPlan.project.model.MachineModel">
+                DELETE FROM table_userproject WHERE user_id = #{generatedUserId}
+            </delete>
             
 </mapper>

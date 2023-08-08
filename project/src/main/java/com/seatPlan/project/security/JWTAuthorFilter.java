@@ -2,6 +2,8 @@ package com.seatPlan.project.security;
 
 import java.io.IOException;
 
+import com.seatPlan.project.security.TokenUtils;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

@@ -4,15 +4,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.seatPlan.project.model.UserModel;
 
-public class User extends UserModel implements UserDetails {
+public class Users extends UserModel implements UserDetails {
     private List<GrantedAuthority> authorities;
 
-    public User(UserModel user,List<GrantedAuthority> authorities){
-        super(user.getUsername(), user.getPassword());
+    public Users(UserModel users,List<GrantedAuthority> authorities){
+        super(users.getUsername(), users.getPassword());
         this.authorities = authorities;
     }
 

@@ -1,5 +1,9 @@
 package com.seatPlan.project.security;
 
+import com.seatPlan.project.security.AuthCredentials;
+import com.seatPlan.project.security.TokenUtils;
+import com.seatPlan.project.security.Service.UserDetailsImpl;
+
 import java.io.IOException;
 import java.util.Collections;
 
@@ -11,15 +15,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StringUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seatPlan.project.security.Service.UserDetailsImpl;
+
 
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 public class JWTAuthenFilter extends UsernamePasswordAuthenticationFilter {
 

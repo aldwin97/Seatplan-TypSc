@@ -13,7 +13,7 @@
 
 
             <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
-                SELECT user_id FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
+                SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
             </select>
 
             <update id="updateUser" parameterType="com.seatPlan.project.model.UserModel">

@@ -10,8 +10,8 @@
         ts.*, 
         CASE 
             WHEN ts.seatstatus_id = 3 THEN 'Under'
-            WHEN tu.is_deleted = 1 THEN 'Unoccupied'
-            ELSE COALESCE(tu.first_name, 'Unoccupied')
+            WHEN tu.is_deleted = 1 THEN 'UNOCCUPIED'
+            ELSE COALESCE(tu.first_name, 'UNOCCUPIED')
         END AS first_name,
         CASE 
             WHEN ts.seatstatus_id = 3 THEN 'Repair'

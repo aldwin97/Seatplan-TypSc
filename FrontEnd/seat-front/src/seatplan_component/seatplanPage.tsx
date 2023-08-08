@@ -1134,15 +1134,15 @@ const handleLogout = () => {
   
         canvas.style.cursor = 'pointer';
 
-// Draw custom border lines
-customBorders.forEach((border) => {
-  ctx.beginPath();
-  ctx.moveTo(border.x, border.y1);
-  ctx.lineTo(border.x, border.y2);
-  ctx.strokeStyle = '#000000';
-  ctx.lineWidth = border.lineWidth;
-  ctx.stroke();
-});
+      // Draw custom border lines
+      customBorders.forEach((border) => {
+        ctx.beginPath();
+        ctx.moveTo(border.x, border.y1);
+        ctx.lineTo(border.x, border.y2);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = border.lineWidth;
+        ctx.stroke();
+      });
         // Draw the background shadow at the very back of the seat
       ctx.save();
       
@@ -1218,6 +1218,7 @@ customBorders.forEach((border) => {
           .join('');
     
         ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
+        
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
             .split(' ')
@@ -1469,9 +1470,16 @@ const handleInfoGuideClose = () => {
     <span className={styles.label}>Unavailable/Maintained Seats</span>
   </div>
   {showInfoGuide && <div className={styles['backdrop-blur']}></div>}
-  <button className={styles['handleInfoButtonClick']} onClick={handleInfoButtonClick}>
+  <div className={styles['uiverse']}>
+  <button
+        className={styles['handleInfoButtonClick']}
+        onClick={handleInfoButtonClick}
+        title="Click to open Info Guide"
+      >
         <FaInfoCircle size={20} />
+        <span className={styles['tooltip']}>Page Guide</span>
       </button>
+      <>
       {showInfoGuide && (
         <div className={styles['infoguide']}>
           {/* Popup content */}
@@ -1479,13 +1487,15 @@ const handleInfoGuideClose = () => {
             &times;
           </span>
           <h2>Information Guide</h2>
-          <p>This is a simple guide on how to use the page.</p><br></br>
+          <p>This is a simple guide on how to use the page.</p><br />
           <p>• Use the middle mouse hold and drag to move around the canvas of the page.</p>
           <p>• To open and view the seats information, point the mouse on the seat number and double left click.</p>
           <p>• On Edit Mode, there are two things you can do, assigning an occupant to the current selected seat or swap the current user on another user on a different seat.</p>
           <p>• When swapping seats, you can select the seat to be swap on the current seat you are editing.</p>
         </div>
       )}
+
+    </></div>
 </div>
 
 

@@ -21,4 +21,6 @@ public interface ProjectDao {
 
     List<ColorModel> getAllColors();
 
+    ProjectInputModel getProjectByname(String project_name);
+
 }

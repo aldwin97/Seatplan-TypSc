@@ -2,6 +2,7 @@ package com.seatPlan.project.model;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,7 @@ public class MachineModel {
 
     private Long user_id;
     private String first_name;
-    private Long project_id;
+    private List<Long> project_id;
     private String project_name;
     private LocalDateTime created_time;
     private Long created_by;

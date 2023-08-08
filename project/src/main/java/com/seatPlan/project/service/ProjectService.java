@@ -41,4 +41,8 @@ public class ProjectService {
      public List<ColorModel> getAllColors() {
         return projectDao.getAllColors();
     }
+
+    public boolean isProjectNameExists(String project_name) {
+        return projectDao.getProjectByname(project_name) != null;
+    }
 }

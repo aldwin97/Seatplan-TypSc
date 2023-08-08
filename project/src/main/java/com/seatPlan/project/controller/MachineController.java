@@ -73,7 +73,10 @@ public class MachineController {
         }
 
         if (machineModel.getProject_id() != null) {
-            existingMachine.setProject_id(machineModel.getProject_id());
+             existingMachine.setProject_id(machineModel.getProject_id());
+
+            machineService.deleteExistingProject(user_id);
+            machineService.insertMultipleProject(user_id,existingMachine.getProject_id());
         }
 
         if (machineModel.getUpdated_by() != null) {

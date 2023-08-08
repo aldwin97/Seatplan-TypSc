@@ -224,19 +224,73 @@ function ViewSeatPage() {
     );
   });
 
+  const customBorders = [
+    { x: 199, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 225, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+ 
+    { x: 199, y1: 899, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 199, y1: 1299, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 560, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 585, y1: 99, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 920, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 945, y1: 99, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1280, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1305, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1640, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1665, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2000, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2025, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2360, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2385, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2720, y1: 99, y2: 299, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+  ];
+  
+
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-
+    const ctx = canvas?.getContext('2d');
+ 
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
       ctx.scale(zoomLevel, zoomLevel);
-
+  
       filteredSeats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-
+  
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 98 / zoomLevel;
@@ -245,16 +299,25 @@ function ViewSeatPage() {
   
         canvas.style.cursor = 'pointer';
 
+      // Draw custom border lines
+      customBorders.forEach((border) => {
+        ctx.beginPath();
+        ctx.moveTo(border.x, border.y1);
+        ctx.lineTo(border.x, border.y2);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = border.lineWidth;
+        ctx.stroke();
+      });
         // Draw the background shadow at the very back of the seat
       ctx.save();
-      ctx.shadowColor = '#000000';
-      ctx.shadowBlur = 20; // Adjust the shadow blur size as needed
+      
       ctx.fillStyle = '#ffffff';
       // Draw the seat box
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
       ctx.strokeStyle = '#000000';
       ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.lineWidth = 1;
       ctx.restore();
       ctx.fillStyle = '#ffffff';
       // Draw the seat number box
@@ -288,89 +351,71 @@ function ViewSeatPage() {
         ctx.fillStyle =  color;
         ctx.fillRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
         ctx.strokeRect(scaledX, seatBoxY, seatSize, seatBoxHeight);
-        ctx.fillStyle = "#000000";
-
+        ctx.fillStyle = '#000000';
+    
         const textOffsetY = 45; // Adjust this value to create some vertical space between the occupant and project name
 
-        // Draw the occupant's name
-        const occupantNameParts = seat.occupant.split(" "); // Assuming the occupant's name is in the format "FirstName LastName"
-        const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
-        const firstName = occupantNameParts[0]; // Extract the first name
-        const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
-        const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
+    // Draw the occupant's name
+    const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
+    const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
+    const firstName = occupantNameParts[0]; // Extract the first name
+    const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
 
-        // Calculate the center position to horizontally align the occupant name
-        const centerOffsetX = (seatSize - occupantNameWidth) / 2;
-        const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+    const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
 
-        // Calculate the font size for the occupant name to fit inside the seat box
-        let fontSize = 11;
-        while (
-          ctx.measureText(occupantName).width >
-          seatSize - adjustedTextOffsetX * 2
-        ) {
-          fontSize--;
-          ctx.font = `${fontSize}px Arial`;
-        }
+    // Calculate the center position to horizontally align the occupant name
+    const centerOffsetX = (seatSize - occupantNameWidth) / 2;
+    const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
-        ctx.fillText(
-          occupantName,
-          scaledX + adjustedTextOffsetX,
-          scaledY + textOffsetY
-        );
+    // Calculate the font size for the occupant name to fit inside the seat box
+    let fontSize = 11;
+    while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
+      fontSize--;
+      ctx.font = `${fontSize}px Arial`;
+    }
+
+    ctx.fillText(occupantName, scaledX + adjustedTextOffsetX, scaledY + textOffsetY);
 
         // Get the acronym of the project name
         const projectNameAcronym = seat.project_name
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase())
-          .join("");
-
-        ctx.fillText(
-          projectNameAcronym,
-          scaledX + seatSize / 2.7,
-          scaledY + seatSize - textOffsetY / 1 + 40
-        );
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase())
+          .join('');
+    
+        ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
+        
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
-            .split(" ")
+            .split(' ')
             .map((word) => word.charAt(0).toUpperCase())
-            .join("");
-
+            .join('');
+        
           // Calculate the center position to horizontally align the position name acronym
-          const positionNameAcronymWidth =
-            ctx.measureText(positionNameAcronym).width;
+          const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
           const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
           const adjustedTextOffsetX = textOffsetX + centerOffsetX;
-
+        
           // Calculate the font size for the position name acronym to fit inside the seat box
           let fontSize = 10;
-          while (
-            ctx.measureText(positionNameAcronym).width >
-            seatSize - adjustedTextOffsetX * 2
-          ) {
+          while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
             fontSize--;
             ctx.font = `${fontSize}px Arial`;
           }
-
+        
           // Draw the position name acronym below the seat
-          ctx.fillText(
-            positionNameAcronym,
-            scaledX + +seatSize / 2.3,
-            +scaledY + textOffsetY / 3.4 + 1
-          );
+          ctx.fillText(positionNameAcronym, scaledX + + seatSize / 2.3,+ scaledY + textOffsetY / 3.4 + 1);
         }
-
+        
+        
+  
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
-          ctx.fillText(
-            "Edit",
-            scaledX + seatSize / 2 - 10,
-            scaledY + seatSize / 2 + 5
-          );
+          ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
         }
       });
     }
   }, [filteredSeats, zoomLevel, selectedSeat]);
+  
 
 
   return (

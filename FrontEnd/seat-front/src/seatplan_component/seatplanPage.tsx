@@ -1218,6 +1218,7 @@ const handleLogout = () => {
           .join('');
     
         ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
+        
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
             .split(' ')

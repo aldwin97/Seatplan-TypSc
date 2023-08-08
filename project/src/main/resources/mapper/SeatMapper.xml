@@ -10,8 +10,8 @@
         ts.*, 
         CASE 
             WHEN ts.seatstatus_id = 3 THEN 'Under'
-            WHEN tu.is_deleted = 1 THEN 'Unoccupied'
-            ELSE COALESCE(tu.first_name, 'Unoccupied')
+            WHEN tu.is_deleted = 1 THEN 'UNOCCUPIED'
+            ELSE COALESCE(tu.first_name, 'UNOCCUPIED')
         END AS first_name,
         CASE 
             WHEN ts.seatstatus_id = 3 THEN 'Repair'
@@ -29,8 +29,8 @@
         END AS position_name,
         COALESCE(tp.project_id, 0) AS project_id,
         CASE 
-            WHEN tu.is_deleted = 1 THEN ''
-            ELSE COALESCE(tp.project_names, '')
+            WHEN tu.is_deleted = 1 THEN 'No Project'
+            ELSE COALESCE(tp.project_names, 'No Project')
         END AS project_name,
         COALESCE(tc.color_code, '#FFFFFF') AS color_code
     FROM

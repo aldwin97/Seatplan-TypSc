@@ -31,6 +31,11 @@ public class ProjectController {
     @PostMapping("/insertNewProject")
     public ResponseEntity<String> createProject(@RequestBody ProjectInputModel projectInputModel) {
         try {
+
+            if (projectService.isProjectNameExists(projectInputModel.getProject_name())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Project name already exists");
+            }
+            
             projectService.insertProject(projectInputModel);
             return ResponseEntity.ok("Project created successfully");
         } catch (Exception e) {

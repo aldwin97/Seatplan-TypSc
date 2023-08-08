@@ -561,28 +561,85 @@ body.sidebar-open .main {
 }
 
 @media screen and (max-width: 1200px) {
-  .container{
+  .container {
     width: 100%;
-   position: relative;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    align-items: center; /* Center the cards vertically */
   }
- .main{
-  width: 100%;
 
-   position: relative;
- }
+  .main {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    justify-content: center; /* Center the cards horizontally */
+    align-items: center; /* Center the cards vertically */
+  }
   .cardHello {
 
     position: relative;
-    width: 25%; 
-    left: 0;
+    width: 30%; 
+    height: 330px;
+    top:70px;
+    left: -350px;
   }
+    .Hellotitle{
+      position: absolute;
+      left: -10px;
+      top:150px;
+      font-size: 24px;
+     }
+     .cardcount{
+      font-size: 24px;
+     }
+     .cardtitle{
+      font-size: 12px;
+     }
+     .card1, .card2, .card3, .card4, .card5, .card6 {
 
-}
+      left:265px;
+      width:100px;
+      height: 120px;
+     }
+     .card1,.card2,.card3{
+      top:-260px;
+     }
+     .card4,.card5,.card6{
+      top:-295px;
+     }
+     .cardseat{
+      position: relative;
+      top:-290px;
+      left:180px;
+      width:300px;
+      height: 330px;
+     }
+     .chartcontainer{
+      width:260px;
+
+     }
+     .card2,.card5{
+      left: 230px;
+     }
+     .card3,.card6{
+      left:195px;
+     }
+     .cardcomment{
+      top:-290px;
+      left:-250px;
+      width: 565px;
+      height: 480px;
+     
+     }
+     .projectCard{
+      top:-755px;
+      left:330px;
+      width: 565px;
+      height: 480px;
+     }
+   }
 @media screen and (max-width: 1024px) {
   .container {
     width: 100%;
     flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
-    
     align-items: center; /* Center the cards vertically */
   }
 
@@ -597,8 +654,8 @@ body.sidebar-open .main {
     position: relative;
     height: 300px;
     width: 658px;
-    margin-right: 435px;
-    margin-top: 70px;
+    left: -215px;
+    top:40px;
     align-self: center;
     
   }
@@ -610,7 +667,7 @@ body.sidebar-open .main {
 
   .card1, .card2, .card3, .card4, .card5, .card6 {
     position: relative;
-    top: 20px;
+    top: 60px;
     width: 82%; /* Adjust the width of the cards to fit two cards in a row */
     margin: 5px; /* Add some margin between the cards */
   }
@@ -674,8 +731,8 @@ body.sidebar-open .main {
     position: relative;
     height: 300px;
     width: 658px;
-    margin-right: 435px;
-    margin-top: 70px;
+    left: -215px;
+    top:40px;
     align-self: center;
     
   }
@@ -687,10 +744,11 @@ body.sidebar-open .main {
 
   .card1, .card2, .card3, .card4, .card5, .card6 {
     position: relative;
-    top: 20px;
+    top: 60px;
     width: 82%; /* Adjust the width of the cards to fit two cards in a row */
     margin: 5px; /* Add some margin between the cards */
   }
+
 
   .card1, .card4 {
     left: -280px;

@@ -21,56 +21,51 @@ import com.seatPlan.project.model.UserModel;
 @Transactional
 public class ProfileService {
 
+    public ProfileDao profileDao;
 
-     public ProfileDao profileDao;
-
-    public ProfileService(@Autowired(required=true) ProfileDao profileDao) {
+    public ProfileService(@Autowired(required = true) ProfileDao profileDao) {
         this.profileDao = profileDao;
     }
 
-
-     public List<Map<String, Object>>  showUserById(Long user_id){
-        List<UserModel> userInfos = profileDao. showUserById(user_id);
+    public List<Map<String, Object>> showUserById(Long user_id) {
+        List<UserModel> userInfos = profileDao.showUserById(user_id);
         List<Map<String, Object>> filteredUserInfo = userInfos.stream()
-        .map(userInfo ->{
-            Map<String, Object> userInfoMap = new HashMap<>();
-            userInfoMap.put("user_id",userInfo.getUser_id());
-            userInfoMap.put("first_name", userInfo.getFirst_name());
-            userInfoMap.put("last_name",userInfo.getLast_name());
-            userInfoMap.put("email",userInfo.getEmail());
-            userInfoMap.put("username",userInfo.getUsername());
-            userInfoMap.put("mobile_num", userInfo.getMobile_num());
-            userInfoMap.put("position_name", userInfo.getPosition_name());
-            userInfoMap.put("user_picture",userInfo.getUser_picture());
-            return userInfoMap;
+                .map(userInfo -> {
+                    Map<String, Object> userInfoMap = new HashMap<>();
+                    userInfoMap.put("user_id", userInfo.getUser_id());
+                    userInfoMap.put("first_name", userInfo.getFirst_name());
+                    userInfoMap.put("last_name", userInfo.getLast_name());
+                    userInfoMap.put("email", userInfo.getEmail());
+                    userInfoMap.put("username", userInfo.getUsername());
+                    userInfoMap.put("mobile_num", userInfo.getMobile_num());
+                    userInfoMap.put("position_name", userInfo.getPosition_name());
+                    // userInfoMap.put("user_picture",userInfo.getUser_picture());
+                    return userInfoMap;
 
-        }).collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
         return filteredUserInfo;
     }
-    
+
     public UserModel getUserById(Long user_id) {
         return profileDao.getUserById(user_id);
     }
 
-
-    public boolean isUserEmailExists(String email,Long user_id) {
-        return profileDao.getUserByEmail(email,user_id) != null;
+    public boolean isUserEmailExists(String email, Long user_id) {
+        return profileDao.getUserByEmail(email, user_id) != null;
     }
 
     public void updateUser(UserModel userModel) {
         profileDao.updateUser(userModel);
     }
 
-     public void updateUserPassword(UserModel userModel) {
+    public void updateUserPassword(UserModel userModel) {
         profileDao.updateUserPassword(userModel);
     }
 
-
     public void updateUserPicture(UserModel userModel) {
-         profileDao.updateUserPicture(userModel);
+        profileDao.updateUserPicture(userModel);
     }
-
 
     public ResponseEntity<FileSystemResource> getUserPicture(Long user_id) {
         try {
@@ -88,7 +83,8 @@ public class ProfileService {
                 return ResponseEntity.notFound().build();
             }
 
-            // Set the Content-Disposition header to "inline" to display the image in the browser.
+            // Set the Content-Disposition header to "inline" to display the image in the
+            // browser.
             return ResponseEntity
                     .ok()
                     .header("Content-Disposition", "inline; filename=\"" + filename + "\"")
@@ -98,6 +94,5 @@ public class ProfileService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 }

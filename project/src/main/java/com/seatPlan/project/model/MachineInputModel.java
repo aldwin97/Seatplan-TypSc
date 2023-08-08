@@ -2,6 +2,7 @@ package com.seatPlan.project.model;
 
 
 
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,8 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MachineInputModel {
 
-    private String machine_name;
-    private Long project_id;
+   
+    private String first_name;
+    private List<Long> project_id;
+    private Long user_id;
     private Long created_by;
     
 }

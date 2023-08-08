@@ -29,8 +29,6 @@ public class SeatService {
     public List<Map<String, Object>> getAllSeat() {
         List<SeatModel> seats = seatDao.getAllSeatModels();
         List<Map<String, Object>> filteredSeat = seats.stream()
-
-
             .map(seat -> {
                 Map<String, Object> seatMap = new HashMap<>();
                 seatMap.put("seat_id", seat.getSeat_id());

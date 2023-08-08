@@ -62,7 +62,7 @@ public class UserService{
         return userDao.getUserByUsername(username);
     }
 
-    public List<Map<String, Object>>  showUserById(Long user_id){
+    public List<Map<String, Object>>showUserById(Long user_id){
         List<UserModel> userInfos = userDao. showUserById(user_id);
         List<Map<String, Object>> filteredUserInfo = userInfos.stream()
         .map(userInfo ->{

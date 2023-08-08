@@ -19,8 +19,6 @@ public interface DashBoardDao {
     List<ProjectModel> countUsersPerProject();
 
      List<CommentModel> getAllComment();
-
-
     int countAssignedEmpIntern();
     int countAssignedEmpTrainee();
     int countAssignedEmpRegular();

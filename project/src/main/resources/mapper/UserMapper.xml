@@ -16,7 +16,7 @@
     </update>
 
     <select id="findByUsername" resultType="com.seatPlan.project.model.UserModel">
-        SELECT * FROM table_user WHERE username = #{username}
+        SELECT username FROM table_user WHERE username = #{username}
     </select>
 
     <update id="updateUser">
@@ -33,20 +33,30 @@
     </update>
 
     <select id="getUserById" resultType="com.seatPlan.project.model.UserModel">
-        SELECT * FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
+        SELECT user_id FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0
     </select>
 
     <select id="getUserByEmail" resultType="java.lang.Object">
-        SELECT * FROM table_user WHERE email = #{email} AND is_deleted = 0
+        SELECT email FROM table_user WHERE email = #{email} AND is_deleted = 0
     </select>
 
     <select id="showUserById" resultType="com.seatPlan.project.model.UserModel">
-        SELECT u.*, p.position_name, s.staffstatus_name, pr.project_name, ut.usertype_name
-        FROM table_user u
-        LEFT JOIN table_position p ON u.position_id = p.position_id
-        LEFT JOIN table_staffstatus s ON u.staffstatus_id = s.staffstatus_id
-        LEFT JOIN table_project pr ON u.project_id = pr.project_id
-        LEFT JOIN table_usertype ut ON u.usertype_id = ut.usertype_id
-        WHERE u.user_id = #{user_id}
+        SELECT 
+        u.user_id, 
+        u.last_name, 
+        u.first_name, 
+        u.email, 
+        u.username,
+        u.mobile_num,
+        p.position_name, 
+        s.staffstatus_name, 
+        pr.project_name, 
+        ut.usertype_name
+    FROM table_user AS u
+    LEFT JOIN table_position AS p ON u.position_id = p.position_id
+    LEFT JOIN table_staffstatus AS s ON u.staffstatus_id = s.staffstatus_id
+    LEFT JOIN table_project AS pr ON u.project_id = pr.project_id
+    LEFT JOIN table_usertype AS ut ON u.usertype_id = ut.usertype_id
+    WHERE u.user_id = #{user_id}
     </select>
 </mapper>

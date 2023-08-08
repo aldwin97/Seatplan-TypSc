@@ -600,7 +600,7 @@ const ProfilePage: React.FC = () => {
 
           <div className={styles.inputDisplay}>
             <h3>
-              {capitalizeFirstLetter(profileData.first_name)}{" "}
+              {(profileData.first_name)}{" "}
               {capitalizeFirstLetter(profileData.last_name)}
             </h3>
             <h4>{profileData.position_name}</h4>
@@ -808,6 +808,7 @@ const ProfilePage: React.FC = () => {
                 title="Edit"
                 placement="top"
                 arrow
+                className={styles.settool}
                 style={{
                   backgroundColor: "#797979",
                   color: "#ffffff",
@@ -1035,6 +1036,7 @@ const ProfilePage: React.FC = () => {
                 title="Edit"
                 placement="top"
                 arrow
+                className={styles.settool1}
                 style={{
                   backgroundColor: "#797979",
                   color: "#ffffff",

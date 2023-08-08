@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.UserService;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -141,5 +141,8 @@ public class UserController {
             List<Map<String, Object>> userInfo = userService.showUserById(user_id);
             return userInfo;
     }
+
+
+    
 
 }

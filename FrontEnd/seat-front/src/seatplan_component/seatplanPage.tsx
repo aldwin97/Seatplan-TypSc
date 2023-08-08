@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import style from '../dashboard_component/dashboardPage.module.css';
+import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faFaceSmile, faChartBar, faUsers, faProjectDiagram, faPowerOff, faEdit, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
-import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
+import domtoimage from 'dom-to-image';
+import { FaInfoCircle } from 'react-icons/fa';
+
 
 interface Seat {
   position: { x: number; y: number };
@@ -54,12 +59,10 @@ interface Occupant {
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
   const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
-
-  const [selectedViewerIndex, setSelectedViewerIndex] = useState(-1);
-  const [reply, setReply] = useState('');
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [swapSuccess, setSwapSuccess] = useState(false);
 
 
   // Add selectedOccupant state with a default value
@@ -136,27 +139,22 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   
           // Update the frontend with the swapped seats
           setSeats(updatedSeats);
-  
+          setSwapSuccess(true);
           console.log('Seats swapped successfully');
           console.log('Data being swapped:');
           console.log('Current Seat:', updatedCurrentSeat);
           console.log('Swap Seat:', updatedSwapSeat);
   
           // Refresh the page to fetch the updated seat data
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         } catch (error) {
           console.error('Failed to swap seats:', error);
         }
       }
     }
   };
-  
-  
-  
-  
-  
-  
-  
   
 
  useEffect(() => {
@@ -225,11 +223,6 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   }
 };
 
-  useEffect(() => {
-    fetchOccupants();
-  }, []);
-  
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleEdit = () => {
@@ -240,80 +233,73 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   };
   
   // Function to fetch occupants and projects from the backend
- 
   useEffect(() => {
     fetchOccupants();
-  }, []);
+  }, [seats]); // Make sure to include 'seats' in the dependency array
+  
 
   /// Function to fetch the list of occupants from the backend
-const fetchOccupants = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/seat/showAllUser');
-    if (response.ok) {
-      const occupantsData: Occupant[] = await response.json();
-      setOccupantsList(occupantsData);
-    } else {
-      console.error('Failed to fetch occupants');
+  const fetchOccupants = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/seat/showAllUser');
+      if (response.ok) {
+        const occupantsData: Occupant[] = await response.json();
+  
+        // Filter out occupants who are already assigned to a seat
+        const unassignedOccupants = occupantsData.filter((occupant) => {
+          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+        });
+  
+        setOccupantsList(unassignedOccupants);
+      } else {
+        console.error('Failed to fetch occupants');
+      }
+    } catch (error) {
+      console.error('Error occurred while fetching occupants:', error);
     }
-  } catch (error) {
-    console.error('Error occurred while fetching occupants:', error);
-  }
-};
-const [showComments, setShowComments] = useState(false);
-
-const toggleCommentsSection = () => {
-  setShowComments((prevShowComments) => !prevShowComments);
-  setSelectedViewerIndex(-1); // Reset the selected viewer index when toggling the section
-};
-
-
-const handleViewerClick = (viewerIndex: number) => {
-  setSelectedViewerIndex(viewerIndex);
-};
-
-const handleReplyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  setReply(event.target.value);
-};
-
-const handleReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  const updatedSeats = seats.map((s) => {
-    if (s.seat_id === seat.seat_id) {
-      const updatedComments = [...s.comments];
-      updatedComments[selectedViewerIndex] += ` (Admin): ${reply}`;
-      return { ...s, comments: updatedComments };
-    }
-    return s;
-  });
-  setSeats(updatedSeats);
-  setReply('');
-};
-
+  };
+  
+  
+  
 
 
 useEffect(() => {
   setShowComments(false);
 }, []);
 
+
+const [showComments, setShowComments] = useState(false);
+
+// Function to toggle the comments section
+const toggleCommentsSection = () => {
+  setShowComments((prevShowComments) => !prevShowComments);
+};
+
 return (
   <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
     <div className={styles.seatPopupContent}>
       <h3>Seat {seat.seat_id}</h3>
       <form onSubmit={handleFormSubmit}>
-        {isEditMode ? (
-          <>
-            <select
-              value={selectedOccupant}
-              onChange={handleOccupantChange}
-              required
-            >
-              <option value="">Select an occupant</option>
-              {occupantsList.map((occupant) => (
-                <option key={occupant.user_id} value={occupant.user_id}>
-                  {`${occupant.last_name} ${occupant.first_name}`}
-                </option>
-              ))}
-            </select>
+      {isEditMode ? (
+  <>
+    <p>Select a User to be assigned:</p>
+    <select
+      value={selectedOccupant}
+      onChange={handleOccupantChange}
+      required
+    >
+      <option value="">Assign an Occupant</option>
+      {occupantsList
+        .filter((occupant) => {
+          // Filter out occupants who are already assigned to a seat
+          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+        })
+        .map((occupant) => (
+          <option key={occupant.user_id} value={occupant.user_id}>
+            {`${occupant.last_name} ${occupant.first_name}`}
+          </option>
+        ))}
+    </select>
             {errorMsg && (
               <div className={styles.errorPopup}>
                 <p>{errorMsg}</p>
@@ -338,15 +324,14 @@ return (
                     value={selectedSeatId || ''}
                     onChange={(e) => handleSeatSelect(Number(e.target.value))}
                   >
-                    <option className={styles.value} value="">
-                      Select a seat
-                    </option>
+                    <option value="">Select Seat Number</option>
                     {seats.map((seat) => (
                       <option key={seat.seat_id} value={seat.seat_id}>
-                        {seat.seat_id}
+                        {`Seat ${seat.seat_id} (${seat.occupant})`}
                       </option>
                     ))}
                   </select>
+
                   <button
                     type="button"
                     className={styles.swapButton}
@@ -354,6 +339,12 @@ return (
                   >
                     Swap Now
                   </button>
+                  {swapSuccess && (
+                    <div className={styles.backdrop}>
+                    <div className={styles.successMessage}>
+                      Swapping is successful!
+                    </div></div>
+                  )}
                 </div>
               </>
             ) : (
@@ -392,56 +383,428 @@ return (
         <button type="button" className={styles.closeButton} onClick={onClose}>
           <FontAwesomeIcon icon={faClose} />
         </button>
-        <div className={styles.arrowToggle} onClick={toggleCommentsSection}>
-          <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
-          {showComments && seat.viewerNames?.length > 0 && (
-            <button
-            className={styles.addCommentButton}
-            onClick={() => console.log('Add Comment clicked')}
-          >
-            Add Comment
-          </button>
-          
+        <div
+        className={styles.arrowToggle}
+        onClick={toggleCommentsSection}
+        title={showComments ? 'Hide comments' : 'Show comments'}
+      >
+        <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
+        {/* Optionally, you can add a button to add a new comment */}
+      </div>
+
+        {/* Render the comments section */}
+        {showComments && seat.seat_id && <SeatPopupComments userId={parseInt(sessionStorage.getItem('user_id') || '0', 10)} seatIds={[seat.seat_id]} />}
+      </form>
+      
+      </div>
+    </div>
+    
+  );
+}
+
+interface Comment {
+  comment_id: number;
+  full_name: string;
+  user_id: number;
+  seat_id: number;
+  comment: string;
+  created_time: string;
+  recipient_id: number;
+  created_by: number;
+  parent_id?: number; // Optional field to hold the parent comment's ID
+  replies?: Comment[]; // Optional field to hold replies to this comment
+}
+
+
+interface SeatPopupCommentsProps {
+  userId: number;
+  seatIds: number[]; // Change to an array of seatIds
+}
+
+const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
+  const [commentsMap, setCommentsMap] = useState<{ [seatId: number]: Comment[] }>({});
+  const [newComment, setNewComment] = useState('');
+  const [error, setError] = useState<string>('');
+  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [replyToName, setReplyToName] = useState('');
+  const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
+  const [replyToRecipientId, setReplyToRecipientId] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetchCommentsForAllSeats(userId, seatIds);
+  }, [userId, seatIds]);
+
+  const handleCloseReplyBox = () => {
+    setShowReplyBox(false);
+    setReplyToName('');
+    setReplyToCommentId(null);
+    setNewComment('');
+  };
+  const handleShowReplyBox = (name: string, commentId: number, recipientId: number) => {
+    setShowReplyBox(true);
+    setReplyToName(name);
+    setReplyToCommentId(commentId);
+    setReplyToRecipientId(recipientId); // Set the recipientId state when showing the reply box
+  };
+  
+
+
+  const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
+    const fetchPromises = seatIds.map((seatId) => {
+      return fetchCommentsBySeatId(seatId);
+    });
+
+    Promise.all(fetchPromises)
+      .then((results) => {
+        const commentsMap: { [seatId: number]: Comment[] } = {};
+        results.forEach((comments, index) => {
+          commentsMap[seatIds[index]] = comments;
+        });
+        setCommentsMap(commentsMap);
+      })
+      .catch((error) => {
+        console.error('Error fetching comments for seats:', error);
+      });
+  };
+
+  const fetchCommentsBySeatId = (seatId: number) => {
+    return fetch(`http://localhost:8080/admin/showAllCommentBy/${seatId}`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error('Failed to fetch comments for seat:', response.statusText);
+          return [];
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching comments for seat:', error);
+        return [];
+      });
+  };
+
+  const handleNewCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewComment(event.target.value);
+  };
+
+  const handleCommentSubmit = (seatId: number) => {
+    if (!newComment.trim()) {
+      setError('Comment cannot be empty');
+      return;
+    }
+
+    const userIdString = sessionStorage.getItem('user_id');
+    if (!userIdString) {
+      setError('User ID not found in session storage');
+      return;
+    }
+
+    const userId = parseInt(userIdString, 10);
+    setError('');
+
+    const commentData = {
+      user_id: userId,
+      seat_id: seatId,
+      comment: newComment,
+      created_time: new Date().toISOString(),
+      created_by: userId,
+      recipient_id: userId, // Set the recipient ID to the current user's ID
+    };
+
+    fetch('http://localhost:8080/seat/insertComment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(commentData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Comment inserted successfully');
+          fetchCommentsForAllSeats(userId, seatIds);
+          setNewComment('');
+        } else {
+          console.error('Failed to insert comment');
+        }
+      })
+      .catch((error) => {
+        console.error('Error inserting comment:', error);
+      });
+  };
+
+  const handleReplySubmit = (seatId: number) => {
+    if (!newComment.trim()) {
+      setError('Reply cannot be empty');
+      return;
+    }
+  
+    if (replyToCommentId === null) {
+      setError('Reply target not specified');
+      return;
+    }
+  
+    const replyData = {
+      user_id: userId,
+      seat_id: seatId,
+      comment: newComment,
+      created_time: new Date().toISOString(),
+      created_by: userId,
+      parent_id: replyToCommentId,
+      recipient_id: replyToRecipientId,
+    };
+  
+    fetch('http://localhost:8080/admin/replyComment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(replyData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Reply inserted successfully');
+          setShowReplyBox(false); // Close the reply modal
+          setNewComment('');
+          setReplyToCommentId(null);
+          // Fetch the updated comments after submitting a reply
+          fetchCommentsForAllSeats(userId, seatIds);
+        } else {
+          console.error('Failed to insert reply');
+        }
+      })
+      .catch((error) => {
+        console.error('Error inserting reply:', error);
+      });
+  };
+  
+
+  const renderFullConversation = (commentId: number | null) => {
+    const renderReplies = (replies: Comment[] | undefined) => {
+      if (!replies || replies.length === 0) {
+        return null;
+      }
+  
+      return (
+        <ul className={styles.replyList}>
+          {replies.map((reply) => (
+            <li key={reply.comment_id}>
+              <table className={styles.replyTable}>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className={styles.replyname}>{reply.full_name}: </span>
+                      <span className={styles.replytext}>{reply.comment}</span>
+                    </td>
+                    <td className={styles.replyButtonCell}>
+                      {/* Check if the reply is from the current user and has replies */}
+                      {reply.user_id !== userId && reply.replies && reply.replies.length > 0 && (
+                        <button className={styles.replyButton} onClick={() => handleShowReplyBox(reply.full_name, reply.comment_id, reply.recipient_id)}>Reply</button>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {/* Recursively render nested replies */}
+              {renderReplies(reply.replies)}
+            </li>
+          ))}
+        </ul>
+      );
+    };
+  
+  
+    if (commentId === null || !commentsMap[seatIds[0]]) {
+      return null;
+    }
+  
+    const findComment = (commentId: number, comments: Comment[]): Comment | null => {
+      for (const comment of comments) {
+        if (comment.comment_id === commentId) {
+          return comment;
+        }
+        if (comment.replies) {
+          const nestedComment = findComment(commentId, comment.replies);
+          if (nestedComment) {
+            return nestedComment;
+          }
+        }
+      }
+      return null;
+    };
+  
+    const rootComment = findComment(commentId, commentsMap[seatIds[0]]);
+    if (!rootComment) {
+      return null;
+    }
+  
+    // Show the entire conversation in the popup modal
+    return renderReplies([rootComment]);
+  };
+
+
+  const renderMainComments = (comments: Comment[], userId: number) => {
+    const findOriginalComment = (commentId: number, replies: Comment[]): Comment | null => {
+      for (const reply of replies) {
+        if (reply.comment_id === commentId) {
+          return reply;
+        }
+        if (reply.replies) {
+          const originalComment = findOriginalComment(commentId, reply.replies);
+          if (originalComment) {
+            return originalComment;
+          }
+        }
+      }
+      return null;
+    };
+  
+    const findFullNameById = (userId: number): string | undefined => {
+      const comment = comments.find((c) => c.user_id === userId);
+      return comment ? comment.full_name : undefined;
+    };
+  
+    const findReplyingTo = (commentId: number): string | undefined => {
+      const originalComment = findOriginalComment(commentId, comments);
+      return originalComment ? findFullNameById(originalComment.user_id) : undefined;
+    };
+  
+    const findReplyToUser = (commentId: number, replies: Comment[]): Comment | undefined => {
+      for (const reply of replies) {
+        if (reply.comment_id === commentId) {
+          return reply;
+        }
+        if (reply.replies) {
+          const userReply = findReplyToUser(commentId, reply.replies);
+          if (userReply) {
+            return userReply;
+          }
+        }
+      }
+      return undefined;
+    };
+  
+    return (
+      <ul className={styles.commentsList}>
+        {comments.map((comment) => (
+          <li key={comment.comment_id}>
+            <span className={styles.boldName}>{comment.full_name}: </span>
+            <span className={styles.text}>{comment.comment}</span>
+            {/* Display "Replied to" information */}
+            {comment.parent_id && (
+              <div className={styles.repliedTo}>
+                {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
+              </div>
+            )}
+            {/* Check if the comment is not written by the current user */}
+            {comment.user_id !== userId && !comment.replies && (
+              <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
+            )}
+            {/* Display "Replied to" information based on recipient_id */}
+            {comment.user_id === userId && comment.recipient_id !== userId && (
+              <div className={styles.repliedTo}>
+                You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
+              </div>
+            )}
+            {/* Display indicator for third-party users */}
+            {comment.user_id !== userId && comment.parent_id && (
+              <div className={styles.repliedTo}>
+                {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
+              </div>
+            )}
+            {/* Display indicator for the user who received the reply */}
+            {comment.recipient_id === userId && (
+              <div className={styles.repliedTo}>
+                {findFullNameById(comment.user_id)} replied to you ↶
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+  
+
+  
+   
+  return (
+    <div>
+      <form >
+       
+          <textarea
+            value={newComment}
+            onChange={handleNewCommentChange}
+            placeholder="Leave a comment..."
+            className={styles.largeInput}
+            required
+          />
+        <button
+          className={styles.addComment}
+          type="button"
+          onClick={() => handleCommentSubmit(seatIds[0])}
+        >
+          Add
+        </button>
+
+      </form>
+      {error && <p className={styles.error}>{error}</p>}
+      {seatIds.map((seatId) => (
+        <div key={seatId}>
+          {commentsMap[seatId]?.length > 0 && (
+            <div className={styles.commentsContainer}>
+              <h4>Comments:</h4>
+              <div className={styles.commentsScrollContainer}>
+                {/* Call the renderMainComments function here */}
+                {renderMainComments(commentsMap[seatId], userId)}
+              </div>
+            </div>
           )}
         </div>
-        {showComments && seat.viewerNames?.length > 0 && (
-          <>
-            <h4>Comments:</h4>
-            <ul>
-              {seat.viewerNames.map((viewerName, index) => (
-                <li key={index} onClick={() => handleViewerClick(index)}>
-                  <span className={styles.viewerName}>{viewerName}</span>
-                </li>
-              ))}
-            </ul>
-            {selectedViewerIndex >= 0 && (
-              <>
-                <h4>Comment:</h4>
-                <p>{seat.comments[selectedViewerIndex]}</p>
-                <form onSubmit={handleReplySubmit}>
-                  <label>
-                    Reply:
-                    <input
-                      type="text"
-                      value={reply}
-                      onChange={handleReplyChange}
-                      placeholder="Type your reply..."
-                    />
-                  </label>
-                  <button type="submit">Send Reply</button>
-                </form>
-              </>
-            )}
-          </>
+      ))}
+              {showReplyBox && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <div className={styles.modalHeader}>
+                <h2>Replying to {replyToName}</h2> {/* Use replyToName instead of userId */}
+                <button className={styles.closeButton2} onClick={handleCloseReplyBox}>
+                  <FontAwesomeIcon icon={faClose} />
+                </button>
+              </div>
+              <div className={styles.modalBody}>
+                {/* Show the entire conversation (thread) within the modal */}
+                {renderFullConversation(replyToCommentId)}
+                {/* Reply input */}
+                <textarea
+                  value={newComment}
+                  onChange={handleNewCommentChange}
+                  placeholder="Type your reply..."
+                  className={styles.replyTextarea}
+                  required
+                />
+                <button className={styles.replySubmitButton} onClick={() => handleReplySubmit(seatIds[0])}>
+                  Reply
+                </button>
+              </div>
+            </div>
+          </div>
         )}
-      </form>
+
     </div>
-  </div>
-);
-}
+  );
+};
+
+
+
 
 function SeatplanPage() {
   const navigate = useNavigate();
+
+  const SeatplanPageHandleClick = () => {
+    navigate('/seatPlanPage');
+  };
+  const ProfilePageHandleClick = () => {
+    navigate('/ProfilePage');
+  };
+
 
   const dashboardPageHandleClick = () => {
     navigate('/DashboardPage');
@@ -451,14 +814,10 @@ function SeatplanPage() {
     navigate('/AdminPage');
   };
 
-  const logInPageHandleClick = () => {
-    navigate('/');
-  };
-
+  
+  const [showInfoGuide, setShowInfoGuide] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
     fetch('http://localhost:8080/seat/showAllSeat')
@@ -575,15 +934,23 @@ useEffect(() => {
 }, [seats, zoomLevel, selectedSeat]);
   
 
+//sidebar
+
+const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+const toggleDrawer = () => {
+  setDrawerOpen(!isDrawerOpen);
+};
+
+const handleLogout = () => {
+  // Clear any user-related data from the session/local storage
+  sessionStorage.removeItem('user_id');
 
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
+  // Redirect to the login page
+  navigate('/');
+};
 
-  const toggleProfileDropdown = () => {
-    setProfileDropdownOpen(!isProfileDropdownOpen);
-  };
 
   const lastClickTimeRef = useRef<number>(0);
   const [doubleClickFlag, setDoubleClickFlag] = useState(false);
@@ -692,52 +1059,125 @@ useEffect(() => {
   
   
   
+  const customBorders = [
+    { x: 199, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 225, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+ 
+    { x: 199, y1: 899, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 199, y1: 1299, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 }, 
+
+    { x: 560, y1: 99, y2: 399, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 585, y1: 99, y2: 799, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 920, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 945, y1: 99, y2: 999, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1280, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1305, y1: 99, y2: 899, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1640, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 1665, y1: 99, y2: 699, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2000, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2025, y1: 99, y2: 599, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2360, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2385, y1: 99, y2: 499, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+
+    { x: 2720, y1: 99, y2: 299, lineWidth: 10 }, 
+    { x: 0, y1: 0, y2: 0, lineWidth: 2 },
+  ];
+  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-  
+ 
     if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+  
       ctx.scale(zoomLevel, zoomLevel);
-    
+  
       filteredSeats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-    
+  
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 98 / zoomLevel;
         const textOffsetX = 2 / zoomLevel;
         const numberBoxSize = 80 / zoomLevel;
-    
+  
         canvas.style.cursor = 'pointer';
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
-        ctx.strokeStyle = '#000000';
-        ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
-    
-        ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
-        ctx.fillStyle = '#000000';
-        ctx.font = `${11 / zoomLevel}px Arial`;
-        ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
-        
-        const borderWidth = 2; // Adjust the border width as needed
 
+// Draw custom border lines
+customBorders.forEach((border) => {
+  ctx.beginPath();
+  ctx.moveTo(border.x, border.y1);
+  ctx.lineTo(border.x, border.y2);
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = border.lineWidth;
+  ctx.stroke();
+});
+        // Draw the background shadow at the very back of the seat
+      ctx.save();
+      
+      ctx.fillStyle = '#ffffff';
+      // Draw the seat box
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.strokeStyle = '#000000';
+      ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
+      ctx.lineWidth = 1;
+      ctx.restore();
+      ctx.fillStyle = '#ffffff';
+      // Draw the seat number box
+      ctx.fillRect(scaledX, scaledY, numberBoxSize, numberBoxSize);
+      ctx.fillStyle = '#000000';
+      ctx.font = `${11 / zoomLevel}px Arial`;
+      ctx.fillText(seat.seat_id.toString(), scaledX + numberBoxSize / 12, scaledY + numberBoxSize / 7 + 1);
+
+      ctx.fillStyle = '#ffffff';
+        const borderWidth = 2; // Adjust the border width as needed
+        ctx.fillStyle = '#ffffff';
           // Draw the seat
           ctx.strokeStyle = '#000000';
           ctx.lineWidth = borderWidth;
           ctx.strokeRect(scaledX, scaledY, seatSize, seatSize);
-
+          ctx.fillStyle = '#ffffff';
           // Draw the border rectangle
           ctx.strokeStyle = '#000000';
-
+          ctx.fillStyle = '#ffffff';
           // Calculate the position for the border rectangle
           const borderX = scaledX + numberBoxSize / 14 - borderWidth / 2 - 5;
           const borderY = scaledY + numberBoxSize / 8 - borderWidth / 2 - 9;
           const borderRectWidth = ctx.measureText(seat.seat_id.toString()).width + 13 + borderWidth; // Adjust the border width based on the text width
           const borderRectHeight = 21 + borderWidth; // Adjust the border height as needed
-
+          ctx.fillStyle = '#ffffff';
           ctx.lineWidth = borderWidth;
           ctx.strokeRect(borderX, borderY, borderRectWidth, borderRectHeight);
     
@@ -816,41 +1256,64 @@ useEffect(() => {
 
 
 
+ // Helper function to convert data URL to Buffer-like object
+ // Helper function to convert a hex color code to Excel-compatible ARGB format
+const convertColorCodeToArgb = (colorCode: string): string => {
+  // Assuming colorCode is in the format "#RRGGBB"
+  const hexValue = colorCode.substring(1); // Remove the "#" character
+  const alpha = 'FF'; // Set alpha to FF (fully opaque)
+  return alpha + hexValue.toUpperCase();
+};
+
 const exportToExcel = async () => {
-  if (!containerRef.current || !canvasRef.current) {
-    return;
-  }
-
   try {
-    // Ensure the container is large enough to contain the entire canvas
-    containerRef.current.style.width = '2800px';
-    containerRef.current.style.height = '1400px';
-
-    // Capture the entire canvas using html2canvas
-    const container = containerRef.current;
-    const containerImage = await html2canvas(container, { scrollY: window.scrollY });
-
-    const dataURL = containerImage.toDataURL('image/png');
-    console.log('DataURL:', dataURL); // Log the dataURL to check if it contains the image data
-
-    const fileName = `SeatPlan_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const fileName = `SeatData_${new Date().toISOString().slice(0, 10)}.xlsx`;
 
     // Create a new workbook
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('SeatPlanData');
+    const worksheet = workbook.addWorksheet('SeatData');
 
-    // Convert the data URL to a Buffer
-    const imageData = dataURLToBuffer(dataURL);
+    // Define headers for the Excel sheet
+    const headers = [
+      'Seat ID',
+      'Occupant',
+      'Position Name',
+      'Project',
+      // Add more headers as needed
+    ];
 
-    // Add the image to the worksheet
-    const imageId = workbook.addImage({
-      buffer: imageData,
-      extension: 'png',
+    // Add headers to the worksheet
+    worksheet.addRow(headers);
+
+    // Add seat data to the worksheet
+    seats.forEach((seat) => {
+      const rowData = [
+        seat.seat_id,
+        seat.occupant,
+        seat.position_name,
+        seat.project,
+        // Add more data fields as needed
+      ];
+      const row = worksheet.addRow(rowData);
+
+      // Set background color based on the seat color
+      if (seat.color_code) {
+        const argbColor = convertColorCodeToArgb(seat.color_code);
+        const colorStyle: ExcelJS.Fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: argbColor },
+        };
+
+        // Apply cell style to the "Project" column
+        const projectCell = row.getCell(headers.indexOf('Project') + 1); // +1 because Excel column index starts from 1
+        projectCell.fill = colorStyle;
+      }
     });
 
-    worksheet.addImage(imageId, {
-      tl: { col: 0, row: 0 },
-      ext: { width: 2800, height: 1400 },
+    // Auto-fit column widths
+    worksheet.columns.forEach((column) => {
+      column.width = 15; // You can adjust the column width as needed
     });
 
     // Save the workbook as an Excel file
@@ -861,66 +1324,94 @@ const exportToExcel = async () => {
   }
 };
 
-// Helper function to convert data URL to Buffer
-const dataURLToBuffer = (dataURL: string): Buffer => {
-  const arr = dataURL.split(',');
-  const bstr = atob(arr[1]);
-  let n = bstr.length; // Use 'let' instead of 'const' for n
-  const u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return Buffer.from(u8arr);
+
+
+const handleInfoButtonClick = () => {
+  setShowInfoGuide(true);
 };
 
-
-
-
+const handleInfoGuideClose = () => {
+  setShowInfoGuide(false);
+};
   return (
    <body className={styles.body}> <div className={styles.container}>
-      <button className={`${styles.burgerButton} ${isDropdownOpen ? styles.open : ''}`} onClick={toggleDropdown}>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-        <div className={styles.burgerIcon}></div>
-      </button>
-     
-      {isDropdownOpen && (
-        <div className={`${styles.dropdownMenu} ${styles.dropdownRows}`}>
-          <button onClick={dashboardPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faChartBar} className={styles.icon} />
-            Dashboard
-          </button>
-          <button onClick={adminPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faUsers} className={styles.icon} />
-            Members
-          </button>
-          <button className={styles.sub}>
-          <FontAwesomeIcon icon={faEdit} className={styles.icon} />
-            Seat Plan Management
-          </button>
-          <button onClick={projectPageHandleClick} className="sub">
-            <FontAwesomeIcon icon={faProjectDiagram} className="icon" />
-           Projects
-          </button>
-        </div>
-      )}
+      <i className={styles['menu-out']}onClick={toggleDrawer}>
+            <Menu  style={{ fontSize: '28px' }} />
+          </i>
+      
+        <SwipeableDrawer
+          anchor="left"
+          open={isDrawerOpen}
+          onClose={toggleDrawer}
+          onOpen={toggleDrawer}
+          variant="persistent"
+          className={isDrawerOpen ? style['sidebar-open'] : style['sidebar-closed']}
+        >
+        
+          <div className={style['page-sidebar']}>
+            <div className={style['logo-box']}>
+              <span className={style['logo-text']}>Seat</span>
+              <i className={style['menu']} onClick={toggleDrawer}>
+                <Menu style={{ fontSize: '28px' }}/>
+              </i>
+              <div className={`${style['page-sidebar-inner']} ${style['slimscroll']}`}>
+                
+                <ul className={style['accordion-menu']}>
+                  <li className={style['sidebar-title']}>Apps</li>
+                  <li >
+                    <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
+                      <i className={styles['material-icons']}>
+                        <DashboardOutlined/>
+                      </i>
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={ProfilePageHandleClick} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <AccountCircleOutlined/>
+                      </i>
+                      Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={projectPageHandleClick} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <WorkOutlineOutlined/>
+                      </i>
+                      Project
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={adminPageHandleClick} className={style['active']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <GroupsOutlined/>
+                      </i>
+                      Members
+                    </a>
+                  </li>
+                  <li  className={style['active-page']}>
+                    <a onClick={SeatplanPageHandleClick} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <ChairOutlined/>
+                      </i>
+                      Seat
+                    </a>
+                  </li>
+                  <li>
+                    <a onClick={handleLogout} className={style['material-icons']}>
+                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <Logout/>
+                      </i>
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </SwipeableDrawer>
 
-      <button className={`${styles.profile} ${isProfileDropdownOpen ? styles.open2 : ''}`} onClick={toggleProfileDropdown}>
-        <FontAwesomeIcon icon={faUser} />
-      </button>
-
-      {isProfileDropdownOpen && (
-        <div className={styles.dropdownMenu2}>
-          <button className={styles.sub}>
-            <FontAwesomeIcon icon={faFaceSmile} className={styles.icon} />
-            Profile
-          </button>
-          <button onClick={logInPageHandleClick} className={styles.sub}>
-            <FontAwesomeIcon icon={faPowerOff} className={styles.icon} />
-            Logout
-          </button>
-        </div>
-      )}
       {selectedSeat && (
         <SeatPopup seat={selectedSeat} onClose={() => setSelectedSeat(null)} setSeats={setSeats} seats={seats} />
       )}
@@ -928,7 +1419,6 @@ const dataURLToBuffer = (dataURL: string): Buffer => {
 <div className={styles.canvasWrapper} ref={containerRef}>
   <div className={styles.root} ref={containerRef}>
     <div className={styles.scrollableCanvas}>
-    <div className={styles.canvasWrapper} ref={containerRef}>
       <canvas
         ref={canvasRef}
         width={2800}
@@ -937,7 +1427,6 @@ const dataURLToBuffer = (dataURL: string): Buffer => {
         onMouseUp={handleMouseUp}
       ></canvas>
       </div>
-    </div>
   </div>
 
   <form onSubmit={handleFormSubmit} className={styles.searchForm}>
@@ -953,6 +1442,7 @@ const dataURLToBuffer = (dataURL: string): Buffer => {
     <button onClick={exportToExcel} className={styles.searchButton}>
         Export to Excel
       </button>
+      
   </form>
 
   {/* Render seats on the canvas */}
@@ -978,11 +1468,31 @@ const dataURLToBuffer = (dataURL: string): Buffer => {
     <div className={`${styles.colorBox} ${styles.unavailable}`}></div>
     <span className={styles.label}>Unavailable/Maintained Seats</span>
   </div>
+  {showInfoGuide && <div className={styles['backdrop-blur']}></div>}
+  <button className={styles['handleInfoButtonClick']} onClick={handleInfoButtonClick}>
+        <FaInfoCircle size={20} />
+      </button>
+      {showInfoGuide && (
+        <div className={styles['infoguide']}>
+          {/* Popup content */}
+          <span className={styles['close']} onClick={handleInfoGuideClose}>
+            &times;
+          </span>
+          <h2>Information Guide</h2>
+          <p>This is a simple guide on how to use the page.</p><br></br>
+          <p>• Use the middle mouse hold and drag to move around the canvas of the page.</p>
+          <p>• To open and view the seats information, point the mouse on the seat number and double left click.</p>
+          <p>• On Edit Mode, there are two things you can do, assigning an occupant to the current selected seat or swap the current user on another user on a different seat.</p>
+          <p>• When swapping seats, you can select the seat to be swap on the current seat you are editing.</p>
+        </div>
+      )}
 </div>
 
 
 </div>
+
 </body>
+
 );
 }
 

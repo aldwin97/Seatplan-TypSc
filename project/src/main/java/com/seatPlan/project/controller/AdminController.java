@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.UserInputModel;
 import com.seatPlan.project.model.UserModel;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import com.seatPlan.project.service.AdminService;
 
 @RestController
@@ -79,88 +79,88 @@ public class AdminController {
         }    
     }
     @PostMapping("/insert")
-public ResponseEntity<String> insertUser(@RequestBody UserInputModel userInputModel) {
-    try {
-        if (adminService.isUsernameExists(userInputModel.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
-        }
+    public ResponseEntity<String> insertUser(@RequestBody UserInputModel userInputModel) {
+        try {
+                if (adminService.isUsernameExists(userInputModel.getUsername())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+                }
 
-        if (adminService.isUserEmailExists(userInputModel.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-        }
+                if (adminService.isUserEmailExists(userInputModel.getEmail())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+                }
 
-        adminService.insertUser(userInputModel);
-        return ResponseEntity.ok("User inserted successfully");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
+                adminService.insertUser(userInputModel);
+                return ResponseEntity.ok("User inserted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert user");
+        }
     }
-}
 
 
-@PutMapping("/update/{user_id}")
-public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
-    try {
-        UserModel existingUser = adminService.getUserById(user_id);
-        if (existingUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    @PutMapping("/update/{user_id}")
+    public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
+        try {
+            UserModel existingUser = adminService.getUserById(user_id);
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            if (adminService.isUserEmailExists(userModel.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+            }
+
+            if (userModel.getFirst_name() != null) {
+                existingUser.setFirst_name(userModel.getFirst_name());
+            }
+
+            if (userModel.getLast_name() != null) {
+                existingUser.setLast_name(userModel.getLast_name());
+            }
+
+            if (userModel.getEmail() != null) {
+                existingUser.setEmail(userModel.getEmail());
+            }
+
+            if (userModel.getMobile_num() != null) {
+                existingUser.setMobile_num(userModel.getMobile_num());
+            }
+
+            if (userModel.getProject_id() != null) {
+                existingUser.setProject_id(userModel.getProject_id());
+            }
+
+            if (userModel.getPassword() != null) {
+                existingUser.setPassword(userModel.getPassword());
+            }
+
+            if (userModel.getUsertype_id() != null) {
+                existingUser.setUsertype_id(userModel.getUsertype_id());
+            }
+
+            if (userModel.getStaffstatus_id() != null) {
+                existingUser.setStaffstatus_id(userModel.getStaffstatus_id());
+            }
+
+            if (userModel.getPosition_id() != null) {
+                existingUser.setPosition_id(userModel.getPosition_id());
+            }
+
+            if (userModel.getLast_name() != null) {
+                existingUser.setLast_name(userModel.getLast_name());
+            }
+
+            // Set the updated_by field with the value from the frontend
+            if (userModel.getUpdated_by() != null) {
+                existingUser.setUpdated_by(userModel.getUpdated_by());
+            }
+
+            adminService.updateUser(existingUser);
+            return ResponseEntity.ok("User updated successfully");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
         }
-
-        if (adminService.isUserEmailExists(userModel.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-        }
-
-        if (userModel.getFirst_name() != null) {
-            existingUser.setFirst_name(userModel.getFirst_name());
-        }
-
-        if (userModel.getLast_name() != null) {
-            existingUser.setLast_name(userModel.getLast_name());
-        }
-
-        if (userModel.getEmail() != null) {
-            existingUser.setEmail(userModel.getEmail());
-        }
-
-        if (userModel.getMobile_num() != null) {
-            existingUser.setMobile_num(userModel.getMobile_num());
-        }
-
-        if (userModel.getProject_id() != null) {
-            existingUser.setProject_id(userModel.getProject_id());
-        }
-
-        if (userModel.getPassword() != null) {
-            existingUser.setPassword(userModel.getPassword());
-        }
-
-        if (userModel.getUsertype_id() != null) {
-            existingUser.setUsertype_id(userModel.getUsertype_id());
-        }
-
-        if (userModel.getStaffstatus_id() != null) {
-            existingUser.setStaffstatus_id(userModel.getStaffstatus_id());
-        }
-
-        if (userModel.getPosition_id() != null) {
-            existingUser.setPosition_id(userModel.getPosition_id());
-        }
-
-        if (userModel.getLast_name() != null) {
-            existingUser.setLast_name(userModel.getLast_name());
-        }
-
-        // Set the updated_by field with the value from the frontend
-        if (userModel.getUpdated_by() != null) {
-            existingUser.setUpdated_by(userModel.getUpdated_by());
-        }
-
-        adminService.updateUser(existingUser);
-        return ResponseEntity.ok("User updated successfully");
-
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
     }
-}
 
 
     //Reply comment to the viewer
@@ -173,6 +173,17 @@ public ResponseEntity<String> updateUser(@PathVariable("user_id") Long user_id, 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to insert comment");
         }
     }
+
+
+    @GetMapping("/showAllCommentBy/{seat_id}")
+    public List<Map<String, Object>> getCommentBySeatId(@PathVariable ("seat_id") Long seat_id) {
+        List<Map<String, Object>> comments = adminService.getCommentBySeatId(seat_id);
+        return comments;
+    }
+
+
+
+  
 
     
 }

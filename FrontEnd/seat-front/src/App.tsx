@@ -8,6 +8,7 @@ import AdminMembersPage from './admin_component/adminMembersPage';
 import SeatplanPage from './seatplan_component/seatplanPage';
 import ProfilePage from './profile_component/profilePage';
 import ProjectPage from './project_component/projectPage';
+import MachinePage from './admin_component/machinetablePage';
 
 import './App.css';
 
@@ -20,14 +21,14 @@ function App(): JSX.Element {
           <Route path="/viewSeatPage" element={<ViewSeatPage />} />
           <Route path="/dashboardPage" element={<DashboardPage />} />
           <Route path="/helpPage" element={<HelpPage />} />
-          <Route path='/projectPage' element ={<ProjectPage/>}/>
-          <Route path="/seatPlanPage" element={<SeatplanPage />} />
+          <Route path="/projectPage" element={<ProjectPage />} />
+          <Route path="/seatplanPage" element={<SeatplanPage />} />
           <Route path="/adminPage" element={<AdminMembersPage />} />
           <Route path="/profilePage" element={<ProfilePage />} />
+          <Route path="/machinetablePage" element={<MachinePage />} />
           <Route path="*" element={<Navigate to="/" />} /> {/* Redirect to the homepage for unknown routes */}
         </Routes>
       </BrowserRouter>
-      
     </div>
   );
 }

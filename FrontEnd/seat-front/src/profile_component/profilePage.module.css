@@ -2,41 +2,39 @@
   margin: 0;
   padding: 0;
   background-size: 100% 100%;
-  /* background-image: url('../assets/SEATMGT.jpg');/*
-  /* background: linear-gradient(to bottom right, #ebebeb, #b1b1b1a9); */
-  background-color: #F8FAF9;
+  background-color: #f8faf9;
   background-repeat: no-repeat;
   background-position: center;
   height: 100vh;
-  }
+}
 
-  @font-face {
-    font-family: 'League Spartan Bold';
-    src: url('../assets/LeagueSpartan-Bold.ttf') format('truetype');
-  }
-  
-  @font-face {
-    font-family: 'League Spartan Regular';
-    src: url('../assets/LeagueSpartan-Regular.ttf') format('truetype');
-  }
-  
-  @font-face {
-    font-family: 'League Spartan Light';
-    src: url('../assets/LeagueSpartan-Light.ttf') format('truetype');
-  }
+@font-face {
+  font-family: "League Spartan Bold";
+  src: url("../assets/LeagueSpartan-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "League Spartan Regular";
+  src: url("../assets/LeagueSpartan-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "League Spartan Light";
+  src: url("../assets/LeagueSpartan-Light.ttf") format("truetype");
+}
 
 /* Dropdown Menu */
 .dropdownMenu2 {
   position: absolute;
-  top: 50px; 
-  right: 10px; 
+  top: 50px;
+  right: 10px;
   z-index: 100;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px;
-  }
+}
 
 .dropdownMenu2 button {
   display: block;
@@ -47,15 +45,11 @@
   text-align: left;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  }
+}
 
 .dropdownMenu2 button:hover {
   background-color: #f5f5f5;
-  }
-
-
-
-
+}
 
 .profile {
   position: absolute;
@@ -69,13 +63,14 @@
   border-radius: 30px;
   cursor: pointer;
   margin-bottom: 10px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
-  }
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    border-color 0.4s ease-in-out;
+}
 
 .profile:hover {
   background-color: #fff;
   color: #a7a7a7;
-  }
+}
 
 .notif {
   position: absolute;
@@ -89,115 +84,80 @@
   border-radius: 30px;
   cursor: pointer;
   margin-bottom: 10px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
-  }
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    border-color 0.4s ease-in-out;
+}
 
 .notif:hover {
   background-color: #fff;
   color: #a7a7a7;
-  }
+}
 
+.form1 {
+  position: fixed;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 90%;
+  height: 89%;
+}
 
-
-
-
-
-
-
-
-  /* Add styles for the container */
-  .form1 {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10;
-    background-color: #ffffffb0; 
-    border-radius: 40px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24); 
-    max-width: 90%; 
-    height: 75%; 
-    margin-top: 7%;
-    margin-left: 5%;
-
-  }
-  
-/* Add styles for each section within the form */
 .profileSum {
   display: flex;
   background-color: #ffffff;
   border-radius: 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
-  width: 630px;
-  height: 638px; 
-  margin-bottom: .1%; 
-  margin-right: 50%;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
+  width: 450px;
+  height: 638px;
+  margin-bottom: 0.1%;
+  margin-right: 56%;
   position: absolute;
   z-index: 2;
   justify-content: center;
 }
 
-
 .inputDisplay {
   position: absolute;
-  margin-top: 55%;
+  margin-top: 76%;
 }
-
-
 
 h3 {
   color: #10530e;
-  font-size: 50px;
-  font-family: 'League Spartan Bold';
-  margin: 0 7px; 
+  font-size: 38px;
+  font-family: "League Spartan Bold";
+  margin: 0 7px;
   text-align: center;
 }
 
 h4 {
   text-align: center;
   color: #267900;
-  font-size: 27px;
-  font-family: 'League Spartan Light';
+  font-size: 17px;
+  font-family: "League Spartan Light";
   margin: -18px auto 0; /* Add a top margin to create space between h3 and h4 */
   position: relative;
   margin-bottom: 20px;
+  letter-spacing: 2px;
 }
 
 h5 {
   text-align: center;
   color: #525252;
   font-size: 18px;
-  font-family: 'League Spartan Light';
+  font-family: "League Spartan Light";
   margin: auto 0;
   position: relative;
   margin-top: -5px;
 }
 
-.seatButton{
-  display:flex;
-  position: absolute;
-  font-family: 'League Spartan Regular';
-  font-size: 17px;
-  letter-spacing: 1px;
-  width: 200px;
-  padding: 1.5%;
-  background-color: #35a55b;
-  color: #fff;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  margin-top: 92%;
-  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-justify-content: center;
-}
-
-.seatButton:hover {
-  background-color: #049613;
-  color: #ffffff;
-}
-
-
-.profilePicture{
+.profilePicture {
   position: absolute;
   justify-content: center;
 }
@@ -205,142 +165,115 @@ justify-content: center;
 .defaultImage,
 .profilePicture img {
   border-radius: 50%;
-  width: 270px; /* Set your desired width */
-  height: 270px; /* Set your desired height */
-  object-fit: cover; /* Maintain the aspect ratio and cover the container */
-  background-color: #838383; /* Add a background color in case the image is not available */
-  right: -135px;
-  top: 60px;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  background-color: #838383;
+  right: -85px;
+  border: 4px solid #ffffff; /* Add border color and thickness */
+  top: 90px;
   position: absolute;
   display: flex;
 }
 
-.defaultImage{
-background-image: url('../assets/default.png');
-position: absolute;
-background-size: cover;
+.defaultImage {
+  position: absolute;
+  background-size: cover;
 }
 
 .uploadButton {
   position: absolute;
   color: rgb(241, 241, 241);
-  top: 270px;
-  width: 70px; /* Set your desired width */
-  height: 70px; /* Set your desired height */
+  top: 200px;
+  width: 35px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
   background-color: #797979;
   cursor: pointer;
-  right: -120px;
+  right: -80px;
 }
 
-/* Style the icon inside the button */
 .uploadButton svg {
-  font-size: 100 px; /* Set the desired icon size */
+  font-size: 30px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .set {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-left: 40%;
-  margin-top:1.5%;
+  margin-top: 1.5%;
+  
 }
 
-.line{
-  height: 1.2px;
-  background-color: rgb(172, 172, 172);
-  width: 900px;
-  z-index:1;
-  position: absolute;
-  margin-top: 3.5%;
-}
 
 .personal {
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   width: 900px;
   height: 305px;
   margin-bottom: 3%;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
 
 .accountS {
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   width: 900px;
   height: 305px;
   margin-bottom: 3%;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
-
-
-
-
 
 h1 {
   margin-top: 2%;
   margin-left: 4%;
   text-align: left;
-  color: #16A637;
+  color: #16a637;
   font-size: 30px;
-  font-family: 'League Spartan Bold';
+  font-family: "League Spartan Bold";
 }
-
 
 .name-group {
   position: relative;
   display: inline-block;
   margin-bottom: -1px;
   padding: 1%;
-  margin-left:3.5%;
+  margin-left: 3.5%;
 }
 
-.readLabel{
+.readLabel {
   margin-left: 7%;
-  margin-top:-4%;
-  font-family: 'League Spartan Regular';
+  margin-top: -4%;
+  font-family: "League Spartan Regular";
   font-size: 14px;
   color: #2da738;
-  position:absolute;
-margin-bottom: 10%;
+  position: absolute;
+  margin-bottom: 10%;
 }
 
-.readLabel2{
+.readLabel2 {
   margin-left: 3.2%;
-  margin-top:-2%;
-  font-family: 'League Spartan Regular';
+  margin-top: -2%;
+  font-family: "League Spartan Regular";
   font-size: 14px;
   color: #2da738;
-  position:absolute;
-margin-bottom: 10%;
+  position: absolute;
+  margin-bottom: 10%;
 }
 
 .nameInput {
   border: solid 1.5px #9e9e9e;
   border-radius: 15px;
   background: none;
-  padding: .9rem;
+  padding: 0.9rem;
   width: 360px;
   font-size: 1.2rem;
   color: #656d78;
@@ -349,30 +282,26 @@ margin-bottom: 10%;
   padding-left: 6%;
 }
 
-
-
 .nameInput:focus,
-input:valid { 
+input:valid {
   outline: none;
   border: 1px solid #2da738;
 }
-
-
 
 .input-group {
   /* /* position: relative;
   display: inline-block; */
   padding: 1%;
-  margin-left:3.5%; 
+  margin-left: 3.5%;
   position: relative;
-  margin-bottom:  -1px;
+  margin-bottom: -1px;
 }
 
 .input {
   border: solid 1.5px #9e9e9e;
   border-radius: 15px;
   background: none;
-  padding: .9rem;
+  padding: 0.9rem;
   width: 92%;
   font-size: 1.2rem;
   color: #656d78;
@@ -383,77 +312,59 @@ input:valid {
 
 .user-label {
   font-size: 17px;
-  font-family: 'League Spartan Regular';
+  font-family: "League Spartan Regular";
   position: absolute;
-  left: 4%; 
-  top: 1.6rem; 
+  left: 4%;
+  top: 1.6rem;
   color: #656d78;
   pointer-events: none;
-  transform-origin: top left; 
-  transform: scale(1); 
+  transform-origin: top left;
+  transform: scale(1);
   transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
 .input:focus,
-input:valid { 
+input:valid {
   outline: none;
   border: 1px solid #2da738;
 }
 
-
 .input:not(:read-only):focus ~ .user-label,
-input:not(:read-only):valid ~ .user-label { 
+input:not(:read-only):valid ~ .user-label {
   transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
-  padding: 0 .2em;
+  padding: 0 0.2em;
   color: #2da738;
 }
 
 .personal-button {
-  display:flex;
+  display: flex;
   position: absolute;
-  margin-left:33.5%;
-  margin-top: -15.3%;
+  margin-left: 36.5%;
+  margin-top: -17%;
 }
 
 .account-button {
-  display:flex;
+  display: flex;
   position: absolute;
-  margin-left:33.5%;
-  margin-top: -15.7%;
+  margin-left: 36.5%;
+  margin-top: -17.5%;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.saveButton{
-  font-family: 'League Spartan Regular';
+.saveButton {
+  font-family: "League Spartan Regular";
   font-size: 15px;
   letter-spacing: 1px;
   width: 150px;
-  padding: 3%;
+  margin-bottom: 20%;
   background-color: #2b7e47;
   color: #fff;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 9%;
-  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-  margin-left:10px;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
+    border-color 0.4s ease-in-out;
+  margin-left: 10px;
 }
 
 .saveButton:hover {
@@ -461,10 +372,10 @@ input:not(:read-only):valid ~ .user-label {
   color: #ffffff;
 }
 
-
-.cancelButton{
-  font-family: 'League Spartan Regular';
+.cancelButton {
+  font-family: "League Spartan Regular";
   font-size: 15px;
+  margin-bottom: 20%;
   letter-spacing: 1px;
   width: 40%;
   padding: 3%;
@@ -473,9 +384,9 @@ input:not(:read-only):valid ~ .user-label {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  margin-top: 9%;
-  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-  margin-left:10px;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
+    border-color 0.4s ease-in-out;
+  margin-left: 10px;
 }
 
 .cancelButton:hover {
@@ -483,25 +394,19 @@ input:not(:read-only):valid ~ .user-label {
   color: #ffffff;
 }
 
-
-
-
-
-
-
 .change-group {
   position: relative;
   display: inline-block;
   margin-bottom: 1%;
   padding: 1%;
-  margin-left:3.5%;
+  margin-left: 3.5%;
 }
 
 .changeInput {
   border: solid 1.5px #9e9e9e;
   border-radius: 15px;
   background: none;
-  padding: .9rem;
+  padding: 0.9rem;
   width: 360px;
   font-size: 1.2rem;
   color: #656d78;
@@ -512,33 +417,30 @@ input:not(:read-only):valid ~ .user-label {
 
 .change-label {
   font-size: 17px;
-  font-family: 'League Spartan Regular';
+  font-family: "League Spartan Regular";
   position: absolute;
-  left: 9%; 
-  top: 1.6rem; 
+  left: 9%;
+  top: 1.6rem;
   color: #656d78;
   pointer-events: none;
-  transform-origin: top left; 
-  transform: scale(1); 
+  transform-origin: top left;
+  transform: scale(1);
   transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
 .changeInput:focus,
-input:valid { 
+input:valid {
   outline: none;
   border: 1px solid #2da738;
 }
 
-
 .changeInput:not(:read-only):focus ~ .change-label,
-input:not(:read-only):valid ~ .change-label { 
+input:not(:read-only):valid ~ .change-label {
   transform: translateY(-110%) scale(0.8);
   background-color: rgba(255, 255, 255, 0);
-  padding: 0 .2em;
+  padding: 0 0.2em;
   color: #2da738;
 }
-
 
 .errorText {
   color: red;
@@ -554,8 +456,7 @@ input:not(:read-only):valid ~ .change-label {
   margin-top: 8px;
 }
 
-
-.toggle-password1 { 
+.toggle-password1 {
   position: absolute;
   top: 50%;
   left: 92%;
@@ -574,9 +475,7 @@ input:not(:read-only):valid ~ .change-label {
   color: #f44336;
 }
 
-
-
-.toggle-password { 
+.toggle-password {
   position: absolute;
   top: 56%;
   right: 5%;
@@ -594,43 +493,151 @@ input:not(:read-only):valid ~ .change-label {
 .toggle-password.active {
   color: #f44336;
 }
+/* Existing styles ... */
 
+.cover {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border-top-left-radius: 40px; /* Add radius to top left corner */
+  border-top-right-radius: 40px; /* Add radius to top right corner */
+}
 
-@media screen and (max-width: 1618px) {
+.cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
 
-  .form1 {
-    padding: 10;
-    max-width: 95%; 
-    height: 80%; 
-    margin-top: 7%;
-    margin-left: 2.5%;
+/* Add this CSS class to control the image size */
+.resizable-image {
+  /* Adjust the desired image size here */
+  width: 100%;
+  max-width: 500px; /* Set the maximum width for the image */
+  height: auto; /* Maintain aspect ratio */
+}
 
+/* Mobile-first styles */
+
+/* Adjust layout for smaller screens */
+@media screen and (max-width: 768px) {
+  .backg {
+    background-size: cover;
   }
 
   .profileSum {
-    width: 590px;
-    height: 635px; 
-    margin-bottom: .1%; 
-    margin-right: 56%;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
-  .cover img {
-    width: 590px;
-    height: auto; 
+  .inputDisplay {
+    margin-top: 10px;
+    text-align: center;
   }
-  
 
-.uploadButton {
-  top: 265px;
-}
+  h3 {
+    font-size: 28px;
+    margin: 10px 0;
+  }
 
-.uploadButton svg {
-  font-size: 90; 
-}
+  h4 {
+    font-size: 16px;
+    margin: 0;
+  }
 
-  
-.seatButton{
-  margin-top: 99%;
+  .profilePicture {
+    position: relative;
+    text-align: center;
+  }
+
+  .defaultImage,
+  .profilePicture img {
+    width: 120px;
+    height: 120px;
+    right: auto;
+    top: 0;
+  }
+
+  .uploadButton {
+    top: 130px;
+    right: 0;
+  }
+  .line {
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .personal,
+  .accountS {
+    width: 100%;
+    height: 60%;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+
+  .name-group,
+  .input-group,
+  .change-group {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  .readLabel,
+  .readLabel2 {
+    margin-left: 0;
+    text-align: center;
+    position: static;
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  .nameInput,
+  .input,
+  .changeInput {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .user-label,
+  .change-label {
+    left: 0;
+    top: -8px;
+    font-size: 12px;
+  }
+
+  .personal-button,
+  .account-button {
+    margin-top: 15px;
+    flex-direction: column;
+  }
+
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .toggle-password,
+  .toggle-password1 {
+    top: 40%;
+  }
 }
+.backg
+{
+  margin: 0;
+  padding: 0;
+  background-size: 100% 100%;
+  background-image: url('./../assets/SEATMGT.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
 
 }

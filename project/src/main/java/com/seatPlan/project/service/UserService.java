@@ -8,13 +8,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.seatPlan.project.dao.UserDao;
 import com.seatPlan.project.model.UserModel;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 
 
 @Service
+@Transactional
 public class UserService{
 
     

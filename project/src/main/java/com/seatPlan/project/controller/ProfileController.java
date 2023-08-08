@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +12,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.seatPlan.project.model.UserModel;
 import com.seatPlan.project.service.ProfileService;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 
 @RestController
@@ -109,27 +121,60 @@ public ResponseEntity<String> updateUserPassword(@PathVariable("user_id") Long u
 }
 
 
-
- @PutMapping("/updatePicture/{user_id}")
-    public ResponseEntity<String> updateUserPicture(@PathVariable("user_id") Long user_id, @RequestBody UserModel userModel) {
+@PutMapping("/updatePicture/{user_id}")
+public ResponseEntity<String> updateUserPicture(
+        @PathVariable("user_id") Long user_id,
+        @RequestParam("user_picture") MultipartFile user_picture) {
+    
     try {
         UserModel existingUser = profileService.getUserById(user_id);
         if (existingUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        if (userModel.getUser_picture() != null) {
-            existingUser.setUser_picture(userModel.getUser_picture());
+        long maxFileSize = 5 * 1024 * 1024;
+
+        if (user_picture != null && !user_picture.isEmpty()) {
+            if (user_picture.getSize() > maxFileSize) {
+                return ResponseEntity.badRequest().body("File size exceeds the maximum limit.");
+            }
+
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String originalFilename = user_picture.getOriginalFilename();
+            String newFilename = timeStamp;
+
+            String targetDirectory = "C:\\Storage\\Profile";
+
+            File directory = new File(targetDirectory);
+
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            Path targetPath = Paths.get(targetDirectory, newFilename);
+
+            Files.copy(user_picture.getInputStream(), targetPath);
+
+            existingUser.setUser_picture(newFilename);
+
+
+            profileService.updateUserPicture(existingUser);
+            return ResponseEntity.ok("User picture uploaded successfully");
         }
 
-        profileService.updateUserPicture(existingUser);
-        return ResponseEntity.ok("User picture uploaded successfully");
-
+        return ResponseEntity.badRequest().body("Please select a picture to upload.");
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload user picture");
     }
 }
 
+
+
+    @GetMapping("/userPicture/{user_id}")
+    public ResponseEntity<FileSystemResource> getUserPicture(@PathVariable("user_id") Long user_id) {
+        return profileService.getUserPicture(user_id);
+        
+    }
 
 
 

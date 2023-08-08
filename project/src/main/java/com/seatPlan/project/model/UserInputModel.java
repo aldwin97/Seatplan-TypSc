@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInputModel {
-
+    
     private String first_name;
     private String last_name;
     private String email;

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.seatPlan.project.dao.AdminDao;
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
@@ -19,6 +21,7 @@ import com.seatPlan.project.model.UserInputModel;
 
 
 @Service
+@Transactional
 public class AdminService {
 
     private AdminDao adminDao;
@@ -70,6 +73,7 @@ public class AdminService {
 
     public List<Map<String, Object>> getAllUser() {
         List<UserModel> users = adminDao.getAllUser();
+
         List<Map<String, Object>> filteredUserType = users.stream()
                 .map(user -> {
                     Map<String, Object> userMap = new HashMap<>();
@@ -137,6 +141,25 @@ public class AdminService {
     public void saveComment(CommentModel comment) {
         adminDao.insertComment(comment);
     }
+    
+    public List<Map<String, Object>> getCommentBySeatId(Long seat_id) {
+        List<CommentModel> comments =adminDao.getCommentBySeatId(seat_id);
+        List<Map<String, Object>> filteredComment = comments.stream()
+            .map(comment -> {
+                Map<String, Object> commentMap = new HashMap<>();
+                commentMap.put("recipient_id",comment.getRecipient_id());
+                commentMap.put("user_id",comment.getUser_id());
+                commentMap.put("comment_id", comment.getComment_id());
+                commentMap.put("seat_id",comment.getSeat_id());
+                commentMap.put("full_name", String.join(" ", comment.getFirst_name(), comment.getLast_name()));
+                commentMap.put("comment", comment.getComment());
+                commentMap.put("created_time", comment.getCreated_time());
+                return commentMap;
+            }).collect(Collectors.toList());
+    
+        return filteredComment;
+    }
+
     
     
     

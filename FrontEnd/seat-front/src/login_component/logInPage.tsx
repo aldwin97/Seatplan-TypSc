@@ -68,16 +68,14 @@ const LogInPage: React.FC = () => {
       }
 
       const responseData = await response.json();
-      const { user_id, last_name, first_name } = responseData; // Extract the user_id from responseData
+      const { user_id } = responseData; // Extract the user_id from responseData
       console.log(user_id);
-      console.log(last_name);
-      console.log(first_name);
+      
       setRedirectToDashboard(true);
 
       // Save session data to Session Storage
       window.sessionStorage.setItem("user_id", user_id);
-      window.sessionStorage.setItem("last_name", last_name);
-      window.sessionStorage.setItem("first_name", first_name);
+      window.sessionStorage.setItem("user_name", username);
     } catch (error) {
       console.log(error);
       setError(true);

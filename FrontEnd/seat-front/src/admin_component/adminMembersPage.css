@@ -66,7 +66,7 @@
 }
 
 .user-info-value {
-  width: 180px;
+  width: 250px;
   height: 40px !important;
   font-size: 14px;
   color: #666;
@@ -194,7 +194,9 @@
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 .select-container {
-  width: 60px;
+  display: inline-flex;
+  align-items: center;
+  width: auto; /* Let the width adjust based on content */
   height: 40px;
   padding: 8px;
   background-color: #f0f0f0;
@@ -203,6 +205,25 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-right: 10px;
 }
+
+.select-container select {
+  width: auto; /* Let the width adjust based on content */
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+/* Style for the dropdown icon */
+.select-container .MuiSvgIcon-root {
+  color: #666;
+  margin-left: 5px;
+  font-size: 1.2em;
+}
+
 .title {
   display: flex;
   margin-left: 35px;
@@ -217,15 +238,30 @@
   justify-content: flex-start;
   font-weight: bolder!important;
 }
-.search-bar {
+.search-bar-container {
   display: flex;
-  justify-content: flex-end;
+  margin-top: 15px;
   align-items: center;
+  margin-bottom: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {
-  margin-right: 10px;
+  flex: 1;
+  border: none !important;
+  padding: 8px;
+  outline: none;
 }
+
+.search-icon {
+  color: #666;
+  padding: 8px;
+  font-size: 1.2rem;
+}
+
 
 .menu-label {
   margin-right: 2px;
@@ -316,11 +352,7 @@
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   scale: 0.99;
 }
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
+
 
 .dialog-title {
   background-color: #f5f5f5;
@@ -599,4 +631,65 @@
 .sort-arrow.desc {
   border-width: 7px 5px 0 5px;
   border-color: #000000 transparent transparent transparent;
+}
+/* Style for the Select dropdown */
+.user-info-value .MuiSelect-select.MuiSelect-select {
+  width: 203px;
+  height: 40px !important;
+  font-size: 14px;
+  color: #666;
+  box-shadow: 2px 2px 5px rgb(136, 136, 136);
+  border-radius: 10px;
+  transition: 0.2s .3s ease-in-out;
+  text-align: center;
+  padding: 0 15px;
+}
+
+/* Style for the dropdown icon */
+.user-info-value .MuiSvgIcon-root {
+  color: #666;
+  right: 10px;
+  top: calc(50% - 12px);
+  position: absolute;
+}
+
+/* Style for the dropdown container */
+.user-info-value .MuiPaper-root {
+  border-radius: 10px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-height: 200px; /* Adjust the max height as needed */
+  overflow-y: auto;
+  z-index: 1;
+  position: absolute;
+  background-color: #ffffff;
+}
+
+/* Style for each dropdown option */
+.user-info-value .MuiMenuItem-root {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+}
+
+/* Style for the checkbox label */
+.user-info-value .MuiCheckbox-root {
+  margin-right: 10px;
+}
+
+/* Style for the checkbox text */
+.user-info-value .MuiTypography-body1 {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Style for the checkbox label when checked */
+.user-info-value .Mui-checked {
+  color: #2196F3; /* Change the color for checked options if desired */
+}
+
+/* Style for the checkbox dropdown options when hovered */
+.user-info-value .MuiMenuItem-root:hover {
+  background-color: #f2f2f2; /* Change the background color on hover if desired */
 }

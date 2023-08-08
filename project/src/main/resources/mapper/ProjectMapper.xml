@@ -27,7 +27,7 @@
     </update>
 
     <select id="getAllColors" resultType="com.seatPlan.project.model.ColorModel">
-        SELECT * FROM table_color
+        SELECT color_id, color_name, color_code FROM table_color
     </select>
 
 </mapper>

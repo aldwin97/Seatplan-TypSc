@@ -30,6 +30,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
+import SearchIcon from '@material-ui/icons/Search';
 
 import './adminMembersPage.css';
 
@@ -41,13 +42,11 @@ interface User {
   mobile_num: number;
   username: string;
   password: string;
-  staffstatus_id: number;
-  staffstatus_name: string;
   usertype_id: number;
   usertype_name: string;
   position_name: string;
   position_id: number;
-  project_id: number;
+  project_id?: number[] | undefined;
   project_name: string;
   user_picture: string;
   is_deleted: boolean;
@@ -86,7 +85,18 @@ const AdminMembersPage: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null); // State variable to store the logged-in user ID
-  const [projects, setProjects] = useState<Project[]>([]); // Specify the type as an array of Project objects
+  const [projects, setProjects] = useState<Project[]>([]); // Update 'Project' type accordingly
+  const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
+
+  const toggleProjectSelection = (projectId: number) => {
+    setSelectedProjects(prevSelectedProjects => {
+      if (prevSelectedProjects.includes(projectId)) {
+        return prevSelectedProjects.filter(id => id !== projectId);
+      } else {
+        return [...prevSelectedProjects, projectId];
+      }
+    });
+  };
   const [newUser, setNewUser] = useState<User>({
     user_id: 0,
     first_name: '',
@@ -95,13 +105,11 @@ const AdminMembersPage: React.FC = () => {
     mobile_num: 0,
     username: '',
     password: '',
-    staffstatus_id: 0,
-    staffstatus_name: '',
     usertype_name: '',
     position_name: '',
     usertype_id: 0,
     position_id: 0,
-    project_id: 0,
+    project_id: [], // Change to an empty array for multiple selection
     project_name: '',
     user_picture: '',
     is_deleted: false,
@@ -123,6 +131,7 @@ const AdminMembersPage: React.FC = () => {
   const handleCloseDialog = () => {
     setUserInfoDialogOpen(false);
     setAddUserDialogOpen(false);
+    window.location.reload();
   };
 
   const handleUserCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>, userId: number) => {
@@ -193,7 +202,6 @@ const AdminMembersPage: React.FC = () => {
       mobile_num: newUser.mobile_num,
       username: newUser.username,
       password: newUser.password,
-      staffstatus_id: newUser.staffstatus_id,
       project_id: newUser.project_id,
       usertype_id: newUser.usertype_id,
       position_id: newUser.position_id,
@@ -311,23 +319,24 @@ const handleSaveUser = () => {
   // Prepare the updated user data
   const updatedUserModel: Partial<User> = {
     user_id: selectedUser?.user_id,
-    staffstatus_id: editedUser?.staffstatus_id,
     usertype_id: editedUser?.usertype_id,
     position_id: editedUser?.position_id,
-    project_id: editedUser?.project_id,
+    project_id: editMode ? selectedProjects : editedUser?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the old projects
     first_name: editedUser?.first_name || '',
     last_name: editedUser?.last_name || '',
     mobile_num: editedUser?.mobile_num || 0,
     username: editedUser?.username || '',
     password: editedUser?.password || '',
-    updated_by: loggedInUserId ? Number(loggedInUserId) : 0, // Convert loggedInUserId to a number
+    updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
   };
 
   // Conditionally include the email field if it has been edited
   if (editedUser.email !== selectedUser?.email) {
     updatedUserModel.email = editedUser.email;
   }
-console.log('Data being updated:', updatedUserModel);
+
+  console.log('Data being updated:', updatedUserModel);
+
   // Make the PUT request to update the user
   fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
     method: 'PUT',
@@ -354,6 +363,7 @@ console.log('Data being updated:', updatedUserModel);
       console.log('Error while updating user', error);
     });
 };
+
 
   
   useEffect(() => {
@@ -570,9 +580,16 @@ console.log('Data being updated:', updatedUserModel);
             </MenuItem>
           ))}
         </Select>
-        <div className="search-bar">
-          <TextField className="search-bar" label="Search" variant="outlined" value={searchText} onChange={handleSearch} />
-        </div>
+        <div className="search-bar-container">
+      <input
+        className="search-input"
+        type="text"
+        placeholder="Search"
+        value={searchText}
+        onChange={handleSearch}
+      />
+      <SearchIcon className="search-icon" />
+    </div>
       </div>
 
       <TableContainer className="table-container" component={Paper}>
@@ -716,23 +733,39 @@ console.log('Data being updated:', updatedUserModel);
 
 
 <strong className="user-info-label">Project:</strong>{" "}
-{editMode ? (
-  <Select
-    className="user-info-value"
-    value={editedUser?.project_id || ''}
-    onChange={(e) => setEditedUser((prevEditedUser: User | null) => ({ ...prevEditedUser!, project_id: Number(e.target.value) }))}
-  >
-    {projects.map((project) => (
-      <MenuItem key={project.project_id} value={project.project_id}>
-        {project.project_name}
-      </MenuItem>
-    ))}
-  </Select>
-) : (
-  <span className="user-info-value">{selectedUser?.project_name}</span>
-)}
-
-
+      {editMode ? (
+        <div className="user-info-value">
+          <Select
+            multiple
+            value={selectedProjects}
+            onChange={(e) => {
+              const target = e.target as unknown;
+              if (target instanceof HTMLSelectElement) {
+                const selectedValues: number[] = Array.from(
+                  target.selectedOptions,
+                  option => Number(option.value)
+                );
+                setSelectedProjects(selectedValues);
+              }
+            }}
+          >
+            {projects.map((project) => (
+              <MenuItem key={project.project_id} value={project.project_id}>
+                <Checkbox
+                  checked={selectedProjects.includes(project.project_id)}
+                  color="primary"
+                  onClick={() => toggleProjectSelection(project.project_id)}
+                />
+                {project.project_name}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+      ) : (
+        <span className="user-info-value">
+          {selectedUser?.project_name}
+        </span>
+      )}
 
 
 
@@ -755,22 +788,6 @@ console.log('Data being updated:', updatedUserModel);
           <span className="user-info-value">{selectedUser.position_name}</span>
         )}
      
-
-        <strong className="user-info-label">Created By:</strong>{" "}
-<span className="user-info-value">{selectedUser.created_by}</span>
-
-        
-        <strong className="user-info-label">Updated By:</strong>{" "}
-<span className="user-info-value">{selectedUser.updated_by}</span>
-
-
-        <strong className="user-info-label">Created At:</strong>{" "}
-<span className="user-info-value">{selectedUser.created_time}</span>
-
-
-<strong className="user-info-label">Updated At:</strong>{" "}
-<span className="user-info-value">{selectedUser.updated_time}</span>
-
 
       </div>
     )}
@@ -866,37 +883,33 @@ console.log('Data being updated:', updatedUserModel);
       ))}
     </Select>
 
-    <Typography variant="subtitle1" gutterBottom>
-      Staff Status
-    </Typography>
-    <Select
-      margin="dense"
-      value={newUser.staffstatus_id}
-      onChange={(e) => setNewUser({ ...newUser, staffstatus_id: Number(e.target.value) })}
-      fullWidth
-      required>
-      {staffStatuses.map((status) => (
-        <MenuItem key={status.staffstatus_id} value={status.staffstatus_id}>
-          {status.staffstatus_name}
-        </MenuItem>
-      ))}
-    </Select>
 
     <Typography variant="subtitle1" gutterBottom>
-      Project
-    </Typography>
-    <Select
-      margin="dense"
-      value={newUser.project_id}
-      onChange={(e) => setNewUser({ ...newUser, project_id: Number(e.target.value) })}
-      fullWidth
-      required>
-      {projects.map((project) => (
-        <MenuItem key={project.project_id} value={project.project_id}>
-          {project.project_name}
-        </MenuItem>
-      ))}
-    </Select>
+  Project
+</Typography>
+<Select
+  multiple
+  margin="dense"
+  value={newUser.project_id}
+  onChange={(e: any) => {
+    const target = e.target as HTMLSelectElement;
+    const selectedOptions = Array.from(target.selectedOptions);
+    const selectedValues: number[] = selectedOptions.map((option) =>
+      Number(option.value)
+    );
+    setNewUser({ ...newUser, project_id: selectedValues });
+  }}
+  fullWidth
+  required
+>
+  {projects.map((project) => (
+    <MenuItem key={project.project_id} value={project.project_id}>
+      {project.project_name}
+    </MenuItem>
+  ))}
+</Select>
+
+
 
     <Typography variant="subtitle1" gutterBottom>
       UserType

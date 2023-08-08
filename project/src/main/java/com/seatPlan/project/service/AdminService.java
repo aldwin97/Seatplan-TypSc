@@ -88,10 +88,6 @@ public class AdminService {
                     userMap.put("usertype_name",user.getUsertype_name());
                     userMap.put("project_name",user.getProject_name());
                     userMap.put("staffstatus_name", user.getStaffstatus_name());
-                    userMap.put("created_time",user.getCreated_time());
-                    userMap.put("updated_time",user.getUpdated_time());
-                    userMap.put("updated_by",user.getUpdated_by());
-                    userMap.put("created_by",user.getCreated_by());
                     return userMap;
                 }).collect(Collectors.toList());
         return filteredUserType;
@@ -159,6 +155,15 @@ public class AdminService {
     
         return filteredComment;
     }
+
+    public void insertMultipleProject(long generatedUserId, List<Long> project_id) {
+          adminDao.insertMultipleProject(generatedUserId, project_id);
+    }
+
+    public void deleteExistingProject(Long user_id) {
+        adminDao.deleteExistingProject(user_id);
+    }
+
 
     
     

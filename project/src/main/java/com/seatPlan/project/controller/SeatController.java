@@ -20,11 +20,11 @@ import com.seatPlan.project.service.SeatService;
 @RestController
 @RequestMapping("/seat")
 public class SeatController {
-     private final SeatService seatService;
 
-    public SeatController( @Autowired SeatService seatService) {
-        this.seatService = seatService;
-    }
+    @Autowired
+     private SeatService seatService;
+
+   
 
     @GetMapping("/showAllSeat")
     public List<Map<String, Object>> allSeat(){

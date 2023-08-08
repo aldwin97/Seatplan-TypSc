@@ -4,7 +4,6 @@ package com.seatPlan.project.dao;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import com.seatPlan.project.model.CommentModel;
 import com.seatPlan.project.model.PositionModel;
@@ -46,4 +45,8 @@ public interface AdminDao {
     void insertComment(CommentModel comment);
 
     List<CommentModel> getCommentBySeatId(Long seat_id);
+
+    void insertMultipleProject(long generatedUserId, List<Long> project_id);
+
+    void deleteExistingProject(Long user_id);
 }

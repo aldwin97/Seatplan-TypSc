@@ -3,25 +3,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         <mapper namespace="com.seatPlan.project.dao.MachineDao">
 
-            <insert id="insertMachine"  parameterType="com.seatPlan.project.model.MachineInputModel">
+            <insert id="insertMachine"  parameterType="com.seatPlan.project.model.MachineInputModel"
+            useGeneratedKeys="true" keyProperty="user_id" >
                 INSERT INTO table_user (
                     first_name, 
-                    project_id,  
-                    created_by)
+                    created_by,
+                    is_machine)
                 VALUES (
-                    #{machine_name}, 
-                    #{project_id},
-                    #{created_by})
+                    #{first_name}, 
+                    #{created_by},
+                    1)
             </insert>
 
             <select id="getAllMachine" resultType="com.seatPlan.project.model.MachineModel">
-                SELECT * FROM table_machine WHERE is_deleted = 0
+                SELECT
+                    tu.user_id,
+                    tu.first_name,
+                    GROUP_CONCAT(DISTINCT up.project_id) AS project_ids,
+                    GROUP_CONCAT(DISTINCT pr.project_name SEPARATOR ', ') AS project_name
+                FROM
+                    table_user tu
+                LEFT JOIN
+                    table_userproject up ON tu.user_id = up.user_id
+                LEFT JOIN
+                    table_project pr ON up.project_id = pr.project_id
+                WHERE
+                    tu.is_deleted = 0 AND tu.is_machine = 1
+                GROUP BY
+                    tu.user_id, tu.first_name;
+
             </select>
 
             <update id="deleteMachineById">
-                UPDATE table_machine SET is_deleted = 1 WHERE machine_id = #{machine_id}
+                UPDATE table_user SET is_deleted = 1 WHERE user_id = #{user_id}
             </update>
-            
+
 
 
             <update id="updateMachine" parameterType="com.seatPlan.project.model.MachineModel">
@@ -35,10 +51,16 @@
             </update>
 
 
-            <select id="getMachineById" resultType="com.seatPlan.project.model.MachineModel">
-                SELECT * FROM table_machine WHERE machine_id = #{machine_id} AND is_deleted = 0
+            <select id="getMachineById" >
+                SELECT user_id FRORM table_user WHERE user_id = #{user_id}
             </select>
+            
+            <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.UserInputModel">
+                INSERT INTO table_userproject (user_id, project_id) VALUES
+                <foreach collection="project_id" item="project_id" separator=",">
+                    (#{generatedUserId}, #{project_id})
+                </foreach>
+            </insert>
 
-
-
-        </mapper>
+            
+</mapper>

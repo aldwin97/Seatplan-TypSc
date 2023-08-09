@@ -222,6 +222,7 @@ h5 {
 }
 
 .accountS {
+  position: relative;
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
@@ -341,14 +342,14 @@ input:not(:read-only):valid ~ .user-label {
   display: flex;
   position: absolute;
   margin-left: 36.5%;
-  margin-top: -17%;
+  margin-top: -18%;
 }
 
 .account-button {
   display: flex;
   position: absolute;
-  margin-left: 36.5%;
-  margin-top: -17.5%;
+  margin-left: 58%;
+  margin-top: -30%;
 }
 
 .saveButton {
@@ -522,115 +523,8 @@ input:not(:read-only):valid ~ .change-label {
 /* Mobile-first styles */
 
 /* Adjust layout for smaller screens */
-@media screen and (max-width: 768px) {
-  .backg {
-    background-size: cover;
-  }
 
-  .profileSum {
-    width: 100%;
-    height: auto;
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .inputDisplay {
-    margin-top: 10px;
-    text-align: center;
-  }
-
-  h3 {
-    font-size: 28px;
-    margin: 10px 0;
-  }
-
-  h4 {
-    font-size: 16px;
-    margin: 0;
-  }
-
-  .profilePicture {
-    position: relative;
-    text-align: center;
-  }
-
-  .defaultImage,
-  .profilePicture img {
-    width: 120px;
-    height: 120px;
-    right: auto;
-    top: 0;
-  }
-
-  .uploadButton {
-    top: 130px;
-    right: 0;
-  }
-  .line {
-    width: 100%;
-    margin: 20px 0;
-  }
-
-  .personal,
-  .accountS {
-    width: 100%;
-    height: 60%;
-    margin: 0;
-  }
-
-  h1 {
-    font-size: 24px;
-    margin: 10px 0;
-  }
-
-  .name-group,
-  .input-group,
-  .change-group {
-    width: 70%;
-    margin: 0 auto;
-  }
-
-  .readLabel,
-  .readLabel2 {
-    margin-left: 0;
-    text-align: center;
-    position: static;
-    margin-top: 0;
-    font-size: 14px;
-  }
-
-  .nameInput,
-  .input,
-  .changeInput {
-    width: 100%;
-    padding: 8px;
-  }
-
-  .user-label,
-  .change-label {
-    left: 0;
-    top: -8px;
-    font-size: 12px;
-  }
-
-  .personal-button,
-  .account-button {
-    margin-top: 15px;
-    flex-direction: column;
-  }
-
-  .saveButton,
-  .cancelButton {
-    width: 100%;
-    margin: 10px 0;
-  }
-
-  .toggle-password,
-  .toggle-password1 {
-    top: 40%;
-  }
-}
+ 
 .backg
 {
   margin: 0;
@@ -640,4 +534,69 @@ input:not(:read-only):valid ~ .change-label {
   background-repeat: no-repeat;
   background-position: center;
 
+}
+.settool{
+  background-color: #797979;
+  color: #ffffff;
+  border:none;
+  border-radius:40px;
+  padding: "8px";
+  margin-top:-61.5%;
+  margin-left:91.6%;
+  cursor:pointer;
+  transition:background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+}
+@media screen and (max-width: 1024px) {
+  .form1{
+    width: 100%;
+    overflow:scroll;
+
+  }
+  .profileSum{
+    position: fixed;
+    top:40px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  
+  .inputDisplay{
+    top:-180px;
+  }
+  .personal{
+    position: fixed;
+    top: 500px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .settool{
+    position: fixed;
+   top:-130px;
+   left: -40px;
+   z-index:2;
+  }
+  .settool1{
+    position: fixed;
+   top:-120px;
+   left:120px;
+   z-index:2;
+  }
+  .accountS{
+    position: fixed;
+    top:960px; 
+    width:600px;
+    height:400px;
+    left:90px;
+  }
+  .account-button{  
+    top:200px;
+    left:-50px;
+
+  }
+  .personal-button{  
+    top:125px;
+    left: 80px;
+
+  }
 }

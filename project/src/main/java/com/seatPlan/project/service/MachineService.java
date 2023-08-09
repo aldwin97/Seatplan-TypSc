@@ -13,6 +13,7 @@ import com.seatPlan.project.dao.MachineDao;
 import com.seatPlan.project.model.MachineInputModel;
 import com.seatPlan.project.model.MachineModel;
 
+
 @Service
 @Transactional
 public class MachineService {
@@ -61,6 +62,11 @@ public class MachineService {
     public void insertMultipleProject(long generatedUserId, List<Long> project_id) {
         machineDao.insertMultipleProject(generatedUserId, project_id);
   }
+
+    public void deleteExistingProject(Long user_id) {
+        machineDao.deleteExistingProject(user_id);
+    }
+
 
 
 }

@@ -41,26 +41,28 @@
 
 
             <update id="updateMachine" parameterType="com.seatPlan.project.model.MachineModel">
-                UPDATE table_machine
+                UPDATE table_user
                 <set>
-                    <if test="machine_name != null">machine_name = #{machine_name},</if>
-                    <if test="project_id != null">project_id = #{project_id},</if>
+                    <if test="first_name != null">first_name = #{first_name},</if>
                     <if test="updated_by != null">updated_by = #{updated_by},</if>
                 </set>
-                WHERE machine_id = #{machine_id}
+                WHERE user_id = #{user_id}
             </update>
 
 
-            <select id="getMachineById" >
-                SELECT user_id FRORM table_user WHERE user_id = #{user_id}
+            <select id="getMachineById" resultType="com.seatPlan.project.model.MachineModel" >
+                 SELECT user_id FROM table_user WHERE user_id = #{user_id} AND is_deleted = 0 AND is_machine = 1
             </select>
             
-            <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.UserInputModel">
+            <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.MachineModel">
                 INSERT INTO table_userproject (user_id, project_id) VALUES
                 <foreach collection="project_id" item="project_id" separator=",">
                     (#{generatedUserId}, #{project_id})
                 </foreach>
             </insert>
 
+            <delete id="deleteExistingProject" parameterType="com.seatPlan.project.model.MachineModel">
+                DELETE FROM table_userproject WHERE user_id = #{generatedUserId}
+            </delete>
             
 </mapper>

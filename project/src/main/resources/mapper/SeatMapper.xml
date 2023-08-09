@@ -52,7 +52,7 @@
             LEFT JOIN
                 table_project pr ON up.project_id = pr.project_id
             WHERE
-                u.is_deleted = 0 AND u.is_machine = 0
+                u.is_deleted = 0
             GROUP BY
                 u.user_id
         ) tp ON tu.user_id = tp.user_id

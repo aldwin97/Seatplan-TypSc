@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import com.seatPlan.project.model.ColorModel;
 import com.seatPlan.project.model.ProjectModel;
-import com.seatPlan.project.model.UserInputModel;
 import com.seatPlan.project.model.ProjectInputModel;
 
 @Mapper

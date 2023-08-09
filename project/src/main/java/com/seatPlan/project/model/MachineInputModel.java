@@ -19,5 +19,6 @@ public class MachineInputModel {
     private List<Long> project_id;
     private Long user_id;
     private Long created_by;
+    private Long updated_by;
     
 }

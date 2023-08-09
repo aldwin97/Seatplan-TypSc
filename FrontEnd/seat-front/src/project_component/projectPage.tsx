@@ -394,6 +394,7 @@ function ProjectPage() {
               autoHideDuration={5000}
               onClose={closeSnackbar}
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              style={{ top: "120px", right: "550px" }}
             >
               <MuiAlert
                 elevation={6}

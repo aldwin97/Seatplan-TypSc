@@ -11,7 +11,7 @@ import ProjectPage from './project_component/projectPage';
 import MachinePage from './admin_component/machinetablePage';
 
 import './App.css';
-
+  
 function App(): JSX.Element {
   return (
     <div className="App">

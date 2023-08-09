@@ -695,8 +695,8 @@ const ProfilePage: React.FC = () => {
                 onChange={handleInputChange}
               />
             </div>
-            <div className={styles["input-group"]}>
-              <label className={styles.readLabel2}>Mobile Number *</label>
+            <div className={styles["input-group1"]}>
+              <label className={styles.readLabel3}>Mobile Number *</label>
               <input
                 required
                 type="text"
@@ -844,8 +844,8 @@ const ProfilePage: React.FC = () => {
                 value={profileData.username}
               />
             </div>
-            <div className={styles["input-group"]}>
-              <label htmlFor="oldPassword" className={styles.readLabel2}>
+            <div className={styles["input-group2"]}>
+              <label htmlFor="oldPassword" className={styles.readLabel4}>
                 {" "}
                 Old Password{" "}
               </label>

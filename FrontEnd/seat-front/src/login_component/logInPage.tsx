@@ -82,7 +82,7 @@ const LogInPage: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       dashboardPageHandleClick();
     }
@@ -118,7 +118,7 @@ const LogInPage: React.FC = () => {
                 className={styles.input}
                 value={username}
                 onChange={handleUsernameChange}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyDown}
               />
               <label className={styles["user-label"]}>Username</label>
             </div>
@@ -136,7 +136,7 @@ const LogInPage: React.FC = () => {
                 className={styles.input}
                 value={password}
                 onChange={handlePasswordChange}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyDown}
               />
               <label className={styles["user-label"]}>Password</label>
               <span
@@ -149,15 +149,18 @@ const LogInPage: React.FC = () => {
               </span>
             </div>
 
-            {error && (
-              <div className={styles.errorMessage}>
-                Incorrect username or password.
-              </div>
-            )}
+            <div
+              className={`${styles.errorMessage} ${
+                error ? styles.showError : ""
+              }`}
+              style={{ visibility: error ? "visible" : "hidden" }} // Use visibility
+            >
+              Incorrect username or password!
+            </div>
 
             <button
               onClick={dashboardPageHandleClick}
-              className={styles.sub2}
+              className={`${styles.sub2} ${styles.signInButton}`}
               type="submit"
             >
               SIGN IN

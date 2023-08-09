@@ -1216,48 +1216,71 @@ const handleLogout = () => {
 
         // Get the acronym of the project name
         const projectNameAcronym = seat.project_name
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase())
-          .join('');
-    
-        ctx.fillText(projectNameAcronym, scaledX + seatSize / 2.7, scaledY + seatSize - textOffsetY/ 1 + 40);
-        
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase())
+          .join("");
+
+        ctx.fillText(
+          projectNameAcronym,
+          scaledX + seatSize / 2.7,
+          scaledY + seatSize - textOffsetY / 1 + 40
+        );
+
         if (seat.position_name) {
           const positionNameAcronym = seat.position_name
-            .split(' ')
+            .split(" ")
             .map((word) => word.charAt(0).toUpperCase())
-            .join('');
-        
+            .join("");
+
           // Calculate the center position to horizontally align the position name acronym
-          const positionNameAcronymWidth = ctx.measureText(positionNameAcronym).width;
+          const positionNameAcronymWidth =
+            ctx.measureText(positionNameAcronym).width;
           const centerOffsetX = (seatSize - positionNameAcronymWidth) / 6;
           const adjustedTextOffsetX = textOffsetX + centerOffsetX;
-        
+
           // Calculate the font size for the position name acronym to fit inside the seat box
           let fontSize = 10;
-          while (ctx.measureText(positionNameAcronym).width > seatSize - adjustedTextOffsetX * 2) {
+          while (
+            ctx.measureText(positionNameAcronym).width >
+            seatSize - adjustedTextOffsetX * 2
+          ) {
             fontSize--;
             ctx.font = `${fontSize}px Arial`;
           }
+
+          // Draw the position name acronym below the seat
+          ctx.fillText(
+            positionNameAcronym,
+            scaledX + +seatSize / 2.3,
+            +scaledY + textOffsetY / 3.4 + 1
+          );
         
-              // Draw an icon for the machine position
-            if (seat.position_name === 'Machine') {
-              const machineIconSize = 50 / zoomLevel;
-              const machineIconX = scaledX + (seatSize - machineIconSize) / 1;
-              const machineIconY = scaledY + (seatSize - machineIconSize) / 1;
-              // Draw a background color behind the icon (optional)
-              ctx.fillStyle = '#000000';
-              ctx.beginPath();
-              ctx.arc(machineIconX, machineIconY, machineIconSize / 2, 0, Math.PI * 2);
-              ctx.closePath();
-              ctx.fill();
-            }}
+                        // Draw an icon for the machine position
+                if (seat.position_name === 'Machine') {
+                  const machineIconSize = 80 / zoomLevel;
+                  const machineIconX = scaledX + (seatSize - machineIconSize) / 1;
+                  const machineIconY = scaledY + (seatSize - machineIconSize) / 1;
+
+                  // Load the machine icon image
+                  const machineIcon = new Image();
+                  machineIcon.src = '/machine.png';
+
+                  // Draw the machine icon image
+                  machineIcon.onload = () => {
+                    console.log('Machine icon loaded successfully');
+                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 11, machineIconY - machineIconSize / 8, machineIconSize, machineIconSize);
+                  };
+                  machineIcon.onerror = () => {
+                    console.log('Error loading machine icon');
+                    console.error('Error details:', machineIcon.src); // Log the image source to help diagnose the issue
+                  };
+                }
 
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
           ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
         }
-      });
+    }});
     }
   }, [filteredSeats, zoomLevel, selectedSeat]);
   

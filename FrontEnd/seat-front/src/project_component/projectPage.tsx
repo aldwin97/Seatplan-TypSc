@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import styles from "../dashboard_component/dashboardPage.module.css";
+import MuiAlert from "@mui/material/Alert";
 
 import {
   BusinessCenterOutlined,
@@ -67,11 +68,14 @@ interface Project {
 }
 
 function ProjectPage() {
-  // State variables to handle form inputs
   const [projectName, setProjectName] = useState("");
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
 
-  // Add state variables for the additional data fields (if needed)
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   const handleProjectNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Input Value:", e.target.value);
@@ -79,12 +83,9 @@ function ProjectPage() {
   };
 
   useEffect(() => {
-    // Retrieve the logged-in user ID from the session storage
     const user_id = sessionStorage.getItem("user_id");
     setLoggedInUserId(user_id ? parseInt(user_id) : null);
   }, []);
-
-  // Add event handlers for the additional data fields (if needed)
 
   const [colors, setColors] = useState<ColorModel[]>([]);
 
@@ -136,21 +137,18 @@ function ProjectPage() {
   };
 
   const handleLogout = () => {
-    // Clear any user-related data from the session/local storage
     sessionStorage.removeItem("user_id");
 
-    // Redirect to the login page
     navigate("/");
   };
 
-  // Function to handle form submission
-  // ... (previous code)
-
-  // Function to handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Retrieve the user ID from session storage
-    // Create a new project object to send to the backend
+    if (selectedColorId === 0) {
+      openSnackbar("Please select a color", "error");
+      return;
+    }
+
     const newProject: Project = {
       project_name: projectName,
       color_id: selectedColorId,
@@ -159,7 +157,6 @@ function ProjectPage() {
 
     console.log("New Project:", newProject);
     try {
-      // Make a request to the backend to add the new project
       const response = await fetch(
         "http://localhost:8080/project/insertNewProject",
         {
@@ -172,24 +169,22 @@ function ProjectPage() {
       );
 
       if (response.ok) {
-        // Project created successfully
-        // Perform any additional actions or show a success message if needed
-        console.log("Project created successfully");
-        // Reset form inputs after successful project creation
+        console.log("Project created successfully!");
+        openSnackbar("Project created successfully!", "success");
         setProjectName("");
         setSelectedColorId(0); // Reset selectedColorId to the default value
-        window.location.reload(); // Reload the page after successful project creation
+        fetchProjects(); // Fetch updated projects
       } else {
         // Failed to create project
         // Handle the error or show an error message if needed
-        console.error("Failed to create project");
+        console.error("Project Name already exist!");
+        openSnackbar("Project Name already exist!", "error"); // Show error snackbar
       }
     } catch (error) {
       console.error("Error occurred during project creation:", error);
+      openSnackbar("An error occurred", "error"); // Show error snackbar
     }
   };
-
-  // ... (remaining code)
 
   const [selectedColorId, setSelectedColorId] = useState(0);
 
@@ -241,6 +236,17 @@ function ProjectPage() {
     const startIndex = (currentPage - 1) * projectsPerPage;
     const endIndex = startIndex + projectsPerPage;
     return projects.slice(startIndex, endIndex);
+  };
+
+  // Define these functions within your component
+  const openSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -383,6 +389,21 @@ function ProjectPage() {
                 required
               />
             </div>
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={5000}
+              onClose={closeSnackbar}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                onClose={closeSnackbar}
+                severity={snackbarSeverity}
+              >
+                {snackbarMessage}
+              </MuiAlert>
+            </Snackbar>
             <div className="formG">
               <label className="colorlabel" htmlFor="colorId">
                 Color:

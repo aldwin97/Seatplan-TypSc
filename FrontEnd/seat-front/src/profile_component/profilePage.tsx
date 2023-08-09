@@ -22,8 +22,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
-import Grid from '@mui/material/Grid';
-
+import Grid from "@mui/material/Grid";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -593,10 +592,13 @@ const ProfilePage: React.FC = () => {
       <div className={styles.form1}>
         {/* Display Container */}
         <form className={styles.profileSum}>
-        <div className={styles.cover}>
-        <img className={styles["resizable-image"]} src={profileBackg} alt="Profile Background" />
-      </div>
-
+          <div className={styles.cover}>
+            <img
+              className={styles["resizable-image"]}
+              src={profileBackg}
+              alt="Profile Background"
+            />
+          </div>
 
           <div className={styles.inputDisplay}>
             <h3>
@@ -693,8 +695,8 @@ const ProfilePage: React.FC = () => {
                 onChange={handleInputChange}
               />
             </div>
-            <div className={styles["input-group"]}>
-              <label className={styles.readLabel2}>Mobile Number *</label>
+            <div className={styles["input-group1"]}>
+              <label className={styles.readLabel3}>Mobile Number *</label>
               <input
                 required
                 type="text"
@@ -842,8 +844,8 @@ const ProfilePage: React.FC = () => {
                 value={profileData.username}
               />
             </div>
-            <div className={styles["input-group"]}>
-              <label htmlFor="oldPassword" className={styles.readLabel2}>
+            <div className={styles["input-group2"]}>
+              <label htmlFor="oldPassword" className={styles.readLabel4}>
                 {" "}
                 Old Password{" "}
               </label>
@@ -966,7 +968,7 @@ const ProfilePage: React.FC = () => {
               }}
             >
               <MuiAlert
-                elevation={6}
+                elevation={1}
                 variant="filled"
                 onClose={() => setOldPasswordError("")}
                 severity="error"

@@ -238,6 +238,7 @@ body {
 
 /*Card Hello*/
 .cardHello {
+  margin-top: 15px;
   align-items: center;
   height: 400px;
   width: 500px;
@@ -250,7 +251,7 @@ body {
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
   box-shadow: 0 2px 10px #308a38;
-  left: 135%;
+  left: 136.5%;
   border-radius: 10px;
 }
 

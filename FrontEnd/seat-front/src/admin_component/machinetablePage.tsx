@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Pagination,
   Paper,
   IconButton,
   Button,
@@ -45,9 +46,10 @@ interface Machine {
     project_name: string;
   }
   function MachinePage() {
+  const [searchText, setSearchText] = useState('');
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null); // State variable to store the logged-in user ID
   const [selectedMachines, setSelectedMachines] = useState<number[]>([]);
-  const [, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [addMachineDialogOpen, setAddMachineDialogOpen] = useState(false);
   const [MachineInfoDialogOpen, setMachineInfoDialogOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
@@ -115,6 +117,36 @@ interface Machine {
  const handleAddMachine = () => {
     setAddMachineDialogOpen(true); // Set the flag to open the dialog
   };
+
+  const filteredMachine = machines
+  .filter(
+    (machine) =>
+    machine.first_name.toLowerCase().includes(searchText.toLowerCase())
+  )
+  .map((machine) => {
+    let formattedCreatedTime = 'Invalid date';
+    let formattedUpdatedTime = 'Invalid date';
+
+    if (machine.created_time && typeof machine.created_time === 'string' && machine.created_time.trim() !== '') {
+      formattedCreatedTime = machine.created_time;
+    }
+
+    if (machine.updated_time && typeof machine.updated_time === 'string' && machine.updated_time.trim() !== '') {
+      formattedUpdatedTime = machine.updated_time;
+    }
+
+    return {
+      ...machine,
+      created_time: formattedCreatedTime,
+      updated_time: formattedUpdatedTime,
+    };
+  });
+
+  const indexOfLastUser = currentPage * perPage;
+  const indexOfFirstUser = indexOfLastUser - perPage;
+  const currentMachines = filteredMachine.slice(indexOfFirstUser, indexOfLastUser);
+    
+    
   const [editMode, setEditMode] = useState(false);
   const [editedMachine, setEditedMachine] = useState<Machine | null>(null);
   
@@ -128,13 +160,14 @@ interface Machine {
       return;
     }
   
-    const updatedMachineModel = {
-      user_id: editedMachine.user_id,
-      machine_name: editedMachine.first_name,
-      project_id: selectedProjects,
+    const updatedMachineModel : Partial<Machine> ={
+      user_id: selectedMachine?.user_id,
+      first_name: editedMachine?.first_name || '',
+      project_id: editMode ? selectedProjects : editedMachine?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the old projects
       updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
-  
+    console.log('Data being updated:', updatedMachineModel);
+
     fetch(`http://localhost:8080/machine/updateMachine/${selectedMachine?.user_id}`, {
       method: 'PUT',
       headers: {
@@ -224,6 +257,7 @@ const handleAddMachines = () => {
         .then((response) => {
           if (response.ok) {
             console.log(`User with ID ${machineId} deleted successfully`);
+            window.location.reload();
           } else {
             console.log(`Failed to delete user with ID ${machineId}`);
           }
@@ -285,6 +319,13 @@ const handleAddMachines = () => {
     // Redirect to the login page
     navigate('/');
   };
+
+
+  const sortedCurrentMachines = currentMachines.sort((a, b) => {
+    const nameA = `${a.first_name}`.toLowerCase();
+    const nameB = `${b.first_name}`.toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
 
   return (
     <div className="container">
@@ -415,7 +456,7 @@ const handleAddMachines = () => {
         </TableHead>
 
         <TableBody>
-  {machines.map((machine) => (
+  {sortedCurrentMachines.map((machine) => (
     <TableRow className="table-cell" key={machine.user_id} hover>
       <TableCell className="checkbox-btn" padding="checkbox">
         <Checkbox
@@ -437,6 +478,9 @@ const handleAddMachines = () => {
 
       </Table>
     </TableContainer>
+    <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
+        <Pagination count={Math.ceil(filteredMachine.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
+      </Box>
 
     <Dialog open={MachineInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
 <div className="user-info-page">

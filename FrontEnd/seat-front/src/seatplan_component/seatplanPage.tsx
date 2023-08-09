@@ -10,9 +10,9 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
-import domtoimage from 'dom-to-image';
 import { FaInfoCircle } from 'react-icons/fa';
-
+import { faDesktop } from '@fortawesome/free-solid-svg-icons';
+import svgPathConverter from 'svg-path-converter';
 
 interface Seat {
   position: { x: number; y: number };
@@ -1190,26 +1190,29 @@ const handleLogout = () => {
     
         const textOffsetY = 45; // Adjust this value to create some vertical space between the occupant and project name
 
-    // Draw the occupant's name
-    const occupantNameParts = seat.occupant.split(' '); // Assuming the occupant's name is in the format "FirstName LastName"
-    const surname = occupantNameParts[1]; // Extract the surname and convert it to uppercase
-    const firstName = occupantNameParts[0]; // Extract the first name
-    const occupantName = `${surname}, ${firstName}`; // Format the name as "SURNAME FirstName"
 
-    const occupantNameWidth = ctx.measureText(occupantName).width; // Get the width of the occupant name
+          if (seat.position_name !== 'Machine') {
+            // Draw the occupant's name
+            const occupantNameParts = seat.occupant.split(' ');
+            const surname = occupantNameParts[1];
+            const firstName = occupantNameParts[0];
+            const occupantName = `${surname}, ${firstName}`;
+            
+            const occupantNameWidth = ctx.measureText(occupantName).width;
+            
+            const centerOffsetX = (seatSize - occupantNameWidth) / 2;
+            const adjustedTextOffsetX = textOffsetX + centerOffsetX;
+            
+            let fontSize = 11;
+            while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
+              fontSize--;
+              ctx.font = `${fontSize}px Arial`;
+            }
+            
+            ctx.fillText(occupantName, scaledX + adjustedTextOffsetX, scaledY + textOffsetY);
+          }
 
-    // Calculate the center position to horizontally align the occupant name
-    const centerOffsetX = (seatSize - occupantNameWidth) / 2;
-    const adjustedTextOffsetX = textOffsetX + centerOffsetX;
 
-    // Calculate the font size for the occupant name to fit inside the seat box
-    let fontSize = 11;
-    while (ctx.measureText(occupantName).width > seatSize - adjustedTextOffsetX * 2) {
-      fontSize--;
-      ctx.font = `${fontSize}px Arial`;
-    }
-
-    ctx.fillText(occupantName, scaledX + adjustedTextOffsetX, scaledY + textOffsetY);
 
         // Get the acronym of the project name
         const projectNameAcronym = seat.project_name
@@ -1237,12 +1240,19 @@ const handleLogout = () => {
             ctx.font = `${fontSize}px Arial`;
           }
         
-          // Draw the position name acronym below the seat
-          ctx.fillText(positionNameAcronym, scaledX + + seatSize / 2.3,+ scaledY + textOffsetY / 3.4 + 1);
-        }
-        
-        
-  
+              // Draw an icon for the machine position
+            if (seat.position_name === 'Machine') {
+              const machineIconSize = 50 / zoomLevel;
+              const machineIconX = scaledX + (seatSize - machineIconSize) / 1;
+              const machineIconY = scaledY + (seatSize - machineIconSize) / 1;
+              // Draw a background color behind the icon (optional)
+              ctx.fillStyle = '#000000';
+              ctx.beginPath();
+              ctx.arc(machineIconX, machineIconY, machineIconSize / 2, 0, Math.PI * 2);
+              ctx.closePath();
+              ctx.fill();
+            }}
+
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
           ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);

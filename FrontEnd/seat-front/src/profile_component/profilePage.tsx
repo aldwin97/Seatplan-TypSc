@@ -22,8 +22,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
-import Grid from '@mui/material/Grid';
-
+import Grid from "@mui/material/Grid";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -593,10 +592,13 @@ const ProfilePage: React.FC = () => {
       <div className={styles.form1}>
         {/* Display Container */}
         <form className={styles.profileSum}>
-        <div className={styles.cover}>
-        <img className={styles["resizable-image"]} src={profileBackg} alt="Profile Background" />
-      </div>
-
+          <div className={styles.cover}>
+            <img
+              className={styles["resizable-image"]}
+              src={profileBackg}
+              alt="Profile Background"
+            />
+          </div>
 
           <div className={styles.inputDisplay}>
             <h3>
@@ -965,7 +967,7 @@ const ProfilePage: React.FC = () => {
               }}
             >
               <MuiAlert
-                elevation={6}
+                elevation={1}
                 variant="filled"
                 onClose={() => setOldPasswordError("")}
                 severity="error"

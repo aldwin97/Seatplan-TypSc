@@ -422,7 +422,7 @@ const customBorders = [
         
                         // Draw an icon for the machine position
                 if (seat.position_name === 'Machine') {
-                  const machineIconSize = 80 / zoomLevel;
+                  const machineIconSize = 60 / zoomLevel;
                   const machineIconX = scaledX + (seatSize - machineIconSize) / 1;
                   const machineIconY = scaledY + (seatSize - machineIconSize) / 1;
 
@@ -433,13 +433,14 @@ const customBorders = [
                   // Draw the machine icon image
                   machineIcon.onload = () => {
                     console.log('Machine icon loaded successfully');
-                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 11, machineIconY - machineIconSize / 8, machineIconSize, machineIconSize);
+                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 4, machineIconY - machineIconSize / 2.5, machineIconSize, machineIconSize);
                   };
                   machineIcon.onerror = () => {
                     console.log('Error loading machine icon');
                     console.error('Error details:', machineIcon.src); // Log the image source to help diagnose the issue
                   };
                 }
+
 
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);

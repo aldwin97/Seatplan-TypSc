@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { FaInfoCircle } from 'react-icons/fa';
@@ -402,8 +402,9 @@ return (
          className={`${styles.arrowToggle} ${showComments ? styles.toggled : ''}`}
         onClick={toggleCommentsSection}
         title={showComments ? 'Hide comments' : 'Show comments'}
-      >
-        <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
+      > <h5 className={styles.h5}>Comment Section</h5>
+        <FontAwesomeIcon icon={showComments ? faChevronUp : faChevronDown} />
+       
         {/* Optionally, you can add a button to add a new comment */}
       </div>
 </div>
@@ -701,42 +702,49 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     };
   
     return (
-      <ul className={styles.commentsList}>
+      <table className={styles.commentsTable}>
+      <tbody>
         {comments.map((comment) => (
-          <li key={comment.comment_id}>
-            <span className={styles.boldName}>{comment.full_name}: </span>
-            <span className={styles.text}>{comment.comment}</span>
-            {/* Display "Replied to" information */}
-            {comment.parent_id && (
-              <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
-              </div>
-            )}
-            {/* Check if the comment is not written by the current user */}
-            {comment.user_id !== userId && !comment.replies && (
-              <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
-            )}
-            {/* Display "Replied to" information based on recipient_id */}
-            {comment.user_id === userId && comment.recipient_id !== userId && (
-              <div className={styles.repliedTo}>
-                You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
-              </div>
-            )}
-            {/* Display indicator for third-party users */}
-            {comment.user_id !== userId && comment.parent_id && (
-              <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
-              </div>
-            )}
-            {/* Display indicator for the user who received the reply */}
-            {comment.recipient_id === userId && (
-              <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} replied to you ↶
-              </div>
-            )}
-          </li>
+          <tr key={comment.comment_id}>
+            <td>
+              <span className={styles.boldName}>{comment.full_name}: </span>
+              <span className={styles.text}>{comment.comment}</span>
+              {/* Display "Replied to" information */}
+              {comment.parent_id && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
+                </div>
+              )}
+            </td>
+            <td>
+              {/* Check if the comment is not written by the current user */}
+              {comment.user_id !== userId && !comment.replies && (
+                <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
+              )}
+              {/* Display "Replied to" information based on recipient_id */}
+              {comment.user_id === userId && comment.recipient_id !== userId && (
+                <div className={styles.repliedTo}>
+                  You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
+                </div>
+              )}
+              {/* Display indicator for third-party users */}
+              {comment.user_id !== userId && comment.parent_id && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
+                </div>
+              )}
+              {/* Display indicator for the user who received the reply */}
+              {comment.recipient_id === userId && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} replied to you ↶
+                </div>
+              )}
+            </td>
+          </tr>
         ))}
-      </ul>
+      </tbody>
+    </table>
+    
     );
   };
   
@@ -1133,10 +1141,19 @@ const handleLogout = () => {
   
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRef.current!;
     const ctx = canvas?.getContext('2d');
- 
+    const handleMouseEnter = () => {
+      canvas.classList.add('seat-hover');
+    };
+  
+    const handleMouseLeave = () => {
+      canvas.classList.remove('seat-hover');
+    };
+  
     if (canvas && ctx) {
+      canvas.addEventListener('mouseenter', handleMouseEnter);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
   
       ctx.scale(zoomLevel, zoomLevel);
@@ -1144,7 +1161,13 @@ const handleLogout = () => {
       filteredSeats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-  
+        const handleMouseEnter = () => {
+          canvas.classList.add('seat-hover'); // Apply hover effect
+        };
+      
+        const handleMouseLeave = () => {
+          canvas.classList.remove('seat-hover'); // Remove hover effect
+        };
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 98 / zoomLevel;
@@ -1298,7 +1321,10 @@ const handleLogout = () => {
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
           ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
-        }
+        } return () => {
+          canvas.removeEventListener('mouseenter', handleMouseEnter);
+          canvas.removeEventListener('mouseleave', handleMouseLeave);
+        };
     }});
     }
   }, [filteredSeats, zoomLevel, selectedSeat]);
@@ -1564,6 +1590,7 @@ useEffect(() => {
         height={1400}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        className={styles.canvas}
       ></canvas>
       </div>
   </div>

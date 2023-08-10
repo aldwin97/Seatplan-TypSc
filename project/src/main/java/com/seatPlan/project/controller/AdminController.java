@@ -124,7 +124,6 @@ public class AdminController {
 
             if (userModel.getProject_id() != null) {
                 existingUser.setProject_id(userModel.getProject_id());
-
                 adminService.deleteExistingProject(user_id);
                 adminService.insertMultipleProject(user_id,existingUser.getProject_id());
             }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import styles from '../dashboard_component/dashboardPage.module.css';
-import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import {
   Select,
   MenuItem,
@@ -13,12 +13,12 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  Pagination,
   Paper,
   IconButton,
   Button,
   Typography,
   Box,
-  Pagination,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -28,23 +28,12 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUser,
-  faBell,
-  faChartBar,
-  faUsers,
-  faProjectDiagram,
-  faPowerOff,
-  faFaceSmile,
-  faEdit,
-} from '@fortawesome/free-solid-svg-icons';
 import './adminMembersPage.css';
 
 interface Machine {
-    machine_id: number;
-    machine_name: string;
-    project_id: number;
+    user_id: number;
+    first_name: string;
+    project_id?: number[] | undefined;
     project_name: string;
     is_deleted: boolean;
     created_time: string;
@@ -57,6 +46,7 @@ interface Machine {
     project_name: string;
   }
   function MachinePage() {
+  const [searchText, setSearchText] = useState('');
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null); // State variable to store the logged-in user ID
   const [selectedMachines, setSelectedMachines] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,11 +54,12 @@ interface Machine {
   const [MachineInfoDialogOpen, setMachineInfoDialogOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
   const [machines, setMachines] = useState<Machine[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]); // Specify the type as an array of Project objects
+  const [projects, setProjects] = useState<Project[]>([]); // Update 'Project' type accordingly
+  const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
   const [newMachine, setNewMachine] = useState<Machine>({
-    machine_id: 0,
-    machine_name: '',
-    project_id: 0,
+    user_id: 0,
+    first_name: '',
+    project_id: [], // Change to an empty array for multiple selection
     project_name: '',
     is_deleted: false,
     created_time: '',
@@ -76,21 +67,20 @@ interface Machine {
     updated_time: '',
     updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
   }); 
+  const toggleProjectSelection = (projectId: number) => {
+    setSelectedProjects(prevSelectedProjects => {
+      if (prevSelectedProjects.includes(projectId)) {
+        return prevSelectedProjects.filter(id => id !== projectId);
+      } else {
+        return [...prevSelectedProjects, projectId];
+      }
+    });
+  };
   useEffect(() => {
     // Retrieve the logged-in user ID from the session storage
     const user_id = sessionStorage.getItem('user_id');
     setLoggedInUserId(user_id ? parseInt(user_id) : null);
   }, []);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
-
-  const toggleProfileDropdown = () => {
-    setProfileDropdownOpen(!isProfileDropdownOpen);
-  };
 
   const [perPage, setPerPage] = useState(10);
   const navigate = useNavigate();
@@ -117,14 +107,46 @@ interface Machine {
   };
 
   const handleViewMachineInfo = (machineId: number) => {
-    const machine = machines.find((machine) => machine.machine_id === machineId);
+    const machine = machines.find((machine) => machine.user_id === machineId);
     if (machine) {
       setSelectedMachine(machine);
       setEditedMachine({ ...machine }); // Set the editedUser state with the initial values from selectedUser
       setMachineInfoDialogOpen(true);
     }
   };
+ const handleAddMachine = () => {
+    setAddMachineDialogOpen(true); // Set the flag to open the dialog
+  };
 
+  const filteredMachine = machines
+  .filter(
+    (machine) =>
+    machine.first_name.toLowerCase().includes(searchText.toLowerCase())
+  )
+  .map((machine) => {
+    let formattedCreatedTime = 'Invalid date';
+    let formattedUpdatedTime = 'Invalid date';
+
+    if (machine.created_time && typeof machine.created_time === 'string' && machine.created_time.trim() !== '') {
+      formattedCreatedTime = machine.created_time;
+    }
+
+    if (machine.updated_time && typeof machine.updated_time === 'string' && machine.updated_time.trim() !== '') {
+      formattedUpdatedTime = machine.updated_time;
+    }
+
+    return {
+      ...machine,
+      created_time: formattedCreatedTime,
+      updated_time: formattedUpdatedTime,
+    };
+  });
+
+  const indexOfLastUser = currentPage * perPage;
+  const indexOfFirstUser = indexOfLastUser - perPage;
+  const currentMachines = filteredMachine.slice(indexOfFirstUser, indexOfLastUser);
+    
+    
   const [editMode, setEditMode] = useState(false);
   const [editedMachine, setEditedMachine] = useState<Machine | null>(null);
   
@@ -132,20 +154,21 @@ interface Machine {
     setEditMode(true);
     setEditedMachine(selectedMachine);
   };
+  
   const handleSaveMachine = () => {
     if (!editedMachine) {
       return;
     }
-
-    const updatedMachineModel: Partial<Machine> = {
-      machine_name: editedMachine?.machine_name,
-      project_id: editedMachine?.project_id,
+  
+    const updatedMachineModel : Partial<Machine> ={
+      user_id: selectedMachine?.user_id,
+      first_name: editedMachine?.first_name || '',
+      project_id: editMode ? selectedProjects : editedMachine?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the old projects
       updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
-
     console.log('Data being updated:', updatedMachineModel);
 
-    fetch(`http://localhost:8080/admin/update/${selectedMachine?.machine_id}`, {
+    fetch(`http://localhost:8080/machine/updateMachine/${selectedMachine?.user_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -155,6 +178,7 @@ interface Machine {
       .then((response) => {
         if (response.ok) {
           console.log('Machine updated successfully');
+          handleCloseDialog();
           window.location.reload();
         } else {
           response.text().then((errorMessage) => {
@@ -166,6 +190,8 @@ interface Machine {
         console.log('Error while updating machine', error);
       });
   };
+  
+  
 
   useEffect(() => {
     fetch('http://localhost:8080/admin/showAllProject')
@@ -177,51 +203,53 @@ interface Machine {
         console.log('Error while fetching projects:', error);
       });
   }, []);
-  
-  const handleAddMachine = () => {
-    setAddMachineDialogOpen(true); // Set the flag to open the dialog
-  };
-  const handleAddMachines = () => {
-    const currentTime = new Date().toISOString();
-    const loggedInUserId = sessionStorage.getItem('user_id');
-    
-  
-    console.log('loggedInUserId:', loggedInUserId); // Check the value in the console
-  
-    const newMachineModel = {
-      machine_name: newMachine.machine_name,
-      project_id: newMachine.project_id,
-      created_time: currentTime,
-      created_by: loggedInUserId ? Number(loggedInUserId) : 0,
-    };
-  
-    console.log('newMachineModel:', newMachineModel); // Check the newUserModel object in the console
-  
-  
-    // Make the POST request to insert a new user
-    fetch('http://localhost:8080/admin/insert', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newMachineModel),
+
+ // Fetch all machines from the backend API
+ useEffect(() => {
+  fetch('http://localhost:8080/machine/showAllMachine')
+    .then((response) => response.json())
+    .then((data) => {
+      setMachines(data);
     })
-      .then((response) => {
-        if (response.ok) {
-          console.log('Machine inserted successfully');
-          window.location.reload();
-        } else if (response.status === 400) {
-          response.json().then((data) => {
-            console.log('Failed to insert Machine:', data.message);
-          });
-        } else {
-          console.log('Failed to insert Machine');
-        }
-      })
-      .catch((error) => {
-        console.log('Error while inserting Machine', error);
-      });
+    .catch((error) => {
+      console.log('Error while fetching machines:', error);
+    });
+}, []);
+  
+const handleAddMachines = () => {
+  const loggedInUserId = sessionStorage.getItem('user_id');
+
+  const newMachineModel = {
+    first_name: newMachine.first_name,
+    
+    created_by: loggedInUserId ? Number(loggedInUserId) : 0,
   };
+
+  // Send the POST request to insert the new machine
+  fetch('http://localhost:8080/machine/insertNewMachine', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newMachineModel),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log('Machine inserted successfully');
+        setAddMachineDialogOpen(false);
+        // Reload the machine list or update the state as needed
+        window.location.reload();
+      } else {
+        console.log('Failed to insert Machine');
+        window.location.reload();
+      }
+    })
+    .catch((error) => {
+      console.log('Error while inserting Machine', error);
+    });
+};
+
+
   const handleDeleteSelected = () => {
     // Make the DELETE request to delete selected users
     selectedMachines.forEach((machineId) => {
@@ -229,6 +257,7 @@ interface Machine {
         .then((response) => {
           if (response.ok) {
             console.log(`User with ID ${machineId} deleted successfully`);
+            window.location.reload();
           } else {
             console.log(`Failed to delete user with ID ${machineId}`);
           }
@@ -290,6 +319,13 @@ interface Machine {
     // Redirect to the login page
     navigate('/');
   };
+
+
+  const sortedCurrentMachines = currentMachines.sort((a, b) => {
+    const nameA = `${a.first_name}`.toLowerCase();
+    const nameB = `${b.first_name}`.toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
 
   return (
     <div className="container">
@@ -420,18 +456,18 @@ interface Machine {
         </TableHead>
 
         <TableBody>
-  {machines.map((machine) => (
-    <TableRow className="table-cell" key={machine.machine_id} hover>
+  {sortedCurrentMachines.map((machine) => (
+    <TableRow className="table-cell" key={machine.user_id} hover>
       <TableCell className="checkbox-btn" padding="checkbox">
         <Checkbox
           className="checkmark"
-          checked={selectedMachines.includes(machine.machine_id)}
-          onChange={(event) => handleMachineCheckboxChange(event, machine.machine_id)}
+          checked={selectedMachines.includes(machine.user_id)}
+          onChange={(event) => handleMachineCheckboxChange(event, machine.user_id)}
         />
       </TableCell>
       <TableCell>
-        <a className="user-link" href="#" onClick={() => handleMachineClick(machine.machine_id)}>
-          {`${machine.machine_name}`}
+        <a className="user-link" href="#" onClick={() => handleMachineClick(machine.user_id)}>
+          {`${machine.first_name}`}
         </a>
       </TableCell>
       <TableCell>{machine.project_name}</TableCell>
@@ -442,6 +478,9 @@ interface Machine {
 
       </Table>
     </TableContainer>
+    <Box className="pagination-container" display="flex" justifyContent="center" marginTop={2}>
+        <Pagination count={Math.ceil(filteredMachine.length / perPage)} page={currentPage} onChange={handlePageChange} color="primary" />
+      </Box>
 
     <Dialog open={MachineInfoDialogOpen} onClose={handleCloseDialog} fullScreen className="user-info-dialog">
 <div className="user-info-page">
@@ -452,59 +491,58 @@ interface Machine {
     <div className="user-info-content">
     <strong className="user-info-label">Machine:</strong>
     {editMode ? (
-      <>
-        <div className="name-input">
-          <input
-            className="user-info-value"
-            value={`${editedMachine?.machine_name || ''}`}
-            onChange={(e) => {
-              setEditedMachine((prevEditedMachine: Machine | null) => ({
-                ...prevEditedMachine!
-
-              }));
-            }}
-          />
-        </div>
-      </>
+      <div className="name-input">
+        <input
+          className="user-info-value"
+          value={editedMachine?.first_name || ''}
+          onChange={(e) => {
+            const firstName = e.target.value;
+            setEditedMachine((prevEditedMachine: Machine | null) => ({
+              ...prevEditedMachine!,
+              first_name: firstName,
+            }));
+          }}
+        />
+      </div>
     ) : (
-      <span className="user-info-value">{`${selectedMachine.machine_name}`}</span>
+      <span className="user-info-value">{selectedMachine?.first_name}</span>
     )}
 
 
 <strong className="user-info-label">Project:</strong>{" "}
-{editMode ? (
-<Select
-  className="user-info-value"
-  value={editedMachine?.project_id || ''}
-  onChange={(e) => setEditedMachine((prevEditedMachine: Machine | null) => ({ ...prevEditedMachine!, project_id: Number(e.target.value) }))}
->
-  {projects.map((project) => (
-    <MenuItem key={project.project_id} value={project.project_id}>
-      {project.project_name}
-    </MenuItem>
-  ))}
-</Select>
-) : (
-<span className="user-info-value">{selectedMachine?.project_name}</span>
-)}
-
-
-
-      <strong className="user-info-label">Created By:</strong>{" "}
-<span className="user-info-value">{selectedMachine.created_by}</span>
-
-      
-      <strong className="user-info-label">Updated By:</strong>{" "}
-<span className="user-info-value">{selectedMachine.updated_by}</span>
-
-
-      <strong className="user-info-label">Created At:</strong>{" "}
-<span className="user-info-value">{selectedMachine.created_time}</span>
-
-
-<strong className="user-info-label">Updated At:</strong>{" "}
-<span className="user-info-value">{selectedMachine.updated_time}</span>
-
+      {editMode ? (
+        <div className="user-info-value">
+          <Select
+            multiple
+            value={selectedProjects}
+            onChange={(e) => {
+              const target = e.target as unknown;
+              if (target instanceof HTMLSelectElement) {
+                const selectedValues: number[] = Array.from(
+                  target.selectedOptions,
+                  option => Number(option.value)
+                );
+                setSelectedProjects(selectedValues);
+              }
+            }}
+          >
+            {projects.map((project) => (
+              <MenuItem key={project.project_id} value={project.project_id}>
+                <Checkbox
+                  checked={selectedProjects.includes(project.project_id)}
+                  color="primary"
+                  onClick={() => toggleProjectSelection(project.project_id)}
+                />
+                {project.project_name}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+      ) : (
+        <span className="user-info-value">
+          {selectedMachine?.project_name}
+        </span>
+      )}
 
     </div>
   )}
@@ -527,8 +565,8 @@ interface Machine {
 </Dialog>
 
 <Dialog
-open={addMachineDialogOpen || newMachine.machine_id !== 0}
-onClose={() => setNewMachine({ ...newMachine, machine_id: 0 })}
+open={addMachineDialogOpen || newMachine.user_id !== 0}
+onClose={() => setNewMachine({ ...newMachine, user_id: 0 })}
 className="add-user-dialog"
 >
 <DialogTitle>Add Machine</DialogTitle>
@@ -540,25 +578,10 @@ className="add-user-dialog"
     label="Machine Name"
     type="text"
     fullWidth
-    value={newMachine.machine_name}
-    onChange={(e) => setNewMachine({ ...newMachine, machine_name: e.target.value })}
+    value={newMachine.first_name}
+    onChange={(e) => setNewMachine({ ...newMachine, first_name: e.target.value })}
     required/>
 
-  <Typography variant="subtitle1" gutterBottom>
-    Project
-  </Typography>
-  <Select
-    margin="dense"
-    value={newMachine.project_id}
-    onChange={(e) => setNewMachine({ ...newMachine, project_id: Number(e.target.value) })}
-    fullWidth
-    required>
-    {projects.map((project) => (
-      <MenuItem key={project.project_id} value={project.project_id}>
-        {project.project_name}
-      </MenuItem>
-    ))}
-  </Select>
 </DialogContent>
 <DialogActions className="add-user-dialog-actions">
   <Button onClick={() => setAddMachineDialogOpen(false)} color="primary">

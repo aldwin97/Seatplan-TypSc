@@ -136,7 +136,7 @@
     </select>
 
     
-    <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.UserInputModel">
+    <insert id="insertMultipleProject" parameterType="com.seatPlan.project.model.UserModel">
         INSERT INTO table_userproject (user_id, project_id) VALUES
         <foreach collection="project_id" item="project_id" separator=",">
             (#{generatedUserId}, #{project_id})

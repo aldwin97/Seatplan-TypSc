@@ -30,4 +30,9 @@
         SELECT color_id, color_name, color_code FROM table_color
     </select>
 
+
+    <select id="getProjectByname" resultType="com.seatPlan.project.model.ProjectInputModel">
+        SELECT project_name FROM table_project WHERE project_name = #{project_name} AND is_deleted = 0
+    </select>
+
 </mapper>

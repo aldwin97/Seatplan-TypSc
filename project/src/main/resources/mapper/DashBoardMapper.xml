@@ -41,7 +41,7 @@
 
 
     <select id="getAllComment" resultType="com.seatPlan.project.model.CommentModel">
-        SELECT c.comment_id,c.seat_id,c.comment,c.created_by, u.first_name, u.last_name, u.user_picture
+        SELECT c.comment_id,c.seat_id,c.comment,c.created_by, u.first_name, u.last_name, u.user_picture, c.created_time
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
         ORDER BY c.created_time DESC

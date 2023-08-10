@@ -384,15 +384,16 @@ return (
         <button type="button" className={styles.closeButton} onClick={onClose}>
           <FontAwesomeIcon icon={faClose} />
         </button>
-        <div
-        className={styles.arrowToggle}
+        <div className={styles.footer}>
+        <div 
+         className={`${styles.arrowToggle} ${showComments ? styles.toggled : ''}`}
         onClick={toggleCommentsSection}
         title={showComments ? 'Hide comments' : 'Show comments'}
       >
         <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
         {/* Optionally, you can add a button to add a new comment */}
       </div>
-
+</div>
         {/* Render the comments section */}
         {showComments && seat.seat_id && <SeatPopupComments userId={parseInt(sessionStorage.getItem('user_id') || '0', 10)} seatIds={[seat.seat_id]} />}
       </form>
@@ -743,7 +744,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           type="button"
           onClick={() => handleCommentSubmit(seatIds[0])}
         >
-          Add
+          Add Comment
         </button>
 
       </form>
@@ -1260,7 +1261,7 @@ const handleLogout = () => {
         
                         // Draw an icon for the machine position
                 if (seat.position_name === 'Machine') {
-                  const machineIconSize = 80 / zoomLevel;
+                  const machineIconSize = 60 / zoomLevel;
                   const machineIconX = scaledX + (seatSize - machineIconSize) / 1;
                   const machineIconY = scaledY + (seatSize - machineIconSize) / 1;
 
@@ -1271,7 +1272,7 @@ const handleLogout = () => {
                   // Draw the machine icon image
                   machineIcon.onload = () => {
                     console.log('Machine icon loaded successfully');
-                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 11, machineIconY - machineIconSize / 8, machineIconSize, machineIconSize);
+                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 4, machineIconY - machineIconSize / 2.5, machineIconSize, machineIconSize);
                   };
                   machineIcon.onerror = () => {
                     console.log('Error loading machine icon');

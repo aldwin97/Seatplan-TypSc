@@ -114,8 +114,8 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
-  width: 450px;
-  height: 638px;
+  width: 480px;
+  height: 760px;
   margin-bottom: 0.1%;
   margin-right: 56%;
   position: absolute;
@@ -125,7 +125,9 @@
 
 .inputDisplay {
   position: absolute;
-  margin-top: 76%;
+  margin-top: 65%;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 h3 {
@@ -211,15 +213,18 @@ h5 {
 
 
 .personal {
+  position: relative;
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
   width: 900px;
-  height: 305px;
+  height: 365px;
   margin-bottom: 3%;
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
+
+
 
 .accountS {
   position: relative;
@@ -227,11 +232,12 @@ h5 {
   background-color: #ffffff;
   border-radius: 40px;
   width: 900px;
-  height: 305px;
+  height: 365px;
   margin-bottom: 3%;
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
+
 
 h1 {
   margin-top: 2%;
@@ -254,17 +260,17 @@ h1 {
   margin-left: 7%;
   margin-top: -4%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
-  margin-bottom: 10%;
+  margin-bottom: 10;
 }
 
 .readLabel2 {
   margin-left: 3.2%;
   margin-top: -2%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
   margin-bottom: 10%;
@@ -273,7 +279,7 @@ h1 {
   margin-left: 3.2%;
   margin-top: -2%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
   margin-bottom: 10%;
@@ -282,7 +288,7 @@ h1 {
   margin-left: 3.2%;
   margin-top: -2%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
   margin-bottom: 10%;
@@ -298,6 +304,8 @@ h1 {
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgb(241, 241, 241);
   padding-left: 6%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .nameInput:focus,
@@ -342,6 +350,8 @@ input:valid {
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgb(241, 241, 241);
   padding-left: 3%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .user-label {
@@ -374,15 +384,16 @@ input:not(:read-only):valid ~ .user-label {
 .personal-button {
   display: flex;
   position: absolute;
-  margin-left: 36.5%;
-  margin-top: -17%;
+  margin-left: 70%;
+  margin-top: -35%;
 }
+
 
 .account-button {
   display: flex;
   position: absolute;
-  margin-left: 64%;
-  margin-top: -32%;
+  margin-left: 70%;
+  margin-top: -36%;
 }
 
 .saveButton {
@@ -397,7 +408,7 @@ input:not(:read-only):valid ~ .user-label {
   border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
-    border-color 0.4s ease-in-out;
+  order-color 0.4s ease-in-out;
   margin-left: 10px;
 }
 
@@ -447,6 +458,8 @@ input:not(:read-only):valid ~ .user-label {
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgb(241, 241, 241);
   padding-left: 6%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .change-label {
@@ -607,13 +620,9 @@ input:not(:read-only):valid ~ .change-label {
   .inputDisplay{
     top:-180px;
   }
-  .personal{
-    position: fixed;
-    top: 500px;
-    left:90px;
-    width:600px;
-    height:400px;
-  }
+
+ 
+
   .settool{
     position: fixed;
    top:-70px;
@@ -626,13 +635,7 @@ input:not(:read-only):valid ~ .change-label {
    left:550px;
    z-index:2;
   }
-  .accountS{
-    position: fixed;
-    top:960px; 
-    width:600px;
-    height:400px;
-    left:90px;
-  }
+ 
   .account-button{  
     top:200px;
     left:-50px;
@@ -714,13 +717,7 @@ input:not(:read-only):valid ~ .change-label {
   .inputDisplay{
     top:-180px;
   }
-  .personal{
-    position: fixed;
-    top: 500px;
-    left:90px;
-    width:600px;
-    height:400px;
-  }
+  
   .settool{
     position: fixed;
    top:-70px;
@@ -733,13 +730,8 @@ input:not(:read-only):valid ~ .change-label {
    left:550px;
    z-index:2;
   }
-  .accountS{
-    position: fixed;
-    top:960px; 
-    width:600px;
-    height:400px;
-    left:90px;
-  }
+
+
   .account-button{  
     top:210px;
     left:-90px;

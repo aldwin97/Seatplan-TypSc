@@ -377,10 +377,10 @@ body {
 }
 .cardcomment {
   position: relative;
-  top: 530px;
+  top: 500px;
   height: 535px;
   width: 740px; /* Adjust the width as needed */
-  right: 710px;
+  right: 700px;
   background-color: white;
   box-shadow: 0 2px 10px #308a38;
   background-clip: border-box;
@@ -392,7 +392,7 @@ body {
 
 .projectCard {
   position: relative;
-  top: 530px; /* Adjust the top position as needed to align it with cardcomment */
+  top: 500px; /* Adjust the top position as needed to align it with cardcomment */
   right:660px;
   height: 535px;
   width: 740px; /* Adjust the width as needed */

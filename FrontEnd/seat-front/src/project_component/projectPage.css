@@ -261,4 +261,8 @@
         cursor: pointer;
         scale: 0.99;
       }
-    
+      @media screen and (max-width: 1024px) {
+        .form0{
+          width: 600px;
+        }
+      }

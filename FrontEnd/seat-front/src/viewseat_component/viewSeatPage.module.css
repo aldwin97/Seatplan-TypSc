@@ -825,7 +825,8 @@ input:valid ~ .user-label {
 }
 
 .closeButton {
-  top: 510px;
+  top: 500px;
+  left:7px;
   position: relative;
   z-index: 3;
   color: #968b8b;

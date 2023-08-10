@@ -7,6 +7,7 @@ import {
   GroupsOutlined,
   AccountCircleOutlined,
   WorkOutlineOutlined,
+  BusinessCenterOutlined,
   Menu,
   Logout,
 } from "@mui/icons-material";
@@ -23,7 +24,7 @@ import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
 import Grid from "@mui/material/Grid";
-
+import { Avatar} from '@mui/material';
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -31,10 +32,10 @@ const ProfilePage: React.FC = () => {
 
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
-
+  const [UserData, setUserData] = useState<UserData | null>(null);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
-
+  const [userPicture1, setUserPicture1] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -106,7 +107,52 @@ const ProfilePage: React.FC = () => {
     message: string;
     status: number;
   }
+  interface UserData {
+    first_name: string;
+    last_name: string;
+    position_name: string;
+  }
 
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      try {
+        const user_id = window.sessionStorage.getItem('user_id');
+        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+          responseType: 'arraybuffer',
+        });
+
+        const base64Data = btoa(
+          new Uint8Array(pictureResponse.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        setUserPicture1(pictureDataUrl);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchUserPicture();
+  }, []);
+
+  useEffect(() => {
+    const user_id = window.sessionStorage.getItem('user_id');
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+
+        const responseData: UserData = response.data[0];
+        setUserData(responseData);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   useEffect(() => {
     const user_id = window.sessionStorage.getItem("user_id");
 
@@ -513,6 +559,30 @@ const ProfilePage: React.FC = () => {
               className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
             >
               <ul className={style["accordion-menu"]}>
+                     <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={style['userbg']}>
+                      <div className={style['userpr']}>
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={style.defaultImage}// Add any additional styles here
+      />
+    )}
+                      </div>
+                    </div>
+                    {UserData ? (
+                      <div className={style['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={style['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                 <li className={style["sidebar-title"]}>Apps</li>
                 <li>
                   <a
@@ -551,6 +621,14 @@ const ProfilePage: React.FC = () => {
                     Project
                   </a>
                 </li>
+                <li>
+                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <BusinessCenterOutlined/>
+                      </i>
+                      Machine 
+                    </a>
+                  </li>
                 <li>
                   <a onClick={adminPageHandleClick} className={style["active"]}>
                     <i

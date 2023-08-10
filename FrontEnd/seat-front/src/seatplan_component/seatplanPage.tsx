@@ -13,6 +13,9 @@ import { saveAs } from 'file-saver';
 import { FaInfoCircle } from 'react-icons/fa';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import svgPathConverter from 'svg-path-converter';
+import { Avatar} from '@mui/material';
+import axios from 'axios';
+import defaulImage from "../assets/default.png";
 
 interface Seat {
   position: { x: number; y: number };
@@ -58,6 +61,7 @@ interface Occupant {
 
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
+ 
   const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
@@ -67,7 +71,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
 
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
-
+  
   useEffect(() => {
     document.body.classList.toggle('popupOpen', true);
     return () => {
@@ -156,7 +160,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
     }
   };
   
-
+  
  useEffect(() => {
   // Check if the selected occupant is already assigned to another seat
   const checkOccupantAssignment = () => {
@@ -432,7 +436,9 @@ interface SeatPopupCommentsProps {
   seatIds: number[]; // Change to an array of seatIds
 }
 
+
 const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
+  
   const [commentsMap, setCommentsMap] = useState<{ [seatId: number]: Comment[] }>({});
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState<string>('');
@@ -1380,6 +1386,59 @@ const handleInfoButtonClick = () => {
 const handleInfoGuideClose = () => {
   setShowInfoGuide(false);
 };
+
+
+
+//sidebar
+interface UserData {
+  first_name: string;
+  last_name: string;
+  position_name: string;
+}
+
+const [userPicture, setUserPicture] = useState<string | null>(null);
+  const [UserData, setUserData] = useState<UserData | null>(null);
+useEffect(() => {
+  const fetchUserPicture = async () => {
+    try {
+      const user_id = window.sessionStorage.getItem('user_id');
+      const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+        responseType: 'arraybuffer',
+      });
+
+      const base64Data = btoa(
+        new Uint8Array(pictureResponse.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ''
+        )
+      );
+      const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+      setUserPicture(pictureDataUrl);
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+    }
+  };
+
+  fetchUserPicture();
+}, []);
+
+useEffect(() => {
+  const user_id = window.sessionStorage.getItem('user_id');
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+
+      const responseData: UserData = response.data[0];
+      setUserData(responseData);
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
   return (
    <body className={styles.body}> <div className={styles.container}>
       <i className={styles['menu-out']}onClick={toggleDrawer}>
@@ -1404,6 +1463,30 @@ const handleInfoGuideClose = () => {
               <div className={`${style['page-sidebar-inner']} ${style['slimscroll']}`}>
                 
                 <ul className={style['accordion-menu']}>
+                <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={style['userbg']}>
+                      <div className={style['userpr']}>
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={style.defaultImage}// Add any additional styles here
+      />
+    )}
+                      </div>
+                    </div>
+                    {UserData ? (
+                      <div className={style['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={style['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                   <li className={style['sidebar-title']}>Apps</li>
                   <li >
                     <a onClick={dashboardPageHandleClick} className={style['material-icons']}>

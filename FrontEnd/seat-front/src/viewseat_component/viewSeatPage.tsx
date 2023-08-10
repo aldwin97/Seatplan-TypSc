@@ -361,7 +361,7 @@ const customBorders = [
             const occupantNameParts = seat.occupant.split(' ');
             const surname = occupantNameParts[1];
             const firstName = occupantNameParts[0];
-            const occupantName = `${surname}, ${firstName}`;
+            const occupantName = `${firstName} ${surname} `;
             
             const occupantNameWidth = ctx.measureText(occupantName).width;
             

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import style from '../dashboard_component/dashboardPage.module.css';
-import { DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
+import { BusinessCenterOutlined, DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout } from '@mui/icons-material';
 import { useNavigate, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
@@ -294,11 +294,12 @@ return (
           // Filter out occupants who are already assigned to a seat
           return !seats.some((s) => s.occupant === occupant.user_id.toString());
         })
-        .map((occupant) => (
-          <option key={occupant.user_id} value={occupant.user_id}>
-            {`${occupant.last_name} ${occupant.first_name}`}
-          </option>
-        ))}
+       .map((occupant) => (
+  <option key={occupant.user_id} value={occupant.user_id}>
+    {` ${occupant.first_name}${occupant.last_name ? ` ${occupant.last_name}` : ''}`}
+  </option>
+))
+       }
     </select>
             {errorMsg && (
               <div className={styles.errorPopup}>
@@ -383,15 +384,16 @@ return (
         <button type="button" className={styles.closeButton} onClick={onClose}>
           <FontAwesomeIcon icon={faClose} />
         </button>
-        <div
-        className={styles.arrowToggle}
+        <div className={styles.footer}>
+        <div 
+         className={`${styles.arrowToggle} ${showComments ? styles.toggled : ''}`}
         onClick={toggleCommentsSection}
         title={showComments ? 'Hide comments' : 'Show comments'}
       >
         <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
         {/* Optionally, you can add a button to add a new comment */}
       </div>
-
+</div>
         {/* Render the comments section */}
         {showComments && seat.seat_id && <SeatPopupComments userId={parseInt(sessionStorage.getItem('user_id') || '0', 10)} seatIds={[seat.seat_id]} />}
       </form>
@@ -742,7 +744,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           type="button"
           onClick={() => handleCommentSubmit(seatIds[0])}
         >
-          Add
+          Add Comment
         </button>
 
       </form>
@@ -840,7 +842,9 @@ function SeatplanPage() {
       .catch((error) => console.error('Error fetching seat data:', error));
   }, []);
 
-  
+  const MachinePageHandleClick = () => {
+    navigate('/machinetablePage');
+  };
   
   const [zoomLevel] = useState(1);
   const [canvasOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -1196,7 +1200,7 @@ const handleLogout = () => {
             const occupantNameParts = seat.occupant.split(' ');
             const surname = occupantNameParts[1];
             const firstName = occupantNameParts[0];
-            const occupantName = `${surname}, ${firstName}`;
+            const occupantName = `${firstName} ${surname} `;
             
             const occupantNameWidth = ctx.measureText(occupantName).width;
             
@@ -1257,7 +1261,7 @@ const handleLogout = () => {
         
                         // Draw an icon for the machine position
                 if (seat.position_name === 'Machine') {
-                  const machineIconSize = 80 / zoomLevel;
+                  const machineIconSize = 60 / zoomLevel;
                   const machineIconX = scaledX + (seatSize - machineIconSize) / 1;
                   const machineIconY = scaledY + (seatSize - machineIconSize) / 1;
 
@@ -1268,7 +1272,7 @@ const handleLogout = () => {
                   // Draw the machine icon image
                   machineIcon.onload = () => {
                     console.log('Machine icon loaded successfully');
-                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 11, machineIconY - machineIconSize / 8, machineIconSize, machineIconSize);
+                    ctx.drawImage(machineIcon, machineIconX - machineIconSize / 4, machineIconY - machineIconSize / 2.5, machineIconSize, machineIconSize);
                   };
                   machineIcon.onerror = () => {
                     console.log('Error loading machine icon');
@@ -1416,6 +1420,15 @@ const handleInfoGuideClose = () => {
                       Project
                     </a>
                   </li>
+                  <li>
+                  <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <BusinessCenterOutlined/>
+                      </i>
+                      Machine 
+                    </a>
+                  </li>
+                  <li></li>
                   <li>
                     <a onClick={adminPageHandleClick} className={style['active']}>
                       <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>

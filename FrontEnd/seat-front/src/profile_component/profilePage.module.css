@@ -117,7 +117,7 @@
   width: 480px;
   height: 760px;
   margin-bottom: 0.1%;
-  margin-right: 56%;
+  margin-right: 59%;
   position: absolute;
   z-index: 2;
   justify-content: center;
@@ -595,7 +595,22 @@ input:not(:read-only):valid ~ .change-label {
     width:600px;
     height:400px;
   }
-  
+  .personal{
+    position: fixed;
+    left:100px;
+    top:500px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .accountS{
+    position: fixed;
+    left:100px;
+    top:970px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
   .inputDisplay{
     top:-180px;
   }
@@ -603,14 +618,14 @@ input:not(:read-only):valid ~ .change-label {
  
 
   .settool{
-    position: fixed;
+    position:fixed;
    top:-70px;
-   left: -10px;
+   left: -100px;
    z-index:2;
   }
   .settool1{
     position: fixed;
-   top:-110px;
+   top:-150px;
    left:550px;
    z-index:2;
   }
@@ -708,7 +723,7 @@ input:not(:read-only):valid ~ .change-label {
   }
   .settool1{
     position: fixed;
-   top:-110px;
+   top:-150px;
    left:550px;
    z-index:2;
   }

@@ -224,10 +224,16 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 };
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isSwapMode, setIsSwapMode] = useState(false);
 
+  const handleSwap = () => {
+    setIsSwapMode(true);
+  };
+  
   const handleEdit = () => {
     setIsEditMode(true);
   };
+ 
   const handleOccupantChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOccupant(event.target.value);
   };
@@ -245,9 +251,9 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       if (response.ok) {
         const occupantsData: Occupant[] = await response.json();
   
-        // Filter out occupants who are already assigned to a seat
+        // Filter out occupants who are already assigned to a seat (have seat_id)
         const unassignedOccupants = occupantsData.filter((occupant) => {
-          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+          return !seats.some((s) => s.occupant === occupant.user_id.toString() && s.seat_id);
         });
   
         setOccupantsList(unassignedOccupants);
@@ -258,6 +264,8 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       console.error('Error occurred while fetching occupants:', error);
     }
   };
+  
+  
   
   
   
@@ -288,17 +296,18 @@ return (
       onChange={handleOccupantChange}
       required
     >
-      <option value="">Assign an Occupant</option>
-      {occupantsList
-        .filter((occupant) => {
-          // Filter out occupants who are already assigned to a seat
-          return !seats.some((s) => s.occupant === occupant.user_id.toString());
-        })
-       .map((occupant) => (
-  <option key={occupant.user_id} value={occupant.user_id}>
-    {` ${occupant.first_name}${occupant.last_name ? ` ${occupant.last_name}` : ''}`}
-  </option>
-))
+  <option value="">Assign an Occupant</option>
+{occupantsList
+  .filter((occupant) => {
+    const isAssigned = seats.some((s) => s.occupant === occupant.user_id.toString());
+    console.log(`Occupant ${occupant.user_id} is assigned: ${isAssigned}`);
+    return !isAssigned;
+  })
+  .map((occupant) => (
+    <option key={occupant.user_id} value={occupant.user_id}>
+      {` ${occupant.first_name}${occupant.last_name ? ` ${occupant.last_name}` : ''}`}
+    </option>
+  ))
        }
     </select>
             {errorMsg && (

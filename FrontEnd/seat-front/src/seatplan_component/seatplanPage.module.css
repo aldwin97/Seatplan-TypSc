@@ -425,6 +425,7 @@
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
   margin-left: 29%;
+  margin-bottom: 10px;
 }
 .swapButton:hover {
   background-color: #0056b3 !important;

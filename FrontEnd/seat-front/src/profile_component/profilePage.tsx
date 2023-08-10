@@ -896,8 +896,8 @@ const ProfilePage: React.FC = () => {
                     border: "none",
                     borderRadius: "40px",
                     padding: "8px",
-                    marginTop: "-61.5%",
-                    marginLeft: "91.6%",
+                    top:"-320px",
+                    left:"820px",
                     cursor: "pointer",
                     transition:
                       "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
@@ -1124,7 +1124,7 @@ const ProfilePage: React.FC = () => {
                     border: "none",
                     borderRadius: "40px",
                     padding: "8px",
-                    marginTop: "-51%",
+                    top: "-260px",
                     marginLeft: "-3%",
                     cursor: "pointer",
                     transition:

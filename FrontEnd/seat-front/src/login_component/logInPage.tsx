@@ -46,13 +46,12 @@ const LogInPage: React.FC = () => {
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-
   const dashboardPageHandleClick = async () => {
     if (!username || !password) {
       setError(true);
       return;
     }
-
+  
     try {
       const response = await fetch("http://localhost:8080/user/login", {
         method: "POST",
@@ -61,26 +60,27 @@ const LogInPage: React.FC = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-
+  
       if (!response.ok) {
         setError(true);
         return;
       }
-
+  
       const responseData = await response.json();
-      const { user_id } = responseData; // Extract the user_id from responseData
-      console.log(user_id);
-
+      const { user_id, usertype_id } = responseData; // Extract the usertype_id from responseData
+  
       setRedirectToDashboard(true);
-
+  
       // Save session data to Session Storage
       window.sessionStorage.setItem("user_id", user_id);
       window.sessionStorage.setItem("user_name", username);
+      window.sessionStorage.setItem("usertype_id", usertype_id);
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
+  
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {

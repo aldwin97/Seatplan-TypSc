@@ -14,6 +14,7 @@
   import { Grid, Box, useMediaQuery} from '@mui/material';
   import { createTheme,  Theme } from '@mui/material/styles';
   import { makeStyles } from '@mui/styles';
+  import defaulImage from "../assets/default.png";
 
 
   const useStyles = makeStyles((theme: Theme) => ({
@@ -321,7 +322,15 @@
                   <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <div className={styles['userbg']}>
                       <div className={styles['userpr']}>
-                        {userPicture && <Avatar src={userPicture} alt="User" />}
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={styles.defaultImage}// Add any additional styles here
+      />
+    )}
                       </div>
                     </div>
                     {UserData ? (
@@ -370,7 +379,7 @@
                       Machine 
                     </a>
                   </li>
-                  <li></li>
+                  
                   <li>
                     
                     <a onClick={adminPageHandleClick} className={styles['material-icons']}>

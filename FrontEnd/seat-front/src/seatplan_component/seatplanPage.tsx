@@ -7,12 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import styles from './seatplanPage.module.css';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { FaInfoCircle } from 'react-icons/fa';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import svgPathConverter from 'svg-path-converter';
+import { Avatar} from '@mui/material';
+import axios from 'axios';
+import defaulImage from "../assets/default.png";
 
 interface Seat {
   position: { x: number; y: number };
@@ -58,6 +61,7 @@ interface Occupant {
 
 
 function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Element {
+ 
   const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
   const [occupantsList, setOccupantsList] = useState<Occupant[]>([]);
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
@@ -67,7 +71,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
 
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
-
+  
   useEffect(() => {
     document.body.classList.toggle('popupOpen', true);
     return () => {
@@ -156,7 +160,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
     }
   };
   
-
+  
  useEffect(() => {
   // Check if the selected occupant is already assigned to another seat
   const checkOccupantAssignment = () => {
@@ -224,10 +228,16 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 };
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isSwapMode, setIsSwapMode] = useState(false);
 
+  const handleSwap = () => {
+    setIsSwapMode(true);
+  };
+  
   const handleEdit = () => {
     setIsEditMode(true);
   };
+ 
   const handleOccupantChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOccupant(event.target.value);
   };
@@ -245,9 +255,9 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       if (response.ok) {
         const occupantsData: Occupant[] = await response.json();
   
-        // Filter out occupants who are already assigned to a seat
+        // Filter out occupants who are already assigned to a seat (have seat_id)
         const unassignedOccupants = occupantsData.filter((occupant) => {
-          return !seats.some((s) => s.occupant === occupant.user_id.toString());
+          return !seats.some((s) => s.occupant === occupant.user_id.toString() && s.seat_id);
         });
   
         setOccupantsList(unassignedOccupants);
@@ -258,6 +268,8 @@ const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       console.error('Error occurred while fetching occupants:', error);
     }
   };
+  
+  
   
   
   
@@ -288,17 +300,18 @@ return (
       onChange={handleOccupantChange}
       required
     >
-      <option value="">Assign an Occupant</option>
-      {occupantsList
-        .filter((occupant) => {
-          // Filter out occupants who are already assigned to a seat
-          return !seats.some((s) => s.occupant === occupant.user_id.toString());
-        })
-       .map((occupant) => (
-  <option key={occupant.user_id} value={occupant.user_id}>
-    {` ${occupant.first_name}${occupant.last_name ? ` ${occupant.last_name}` : ''}`}
-  </option>
-))
+  <option value="">Assign an Occupant</option>
+{occupantsList
+  .filter((occupant) => {
+    const isAssigned = seats.some((s) => s.occupant === occupant.user_id.toString());
+    console.log(`Occupant ${occupant.user_id} is assigned: ${isAssigned}`);
+    return !isAssigned;
+  })
+  .map((occupant) => (
+    <option key={occupant.user_id} value={occupant.user_id}>
+      {` ${occupant.first_name}${occupant.last_name ? ` ${occupant.last_name}` : ''}`}
+    </option>
+  ))
        }
     </select>
             {errorMsg && (
@@ -389,8 +402,9 @@ return (
          className={`${styles.arrowToggle} ${showComments ? styles.toggled : ''}`}
         onClick={toggleCommentsSection}
         title={showComments ? 'Hide comments' : 'Show comments'}
-      >
-        <FontAwesomeIcon icon={showComments ? faArrowUp : faArrowDown} />
+      > <h5 className={styles.h5}>Comment Section</h5>
+        <FontAwesomeIcon icon={showComments ? faChevronUp : faChevronDown} />
+       
         {/* Optionally, you can add a button to add a new comment */}
       </div>
 </div>
@@ -423,7 +437,9 @@ interface SeatPopupCommentsProps {
   seatIds: number[]; // Change to an array of seatIds
 }
 
+
 const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
+  
   const [commentsMap, setCommentsMap] = useState<{ [seatId: number]: Comment[] }>({});
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState<string>('');
@@ -686,42 +702,49 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     };
   
     return (
-      <ul className={styles.commentsList}>
+      <table className={styles.commentsTable}>
+      <tbody>
         {comments.map((comment) => (
-          <li key={comment.comment_id}>
-            <span className={styles.boldName}>{comment.full_name}: </span>
-            <span className={styles.text}>{comment.comment}</span>
-            {/* Display "Replied to" information */}
-            {comment.parent_id && (
-              <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
-              </div>
-            )}
-            {/* Check if the comment is not written by the current user */}
-            {comment.user_id !== userId && !comment.replies && (
-              <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
-            )}
-            {/* Display "Replied to" information based on recipient_id */}
-            {comment.user_id === userId && comment.recipient_id !== userId && (
-              <div className={styles.repliedTo}>
-                You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
-              </div>
-            )}
-            {/* Display indicator for third-party users */}
-            {comment.user_id !== userId && comment.parent_id && (
-              <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
-              </div>
-            )}
-            {/* Display indicator for the user who received the reply */}
-            {comment.recipient_id === userId && (
-              <div className={styles.repliedTo}>
-                {findFullNameById(comment.user_id)} replied to you ↶
-              </div>
-            )}
-          </li>
+          <tr key={comment.comment_id}>
+            <td>
+              <span className={styles.boldName}>{comment.full_name}: </span>
+              <span className={styles.text}>{comment.comment}</span>
+              {/* Display "Replied to" information */}
+              {comment.parent_id && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
+                </div>
+              )}
+            </td>
+            <td>
+              {/* Check if the comment is not written by the current user */}
+              {comment.user_id !== userId && !comment.replies && (
+                <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
+              )}
+              {/* Display "Replied to" information based on recipient_id */}
+              {comment.user_id === userId && comment.recipient_id !== userId && (
+                <div className={styles.repliedTo}>
+                  You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
+                </div>
+              )}
+              {/* Display indicator for third-party users */}
+              {comment.user_id !== userId && comment.parent_id && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
+                </div>
+              )}
+              {/* Display indicator for the user who received the reply */}
+              {comment.recipient_id === userId && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} replied to you ↶
+                </div>
+              )}
+            </td>
+          </tr>
         ))}
-      </ul>
+      </tbody>
+    </table>
+    
     );
   };
   
@@ -1118,10 +1141,19 @@ const handleLogout = () => {
   
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = canvasRef.current!;
     const ctx = canvas?.getContext('2d');
- 
+    const handleMouseEnter = () => {
+      canvas.classList.add('seat-hover');
+    };
+  
+    const handleMouseLeave = () => {
+      canvas.classList.remove('seat-hover');
+    };
+  
     if (canvas && ctx) {
+      canvas.addEventListener('mouseenter', handleMouseEnter);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
   
       ctx.scale(zoomLevel, zoomLevel);
@@ -1129,7 +1161,13 @@ const handleLogout = () => {
       filteredSeats.forEach((seat) => {
         const { x, y } = seat.position;
         const { color } = seat;
-  
+        const handleMouseEnter = () => {
+          canvas.classList.add('seat-hover'); // Apply hover effect
+        };
+      
+        const handleMouseLeave = () => {
+          canvas.classList.remove('seat-hover'); // Remove hover effect
+        };
         const scaledX = x / zoomLevel;
         const scaledY = y / zoomLevel;
         const seatSize = 98 / zoomLevel;
@@ -1283,7 +1321,10 @@ const handleLogout = () => {
         if (selectedSeat && seat.seat_id === selectedSeat.seat_id) {
           ctx.fillRect(scaledX, scaledY, seatSize, seatSize);
           ctx.fillText('Edit', scaledX + seatSize / 2 - 10, scaledY + seatSize / 2 + 5);
-        }
+        } return () => {
+          canvas.removeEventListener('mouseenter', handleMouseEnter);
+          canvas.removeEventListener('mouseleave', handleMouseLeave);
+        };
     }});
     }
   }, [filteredSeats, zoomLevel, selectedSeat]);
@@ -1371,6 +1412,59 @@ const handleInfoButtonClick = () => {
 const handleInfoGuideClose = () => {
   setShowInfoGuide(false);
 };
+
+
+
+//sidebar
+interface UserData {
+  first_name: string;
+  last_name: string;
+  position_name: string;
+}
+
+const [userPicture, setUserPicture] = useState<string | null>(null);
+  const [UserData, setUserData] = useState<UserData | null>(null);
+useEffect(() => {
+  const fetchUserPicture = async () => {
+    try {
+      const user_id = window.sessionStorage.getItem('user_id');
+      const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+        responseType: 'arraybuffer',
+      });
+
+      const base64Data = btoa(
+        new Uint8Array(pictureResponse.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ''
+        )
+      );
+      const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+      setUserPicture(pictureDataUrl);
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+    }
+  };
+
+  fetchUserPicture();
+}, []);
+
+useEffect(() => {
+  const user_id = window.sessionStorage.getItem('user_id');
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+
+      const responseData: UserData = response.data[0];
+      setUserData(responseData);
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
   return (
    <body className={styles.body}> <div className={styles.container}>
       <i className={styles['menu-out']}onClick={toggleDrawer}>
@@ -1395,6 +1489,30 @@ const handleInfoGuideClose = () => {
               <div className={`${style['page-sidebar-inner']} ${style['slimscroll']}`}>
                 
                 <ul className={style['accordion-menu']}>
+                <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={style['userbg']}>
+                      <div className={style['userpr']}>
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={style.defaultImage}// Add any additional styles here
+      />
+    )}
+                      </div>
+                    </div>
+                    {UserData ? (
+                      <div className={style['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={style['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                   <li className={style['sidebar-title']}>Apps</li>
                   <li >
                     <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
@@ -1472,6 +1590,7 @@ const handleInfoGuideClose = () => {
         height={1400}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        className={styles.canvas}
       ></canvas>
       </div>
   </div>

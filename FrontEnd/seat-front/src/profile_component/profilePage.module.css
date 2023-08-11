@@ -117,7 +117,7 @@
   width: 480px;
   height: 760px;
   margin-bottom: 0.1%;
-  margin-right: 56%;
+  margin-right: 59%;
   position: absolute;
   z-index: 2;
   justify-content: center;
@@ -393,7 +393,7 @@ input:not(:read-only):valid ~ .user-label {
   display: flex;
   position: absolute;
   margin-left: 70%;
-  margin-top: -36%;
+  margin-top: -35%;
 }
 
 .saveButton {
@@ -581,28 +581,7 @@ input:not(:read-only):valid ~ .change-label {
   background-position: center;
 
 }
-.settool{
-  background-color: #797979;
-  color: #ffffff;
-  border:none;
-  border-radius:40px;
-  padding: "8px";
-  margin-top:-61.5%;
-  margin-left:91.6%;
-  cursor:pointer;
-  transition:background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-}
-.settool1{
-  background-color: #797979;
-  color: #ffffff;
-  border:none;
-  border-radius:40px;
-  padding: "8px";
-  margin-top:-61.5%;
-  margin-left:91.6%;
-  cursor:pointer;
-  transition:background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-}
+
 @media screen and (max-width: 1024px) {
   .form1{
     width: 100%;
@@ -611,12 +590,27 @@ input:not(:read-only):valid ~ .change-label {
   }
   .profileSum{
     position: fixed;
-    top:40px;
+    top:30px;
     left:90px;
     width:600px;
     height:400px;
   }
-  
+  .personal{
+    position: fixed;
+    left:100px;
+    top:500px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .accountS{
+    position: fixed;
+    left:100px;
+    top:970px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
   .inputDisplay{
     top:-180px;
   }
@@ -624,14 +618,14 @@ input:not(:read-only):valid ~ .change-label {
  
 
   .settool{
-    position: fixed;
+    position:fixed;
    top:-70px;
-   left: -10px;
+   left: -100px;
    z-index:2;
   }
   .settool1{
     position: fixed;
-   top:-110px;
+   top:-150px;
    left:550px;
    z-index:2;
   }
@@ -708,8 +702,8 @@ input:not(:read-only):valid ~ .change-label {
   }
   .profileSum{
     position: fixed;
-    top:40px;
-    left:90px;
+    top:70px;
+    left:100px;
     width:600px;
     height:400px;
   }
@@ -717,7 +711,10 @@ input:not(:read-only):valid ~ .change-label {
   .inputDisplay{
     top:-180px;
   }
+  .set{
+  top:70px;
   
+  }
   .settool{
     position: fixed;
    top:-70px;
@@ -726,7 +723,7 @@ input:not(:read-only):valid ~ .change-label {
   }
   .settool1{
     position: fixed;
-   top:-110px;
+   top:-150px;
    left:550px;
    z-index:2;
   }

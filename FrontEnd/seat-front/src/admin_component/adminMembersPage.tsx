@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import styles from "../dashboard_component/dashboardPage.module.css";
+import { Avatar} from '@mui/material';
+import axios from 'axios';
+import defaulImage from "../assets/default.png";
 import {
   BusinessCenterOutlined,
   DashboardOutlined,
@@ -83,8 +86,15 @@ interface Project {
   project_id: number;
   project_name: string;
 }
+interface UserData {
+  first_name: string;
+  last_name: string;
+  position_name: string;
+}
 
 const AdminMembersPage: React.FC = () => {
+  const [userPicture, setUserPicture] = useState<string | null>(null);
+  const [UserData, setUserData] = useState<UserData | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -126,6 +136,46 @@ const AdminMembersPage: React.FC = () => {
     updated_time: "",
     updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
   });
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      try {
+        const user_id = window.sessionStorage.getItem('user_id');
+        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+          responseType: 'arraybuffer',
+        });
+
+        const base64Data = btoa(
+          new Uint8Array(pictureResponse.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        setUserPicture(pictureDataUrl);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchUserPicture();
+  }, []);
+
+  useEffect(() => {
+    const user_id = window.sessionStorage.getItem('user_id');
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+
+        const responseData: UserData = response.data[0];
+        setUserData(responseData);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   useEffect(() => {
     // Retrieve the logged-in user ID from the session storage
     const user_id = sessionStorage.getItem("user_id");
@@ -506,6 +556,30 @@ const AdminMembersPage: React.FC = () => {
               className={`${styles["page-sidebar-inner"]} ${styles["slimscroll"]}`}
             >
               <ul className={styles["accordion-menu"]}>
+              <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={styles['userbg']}>
+                      <div className={styles['userpr']}>
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={styles.defaultImage}// Add any additional styles here
+      />
+    )}
+                      </div>
+                    </div>
+                    {UserData ? (
+                      <div className={styles['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={styles['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                 <li className={styles["sidebar-title"]}>Apps</li>
                 <li>
                   <a

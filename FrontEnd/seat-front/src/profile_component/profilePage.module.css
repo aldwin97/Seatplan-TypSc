@@ -668,6 +668,9 @@ input:not(:read-only):valid ~ .change-label {
     right:20px;
 
   }
+  .inputDisplay{
+    top:-100px;
+  }
   .personal-button{  
     position: absolute;
     /* display:flex; */
@@ -751,6 +754,7 @@ input:not(:read-only):valid ~ .change-label {
     width:600px;
     height:400px;
   }
+  
   .accountS{
     position: fixed;
     left:100px;

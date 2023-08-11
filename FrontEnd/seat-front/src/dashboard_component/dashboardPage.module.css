@@ -302,7 +302,7 @@ body {
   background-color: #ffffff;
   text-align: center;
   border-radius: 10px;
-  left: 370%;
+  left: 372%;
   box-shadow: 0 2px 10px #308a38;
 }
 
@@ -429,7 +429,52 @@ body {
   margin-left: 26px;
 
 }
+.userpr {
+  position: relative;
+  left:2.8px;
 
+  
+}
+
+.userbg{
+  
+  position: relative;
+  align-items: center;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  background-color: #ffffff;
+  border: 1.5px solid #308a38; /* Add border color and thickness */
+  /* left:70px; */
+  top:20px;
+  display: flex;
+ 
+
+}
+.usern{
+  position: relative;
+  top:20px;
+  font-size: 18px;
+  font-weight: bold;
+  /* left: 15px; */
+  text-align: center;
+  
+}
+.userp{
+  position: relative;
+  font-size: 12px;
+  font-weight:lighter;
+  /* left: 30px; */
+  text-align: center;
+  margin-bottom: 10px;
+}
+.defaultImage{
+  position: relative;
+  width: 40px;
+  height: 40px;
+  top:3.5px;
+}
 @media (max-width: 1200px) {
 
   .compact-sidebar .page-sidebar {

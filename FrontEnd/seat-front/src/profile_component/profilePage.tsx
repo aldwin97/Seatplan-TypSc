@@ -7,6 +7,7 @@ import {
   GroupsOutlined,
   AccountCircleOutlined,
   WorkOutlineOutlined,
+  BusinessCenterOutlined,
   Menu,
   Logout,
 } from "@mui/icons-material";
@@ -23,7 +24,7 @@ import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
 import Grid from "@mui/material/Grid";
-
+import { Avatar} from '@mui/material';
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -31,10 +32,10 @@ const ProfilePage: React.FC = () => {
 
   const [editPersonalMode, setPersonalEditMode] = useState(false);
   const [editAccountMode, setAccountEditMode] = useState(false);
-
+  const [UserData, setUserData] = useState<UserData | null>(null);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
-
+  const [userPicture1, setUserPicture1] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -106,7 +107,52 @@ const ProfilePage: React.FC = () => {
     message: string;
     status: number;
   }
+  interface UserData {
+    first_name: string;
+    last_name: string;
+    position_name: string;
+  }
 
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      try {
+        const user_id = window.sessionStorage.getItem('user_id');
+        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+          responseType: 'arraybuffer',
+        });
+
+        const base64Data = btoa(
+          new Uint8Array(pictureResponse.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        setUserPicture1(pictureDataUrl);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchUserPicture();
+  }, []);
+
+  useEffect(() => {
+    const user_id = window.sessionStorage.getItem('user_id');
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+
+        const responseData: UserData = response.data[0];
+        setUserData(responseData);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   useEffect(() => {
     const user_id = window.sessionStorage.getItem("user_id");
 
@@ -513,6 +559,30 @@ const ProfilePage: React.FC = () => {
               className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
             >
               <ul className={style["accordion-menu"]}>
+                     <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={style['userbg']}>
+                      <div className={style['userpr']}>
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={style.defaultImage}// Add any additional styles here
+      />
+    )}
+                      </div>
+                    </div>
+                    {UserData ? (
+                      <div className={style['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={style['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                 <li className={style["sidebar-title"]}>Apps</li>
                 <li>
                   <a
@@ -552,6 +622,14 @@ const ProfilePage: React.FC = () => {
                   </a>
                 </li>
                 <li>
+                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
+                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
+                        <BusinessCenterOutlined/>
+                      </i>
+                      Machine 
+                    </a>
+                  </li>
+                <li>
                   <a onClick={adminPageHandleClick} className={style["active"]}>
                     <i
                       className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
@@ -589,475 +667,483 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </SwipeableDrawer>
-      <div className={styles.form1}>
-        {/* Display Container */}
-        <form className={styles.profileSum}>
-          <div className={styles.cover}>
-            <img
-              className={styles["resizable-image"]}
-              src={profileBackg}
-              alt="Profile Background"
-            />
-          </div>
-
-          <div className={styles.inputDisplay}>
-            <h3>
-              {(profileData.first_name)}{" "}
-              {capitalizeFirstLetter(profileData.last_name)}
-            </h3>
-            <h4>{profileData.position_name}</h4>
-          </div>
-
-          <div className={styles.profilePicture}>
-            <Snackbar
-              open={!!errorMsg}
-              autoHideDuration={5000}
-              onClose={handleImageSnackbarClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                onClose={handleImageSnackbarClose}
-                severity="error"
-                sx={{ width: "290px" }}
-              >
-                {errorMsg}
-              </MuiAlert>
-            </Snackbar>
-
-            {userPicture ? (
-              <img src={userPicture} alt="User Profile Picture" />
-            ) : (
+      <div className={styles.container}>
+        <div className={styles.form1}>
+          {/* Display Container */}
+          <form className={styles.profileSum}>
+            <div className={styles.cover}>
               <img
-                src={defaulImage}
-                alt="Profile Default"
-                className={styles.defaultImage}
+                className={styles["resizable-image"]}
+                src={profileBackg}
+                alt="Profile Background"
               />
-            )}
-            <label htmlFor="file" className={styles.uploadButton}>
-              <AddAPhotoIcon />
-            </label>
-            <input
-              type="file"
-              id="file"
-              onChange={handleFileUpload}
-              className={styles.input}
-              style={{ display: "none" }}
-            />
-          </div>
-        </form>
+            </div>
 
-        <div className={styles.set}>
-          {/* PERSONAL INFORMATION CONTAINER */}
-          <form className={styles.personal} onSubmit={handlePersonalSubmit}>
-            <div className={styles.line}></div>
-            <h1>Personal Information</h1>
-            <div className={styles["name-group"]}>
-              <label className={styles.readLabel}>First Name *</label>
-              <input
-                required
-                type="text"
-                name="FirstName"
-                autoComplete="off"
-                className={styles.nameInput}
-                readOnly={!editPersonalMode}
-                value={inputValues.FirstName}
-                onChange={handleInputChange}
-              />
+            <div className={styles.inputDisplay}>
+              <h3>
+                {profileData.first_name}{" "}
+                {capitalizeFirstLetter(profileData.last_name)}
+              </h3>
+              <h4>{profileData.position_name}</h4>
             </div>
-            <div className={styles["name-group"]}>
-              <label className={styles.readLabel}>Last Name *</label>
+
+            <div className={styles.profilePicture}>
+              <Snackbar
+                open={!!errorMsg}
+                autoHideDuration={5000}
+                onClose={handleImageSnackbarClose}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={handleImageSnackbarClose}
+                  severity="error"
+                  sx={{ width: "290px" }}
+                >
+                  {errorMsg}
+                </MuiAlert>
+              </Snackbar>
+
+              {userPicture ? (
+                <img src={userPicture} alt="User Profile Picture" />
+              ) : (
+                <img
+                  src={defaulImage}
+                  alt="Profile Default"
+                  className={styles.defaultImage}
+                />
+              )}
+              <label htmlFor="file" className={styles.uploadButton}>
+                <AddAPhotoIcon />
+              </label>
               <input
-                required
-                type="text"
-                name="LastName"
-                autoComplete="off"
-                className={styles.nameInput}
-                readOnly={!editPersonalMode}
-                value={inputValues.LastName}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className={styles["input-group"]}>
-              <label className={styles.readLabel2}>Email Address *</label>
-              <input
-                required
-                type="text"
-                name="Email"
-                autoComplete="off"
+                type="file"
+                id="file"
+                onChange={handleFileUpload}
                 className={styles.input}
-                readOnly={!editPersonalMode}
-                value={inputValues.Email}
-                onChange={handleInputChange}
+                style={{ display: "none" }}
               />
             </div>
-            <div className={styles["input-group1"]}>
-              <label className={styles.readLabel3}>Mobile Number *</label>
-              <input
-                required
-                type="text"
-                name="ContactNumber"
-                autoComplete="off"
-                className={styles.input}
-                readOnly={!editPersonalMode}
-                value={inputValues.ContactNumber}
-                onChange={handleInputChange}
-              />
-            </div>
-            <Snackbar
-              open={!isPersonalFormValid}
-              autoHideDuration={5000}
-              onClose={handleSnackbarClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
+          </form>
+
+          <div className={styles.set}>
+            {/* PERSONAL INFORMATION CONTAINER */}
+            <form className={styles.personal} onSubmit={handlePersonalSubmit}>
+              <div className={styles.line}></div>
+              <h1>Personal Information</h1>
+              <div className={styles["name-group"]}>
+                <label className={styles.readLabel}>First Name *</label>
+                <input
+                  required
+                  type="text"
+                  name="FirstName"
+                  autoComplete="off"
+                  className={styles.nameInput}
+                  readOnly={!editPersonalMode}
+                  value={inputValues.FirstName}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className={styles["name-group"]}>
+                <label className={styles.readLabel}>Last Name *</label>
+                <input
+                  required
+                  type="text"
+                  name="LastName"
+                  autoComplete="off"
+                  className={styles.nameInput}
+                  readOnly={!editPersonalMode}
+                  value={inputValues.LastName}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className={styles["input-group"]}>
+                <label className={styles.readLabel2}>Email Address *</label>
+                <input
+                  required
+                  type="text"
+                  name="Email"
+                  autoComplete="off"
+                  className={styles.input}
+                  readOnly={!editPersonalMode}
+                  value={inputValues.Email}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className={styles["input-group1"]}>
+                <label className={styles.readLabel3}>Mobile Number *</label>
+                <input
+                  required
+                  type="text"
+                  name="ContactNumber"
+                  autoComplete="off"
+                  className={styles.input}
+                  readOnly={!editPersonalMode}
+                  value={inputValues.ContactNumber}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <Snackbar
+                open={!isPersonalFormValid}
+                autoHideDuration={5000}
                 onClose={handleSnackbarClose}
-                severity="error"
-                sx={{ width: "290px" }}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
               >
-                Please fill in all the required fields.
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={!!emailError}
-              autoHideDuration={5000}
-              onClose={handleEmailSnackbarClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={handleSnackbarClose}
+                  severity="error"
+                  sx={{ width: "290px" }}
+                >
+                  Please fill in all the required fields.
+                </MuiAlert>
+              </Snackbar>
+              <Snackbar
+                open={!!emailError}
+                autoHideDuration={5000}
                 onClose={handleEmailSnackbarClose}
-                severity="error"
-                sx={{ width: "290px" }}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
               >
-                {emailError}
-              </MuiAlert>
-            </Snackbar>
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={handleEmailSnackbarClose}
+                  severity="error"
+                  sx={{ width: "290px" }}
+                >
+                  {emailError}
+                </MuiAlert>
+              </Snackbar>
 
-            <Snackbar
-              open={isContactNumberError}
-              autoHideDuration={5000}
-              onClose={() => setContactNumberError(false)}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
+              <Snackbar
+                open={isContactNumberError}
+                autoHideDuration={5000}
                 onClose={() => setContactNumberError(false)}
-                severity="error"
-                sx={{ width: "290px" }}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
               >
-                Contact number must be a number.
-              </MuiAlert>
-            </Snackbar>
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={() => setContactNumberError(false)}
+                  severity="error"
+                  sx={{ width: "290px" }}
+                >
+                  Contact number must be a number.
+                </MuiAlert>
+              </Snackbar>
 
-            <Snackbar
-              open={contactNumberLengthError}
-              autoHideDuration={5000}
-              onClose={() => setContactNumberLengthError(false)}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
+              <Snackbar
+                open={contactNumberLengthError}
+                autoHideDuration={5000}
                 onClose={() => setContactNumberLengthError(false)}
-                severity="error"
-                sx={{ width: "290px" }}
-              >
-                Contact number should be {MAX_CONTACT_NUMBER_LENGTH} digits
-                long.
-              </MuiAlert>
-            </Snackbar>
-
-            {editPersonalMode ? (
-              <div className={styles["personal-button"]}>
-                <button
-                  type="button"
-                  className={styles.saveButton}
-                  onClick={handlePersonalSaveChanges}
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  className={styles.cancelButton}
-                  onClick={handlePersonalCancelChanges}
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <Tooltip
-                title="Edit"
-                placement="top"
-                arrow
-                className={styles.settool}
-                style={{
-                  backgroundColor: "#797979",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: "40px",
-                  padding: "8px",
-                  marginTop: "-61.5%",
-                  marginLeft: "91.6%",
-                  cursor: "pointer",
-                  transition:
-                    "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
                 }}
               >
-                <IconButton onClick={handlePersonalEditClick}>
-                  <ManageAccountsSharpIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </form>
-
-          {/* ACCOUNT SETTINGS CONTAINER */}
-          <form className={styles.accountS}>
-            <div className={styles.line}></div>
-            <h1>Account Settings</h1>
-            <div className={styles["input-group"]}>
-              <label className={styles.readLabel2}>Username</label>
-              <input
-                required
-                className={styles.input}
-                readOnly={true}
-                value={profileData.username}
-              />
-            </div>
-            <div className={styles["input-group2"]}>
-              <label htmlFor="oldPassword" className={styles.readLabel4}>
-                {" "}
-                Old Password{" "}
-              </label>
-              <input
-                required
-                type={
-                  editAccountMode
-                    ? showOldPassword
-                      ? "text"
-                      : "password"
-                    : "password"
-                }
-                id="oldPassword"
-                autoComplete="off"
-                onChange={(e) => setOldPassword(e.target.value)}
-                className={styles.input}
-                value={oldPassword}
-                readOnly={!editAccountMode}
-              />
-
-              {editAccountMode && (
-                <span
-                  className={`${styles["toggle-password"]} ${
-                    showOldPassword ? styles.active : ""
-                  }`}
-                  onClick={toggleOldPasswordVisibility}
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={() => setContactNumberLengthError(false)}
+                  severity="error"
+                  sx={{ width: "290px" }}
                 >
-                  {showOldPassword ? <FaEye /> : <FaEyeSlash />}
-                </span>
-              )}
-            </div>
-            <div className={styles["change-group"]}>
-              <label htmlFor="newPassword" className={styles.readLabel}>
-                New Password
-              </label>
-              <input
-                required
-                type={
-                  editAccountMode
-                    ? showNewPassword
-                      ? "text"
-                      : "password"
-                    : "password"
-                }
-                id="newPassword"
-                autoComplete="off"
-                className={styles.changeInput}
-                readOnly={!editAccountMode}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
+                  Contact number should be {MAX_CONTACT_NUMBER_LENGTH} digits
+                  long.
+                </MuiAlert>
+              </Snackbar>
 
-              {editAccountMode && (
-                <span
-                  className={`${styles["toggle-password1"]} ${
-                    showNewPassword ? styles.active : ""
-                  }`}
-                  onClick={toggleNewPasswordVisibility}
+              {editPersonalMode ? (
+                <div className={styles["personal-button"]}>
+                  <button
+                    type="button"
+                    className={styles.saveButton}
+                    onClick={handlePersonalSaveChanges}
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={handlePersonalCancelChanges}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <Tooltip
+                  title="Edit"
+                  placement="top"
+                  arrow
+                  // className={styles.settool}
+                  style={{
+                    position: "absolute",
+                    top: "24px",
+                    right: "24px",
+                    backgroundColor: "#797979",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: "40px",
+                    padding: "8px",
+                    // top:"-320px",
+                    // left:"820px",
+                    cursor: "pointer",
+                    transition:
+                      "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
+                  }}
                 >
-                  {showNewPassword ? <FaEye /> : <FaEyeSlash />}
-                </span>
+                  <IconButton onClick={handlePersonalEditClick}>
+                    <ManageAccountsSharpIcon />
+                  </IconButton>
+                </Tooltip>
               )}
-            </div>
-            <div className={styles["change-group"]}>
-              <label className={styles.readLabel}>Confirm Password</label>
-              <input
-                required
-                type={
-                  editAccountMode
-                    ? showConfirmPassword
-                      ? "text"
-                      : "password"
-                    : "password"
-                }
-                name="confirmPassword"
-                autoComplete="off"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className={styles.changeInput}
-                readOnly={!editAccountMode}
-              />
+            </form>
 
-              {editAccountMode && (
-                <span
-                  className={`${styles["toggle-password1"]} ${
-                    showConfirmPassword ? styles.active : ""
-                  }`}
-                  onClick={toggleConfirmPasswordVisibility}
-                >
-                  {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
-                </span>
-              )}
-            </div>
-            <Snackbar
-              open={!!successMessage}
-              autoHideDuration={5000}
-              onClose={() => setSuccessMessage(null)}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
+            {/* ACCOUNT SETTINGS CONTAINER */}
+            <form className={styles.accountS}>
+              <div className={styles.line}></div>
+              <h1>Account Settings</h1>
+              <div className={styles["input-group"]}>
+                <label className={styles.readLabel2}>Username</label>
+                <input
+                  required
+                  className={styles.input}
+                  readOnly={true}
+                  value={profileData.username}
+                />
+              </div>
+              <div className={styles["input-group2"]}>
+                <label htmlFor="oldPassword" className={styles.readLabel4}>
+                  {" "}
+                  Old Password{" "}
+                </label>
+                <input
+                  required
+                  type={
+                    editAccountMode
+                      ? showOldPassword
+                        ? "text"
+                        : "password"
+                      : "password"
+                  }
+                  id="oldPassword"
+                  autoComplete="off"
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  className={styles.input}
+                  value={oldPassword}
+                  readOnly={!editAccountMode}
+                />
+
+                {editAccountMode && (
+                  <span
+                    className={`${styles["toggle-password"]} ${
+                      showOldPassword ? styles.active : ""
+                    }`}
+                    onClick={toggleOldPasswordVisibility}
+                  >
+                    {showOldPassword ? <FaEye /> : <FaEyeSlash />}
+                  </span>
+                )}
+              </div>
+              <div className={styles["change-group"]}>
+                <label htmlFor="newPassword" className={styles.readLabel}>
+                  New Password
+                </label>
+                <input
+                  required
+                  type={
+                    editAccountMode
+                      ? showNewPassword
+                        ? "text"
+                        : "password"
+                      : "password"
+                  }
+                  id="newPassword"
+                  autoComplete="off"
+                  className={styles.changeInput}
+                  readOnly={!editAccountMode}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+
+                {editAccountMode && (
+                  <span
+                    className={`${styles["toggle-password1"]} ${
+                      showNewPassword ? styles.active : ""
+                    }`}
+                    onClick={toggleNewPasswordVisibility}
+                  >
+                    {showNewPassword ? <FaEye /> : <FaEyeSlash />}
+                  </span>
+                )}
+              </div>
+              <div className={styles["change-group"]}>
+                <label className={styles.readLabel}>Confirm Password</label>
+                <input
+                  required
+                  type={
+                    editAccountMode
+                      ? showConfirmPassword
+                        ? "text"
+                        : "password"
+                      : "password"
+                  }
+                  name="confirmPassword"
+                  autoComplete="off"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={styles.changeInput}
+                  readOnly={!editAccountMode}
+                />
+
+                {editAccountMode && (
+                  <span
+                    className={`${styles["toggle-password1"]} ${
+                      showConfirmPassword ? styles.active : ""
+                    }`}
+                    onClick={toggleConfirmPasswordVisibility}
+                  >
+                    {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+                  </span>
+                )}
+              </div>
+              <Snackbar
+                open={!!successMessage}
+                autoHideDuration={5000}
                 onClose={() => setSuccessMessage(null)}
-                severity="success"
-                sx={{ width: "290px" }}
-              >
-                {successMessage}
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={!!oldPasswordError}
-              autoHideDuration={5000}
-              onClose={() => setOldPasswordError("")}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={1}
-                variant="filled"
-                onClose={() => setOldPasswordError("")}
-                severity="error"
-                sx={{ width: "290px" }}
-              >
-                {oldPasswordError}
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={!!newPasswordError}
-              autoHideDuration={5000}
-              onClose={() => setNewPasswordError("")}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                onClose={() => setNewPasswordError("")}
-                severity="error"
-                sx={{ width: "290px" }}
-              >
-                New password should be different from the old password.
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={5000}
-              onClose={handleSnackbarPasswordClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                onClose={handleSnackbarPasswordClose}
-                severity={snackbarSeverity}
-                sx={{ width: "290px" }}
-              >
-                {snackbarMessage}
-              </MuiAlert>
-            </Snackbar>
-            ;
-            {editAccountMode ? (
-              <div className={styles["account-button"]}>
-                <button
-                  type="button"
-                  className={styles.saveButton}
-                  onClick={handleAccountSaveChanges}
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  className={styles.cancelButton}
-                  onClick={handleAccountCancelChanges}
-                >
-                  Cancel
-                </button>
-              </div>
-            ) : (
-              <Tooltip
-                title="Edit"
-                placement="top"
-                arrow
-                className={styles.settool1}
-                style={{
-                  backgroundColor: "#797979",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: "40px",
-                  padding: "8px",
-                  marginTop: "-51%",
-                  marginLeft: "-3%",
-                  cursor: "pointer",
-                  transition:
-                    "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
                 }}
               >
-                <IconButton onClick={handleAccountEditClick}>
-                  <ManageAccountsSharpIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </form>
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={() => setSuccessMessage(null)}
+                  severity="success"
+                  sx={{ width: "290px" }}
+                >
+                  {successMessage}
+                </MuiAlert>
+              </Snackbar>
+              <Snackbar
+                open={!!oldPasswordError}
+                autoHideDuration={5000}
+                onClose={() => setOldPasswordError("")}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MuiAlert
+                  elevation={1}
+                  variant="filled"
+                  onClose={() => setOldPasswordError("")}
+                  severity="error"
+                  sx={{ width: "290px" }}
+                >
+                  {oldPasswordError}
+                </MuiAlert>
+              </Snackbar>
+              <Snackbar
+                open={!!newPasswordError}
+                autoHideDuration={5000}
+                onClose={() => setNewPasswordError("")}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={() => setNewPasswordError("")}
+                  severity="error"
+                  sx={{ width: "290px" }}
+                >
+                  New password should be different from the old password.
+                </MuiAlert>
+              </Snackbar>
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleSnackbarPasswordClose}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  onClose={handleSnackbarPasswordClose}
+                  severity={snackbarSeverity}
+                  sx={{ width: "290px" }}
+                >
+                  {snackbarMessage}
+                </MuiAlert>
+              </Snackbar>
+              ;
+              {editAccountMode ? (
+                <div className={styles["account-button"]}>
+                  <button
+                    type="button"
+                    className={styles.saveButton}
+                    onClick={handleAccountSaveChanges}
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={handleAccountCancelChanges}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <Tooltip
+                  title="Edit"
+                  placement="top"
+                  arrow
+                  
+                  style={{
+                    position: "absolute",
+                    top: "24px",
+                    right: "24px",
+                    backgroundColor: "#797979",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: "40px",
+                    padding: "8px",
+                    // top: "-250px",
+                    marginLeft: "-3%",
+                    cursor: "pointer",
+                    transition:
+                      "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
+                  }}
+                >
+                  <IconButton onClick={handleAccountEditClick}className={styles.settool1}>
+                    <ManageAccountsSharpIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </form>
+          </div>
         </div>
       </div>
     </div>

@@ -139,6 +139,11 @@
         SELECT user_id, first_name, last_name
         FROM table_user
         WHERE is_deleted = 0
+          AND NOT EXISTS (
+              SELECT 1
+              FROM table_seat
+              WHERE table_seat.user_id = table_user.user_id
+          )
     </select>
 
 

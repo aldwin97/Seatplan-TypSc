@@ -14,6 +14,7 @@
   import { Grid, Box, useMediaQuery} from '@mui/material';
   import { createTheme,  Theme } from '@mui/material/styles';
   import { makeStyles } from '@mui/styles';
+  import defaulImage from "../assets/default.png";
 
 
   const useStyles = makeStyles((theme: Theme) => ({
@@ -47,6 +48,7 @@
   }
 
   const DashboardPage: React.FC = () => {
+    const [userPicture, setUserPicture] = useState<string | null>(null);
     const [com, setComments] =  useState<Comments[]>([]);
     const [dashboardData, setDashboardData] = useState<any>({});
     const chartHeight = 320; 
@@ -95,6 +97,29 @@
       position_name: string;
     }
   
+    useEffect(() => {
+      const fetchUserPicture = async () => {
+        try {
+          const user_id = window.sessionStorage.getItem('user_id');
+          const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+            responseType: 'arraybuffer',
+          });
+  
+          const base64Data = btoa(
+            new Uint8Array(pictureResponse.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ''
+            )
+          );
+          const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+          setUserPicture(pictureDataUrl);
+        } catch (error) {
+          console.error('Error fetching profile picture:', error);
+        }
+      };
+  
+      fetchUserPicture();
+    }, []);
   
     useEffect(() => {
       const user_id = window.sessionStorage.getItem('user_id');
@@ -294,8 +319,35 @@
               <div className={`${styles['page-sidebar-inner']} ${styles['slimscroll']}`}>
                 
                 <ul className={styles['accordion-menu']}>
+                  <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={styles['userbg']}>
+                      <div className={styles['userpr']}>
+                      {userPicture ? (
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={styles.defaultImage}// Add any additional styles here
+      />
+    )}
+                      </div>
+                    </div>
+                    {UserData ? (
+                      <div className={styles['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={styles['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+       
+                
                   <li className={styles['sidebar-title']}>Apps</li>
                   <li className={styles['active-page']}>
+                    
                     <a onClick={dashboardPageHandleClick} className={styles['active']}>
                       <i className={styles['material-icons']}>
                         <DashboardOutlined/>
@@ -327,7 +379,7 @@
                       Machine 
                     </a>
                   </li>
-                  <li></li>
+                  
                   <li>
                     
                     <a onClick={adminPageHandleClick} className={styles['material-icons']}>

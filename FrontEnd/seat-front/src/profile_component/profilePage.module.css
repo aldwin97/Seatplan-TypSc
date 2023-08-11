@@ -114,10 +114,10 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
-  width: 450px;
-  height: 638px;
+  width: 480px;
+  height: 760px;
   margin-bottom: 0.1%;
-  margin-right: 56%;
+  margin-right: 59%;
   position: absolute;
   z-index: 2;
   justify-content: center;
@@ -125,7 +125,9 @@
 
 .inputDisplay {
   position: absolute;
-  margin-top: 76%;
+  margin-top: 65%;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 h3 {
@@ -211,15 +213,18 @@ h5 {
 
 
 .personal {
+  position: relative;
   color: #226e29;
   background-color: #ffffff;
   border-radius: 40px;
   width: 900px;
-  height: 305px;
+  height: 365px;
   margin-bottom: 3%;
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
+
+
 
 .accountS {
   position: relative;
@@ -227,11 +232,12 @@ h5 {
   background-color: #ffffff;
   border-radius: 40px;
   width: 900px;
-  height: 305px;
+  height: 365px;
   margin-bottom: 3%;
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
 }
+
 
 h1 {
   margin-top: 2%;
@@ -254,17 +260,17 @@ h1 {
   margin-left: 7%;
   margin-top: -4%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
-  margin-bottom: 10%;
+  margin-bottom: 10;
 }
 
 .readLabel2 {
   margin-left: 3.2%;
   margin-top: -2%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
   margin-bottom: 10%;
@@ -273,7 +279,7 @@ h1 {
   margin-left: 3.2%;
   margin-top: -2%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
   margin-bottom: 10%;
@@ -282,7 +288,7 @@ h1 {
   margin-left: 3.2%;
   margin-top: -2%;
   font-family: "League Spartan Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #2da738;
   position: absolute;
   margin-bottom: 10%;
@@ -298,6 +304,8 @@ h1 {
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgb(241, 241, 241);
   padding-left: 6%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .nameInput:focus,
@@ -342,6 +350,8 @@ input:valid {
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgb(241, 241, 241);
   padding-left: 3%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .user-label {
@@ -374,15 +384,17 @@ input:not(:read-only):valid ~ .user-label {
 .personal-button {
   display: flex;
   position: absolute;
-  margin-left: 36.5%;
-  margin-top: -17%;
+
+  margin-left: 70%;
+  margin-top: -35%;
 }
+
 
 .account-button {
   display: flex;
   position: absolute;
-  margin-left: 64%;
-  margin-top: -32%;
+  margin-left: 70%;
+  margin-top: -35%;
 }
 
 .saveButton {
@@ -397,7 +409,7 @@ input:not(:read-only):valid ~ .user-label {
   border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
-    border-color 0.4s ease-in-out;
+  order-color 0.4s ease-in-out;
   margin-left: 10px;
 }
 
@@ -447,6 +459,8 @@ input:not(:read-only):valid ~ .user-label {
   transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: rgb(241, 241, 241);
   padding-left: 6%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .change-label {
@@ -568,28 +582,52 @@ input:not(:read-only):valid ~ .change-label {
   background-position: center;
 
 }
-.settool{
-  background-color: #797979;
-  color: #ffffff;
-  border:none;
-  border-radius:40px;
-  padding: "8px";
-  margin-top:-61.5%;
-  margin-left:91.6%;
-  cursor:pointer;
-  transition:background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-}
-.settool1{
-  background-color: #797979;
-  color: #ffffff;
-  border:none;
-  border-radius:40px;
-  padding: "8px";
-  margin-top:-61.5%;
-  margin-left:91.6%;
-  cursor:pointer;
-  transition:background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-}
+@media screen and (max-width: 1200px) {
+  .form1{
+    width: 100%;
+    overflow:scroll;
+
+  }
+  .profileSum{
+    position: absolute;
+    display: flex;
+    left:70px;
+    top:50px;
+    height:950px;
+    width:400px;
+    
+   
+  }
+  .personal{
+    width:650px;
+    height: 450px;
+    left:20px;
+    top:30px;
+    position: relative;
+    
+  }
+  .accountS{
+    width:650px;
+    height: 450px;
+    left:20px;
+    top:52px
+  }
+  .personal-button{
+    /* position: absolute; */
+    /* display: flex; */
+    position: relative;
+    bottom: 160px;
+    right: 20px;
+
+
+  }
+  .account-button{
+    position: relative;
+    bottom: 160px;
+    right: 20px;
+
+  }
+}                                    
 @media screen and (max-width: 1024px) {
   .form1{
     width: 100%;
@@ -598,49 +636,43 @@ input:not(:read-only):valid ~ .change-label {
   }
   .profileSum{
     position: fixed;
-    top:40px;
+    top:30px;
     left:90px;
     width:600px;
     height:400px;
-  }
-  
-  .inputDisplay{
-    top:-180px;
   }
   .personal{
     position: fixed;
-    top: 500px;
+    left:100px;
+    top:500px;
     left:90px;
     width:600px;
     height:400px;
-  }
-  .settool{
-    position: fixed;
-   top:-70px;
-   left: -10px;
-   z-index:2;
-  }
-  .settool1{
-    position: fixed;
-   top:-110px;
-   left:550px;
-   z-index:2;
   }
   .accountS{
     position: fixed;
-    top:960px; 
+    left:100px;
+    top:970px;
+    left:90px;
     width:600px;
     height:400px;
-    left:90px;
   }
+  .inputDisplay{
+    top:-180px;
+  }
+ 
   .account-button{  
-    top:200px;
-    left:-50px;
+    position: absolute;
+    /* display:flex; */
+    bottom: 305px;
+    right:20px;
 
   }
   .personal-button{  
-    top:125px;
-    left: 80px;
+    position: absolute;
+    /* display:flex; */
+    bottom: 305px;
+    right:20px;
 
   }
   .nameInput{
@@ -648,6 +680,7 @@ input:not(:read-only):valid ~ .change-label {
     width: 92%;
    
   }
+
   .readLabel{
     top:-10px;
   }
@@ -705,49 +738,43 @@ input:not(:read-only):valid ~ .change-label {
   }
   .profileSum{
     position: fixed;
-    top:40px;
+    top:30px;
     left:90px;
     width:600px;
     height:400px;
-  }
-  
-  .inputDisplay{
-    top:-180px;
   }
   .personal{
     position: fixed;
-    top: 500px;
+    left:100px;
+    top:500px;
     left:90px;
     width:600px;
     height:400px;
-  }
-  .settool{
-    position: fixed;
-   top:-70px;
-   left: -10px;
-   z-index:2;
-  }
-  .settool1{
-    position: fixed;
-   top:-110px;
-   left:550px;
-   z-index:2;
   }
   .accountS{
     position: fixed;
-    top:960px; 
+    left:100px;
+    top:970px;
+    left:90px;
     width:600px;
     height:400px;
-    left:90px;
   }
+  .inputDisplay{
+    top:-180px;
+  }
+ 
   .account-button{  
-    top:210px;
-    left:-90px;
+    position: absolute;
+    display:flex;
+    top:228px;
+    right:20px;
 
   }
   .personal-button{  
-    top:125px;
-    left: 80px;
+    position: absolute;
+    display:flex;
+    top:228px;
+    right:20px;
 
   }
   .nameInput{
@@ -755,6 +782,7 @@ input:not(:read-only):valid ~ .change-label {
     width: 92%;
    
   }
+
   .readLabel{
     top:-10px;
   }
@@ -785,5 +813,22 @@ input:not(:read-only):valid ~ .change-label {
 
     .change-group{
       top:60px;
+    }
+    .cover {
+      position: absolute;
+      background-size: contain;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* background-size: contain; */
+      object-fit: cover;
+      overflow: hidden;
+    }
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      scale: 1.3;
     }
 }

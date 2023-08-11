@@ -347,9 +347,16 @@
   flex-direction: column;
   align-items: center;
   border-radius: 10px;
-  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  border: 2px solid #8d8d8d;
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
-  padding: 30px; /* Add padding to create some space between the border and content */
+  padding: 30px;
+}
+
+.footer {
+  margin-top: auto; /* Push the footer to the bottom */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .seatPopupContent h3 {
@@ -418,12 +425,14 @@
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
   margin-left: 29%;
+  margin-bottom: 10px;
 }
 .swapButton:hover {
   background-color: #0056b3 !important;
 }
 .editButton
 {
+  margin-bottom: 20px;
   width: 80px;
   cursor: pointer;
   border-radius: 10px;
@@ -463,18 +472,20 @@
   position: absolute;
   margin-left: 470px;
   margin-top: -70px ;
-  background-color: transparent;
+  background-color: transparent !important;
   border: none;
+  box-shadow: none !important;
   color: #ff0000;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 20px;
 }
 .seatPopupContent .closeButton2 {
   position: absolute;
 margin-left: 380px;
 margin-top: -80px ;
-  background-color: transparent;
+background-color: transparent !important;
   border: none;
+  box-shadow: none !important;
   color: #ff0000;
   cursor: pointer;
   font-size: 12px;
@@ -727,28 +738,55 @@ margin-top: 40px;
 .errorPopup button:hover {
   background-color: #b6b6b6;
 }
+/* Default style for the button */
+/* Default style for the button */
 .arrowToggle {
   cursor: pointer;
+  position: absolute;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 30px;
+  color: #28a745;
+  background-color: #28a745;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-left: 2px solid #6e6e6e;
+  border-right: 2px solid #6e6e6e;
+  width: 561px;
   height: 30px;
-  margin-top: 10px;
+  margin-top: 40px;
   margin-bottom: 10px;
-  transition: background-color 0.3s ease;
+  filter: blur(0.7px);
 }
+
+
+/* Style for the button when toggled */
+.arrowToggle.toggled {
+  height: 20px;
+  background-color: #4fce6d;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-left: 0px solid #6e6e6e;
+  border-right: 0px solid #6e6e6e;
+  border-bottom: 2px solid #6e6e6e;;
+  color: white;
+  filter: blur(0.7px);
+}
+
 
 /* Optional styles to change the arrow icon appearance */
 .arrowToggle svg {
-  width: 16px;
-  height: 16px;
-  color: #333; /* Change the color to your desired icon color */
+  margin-right: 10px;
+  width: 1em;
+  height: 1em;
+  color: #0d7404; /* Change to your desired color */
 }
-
+.h5
+{
+  margin-right: 210px;
+  margin-top: 5px;
+  font-size: 12px;
+}
 /* Styles for the expanded view of the arrow toggle */
 .arrowToggle.expanded {
   background-color: #e0e0e0; /* Change the background color when expanded */
@@ -842,7 +880,7 @@ margin-top: 40px;
 /* seatplanPage.css */
 .commentsContainer {
   margin-top: 5px;
-  height: 100px;
+  height: 150px;
   overflow-y: auto;
   border: 1px solid #ccc;
 }
@@ -865,7 +903,8 @@ margin-top: 40px;
 
 .commentsContainer h4 {
   margin-top: 5px;
-  margin-bottom: -15px;
+  position: sticky;
+  margin-bottom: -6px;
   font-size: 20px;
 }
 
@@ -890,6 +929,7 @@ margin-top: 40px;
 
 .largeInput {
   width: 500px;
+  margin-top: 50px;
   height: 90px;
   font-size: 16px;
   padding: 10px;
@@ -1066,10 +1106,12 @@ color: #777;
 
 .addComment
 {
+  margin-left: 400px;
   background-color: #28a745 !important;
   box-shadow: 2px 2px 0px rgb(136, 136, 136);
   transition-duration: .3s;
-width: 90px;
+width: 120px;
+margin-bottom: 10px;
 }
 .addComment:hover {
   background-color: #0056b3 !important;
@@ -1238,4 +1280,63 @@ svg:hover .tooltip {
 .uiverse:hover .tooltip::before {
   background: linear-gradient(320deg, rgb(53, 172, 43), rgb(0, 60, 255));
   color: #ffffff;
+}
+
+
+
+
+.commentsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.commentsTable td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.commentsTable tr:hover {
+  background-color: #f2f2f2; /* Change to your desired hover color */
+}
+
+.boldName {
+  font-weight: bold;
+}
+
+.text {
+  display: block;
+  margin-top: 5px;
+}
+
+.repliedTo {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.replyButton {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.replyButton:hover {
+  background-color: #258cd1; /* Change to your desired hover color */
+}
+
+/* Add hover effect to the seat */
+.seat-hover {
+  background-color: #f0f0f0; /* Change to the desired background color */
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out; /* Add transition for smooth zoom effect */
+}
+
+/* Apply hover effect to the seat */
+.seat-hover:hover {
+  background-color: #3d3d3d; /* Change to the desired background color */
+  cursor: pointer;
+  transform: scale(1.2); /* Apply zoom effect when hovering */
 }

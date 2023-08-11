@@ -889,15 +889,18 @@ const ProfilePage: React.FC = () => {
                   title="Edit"
                   placement="top"
                   arrow
-                  className={styles.settool}
+                  // className={styles.settool}
                   style={{
+                    position: "absolute",
+                    top: "24px",
+                    right: "24px",
                     backgroundColor: "#797979",
                     color: "#ffffff",
                     border: "none",
                     borderRadius: "40px",
                     padding: "8px",
-                    top:"-320px",
-                    left:"820px",
+                    // top:"-320px",
+                    // left:"820px",
                     cursor: "pointer",
                     transition:
                       "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
@@ -1117,21 +1120,24 @@ const ProfilePage: React.FC = () => {
                   title="Edit"
                   placement="top"
                   arrow
-                  className={styles.settool1}
+                  
                   style={{
+                    position: "absolute",
+                    top: "24px",
+                    right: "24px",
                     backgroundColor: "#797979",
                     color: "#ffffff",
                     border: "none",
                     borderRadius: "40px",
                     padding: "8px",
-                    top: "-260px",
+                    // top: "-250px",
                     marginLeft: "-3%",
                     cursor: "pointer",
                     transition:
                       "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
                   }}
                 >
-                  <IconButton onClick={handleAccountEditClick}>
+                  <IconButton onClick={handleAccountEditClick}className={styles.settool1}>
                     <ManageAccountsSharpIcon />
                   </IconButton>
                 </Tooltip>

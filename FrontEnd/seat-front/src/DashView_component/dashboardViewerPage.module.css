@@ -1,0 +1,840 @@
+/*body*/ 
+
+html {
+  overflow-x: hidden;
+}
+body {
+  background-color: #F8FAF9;
+  font-weight: normal;
+  color: #000000;
+  line-height: 1.6;
+  -webkit-transition: background .2s ease-in-out;
+  -moz-transition: background .2s ease-in-out;
+  -o-transition: background .2s ease-in-out;
+  transition: background .2s ease-in-out;
+}
+
+
+/* Sidebar */
+.menu {
+  position: absolute;
+  cursor: pointer;
+  width: 100%;
+  height: 3px;
+  color: #A6A6A6;
+  margin-left: 220px;
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 22px;
+  font-family: 'Montserrat', sans-serif;
+}
+.menu-out {
+  position: absolute;
+  cursor: pointer;
+  position: relative;
+  top: 35px;
+  left: 30px;
+  width: 80%;
+  height: 3px;
+  color: #A6A6A6;
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 22px;
+  font-family: 'Montserrat', sans-serif;
+  z-index: 2;
+}
+
+.menu-out:hover, .menu:hover {
+  
+  color: #076307;
+}
+.material-icons:hover {
+ 
+  color: #076307;
+}
+.page-sidebar {
+  cursor: pointer;
+  width: 280px;
+  position: fixed;
+  background: #fff;
+  top: 0;
+  bottom: 0;
+  padding: 30px;
+  box-shadow: 0 0 1.25rem rgba(31, 45, 61, 0.04);
+  z-index: 1;
+}
+.logo-box {
+  display: block;
+  padding: 15px 20px;
+  background-image: url('../assets/LOGO.png');
+  background-repeat: no-repeat;
+  background-size: 70px
+}
+.material-icons-outlined {
+  font-family: 'Material Icons Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+.material-icons {
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-icons-outlined {
+  font-family: 'Material Icons Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-icons-round {
+  font-family: 'Material Icons Round';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-icons-sharp {
+  font-family: 'Material Icons Sharp';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-icons-two-tone {
+  font-family: 'Material Icons Two Tone';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide the logo text */
+.logo-box span.logo-text {
+  display: none;
+}
+.accordion-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0 0;
+  border-radius: 10px;
+}
+
+.accordion-menu > li {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.accordion-menu > li > a  {
+  display: block;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: rgba(125, 125, 131, 0.8);
+  line-height: 20px;
+  -webkit-transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
+  -o-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+  font-weight: 900;
+}
+
+.accordion-menu > li > a > i {
+  font-size: 18px;
+  margin-right: 10px;
+  vertical-align: top;
+  line-height: 20px;
+}
+
+.accordion-menu > li {
+  margin: 3px 0;
+  -webkit-transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
+  -o-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+}
+
+.accordion-menu li.active-page > a:only-child {
+  background: linear-gradient(90deg,#74C20A 0,#2FA73A 48%,#368166 100%);
+    color: #fff;
+}
+
+.accordion-menu li.sidebar-title {
+  padding: 20px 20px 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0);
+  font-size: 12px;
+  opacity: 0.25;
+  font-family: 'Montserrat', sans-serif;
+}
+/*Container of all cards*/
+
+.container {
+  min-width: 1200px;
+  max-width: calc(100% - 2in);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Updated: align at the left side of the container */
+  align-items: center;
+  height: 100vh;
+}
+.main {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 50vh;
+  background-color: transparent;
+}
+
+/*Card Hello*/
+.cardHello {
+  margin-top: 15px;
+  align-items: center;
+  height: 400px;
+  width: 500px;
+  background-color: white;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  box-shadow: 0 2px 10px #308a38;
+  left: 136.5%;
+  border-radius: 10px;
+}
+
+.Helloimg {
+  background-size: cover; /* Use 'cover' to ensure the background image covers the entire div */
+  width: 100%;
+  height: 50%;
+  background-image: url('./../assets/loginbg.jpg');
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.Hellotitle {
+  width: 450px;
+  margin-left: 20px;
+  font-weight: bold;
+  color: #000000;
+  text-align: left;
+  font-size: 35px;
+  margin-top: 52px;
+
+}
+
+.Hellotitle1 {
+  width: 450px;
+  color: #308a38;
+  text-align: left;
+  font-size: 24px;
+  font-family:'League Spartan Regular';
+
+}
+/*counts card and containers*/
+.countcontainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 550px; /* Set the width to match the cardHello width */
+  height: 400px; /* Set the height to match the cardHello height */
+  
+}
+
+.card1, .card2, .card3, .card4, .card5, .card6 {
+  position: relative; 
+  align-items: center;
+  padding: 20px;
+  height: 150px;
+  width: 150px;
+  background-color: #ffffff;
+  text-align: center;
+  border-radius: 10px;
+  left: 372%;
+  box-shadow: 0 2px 10px #308a38;
+}
+
+/* Define the card positions in the grid */
+.card1 {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.card2 {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+.card3 {
+  grid-row: 1;
+  grid-column: 3;
+}
+
+.card4 {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.card5 {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.card6 {
+  grid-row: 2;
+  grid-column: 3;
+}
+.cardicon {
+  width:50;
+  align-items: center;
+  color:  #20770E;
+  background-size: cover; /* Adjust the background size as needed */
+  background-repeat: no-repeat; /* Prevent the background from repeating */ 
+
+}
+.cardcount{
+  color:#000000;
+  font-size: 36px;
+}
+.cardtitle{
+  color:#000000;
+  
+  font-weight: bold;
+}
+.cardtitle1{
+  color:#000000;
+  font-weight: bold;
+  margin-top: 15px;
+  position: absolute;
+}
+.cardseat {
+  align-items: center;
+  height: 400px;
+  width: 350px;
+  background-color: white;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px #308a38;
+  left:224%;
+}
+.cardcomment {
+  position: relative;
+  top: 500px;
+  height: 535px;
+  width: 740px; /* Adjust the width as needed */
+  right: 700px;
+  background-color: white;
+  box-shadow: 0 2px 10px #308a38;
+  background-clip: border-box;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  overflow-y: scroll;
+  z-index: 0;
+}
+
+.projectCard {
+  position: relative;
+  top: 500px; /* Adjust the top position as needed to align it with cardcomment */
+  right:660px;
+  height: 535px;
+  width: 740px; /* Adjust the width as needed */
+  background-color: white;
+  box-shadow: 0 2px 10px #308a38;
+  background-clip: border-box;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+
+}
+
+.cardtitle2{
+  font-weight: bold;
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 20px;
+  color:gray;
+}
+.cardtitle3{
+  font-weight: bold;
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 20px;
+  position: sticky;
+}
+.tooltipContent {
+  font-size: 16px;
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+
+}
+.cardtext{
+  margin-left: 26px;
+
+}
+.userpr {
+  position: relative;
+  left:2.8px;
+
+  
+}
+
+.userbg{
+  
+  position: relative;
+  align-items: center;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  background-color: #ffffff;
+  border: 1.5px solid #308a38; /* Add border color and thickness */
+  /* left:70px; */
+  top:20px;
+  display: flex;
+ 
+
+}
+.usern{
+  position: relative;
+  top:20px;
+  font-size: 18px;
+  font-weight: bold;
+  /* left: 15px; */
+  text-align: center;
+  
+}
+.userp{
+  position: relative;
+  font-size: 12px;
+  font-weight:lighter;
+  /* left: 30px; */
+  text-align: center;
+  margin-bottom: 10px;
+}
+.defaultImage{
+  position: relative;
+  width: 40px;
+  height: 40px;
+  top:3.5px;
+}
+@media (max-width: 1200px) {
+
+  .compact-sidebar .page-sidebar {
+      width: 80px;
+      padding: 30px 0;
+      position: static;
+      box-shadow: none;
+  }
+  
+  .compact-sidebar .page-sidebar:before {
+      position: fixed;
+      top: 0;
+      height: 100%;
+      width: 80px;
+      background: #fff;
+      display: block;
+      content: '';
+      box-shadow: 0 0 1.25rem rgba(31,45,61,.04);
+  }
+  
+  .compact-sidebar .page-sidebar .slimScrollDiv,
+  .compact-sidebar .page-sidebar .page-sidebar-inner,
+  .compact-sidebar .accordion-menu > li:not(.sidebar-title) {
+      overflow: visible!important;
+  }
+  
+  .compact-sidebar .accordion-menu > li {
+      position: relative;
+  }
+  
+  .compact-sidebar .page-container {
+      width: calc(100% - 80px);
+      margin-left: 0;
+  }
+  
+  .compact-sidebar .logo-box {
+      text-align: center;
+  }
+  
+  .compact-sidebar .logo-box .logo-text {
+      display: none;
+  }
+  
+  .compact-sidebar .logo-box #sidebar-state {
+      float: none;
+      display: block;
+  }
+  
+  .compact-sidebar .accordion-menu {
+      padding: 0 12px;
+  }
+  
+  .compact-sidebar .accordion-menu .sidebar-title {
+      padding: 20px 0 10px;
+      text-align: center;
+      text-overflow: ellipsis; 
+      white-space: nowrap;
+      width: 100%;
+      hyphens: auto;
+      overflow: hidden;
+  }
+  
+  .compact-sidebar .accordion-menu > li > a {
+      font-size: 0;
+      line-height: 0;
+      border-radius: 10px;
+  }
+  
+  .compact-sidebar .accordion-menu > li > a > i.has-sub-menu {
+      display: none;
+  }
+  
+  .compact-sidebar .accordion-menu ul {
+      position: absolute;
+      left: 87px;
+      top: 0;
+      background: #fff;
+      padding-left: 0;
+      min-width: 180px;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 1.25rem rgba(31,45,61,.04);
+      z-index: 99;
+  }
+  
+  .compact-sidebar .accordion-menu ul:before {
+      top: 15px;
+      position: absolute;
+      display: inline-block!important;
+      content: '';
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 7px solid #fff;
+      left: -7px;
+  }
+  
+  
+  .compact-sidebar .accordion-menu ul li a {
+      padding-left: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      color: rgba(125, 125, 131, .8);
+      -webkit-transition: all .2s ease-in-out;
+      -moz-transition: all .2s ease-in-out;
+      -o-transition: all .2s ease-in-out;
+      transition: all .2s ease-in-out;
+  }
+  
+  .compact-sidebar .accordion-menu ul li a:hover,
+  .compact-sidebar .accordion-menu ul li a.active {
+      color: #5fd0a5;
+  }
+ 
+}
+
+small-screen-sidebar-active .page-sidebar {
+  transform: translateX(0);
+}
+body.sidebar-open .container,
+body.sidebar-open .main {
+  transition: margin-left 0.2s ease-in-out;
+}
+
+body.sidebar-open .container {
+  max-width: calc(100% - 300px); 
+
+}
+body.sidebar-open .main {
+  margin-left: 300px;
+}
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 100%;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    align-items: center; /* Center the cards vertically */
+  }
+
+  .main {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    justify-content: center; /* Center the cards horizontally */
+    align-items: center; /* Center the cards vertically */
+  }
+  .cardHello {
+
+    position: relative;
+    width: 30%; 
+    height: 330px;
+    top:70px;
+    left: -350px;
+  }
+    .Hellotitle{
+      position: absolute;
+      left: -10px;
+      top:150px;
+      font-size: 24px;
+     }
+     .cardcount{
+      font-size: 24px;
+     }
+     .cardtitle{
+      font-size: 12px;
+     }
+     .card1, .card2, .card3, .card4, .card5, .card6 {
+
+      left:265px;
+      width:100px;
+      height: 120px;
+     }
+     .card1,.card2,.card3{
+      top:-260px;
+     }
+     .card4,.card5,.card6{
+      top:-295px;
+     }
+     .cardseat{
+      position: relative;
+      top:-290px;
+      left:180px;
+      width:300px;
+      height: 330px;
+     }
+     .chartcontainer{
+      width:260px;
+
+     }
+     .card2,.card5{
+      left: 230px;
+     }
+     .card3,.card6{
+      left:195px;
+     }
+     .cardcomment{
+      top:-290px;
+      left:-250px;
+      width: 565px;
+      height: 480px;
+     
+     }
+     .projectCard{
+      top:-755px;
+      left:330px;
+      width: 565px;
+      height: 480px;
+     }
+   }
+@media screen and (max-width: 1024px) {
+  .container {
+    width: 100%;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    align-items: center; /* Center the cards vertically */
+  }
+
+  .main {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    justify-content: center; /* Center the cards horizontally */
+    align-items: center; /* Center the cards vertically */
+  }
+
+  .cardHello {
+    position: relative;
+    height: 300px;
+    width: 658px;
+    left: -215px;
+    top:40px;
+    align-self: center;
+    
+  }
+  .Hellotitle{
+   position: absolute;
+   top: 120px;
+   left: -10px
+  }
+
+  .card1, .card2, .card3, .card4, .card5, .card6 {
+    position: relative;
+    top: 60px;
+    width: 82%; /* Adjust the width of the cards to fit two cards in a row */
+    margin: 5px; /* Add some margin between the cards */
+  }
+
+  .card1, .card4 {
+    left: -280px;
+  }
+
+  .card2, .card5 {
+    left: -232px;
+  }
+
+  .card3, .card6 {
+    left: -185px;
+  }
+
+  .cardseat { 
+    height: 380px;
+    width: 650px; /* Adjust the width of the cardseat to match the cards */
+    margin: 5px;
+    top: 60px; /* Position the cardseat below the cards */
+    left: -225px; /* Add some margin between the cards and cardseat */
+    align-self: center; /* Center the card horizontally within .main */
+  }
+  
+  .cardcomment {
+    height: 380px;
+    width: 650px; 
+    position: relative;
+    top: 100px; /* Position the cardcomment below the cardseat */
+    left:-215px
+    
+  }
+
+  .projectCard {
+    width: 650px; 
+    position: relative;
+    top: 150px; 
+    left:-215px/* Position the projectCard below the cardcomment */
+    /* Your existing styles for projectCard */
+  }
+
+  .chartcontainer {
+    width: 300px;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .container {
+    width: 100%;
+  }
+
+  .main {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line if necessary */
+    justify-content: center; /* Center the cards horizontally */
+    align-items: center; /* Center the cards vertically */
+  }
+
+  .cardHello {
+    position: relative;
+    height: 300px;
+    width: 658px;
+    left: -215px;
+    top:40px;
+    align-self: center;
+    
+  }
+  .Hellotitle{
+   position: absolute;
+   top: 120px;
+   left: -10px
+  }
+
+  .card1, .card2, .card3, .card4, .card5, .card6 {
+    position: relative;
+    top: 60px;
+    width: 82%; /* Adjust the width of the cards to fit two cards in a row */
+    margin: 5px; /* Add some margin between the cards */
+  }
+
+
+  .card1, .card4 {
+    left: -280px;
+  }
+
+  .card2, .card5 {
+    left: -232px;
+  }
+
+  .card3, .card6 {
+    left: -185px;
+  }
+
+  .cardseat { 
+    height: 380px;
+    width: 650px; /* Adjust the width of the cardseat to match the cards */
+    margin: 5px;
+    top: 60px; /* Position the cardseat below the cards */
+    left: -225px; /* Add some margin between the cards and cardseat */
+    align-self: center; /* Center the card horizontally within .main */
+  }
+  
+  .cardcomment {
+    height: 380px;
+    width: 650px; 
+    position: relative;
+    top: 100px; /* Position the cardcomment below the cardseat */
+    left:-215px
+    
+  }
+
+  .projectCard {
+    width: 650px; 
+    position: relative;
+    top: 150px; 
+    left:-215px/* Position the projectCard below the cardcomment */
+    /* Your existing styles for projectCard */
+  }
+
+  .chartcontainer {
+    width: 300px;
+  }
+}

@@ -14,7 +14,13 @@ const LogInPage: React.FC = () => {
 
   useEffect(() => {
     if (redirectToDashboard) {
-      navigate("/dashboardPage");
+      const usertypeId = Number(window.sessionStorage.getItem("usertype_id"));
+
+      if (usertypeId === 1) {
+        navigate("/dashboardviewerPage");
+      } else {
+        navigate("/dashboardPage");
+      }
     }
   }, [redirectToDashboard, navigate]);
 

@@ -1,0 +1,834 @@
+.backg {
+  margin: 0;
+  padding: 0;
+  background-size: 100% 100%;
+  background-color: #f8faf9;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+}
+
+@font-face {
+  font-family: "League Spartan Bold";
+  src: url("../assets/LeagueSpartan-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "League Spartan Regular";
+  src: url("../assets/LeagueSpartan-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "League Spartan Light";
+  src: url("../assets/LeagueSpartan-Light.ttf") format("truetype");
+}
+
+/* Dropdown Menu */
+.dropdownMenu2 {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  z-index: 100;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.dropdownMenu2 button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdownMenu2 button:hover {
+  background-color: #f5f5f5;
+}
+
+.profile {
+  position: absolute;
+  top: 10px;
+  right: 1%;
+  width: 30px;
+  padding: 1px;
+  background-color: transparent;
+  color: #308a38;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    border-color 0.4s ease-in-out;
+}
+
+.profile:hover {
+  background-color: #fff;
+  color: #a7a7a7;
+}
+
+.notif {
+  position: absolute;
+  top: 4px;
+  right: 4%;
+  width: 30px;
+  padding: 8px;
+  background-color: transparent;
+  color: #308a38;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    border-color 0.4s ease-in-out;
+}
+
+.notif:hover {
+  background-color: #fff;
+  color: #a7a7a7;
+}
+
+.form1 {
+  position: fixed;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 90%;
+  height: 89%;
+}
+
+.profileSum {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 40px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
+  width: 480px;
+  height: 760px;
+  margin-bottom: 0.1%;
+  margin-right: 59%;
+  position: absolute;
+  z-index: 2;
+  justify-content: center;
+}
+
+.inputDisplay {
+  position: absolute;
+  margin-top: 65%;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+h3 {
+  color: #10530e;
+  font-size: 38px;
+  font-family: "League Spartan Bold";
+  margin: 0 7px;
+  text-align: center;
+}
+
+h4 {
+  text-align: center;
+  color: #267900;
+  font-size: 17px;
+  font-family: "League Spartan Light";
+  margin: -18px auto 0; /* Add a top margin to create space between h3 and h4 */
+  position: relative;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+h5 {
+  text-align: center;
+  color: #525252;
+  font-size: 18px;
+  font-family: "League Spartan Light";
+  margin: auto 0;
+  position: relative;
+  margin-top: -5px;
+}
+
+.profilePicture {
+  position: absolute;
+  justify-content: center;
+}
+
+.defaultImage,
+.profilePicture img {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  background-color: #838383;
+  right: -85px;
+  border: 4px solid #ffffff; /* Add border color and thickness */
+  top: 90px;
+  position: absolute;
+  display: flex;
+}
+
+.defaultImage {
+  position: absolute;
+  background-size: cover;
+}
+
+.uploadButton {
+  position: absolute;
+  color: rgb(241, 241, 241);
+  top: 200px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #797979;
+  cursor: pointer;
+  right: -80px;
+}
+
+.uploadButton svg {
+  font-size: 30px;
+}
+
+.set {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: 40%;
+  margin-top: 1.5%;
+  
+}
+
+
+.personal {
+  position: relative;
+  color: #226e29;
+  background-color: #ffffff;
+  border-radius: 40px;
+  width: 900px;
+  height: 365px;
+  margin-bottom: 3%;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
+}
+
+
+
+.accountS {
+  position: relative;
+  color: #226e29;
+  background-color: #ffffff;
+  border-radius: 40px;
+  width: 900px;
+  height: 365px;
+  margin-bottom: 3%;
+  border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
+}
+
+
+h1 {
+  margin-top: 2%;
+  margin-left: 4%;
+  text-align: left;
+  color: #16a637;
+  font-size: 30px;
+  font-family: "League Spartan Bold";
+}
+
+.name-group {
+  position: relative;
+  display: inline-block;
+  margin-bottom: -1px;
+  padding: 1%;
+  margin-left: 3.5%;
+}
+
+.readLabel {
+  margin-left: 7%;
+  margin-top: -4%;
+  font-family: "League Spartan Regular";
+  font-size: 18px;
+  color: #2da738;
+  position: absolute;
+  margin-bottom: 10;
+}
+
+.readLabel2 {
+  margin-left: 3.2%;
+  margin-top: -2%;
+  font-family: "League Spartan Regular";
+  font-size: 18px;
+  color: #2da738;
+  position: absolute;
+  margin-bottom: 10%;
+}
+.readLabel3 {
+  margin-left: 3.2%;
+  margin-top: -2%;
+  font-family: "League Spartan Regular";
+  font-size: 18px;
+  color: #2da738;
+  position: absolute;
+  margin-bottom: 10%;
+}
+.readLabel4 {
+  margin-left: 3.2%;
+  margin-top: -2%;
+  font-family: "League Spartan Regular";
+  font-size: 18px;
+  color: #2da738;
+  position: absolute;
+  margin-bottom: 10%;
+}
+.nameInput {
+  border: solid 1.5px #9e9e9e;
+  border-radius: 15px;
+  background: none;
+  padding: 0.9rem;
+  width: 360px;
+  font-size: 1.2rem;
+  color: #656d78;
+  transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgb(241, 241, 241);
+  padding-left: 6%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.nameInput:focus,
+input:valid {
+  outline: none;
+  border: 1px solid #2da738;
+}
+
+.input-group {
+  /* /* position: relative;
+  display: inline-block; */
+  padding: 1%;
+  margin-left: 3.5%;
+  position: relative;
+  margin-bottom: -1px;
+}
+.input-group1 {
+  /* /* position: relative;
+  display: inline-block; */
+  padding: 1%;
+  margin-left: 3.5%;
+  position: relative;
+  margin-bottom: -1px;
+}
+.input-group2 {
+  /* /* position: relative;
+  display: inline-block; */
+  padding: 1%;
+  margin-left: 3.5%;
+  position: relative;
+  margin-bottom: -1px;
+}
+
+.input {
+  border: solid 1.5px #9e9e9e;
+  border-radius: 15px;
+  background: none;
+  padding: 0.9rem;
+  width: 92%;
+  font-size: 1.2rem;
+  color: #656d78;
+  transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgb(241, 241, 241);
+  padding-left: 3%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.user-label {
+  font-size: 17px;
+  font-family: "League Spartan Regular";
+  position: absolute;
+  left: 4%;
+  top: 1.6rem;
+  color: #656d78;
+  pointer-events: none;
+  transform-origin: top left;
+  transform: scale(1);
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input:focus,
+input:valid {
+  outline: none;
+  border: 1px solid #2da738;
+}
+
+.input:not(:read-only):focus ~ .user-label,
+input:not(:read-only):valid ~ .user-label {
+  transform: translateY(-110%) scale(0.8);
+  background-color: rgba(255, 255, 255, 0);
+  padding: 0 0.2em;
+  color: #2da738;
+}
+
+.personal-button {
+  display: flex;
+  position: absolute;
+
+  margin-left: 70%;
+  margin-top: -35%;
+}
+
+
+.account-button {
+  display: flex;
+  position: absolute;
+  margin-left: 70%;
+  margin-top: -35%;
+}
+
+.saveButton {
+  font-family: "League Spartan Regular";
+  font-size: 15px;
+  letter-spacing: 1px;
+  width: 150px;
+  margin-bottom: 20%;
+  background-color: #2b7e47;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
+  order-color 0.4s ease-in-out;
+  margin-left: 10px;
+}
+
+.saveButton:hover {
+  background-color: #049613;
+  color: #ffffff;
+}
+
+.cancelButton {
+  font-family: "League Spartan Regular";
+  font-size: 15px;
+  margin-bottom: 20%;
+  letter-spacing: 1px;
+  width: 40%;
+  padding: 3%;
+  background-color: #d44242;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
+    border-color 0.4s ease-in-out;
+  margin-left: 10px;
+}
+
+.cancelButton:hover {
+  background-color: #c22121;
+  color: #ffffff;
+}
+
+.change-group {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1%;
+  padding: 1%;
+  margin-left: 3.5%;
+}
+
+.changeInput {
+  border: solid 1.5px #9e9e9e;
+  border-radius: 15px;
+  background: none;
+  padding: 0.9rem;
+  width: 360px;
+  font-size: 1.2rem;
+  color: #656d78;
+  transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgb(241, 241, 241);
+  padding-left: 6%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.change-label {
+  font-size: 17px;
+  font-family: "League Spartan Regular";
+  position: absolute;
+  left: 9%;
+  top: 1.6rem;
+  color: #656d78;
+  pointer-events: none;
+  transform-origin: top left;
+  transform: scale(1);
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.changeInput:focus,
+input:valid {
+  outline: none;
+  border: 1px solid #2da738;
+}
+
+.changeInput:not(:read-only):focus ~ .change-label,
+input:not(:read-only):valid ~ .change-label {
+  transform: translateY(-110%) scale(0.8);
+  background-color: rgba(255, 255, 255, 0);
+  padding: 0 0.2em;
+  color: #2da738;
+}
+
+.errorText {
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
+  position: absolute;
+  margin-left: 45px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.toggle-password1 {
+  position: absolute;
+  top: 50%;
+  left: 92%;
+  transform: translateY(-50%);
+  display: inline-block;
+  width: 40px;
+  height: 25px;
+  background-color: rgb(241, 241, 241);
+  cursor: pointer;
+  color: #5e5e5e;
+  transition: color 0.3s ease-in-out;
+  z-index: 2;
+}
+
+.toggle-password1.active {
+  color: #f44336;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 56%;
+  right: 5%;
+  transform: translateY(-50%);
+  display: inline-block;
+  width: 40px;
+  height: 25px;
+  background-color: rgb(241, 241, 241);
+  cursor: pointer;
+  color: #5e5e5e;
+  transition: color 0.3s ease-in-out;
+  z-index: 2;
+}
+
+.toggle-password.active {
+  color: #f44336;
+}
+/* Existing styles ... */
+
+.cover {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border-top-left-radius: 40px; /* Add radius to top left corner */
+  border-top-right-radius: 40px; /* Add radius to top right corner */
+}
+
+.cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Add this CSS class to control the image size */
+.resizable-image {
+  /* Adjust the desired image size here */
+  width: 100%;
+  max-width: 500px; /* Set the maximum width for the image */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Mobile-first styles */
+
+/* Adjust layout for smaller screens */
+
+ 
+.backg
+{
+  margin: 0;
+  padding: 0;
+  background-size: 100% 100%;
+  background-image: url('./../assets/SEATMGT.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+@media screen and (max-width: 1200px) {
+  .form1{
+    width: 100%;
+    overflow:scroll;
+
+  }
+  .profileSum{
+    position: absolute;
+    display: flex;
+    left:70px;
+    top:50px;
+    height:950px;
+    width:400px;
+    
+   
+  }
+  .personal{
+    width:650px;
+    height: 450px;
+    left:20px;
+    top:30px;
+    position: relative;
+    
+  }
+  .accountS{
+    width:650px;
+    height: 450px;
+    left:20px;
+    top:52px
+  }
+  .personal-button{
+    /* position: absolute; */
+    /* display: flex; */
+    position: relative;
+    bottom: 160px;
+    right: 20px;
+
+
+  }
+  .account-button{
+    position: relative;
+    bottom: 160px;
+    right: 20px;
+
+  }
+}                                    
+@media screen and (max-width: 1024px) {
+  .form1{
+    width: 100%;
+    overflow:scroll;
+
+  }
+  .profileSum{
+    position: fixed;
+    top:30px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .personal{
+    position: fixed;
+    left:100px;
+    top:500px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .accountS{
+    position: fixed;
+    left:100px;
+    top:970px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .inputDisplay{
+    top:-180px;
+  }
+ 
+  .account-button{  
+    position: absolute;
+    /* display:flex; */
+    bottom: 305px;
+    right:20px;
+
+  }
+  .personal-button{  
+    position: absolute;
+    /* display:flex; */
+    bottom: 305px;
+    right:20px;
+
+  }
+  .nameInput{
+   
+    width: 92%;
+   
+  }
+
+  .readLabel{
+    top:-10px;
+  }
+  .readLabel2{
+    top: -10px;
+    
+  }
+  .readLabel3{
+    top: -10px;
+    
+  }
+  .readLabel4{
+    top: -10px;
+    
+  }
+  .input-group{
+    top:20px;
+  }
+  .input-group1{
+    top:40px;
+  }
+  .input-group2{
+    top:40px;
+  }
+    .changeInput{
+      width: 92%;
+    }
+
+    .change-group{
+      top:60px;
+    }
+    .cover {
+      position: absolute;
+      background-size: contain;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* background-size: contain; */
+      object-fit: cover;
+      overflow: hidden;
+    }
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      scale: 1.3;
+    }
+}
+@media screen and (max-height: 800px) {
+  .form1{
+    width: 100%;
+    overflow:scroll;
+
+  }
+  .profileSum{
+    position: fixed;
+    top:30px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .personal{
+    position: fixed;
+    left:100px;
+    top:500px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .accountS{
+    position: fixed;
+    left:100px;
+    top:970px;
+    left:90px;
+    width:600px;
+    height:400px;
+  }
+  .inputDisplay{
+    top:-180px;
+  }
+ 
+  .account-button{  
+    position: absolute;
+    display:flex;
+    top:228px;
+    right:20px;
+
+  }
+  .personal-button{  
+    position: absolute;
+    display:flex;
+    top:228px;
+    right:20px;
+
+  }
+  .nameInput{
+   
+    width: 92%;
+   
+  }
+
+  .readLabel{
+    top:-10px;
+  }
+  .readLabel2{
+    top: -10px;
+    
+  }
+  .readLabel3{
+    top: -10px;
+    
+  }
+  .readLabel4{
+    top: -10px;
+    
+  }
+  .input-group{
+    top:20px;
+  }
+  .input-group1{
+    top:40px;
+  }
+  .input-group2{
+    top:40px;
+  }
+    .changeInput{
+      width: 92%;
+    }
+
+    .change-group{
+      top:60px;
+    }
+    .cover {
+      position: absolute;
+      background-size: contain;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* background-size: contain; */
+      object-fit: cover;
+      overflow: hidden;
+    }
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      scale: 1.3;
+    }
+}

@@ -23,7 +23,7 @@ function ProtectedRoute({
   const usertypeId = Number(window.sessionStorage.getItem('usertype_id'));
 
   if (!usertypeId || !allowedUserTypes.includes(usertypeId)) {
-    return <Navigate to="/dashboardviewerPage" />;
+    return <Navigate to="/" />;
   }
 
   return <Element />;

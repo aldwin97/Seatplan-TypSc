@@ -25,6 +25,8 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
 import Grid from "@mui/material/Grid";
 import { Avatar} from '@mui/material';
+import Calendar from "react-calendar";
+
 const ProfileViewerPage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -531,6 +533,10 @@ const ProfileViewerPage: React.FC = () => {
 
   const capitalizeFirstLetter = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  };
+  const [date, setDate] = useState(new Date());
+  const handleDateChange = (newDate: Date) => {
+    setDate(newDate);
   };
 
   return (

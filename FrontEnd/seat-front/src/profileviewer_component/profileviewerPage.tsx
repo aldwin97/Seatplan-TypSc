@@ -11,7 +11,6 @@ import {
 } from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import styles from "./profilePage.module.css";
 import profileBackg from "./assets/profileBackg.png";
 import defaulImage from "../assets/default.png";
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
@@ -23,6 +22,7 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
 import { Avatar} from '@mui/material';
 
+import styles from './profileviewerPage.module.css';
 
 const ProfileViewerPage: React.FC = () => {
   const navigate = useNavigate();
@@ -520,6 +520,8 @@ const ProfileViewerPage: React.FC = () => {
   };
  
 
+
+
   return (
     <div className={styles.backg}>
       <i className={style["menu-out"]} onClick={toggleDrawer}>
@@ -686,6 +688,7 @@ const ProfileViewerPage: React.FC = () => {
             </div>
           </form>
 
+            
           <div className={styles.set}>
             {/* PERSONAL INFORMATION CONTAINER */}
             <form className={styles.personal} onSubmit={handlePersonalSubmit}>
@@ -1100,6 +1103,7 @@ const ProfileViewerPage: React.FC = () => {
                 </Tooltip>
               )}
             </form>
+           
           </div>
         </div>
       </div>

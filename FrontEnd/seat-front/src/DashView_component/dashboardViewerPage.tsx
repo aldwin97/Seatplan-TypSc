@@ -3,7 +3,7 @@
   import SwipeableDrawer from '@mui/material/SwipeableDrawer';
   import {Tooltip,List,ListItem,ListItemText,Divider,Typography,ListItemAvatar, Avatar,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, TablePagination} from '@mui/material';
   import styles from './dashboardViewerPage.module.css';
-  import { BusinessCenterOutlined,DashboardOutlined,ChairOutlined, GroupsOutlined, AccountCircleOutlined,WorkOutlineOutlined, Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
+  import { DashboardOutlined,ChairOutlined, AccountCircleOutlined,Menu, Logout,GroupsRounded, PeopleOutlineRounded, Diversity3Rounded } from '@mui/icons-material';
   import { useNavigate, } from 'react-router-dom';
   import Chart from 'chart.js/auto';
   import axios from 'axios';
@@ -11,37 +11,13 @@
   import occupied from './asset/occupied.png'
   import available from './asset/available.png'
   import totalseat from './asset/totalseat.png'
-  import { Grid, Box, useMediaQuery} from '@mui/material';
-  import { createTheme,  Theme } from '@mui/material/styles';
+  import { Grid, Box,} from '@mui/material';
+  import {  Theme } from '@mui/material/styles';
   import { makeStyles } from '@mui/styles';
   import defaulImage from "../assets/default.png";
 
 
-  const useStyles = makeStyles((theme: Theme) => ({
-    mainContainer: {
-      [theme.breakpoints.down('md')]: {
-        flexDirection: 'column',
-      },
-    },
-  cardContainer: {
-    padding: theme.spacing(2),
-  },
-  commentContainer: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: theme.spacing(2),
-    },
-  },
-  projectCardContainer: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: theme.spacing(2),
-    },
-  },
-  chartContainer: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: theme.spacing(2),
-    },
-  },
-}));
+  
   interface ProjectSummary {
     project_name: string;
     seatCount: number;
@@ -235,28 +211,19 @@
       setDrawerOpen(!isDrawerOpen);
     };
     const navigate = useNavigate();
-    const MachinePageHandleClick = () => {
-      navigate('/machinetablePage');
-    };
-    const projectPageHandleClick = () => {
-      navigate('/ProjectPage');
-    };
+   
+  
     const dashboardPageHandleClick = () => {
       navigate('/DashboardPage');
     };
-    const adminPageHandleClick = () => {
-      navigate('/AdminPage');
-    };
+    
     const ProfilePageHandleClick = () => {
       navigate('/profileviewerpage');
     };
     const SeatplanPageHandleClick = () => {
       navigate('/viewerseatPage');
     };
-    const logInPageHandleClick = (): void => {
-      navigate("/");
-    };
-  
+    
     
   /*table for project overview*/
   useEffect(() => {

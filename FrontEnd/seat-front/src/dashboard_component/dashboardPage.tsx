@@ -11,37 +11,11 @@
   import occupied from './asset/occupied.png'
   import available from './asset/available.png'
   import totalseat from './asset/totalseat.png'
-  import { Grid, Box, useMediaQuery} from '@mui/material';
-  import { createTheme,  Theme } from '@mui/material/styles';
-  import { makeStyles } from '@mui/styles';
+  import { Grid, Box} from '@mui/material';
   import defaulImage from "../assets/default.png";
 
 
-  const useStyles = makeStyles((theme: Theme) => ({
-    mainContainer: {
-      [theme.breakpoints.down('md')]: {
-        flexDirection: 'column',
-      },
-    },
-  cardContainer: {
-    padding: theme.spacing(2),
-  },
-  commentContainer: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: theme.spacing(2),
-    },
-  },
-  projectCardContainer: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: theme.spacing(2),
-    },
-  },
-  chartContainer: {
-    [theme.breakpoints.down('md')]: {
-      marginTop: theme.spacing(2),
-    },
-  },
-}));
+
   interface ProjectSummary {
     project_name: string;
     seatCount: number;
@@ -253,10 +227,6 @@
     const SeatplanPageHandleClick = () => {
       navigate('/seatPlanPage');
     };
-    const logInPageHandleClick = (): void => {
-      navigate("/");
-    };
-  
     
   /*table for project overview*/
   useEffect(() => {

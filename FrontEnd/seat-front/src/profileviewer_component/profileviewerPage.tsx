@@ -4,12 +4,10 @@ import style from "../dashboard_component/dashboardPage.module.css";
 import {
   DashboardOutlined,
   ChairOutlined,
-  GroupsOutlined,
   AccountCircleOutlined,
-  WorkOutlineOutlined,
-  BusinessCenterOutlined,
   Menu,
   Logout,
+  
 } from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -23,9 +21,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
-import Grid from "@mui/material/Grid";
 import { Avatar} from '@mui/material';
-import Calendar from "react-calendar";
 
 const ProfileViewerPage: React.FC = () => {
   const navigate = useNavigate();
@@ -37,7 +33,7 @@ const ProfileViewerPage: React.FC = () => {
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
-  const [userPicture1, setUserPicture1] = useState("");
+  const [, setUserPicture1] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -46,7 +42,7 @@ const ProfileViewerPage: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const [response, setResponse] = useState<string>("");
+  const [, setResponse] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [emailError, setEmailError] = useState("");
 
@@ -55,7 +51,7 @@ const ProfileViewerPage: React.FC = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
-  const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] =
+  const [, setPersonalFormValidSnackbar] =
     useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
   const [isContactNumberError, setContactNumberError] = useState(false);
@@ -223,9 +219,6 @@ const ProfileViewerPage: React.FC = () => {
     return null;
   }
 
-  const viewSeatPageHandleClick = () => {
-    navigate("/seatPlanPage");
-  };
   const toggleOldPasswordVisibility = () => {
     setShowOldPassword((prevShow) => !prevShow);
   };
@@ -238,9 +231,6 @@ const ProfileViewerPage: React.FC = () => {
     setShowConfirmPassword((prevShow) => !prevShow);
   };
 
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
 
   // PERSONAL INFORMATION BUTTONS //
 
@@ -507,18 +497,11 @@ const ProfileViewerPage: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
-  const MachinePageHandleClick = () => {
-    navigate("/machinetablePage");
-  };
-  const projectPageHandleClick = () => {
-    navigate("/ProjectPage");
-  };
+
   const dashboardPageHandleClick = () => {
     navigate("/dashboardviewerPage");
   };
-  const adminPageHandleClick = () => {
-    navigate("/AdminPage");
-  };
+  
   const ProfilePageHandleClick = () => {
     navigate("/profileviewerpage");
   };
@@ -534,10 +517,7 @@ const ProfileViewerPage: React.FC = () => {
   const capitalizeFirstLetter = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
-  const [date, setDate] = useState(new Date());
-  const handleDateChange = (newDate: Date) => {
-    setDate(newDate);
-  };
+ 
 
   return (
     <div className={styles.backg}>
@@ -723,6 +703,7 @@ const ProfileViewerPage: React.FC = () => {
                   onChange={handleInputChange}
                 />
               </div>
+          
               <div className={styles["name-group"]}>
                 <label className={styles.readLabel}>Last Name *</label>
                 <input

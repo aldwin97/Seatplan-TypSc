@@ -515,9 +515,7 @@ const AdminMembersPage: React.FC = () => {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
+  
   const MachinePageHandleClick = () => {
     navigate("/machinetablePage");
   };
@@ -593,7 +591,7 @@ const AdminMembersPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     onClick={ProfilePageHandleClick}
                     className={styles["material-icons"]}
                   >

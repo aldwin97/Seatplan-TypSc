@@ -11,8 +11,6 @@ import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { FaInfoCircle } from 'react-icons/fa';
-import { faDesktop } from '@fortawesome/free-solid-svg-icons';
-import svgPathConverter from 'svg-path-converter';
 import { Avatar} from '@mui/material';
 import axios from 'axios';
 import defaulImage from "../assets/default.png";

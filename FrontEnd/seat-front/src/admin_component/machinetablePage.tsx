@@ -380,9 +380,7 @@ function MachinePage() {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
+  
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
     sessionStorage.removeItem("user_id");

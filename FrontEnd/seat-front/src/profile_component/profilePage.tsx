@@ -23,7 +23,6 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
-import Grid from "@mui/material/Grid";
 import { Avatar} from '@mui/material';
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +34,7 @@ const ProfilePage: React.FC = () => {
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
-  const [userPicture1, setUserPicture1] = useState("");
+ 
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -113,46 +112,6 @@ const ProfilePage: React.FC = () => {
     position_name: string;
   }
 
-  useEffect(() => {
-    const fetchUserPicture = async () => {
-      try {
-        const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
-          responseType: 'arraybuffer',
-        });
-
-        const base64Data = btoa(
-          new Uint8Array(pictureResponse.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ''
-          )
-        );
-        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
-        setUserPicture1(pictureDataUrl);
-      } catch (error) {
-        console.error('Error fetching profile picture:', error);
-      }
-    };
-
-    fetchUserPicture();
-  }, []);
-
-  useEffect(() => {
-    const user_id = window.sessionStorage.getItem('user_id');
-
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
-
-        const responseData: UserData = response.data[0];
-        setUserData(responseData);
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
   useEffect(() => {
     const user_id = window.sessionStorage.getItem("user_id");
 

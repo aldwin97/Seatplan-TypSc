@@ -970,6 +970,7 @@ const toggleDrawer = () => {
 const handleLogout = () => {
   // Clear any user-related data from the session/local storage
   sessionStorage.removeItem('user_id');
+  sessionStorage.removeItem('usertype_id');
 
 
   // Redirect to the login page

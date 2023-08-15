@@ -762,7 +762,7 @@ margin-top: 40px;
 
 /* Style for the button when toggled */
 .arrowToggle.toggled {
-  height: 20px;
+  height: 30px;
   background-color: #4fce6d;
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
@@ -1100,7 +1100,7 @@ color: #f44336;
 }
 .repliedTo{
 
-font-size: 10px;
+  font-size: 10px !important;
 margin-left: 20px;
 color: #777;
 }
@@ -1312,6 +1312,7 @@ svg:hover .tooltip {
 
 .repliedTo {
   color: #666;
+  font-size: 7px;
   font-size: 0.9rem;
   margin-top: 5px;
 }

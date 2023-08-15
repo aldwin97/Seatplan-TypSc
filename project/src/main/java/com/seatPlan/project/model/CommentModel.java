@@ -24,7 +24,8 @@ public class CommentModel {
     private LocalDateTime updated_time;
     private Long updated_by;
 
-
+    private String recipient_fname;
+    private String recipient_lname;
 
 
     private String first_name;

@@ -144,6 +144,7 @@ public class AdminService {
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();
                 commentMap.put("recipient_id",comment.getRecipient_id());
+                commentMap.put("recipient",comment.getRecipient_fname() + " " + comment.getRecipient_lname());
                 commentMap.put("user_id",comment.getUser_id());
                 commentMap.put("comment_id", comment.getComment_id());
                 commentMap.put("seat_id",comment.getSeat_id());

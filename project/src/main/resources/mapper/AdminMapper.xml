@@ -128,9 +128,32 @@
 
 
     <select id="getCommentBySeatId" resultType="com.seatPlan.project.model.CommentModel">
-        SELECT c.user_id, c.comment_id, c.seat_id, c.comment, c.created_time, u.first_name, u.last_name
+        <!-- SELECT c.user_id, 
+            c.comment_id, 
+            c.recipient_id,
+            c.seat_id, 
+            c.comment, 
+            c.created_time, 
+            u.first_name, u.last_name
         FROM table_comment c
         JOIN table_user u ON c.user_id = u.user_id
+        WHERE seat_id = #{seat_id}
+        ORDER BY c.created_time ASC -->
+        SELECT c.user_id, 
+            c.comment_id, 
+            c.recipient_id,
+            c.seat_id, 
+            c.comment, 
+            c.created_time, 
+            u.first_name, 
+            u.last_name,
+            ru.first_name AS recipient_fname, 
+            ru.last_name As recipient_lname
+        FROM table_comment c
+        JOIN table_user u 
+            ON c.user_id = u.user_id
+        LEFT JOIN table_user ru 
+            ON ru.user_id = c.recipient_id
         WHERE seat_id = #{seat_id}
         ORDER BY c.created_time ASC
     </select>

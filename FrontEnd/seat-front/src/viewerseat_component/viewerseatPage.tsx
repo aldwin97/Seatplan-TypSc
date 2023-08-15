@@ -1317,6 +1317,9 @@ useEffect(() => {
   fetchUserData();
 }, []);
 
+const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+
+
   return (
    <body className={styles.body}> <div className={styles.container}>
       <i className={styles['menu-out']}onClick={toggleDrawer}>
@@ -1391,14 +1394,40 @@ useEffect(() => {
                       Seat
                     </a>
                   </li>
+
+                  
                   <li>
-                    <a onClick={handleLogout} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Logout/>
-                      </i>
-                      Logout
-                    </a>
-                  </li>
+                  <a onClick={() => setShowLogoutConfirmation(true)} className={style['material-icons']}>
+                    <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Logout/>
+                    </i>
+                    Logout
+                  </a>
+                </li>
+
+
+                  {showLogoutConfirmation && (
+        <div className={styles.popupModal}>
+          <div className={styles.popupContent}>
+            <p className={styles.popupText}>Are you sure you want to log out?</p>
+            <button
+              className={styles.popupButton}
+              onClick={() => {
+                handleLogout();
+                setShowLogoutConfirmation(false);
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className={styles.popupButton}
+              onClick={() => setShowLogoutConfirmation(false)}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
                 </ul>
               </div>
             </div>

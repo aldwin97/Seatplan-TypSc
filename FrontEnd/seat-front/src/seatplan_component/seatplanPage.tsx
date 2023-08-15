@@ -65,7 +65,7 @@ function SeatPopup({ seat, onClose, setSeats, seats }: SeatPopupProps): JSX.Elem
   const [ , setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [swapSuccess, setSwapSuccess] = useState(false);
-
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>('');
@@ -502,13 +502,13 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   const handleNewCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment(event.target.value);
   };
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleCommentSubmit = (seatId: number) => {
     if (!newComment.trim()) {
-      setError('Comment cannot be empty');
+      setShowPopup(true);
       return;
     }
-
     const userIdString = sessionStorage.getItem('user_id');
     if (!userIdString) {
       setError('User ID not found in session storage');
@@ -746,19 +746,36 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     );
   };
   
-
+  const PopupModal = () => {
+    return (
+      <div className={styles.popupModal}>
+        <div className={styles.popupContent}>
+          <div className={styles.popupText}>Comment cannot be empty</div>
+          <button className={styles.popupButton} onClick={() => setShowPopup(false)}>
+            OK
+          </button>
+        </div>
+      </div>
+    );
+  };
+  
   
   return (
     <div>
       <form >
-       
-          <textarea
-            value={newComment}
-            onChange={handleNewCommentChange}
-            placeholder="Leave a comment..."
-            className={styles.largeInput}
-            required
-          />
+      <div className={styles.commentinput}>
+      <textarea
+        value={newComment}
+        onChange={handleNewCommentChange}
+        placeholder="Leave a comment..."
+        className={styles.largeInput}
+        required
+      />
+      <div className={styles.tooltip} id="commentErrorTooltip">
+        Comment cannot be empty
+      </div>
+    </div>
+    {showPopup && <PopupModal />}
         <button
           className={styles.addComment}
           type="button"
@@ -1463,7 +1480,7 @@ useEffect(() => {
 
   fetchUserData();
 }, []);
-
+const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   return (
    <body className={styles.body}> <div className={styles.container}>
       <i className={styles['menu-out']}onClick={toggleDrawer}>
@@ -1562,14 +1579,40 @@ useEffect(() => {
                       Seat
                     </a>
                   </li>
-                  <li>
-                    <a onClick={handleLogout} className={style['material-icons']}>
-                      <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <Logout/>
-                      </i>
-                      Logout
-                    </a>
-                  </li>
+                  
+                            <li>
+                  <a onClick={() => setShowLogoutConfirmation(true)} className={style['material-icons']}>
+                    <i className={`${style['material-icons-outlined']} ${styles['material-icons']}`}>
+                      <Logout/>
+                    </i>
+                    Logout
+                  </a>
+                </li>
+
+
+                  {showLogoutConfirmation && (
+        <div className={styles.popupModal}>
+          <div className={styles.popupContent}>
+            <p className={styles.popupText}>Are you sure you want to log out?</p>
+            <button
+              className={styles.popupButton}
+              onClick={() => {
+                handleLogout();
+                setShowLogoutConfirmation(false);
+              }}
+            >
+              Yes
+            </button>
+            <button
+              className={styles.popupButton}
+              onClick={() => setShowLogoutConfirmation(false)}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
+
                 </ul>
               </div>
             </div>

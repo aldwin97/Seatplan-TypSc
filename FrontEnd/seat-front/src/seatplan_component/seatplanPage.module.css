@@ -1342,3 +1342,70 @@ svg:hover .tooltip {
   cursor: pointer;
   transform: scale(1.2); /* Apply zoom effect when hovering */
 }
+/* Add these styles to your CSS file */
+
+.popupModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupContent {
+  color: red;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: shake 0.2s;
+}
+
+.popupText {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.popupButton {
+  margin-top: 10px;
+  background-color: #ff0000 !important;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  width: 60px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.popupButton:hover {
+  background-color: #0056b3;
+}
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px); /* Adjust the shake distance */
+  }
+  20%, 80% {
+    transform: translateX(5px); /* Adjust the shake distance */
+  }
+  30%, 70% {
+    transform: translateX(-3px); /* Adjust the shake distance */
+  }
+  40%, 60% {
+    transform: translateX(3px); /* Adjust the shake distance */
+  }
+  50% {
+    transform: translateX(0);
+  }
+}

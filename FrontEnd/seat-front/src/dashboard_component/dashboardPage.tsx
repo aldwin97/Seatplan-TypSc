@@ -73,8 +73,7 @@ const DashboardPage: React.FC = () => {
 
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem('user_id');
-
+    sessionStorage.removeItem("user_id");
 
     // Redirect to the login page
     navigate("/");
@@ -300,6 +299,7 @@ const DashboardPage: React.FC = () => {
     return date.toLocaleString("en-US", options);
   };
 
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   return (
     <>
       <body>
@@ -441,7 +441,7 @@ const DashboardPage: React.FC = () => {
                     </li>
                     <li>
                       <a
-                        onClick={handleLogout}
+                        onClick={() => setShowLogoutConfirmation(true)}
                         className={styles["material-icons"]}
                       >
                         <i
@@ -452,6 +452,31 @@ const DashboardPage: React.FC = () => {
                         Logout
                       </a>
                     </li>
+
+                    {showLogoutConfirmation && (
+                      <div className={styles.popupModal}>
+                        <div className={styles.popupContent}>
+                          <p className={styles.popupText}>
+                            Are you sure you want to log out?
+                          </p>
+                          <button
+                            className={styles.popupButton}
+                            onClick={() => {
+                              handleLogout();
+                              setShowLogoutConfirmation(false);
+                            }}
+                          >
+                            Yes
+                          </button>
+                          <button
+                            className={styles.popupButton}
+                            onClick={() => setShowLogoutConfirmation(false)}
+                          >
+                            No
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </ul>
                 </div>
               </div>

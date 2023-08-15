@@ -73,7 +73,8 @@ const DashboardPage: React.FC = () => {
 
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem("user_id");
+    sessionStorage.removeItem('user_id');
+
 
     // Redirect to the login page
     navigate("/");

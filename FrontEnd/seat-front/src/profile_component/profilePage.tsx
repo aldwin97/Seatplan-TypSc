@@ -484,8 +484,13 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("user_id");
-    navigate("/");
+    // Clear any user-related data from the session/local storage
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('usertype_id');
+
+
+    // Redirect to the login page
+    navigate('/');
   };
 
   const capitalizeFirstLetter = (name: string) => {

@@ -11,7 +11,6 @@ import {
 } from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import styles from "./profilePage.module.css";
 import profileBackg from "./assets/profileBackg.png";
 import defaulImage from "../assets/default.png";
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
@@ -22,6 +21,8 @@ import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
 import { Avatar} from '@mui/material';
+
+import styles from './profileviewerPage.module.css';
 
 const ProfileViewerPage: React.FC = () => {
   const navigate = useNavigate();
@@ -510,14 +511,21 @@ const ProfileViewerPage: React.FC = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("user_id");
-    navigate("/");
+    // Clear any user-related data from the session/local storage
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('usertype_id');
+
+
+    // Redirect to the login page
+    navigate('/');
   };
 
   const capitalizeFirstLetter = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
  
+
+
 
   return (
     <div className={styles.backg}>
@@ -685,6 +693,7 @@ const ProfileViewerPage: React.FC = () => {
             </div>
           </form>
 
+            
           <div className={styles.set}>
             {/* PERSONAL INFORMATION CONTAINER */}
             <form className={styles.personal} onSubmit={handlePersonalSubmit}>
@@ -1099,6 +1108,7 @@ const ProfileViewerPage: React.FC = () => {
                 </Tooltip>
               )}
             </form>
+           
           </div>
         </div>
       </div>

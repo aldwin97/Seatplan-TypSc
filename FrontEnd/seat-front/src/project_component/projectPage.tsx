@@ -160,9 +160,13 @@ function ProjectPage() {
   };
   
   const handleLogout = () => {
-    sessionStorage.removeItem("user_id");
+    // Clear any user-related data from the session/local storage
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('usertype_id');
 
-    navigate("/");
+
+    // Redirect to the login page
+    navigate('/');
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

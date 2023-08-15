@@ -746,7 +746,7 @@ margin-top: 40px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  color: #28a745;
+  color: #ffffff;
   background-color: #28a745;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -779,11 +779,12 @@ margin-top: 40px;
   margin-right: 10px;
   width: 1em;
   height: 1em;
-  color: #0d7404; /* Change to your desired color */
+  color: #ffffff; /* Change to your desired color */
 }
 .h5
 {
   margin-right: 210px;
+  color: white;
   margin-top: 5px;
   font-size: 12px;
 }

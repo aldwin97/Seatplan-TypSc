@@ -72,76 +72,70 @@ const DashboardViewerPage: React.FC = () => {
 
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem("user_id");
+    sessionStorage.removeItem('user_id');
+
 
     // Redirect to the login page
     navigate("/");
   };
 
-  interface CommentCardProps {
-    com: Comments[];
-  }
-
-  interface Comments {
-    full_name: string;
-    comment: string;
-    created_time: string;
-    seat_id: number;
-  }
-
-  interface UserData {
-    first_name: string;
-    last_name: string;
-    position_name: string;
-  }
-
-  useEffect(() => {
-    const fetchUserPicture = async () => {
-      try {
-        const user_id = window.sessionStorage.getItem("user_id");
-        const pictureResponse = await axios.get(
-          `http://localhost:8080/profile/userPicture/${user_id}`,
-          {
-            responseType: "arraybuffer",
-          }
-        );
-
-        const base64Data = btoa(
-          new Uint8Array(pictureResponse.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
-        const pictureDataUrl = `data:${pictureResponse.headers[
-          "content-type"
-        ].toLowerCase()};base64,${base64Data}`;
-        setUserPicture(pictureDataUrl);
-      } catch (error) {
-        console.error("Error fetching profile picture:", error);
-      }
-    };
-
-    fetchUserPicture();
-  }, []);
-
-  useEffect(() => {
-    const user_id = window.sessionStorage.getItem("user_id");
-
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`
-        );
-
-        const responseData: UserData = response.data[0];
-        setUserData(responseData);
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    interface CommentCardProps {
+      com: Comments[];
+    }
+    
+    interface Comments {
+      full_name: string;
+      comment: string;
+      created_time: string;
+      seat_id:number;
+    }
+    
+    interface UserData {
+      first_name: string;
+      last_name: string;
+      position_name: string;
+    }
+  
+    useEffect(() => {
+      const fetchUserPicture = async () => {
+        try {
+          const user_id = window.sessionStorage.getItem('user_id');
+          const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+            responseType: 'arraybuffer',
+          });
+  
+          const base64Data = btoa(
+            new Uint8Array(pictureResponse.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ''
+            )
+          );
+          const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+          setUserPicture(pictureDataUrl);
+        } catch (error) {
+          console.error('Error fetching profile picture:', error);
+        }
+      };
+  
+      fetchUserPicture();
+    }, []);
+  
+    useEffect(() => {
+      const user_id = window.sessionStorage.getItem('user_id');
+  
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+  
+          const responseData: UserData = response.data[0];
+          setUserData(responseData);
+        } catch (error) {
+          console.error('Error fetching profile data:', error);
+        }
+      };
+  
+      fetchUserData();
+    }, []);
 
   useEffect(() => {
     // Fetch the data from the endpoint

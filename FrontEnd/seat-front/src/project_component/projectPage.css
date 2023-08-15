@@ -49,7 +49,6 @@
         font-weight: bold;
         font-size: 20px;
         color: #22a349;
-        box-shadow: 4px 2px 4px rgba(0, 0, 0, 0.2);
         padding-bottom: 10px;
       }
 
@@ -200,7 +199,6 @@
         font-weight: bold;
         font-size: 20px;
         color: #22a349;
-        box-shadow: 9px 4px 10px rgba(0, 0, 0, 0.1) !important;
         padding-bottom: 10px;
       }
       

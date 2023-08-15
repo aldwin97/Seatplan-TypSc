@@ -56,34 +56,13 @@
     background-repeat: no-repeat;
     color: #308a38;
     font-size: 40px;
-    font-weight: 300;
+    font-weight: bolder;
     padding-top: 60px;
-    font-family: Arial, Helvetica, sans-serif;
     width: 100%;
     height: 30%;
     opacity: 0.9;
-    text-shadow:
-      -1px -1px 0 #fff,
-      1px -1px 0 #fff,
-      -1px 1px 0 #fff,
-      1px 1px 0 #fff;
-    animation: textAnimation 6s infinite;
   }
-  
-  @keyframes textAnimation {
-    0%, 100% {
-      color: #308a38; /* Initial and final color */
- 
-    }
-    50% {
-      color: #00ccff; /* Midway color (red) */
-     
-    }
-    100% {
-      color: #ffbb00; /* Final color (pink) */
-     
-    }
-  }
+
   
   .searchBar {
     display: flex;
@@ -117,11 +96,12 @@
   
   .sub {
     position: absolute;
+    font-size: 50px;
     top: 4px;
     right: 20px;
     width: 100px;
     padding: 8px;
-    background-color: #fff;
+    background-color: transparent;
     color: #2da738;
     border: none;
     border-radius: 30px;
@@ -131,7 +111,7 @@
   }
   
   .sub:hover {
-    background-color: #308a38;
+    background-color: transparent;
     color: #fff;
   }
   .text1 {

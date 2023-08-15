@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './login_component/logInPage';
 import ViewSeatPage from './viewseat_component/viewSeatPage';
-import HelpPage from './help_component/helpPage';
+import AboutUsPage from './aboutus_component/aboutusPage';
 import DashboardPage from './dashboard_component/dashboardPage';
 import AdminMembersPage from './admin_component/adminMembersPage';
 import SeatplanPage from './seatplan_component/seatplanPage';
@@ -41,7 +41,7 @@ function App() {
             element={<ProtectedRoute allowedUserTypes={[2, 3]} element={DashboardPage} />}
           />
           {/* Repeat for other protected routes */}
-          <Route path="/helpPage" element={<HelpPage />} />
+          <Route path="/aboutUsPage" element={<AboutUsPage />} />
           <Route
             path="/projectPage"
             element={<ProtectedRoute allowedUserTypes={[3, 2]} element={ProjectPage} />}

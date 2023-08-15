@@ -40,6 +40,9 @@ const LogInPage: React.FC = () => {
   const viewSeatPageHandleClick = () => {
     navigate("/viewSeatPage");
   };
+  const aboutUsPageHandleClick = () => {
+    navigate("/aboutUsPage");
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -195,12 +198,10 @@ const LogInPage: React.FC = () => {
           >
             View Seatplan
           </button>
-        </div>
-        {/* <div className={styles.supportContainer}>
-        <a href="#" onClick={helpPageHandleClick} className={styles.supportLink}>
-        Support
-      </a>
-        </div> */}
+         
+        </div> 
+        <a className={styles.supportContainer} href="#" onClick={aboutUsPageHandleClick}>About Us</a>
+      
       </div>
     </div>
   );

@@ -424,7 +424,6 @@ interface Comment {
   comment: string;
   created_time: string;
   recipient_id: number;
-  recipient: string;
   created_by: number;
   parent_id?: number; // Optional field to hold the parent comment's ID
   replies?: Comment[]; // Optional field to hold replies to this comment
@@ -446,7 +445,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   const [replyToName, setReplyToName] = useState('');
   const [replyToCommentId, setReplyToCommentId] = useState<number | null>(null);
   const [replyToRecipientId, setReplyToRecipientId] = useState<number | null>(null);
-  const [newReplyComment, setNewReplyComment] = useState('');
 
   useEffect(() => {
     fetchCommentsForAllSeats(userId, seatIds);
@@ -462,10 +460,8 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     setShowReplyBox(true);
     setReplyToName(name);
     setReplyToCommentId(commentId);
-    setReplyToRecipientId(recipientId); // Set the recipient's user_id
+    setReplyToRecipientId(recipientId); // Set the recipientId state when showing the reply box
   };
-  
-  
   
 
 
@@ -528,9 +524,8 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       comment: newComment,
       created_time: new Date().toISOString(),
       created_by: userId,
-      recipient_id: replyToRecipientId, // Use the recipient_id from handleShowReplyBox
+      recipient_id: userId, // Set the recipient ID to the current user's ID
     };
-    
 
     fetch('http://localhost:8080/seat/insertComment', {
       method: 'POST',
@@ -553,36 +548,32 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       });
   };
 
-const handleReplySubmit = (seatId: number) => {
-  console.log("handleReplySubmit - Start");
-
-  if (!newReplyComment.trim()) {
-    setError('Reply cannot be empty');
-    return;
-  }
-
-  console.log("handleReplySubmit - New reply comment:", newReplyComment);
-  console.log("handleReplySubmit - replyToCommentId:", replyToCommentId);
-  console.log("handleReplySubmit - replyToRecipientId:", replyToRecipientId);
-  console.log("handleReplySubmit - userId:", userId);
-
-  const replyData = {
-    user_id: userId,
-    seat_id: seatId,
-    comment: newReplyComment,
-    created_time: new Date().toISOString(),
-    created_by: userId,
-    parent_id: replyToCommentId,
-    recipient_id: replyToRecipientId,
-  };
-
-  console.log("handleReplySubmit - replyData:", replyData);
-
-  fetch('http://localhost:8080/admin/replyComment', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  const handleReplySubmit = (seatId: number) => {
+    if (!newComment.trim()) {
+      setError('Reply cannot be empty');
+      return;
+    }
+  
+    if (replyToCommentId === null) {
+      setError('Reply target not specified');
+      return;
+    }
+  
+    const replyData = {
+      user_id: userId,
+      seat_id: seatId,
+      comment: newComment,
+      created_time: new Date().toISOString(),
+      created_by: userId,
+      parent_id: replyToCommentId,
+      recipient_id: replyToRecipientId,
+    };
+  
+    fetch('http://localhost:8080/admin/replyComment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(replyData),
     })
       .then((response) => {
@@ -601,15 +592,47 @@ const handleReplySubmit = (seatId: number) => {
         console.error('Error inserting reply:', error);
       });
   };
-  const handleNewReplyCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewReplyComment(event.target.value);
-  };
-
   
 
+  const renderFullConversation = (commentId: number | null) => {
+    const renderReplies = (replies: Comment[] | undefined) => {
+      if (!replies || replies.length === 0) {
+        return null;
+      }
+  
+      return (
+        <ul className={styles.replyList}>
+          {replies.map((reply) => (
+            <li key={reply.comment_id}>
+              <table className={styles.replyTable}>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className={styles.replyname}>{reply.full_name}: </span>
+                      <span className={styles.replytext}>{reply.comment}</span>
+                    </td>
+                    <td className={styles.replyButtonCell}>
+                      {/* Check if the reply is from the current user and has replies */}
+                      {reply.user_id !== userId && reply.replies && reply.replies.length > 0 && (
+                        <button className={styles.replyButton} onClick={() => handleShowReplyBox(reply.full_name, reply.comment_id, reply.recipient_id)}>Reply</button>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {/* Recursively render nested replies */}
+              {renderReplies(reply.replies)}
+            </li>
+          ))}
+        </ul>
+      );
+    };
   
   
-
+    if (commentId === null || !commentsMap[seatIds[0]]) {
+      return null;
+    }
+  
     const findComment = (commentId: number, comments: Comment[]): Comment | null => {
       for (const comment of comments) {
         if (comment.comment_id === commentId) {
@@ -625,98 +648,106 @@ const handleReplySubmit = (seatId: number) => {
       return null;
     };
   
-
+    const rootComment = findComment(commentId, commentsMap[seatIds[0]]);
+    if (!rootComment) {
+      return null;
+    }
   
- 
-    const renderMainComments = (comments: Comment[], userId: number) => {
-      const findOriginalComment = (commentId: number, replies: Comment[]): Comment | null => {
-        for (const reply of replies) {
-          if (reply.comment_id === commentId) {
-            return reply;
-          }
-          if (reply.replies) {
-            const originalComment = findOriginalComment(commentId, reply.replies);
-            if (originalComment) {
-              return originalComment;
-            }
+    // Show the entire conversation in the popup modal
+    return renderReplies([rootComment]);
+  };
+
+
+  const renderMainComments = (comments: Comment[], userId: number) => {
+    const findOriginalComment = (commentId: number, replies: Comment[]): Comment | null => {
+      for (const reply of replies) {
+        if (reply.comment_id === commentId) {
+          return reply;
+        }
+        if (reply.replies) {
+          const originalComment = findOriginalComment(commentId, reply.replies);
+          if (originalComment) {
+            return originalComment;
           }
         }
-        return null;
-      };
-    
-      const findFullNameById = (userId: number): string | undefined => {
-        const comment = comments.find((c) => c.user_id === userId);
-        return comment ? comment.full_name : undefined;
-      };
-    
-      const findReplyingTo = (commentId: number): string | undefined => {
-        const originalComment = findOriginalComment(commentId, comments);
-        return originalComment ? findFullNameById(originalComment.user_id) : undefined;
-      };
-    
-      const findReplyToUser = (commentId: number, replies: Comment[]): Comment | undefined => {
-        for (const reply of replies) {
-          if (reply.comment_id === commentId) {
-            return reply;
-          }
-          if (reply.replies) {
-            const userReply = findReplyToUser(commentId, reply.replies);
-            if (userReply) {
-              return userReply;
-            }
-          }
-        }
-        return undefined;
-      };
-    
-      return (
-        <table className={styles.commentsTable}>
-        <tbody>
-          {comments.map((comment) => (
-            <tr key={comment.comment_id}>
-              <td>
-                <span className={styles.boldName}>{comment.full_name}: </span>
-                <span className={styles.text}>{comment.comment}</span>
-                {/* Display "Replied to" information */}
-                {comment.parent_id && (
-                  <div className={styles.repliedTo}>
-                    {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
-                  </div>
-                )}
-              </td>
-              <td>
-                {/* Check if the comment is not written by the current user */}
-                {comment.user_id !== userId && !comment.replies && (
-                  <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
-                )}
-                {/* Display "Replied to" information based on recipient_id */}
-                {comment.user_id === userId && comment.recipient_id !== userId && (
-                  <div className={styles.repliedTo}>
-                    You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
-                  </div>
-                )}
-                {/* Display indicator for third-party users */}
-                {comment.user_id !== userId && comment.parent_id && (
-                  <div className={styles.repliedTo}>
-                    {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
-                  </div>
-                )}
-                {/* Display indicator for the user who received the reply */}
-                {comment.recipient_id === userId && (
-                  <div className={styles.repliedTo}>
-                    {findFullNameById(comment.user_id)} replied to you ↶
-                  </div>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-      );
+      }
+      return null;
     };
   
-   
+    const findFullNameById = (userId: number): string | undefined => {
+      const comment = comments.find((c) => c.user_id === userId);
+      return comment ? comment.full_name : undefined;
+    };
+  
+    const findReplyingTo = (commentId: number): string | undefined => {
+      const originalComment = findOriginalComment(commentId, comments);
+      return originalComment ? findFullNameById(originalComment.user_id) : undefined;
+    };
+  
+    const findReplyToUser = (commentId: number, replies: Comment[]): Comment | undefined => {
+      for (const reply of replies) {
+        if (reply.comment_id === commentId) {
+          return reply;
+        }
+        if (reply.replies) {
+          const userReply = findReplyToUser(commentId, reply.replies);
+          if (userReply) {
+            return userReply;
+          }
+        }
+      }
+      return undefined;
+    };
+  
+    return (
+      <table className={styles.commentsTable}>
+      <tbody>
+        {comments.map((comment) => (
+          <tr key={comment.comment_id}>
+            <td>
+              <span className={styles.boldName}>{comment.full_name}: </span>
+              <span className={styles.text}>{comment.comment}</span>
+              {/* Display "Replied to" information */}
+              {comment.parent_id && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} Replied to {findFullNameById(comment.recipient_id)}
+                </div>
+              )}
+            </td>
+            <td>
+              {/* Check if the comment is not written by the current user */}
+              {comment.user_id !== userId && !comment.replies && (
+                <button className={styles.replyButton} onClick={() => handleShowReplyBox(comment.full_name, comment.comment_id, comment.user_id)}>Reply</button>
+              )}
+              {/* Display "Replied to" information based on recipient_id */}
+              {comment.user_id === userId && comment.recipient_id !== userId && (
+                <div className={styles.repliedTo}>
+                  You replied to {findFullNameById(comment.recipient_id) || "this seat"} ↷
+                </div>
+              )}
+              {/* Display indicator for third-party users */}
+              {comment.user_id !== userId && comment.parent_id && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} replied to {findReplyingTo(comment.parent_id)}
+                </div>
+              )}
+              {/* Display indicator for the user who received the reply */}
+              {comment.recipient_id === userId && (
+                <div className={styles.repliedTo}>
+                  {findFullNameById(comment.user_id)} replied to you ↶
+                </div>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    
+    );
+  };
+  
+
+  
   return (
     <div>
       <form >
@@ -761,14 +792,16 @@ const handleReplySubmit = (seatId: number) => {
                 </button>
               </div>
               <div className={styles.modalBody}>
+                {/* Show the entire conversation (thread) within the modal */}
+                {renderFullConversation(replyToCommentId)}
+                {/* Reply input */}
                 <textarea
-                  value={newReplyComment}
-                  onChange={handleNewReplyCommentChange}
+                  value={newComment}
+                  onChange={handleNewCommentChange}
                   placeholder="Type your reply..."
                   className={styles.replyTextarea}
                   required
                 />
-
                 <button className={styles.replySubmitButton} onClick={() => handleReplySubmit(seatIds[0])}>
                   Reply
                 </button>
@@ -780,6 +813,7 @@ const handleReplySubmit = (seatId: number) => {
     </div>
   );
 };
+
 
 
 

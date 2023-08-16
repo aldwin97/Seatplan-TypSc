@@ -1666,24 +1666,27 @@ function ViewerSeatPage() {
                         <p className={styles.popupText}>
                           Are you sure you want to log out?
                         </p>
-                        <button
-                          className={styles.popupButton}
-                          onClick={() => {
-                            handleLogout();
-                            setShowLogoutConfirmation(false);
-                          }}
-                        >
-                          Yes
-                        </button>
-                        <button
-                          className={styles.popupButton}
-                          onClick={() => setShowLogoutConfirmation(false)}
-                        >
-                          No
-                        </button>
+                        <div className={styles.buttonRow}>
+                          <button
+                            className={styles.popupButton}
+                            onClick={() => {
+                              handleLogout();
+                              setShowLogoutConfirmation(false);
+                            }}
+                          >
+                            Yes
+                          </button>
+                          <button
+                            className={styles.popupButtonYes}
+                            onClick={() => setShowLogoutConfirmation(false)}
+                          >
+                            No
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
+                  
                 </ul>
               </div>
             </div>

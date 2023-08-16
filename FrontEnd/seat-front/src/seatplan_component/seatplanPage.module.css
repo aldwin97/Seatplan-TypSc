@@ -1317,8 +1317,13 @@ svg:hover .tooltip {
   margin-bottom: 15px;
 }
 
+.buttonRow {
+  display: flex;
+  align-items: center; /* Align buttons vertically in the center */
+  gap: 10px; /* Add spacing between the buttons */
+}
+
 .popupButton {
-  margin-top: 10px;
   background-color: #ff0000 !important;
   color: white;
   border: none;
@@ -1328,6 +1333,19 @@ svg:hover .tooltip {
   cursor: pointer;
   transition: background-color 0.3s;
 }
+
+.popupButtonYes {
+  background-color: #30bb42 !important;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  width: 60px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
 
 .popupButton:hover {
   background-color: #0056b3;

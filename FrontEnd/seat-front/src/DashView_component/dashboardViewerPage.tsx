@@ -407,11 +407,12 @@ const DashboardViewerPage: React.FC = () => {
                     </li>
 
                     {showLogoutConfirmation && (
-                      <div className={styles.popupModal}>
-                        <div className={styles.popupContent}>
-                          <p className={styles.popupText}>
-                            Are you sure you want to log out?
-                          </p>
+                    <div className={styles.popupModal}>
+                      <div className={styles.popupContent}>
+                        <p className={styles.popupText}>
+                          Are you sure you want to log out?
+                        </p>
+                        <div className={styles.buttonRow}>
                           <button
                             className={styles.popupButton}
                             onClick={() => {
@@ -422,14 +423,15 @@ const DashboardViewerPage: React.FC = () => {
                             Yes
                           </button>
                           <button
-                            className={styles.popupButton}
+                            className={styles.popupButtonYes}
                             onClick={() => setShowLogoutConfirmation(false)}
                           >
                             No
                           </button>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
                   </ul>
                 </div>
               </div>

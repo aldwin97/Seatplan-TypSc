@@ -24,8 +24,8 @@ import { Avatar } from "@mui/material";
 import axios from "axios";
 import defaulImage from "../assets/default.png";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
+import Box from "@mui/material/Box";
+import Pagination from "@mui/material/Pagination";
 
 interface Seat {
   position: { x: number; y: number };
@@ -1041,29 +1041,32 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       )}
 
       {/* Pagination */}
-      <Box className={styles.paginationcontainer} display="flex" justifyContent="center" marginTop={2}>
-  <Pagination
-    count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
-    page={currentPage}
-    onChange={(event, newPage) => setCurrentPage(newPage)}
-    sx={{
-      '& .MuiPaginationItem-root': {
-        color: 'green', 
-        boxShadow: 'none',     
-        background: 'none',  
-        '&:hover': {
-          color: 'blue',      // Change color on hover
-        },
-        '&.Mui-selected': {
-          background: 'lightgray',  
-          color: 'green',     // Change color when selected
-        },
-      },
-    }}
-  />
-</Box>
-
-
+      <Box
+        className={styles.paginationcontainer}
+        display="flex"
+        justifyContent="center"
+        marginTop={2}
+      >
+        <Pagination
+          count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
+          page={currentPage}
+          onChange={(event, newPage) => setCurrentPage(newPage)}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "green",
+              boxShadow: "none",
+              background: "none",
+              "&:hover": {
+                color: "blue", // Change color on hover
+              },
+              "&.Mui-selected": {
+                background: "lightgray",
+                color: "green", // Change color when selected
+              },
+            },
+          }}
+        />
+      </Box>
     </div>
   );
 };
@@ -1914,21 +1917,23 @@ function SeatplanPage() {
                         <p className={styles.popupText}>
                           Are you sure you want to log out?
                         </p>
-                        <button
-                          className={styles.popupButton}
-                          onClick={() => {
-                            handleLogout();
-                            setShowLogoutConfirmation(false);
-                          }}
-                        >
-                          Yes
-                        </button>
-                        <button
-                          className={styles.popupButton}
-                          onClick={() => setShowLogoutConfirmation(false)}
-                        >
-                          No
-                        </button>
+                        <div className={styles.buttonRow}>
+                          <button
+                            className={styles.popupButton}
+                            onClick={() => {
+                              handleLogout();
+                              setShowLogoutConfirmation(false);
+                            }}
+                          >
+                            Yes
+                          </button>
+                          <button
+                            className={styles.popupButtonYes}
+                            onClick={() => setShowLogoutConfirmation(false)}
+                          >
+                            No
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}

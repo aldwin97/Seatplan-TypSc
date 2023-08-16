@@ -5,6 +5,8 @@ package com.seatPlan.project.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,4 +60,5 @@ public class UserModel {
     private String usertype_name;
     private String staffstatus_name;
     private String project_name;
+
 }

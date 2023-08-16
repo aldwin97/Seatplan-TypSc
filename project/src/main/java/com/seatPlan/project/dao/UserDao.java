@@ -29,6 +29,7 @@ public interface UserDao {
 
     List<UserModel> showUserById(Long user_id);
     
+    UserModel getUsertype(String username);
     
 
 

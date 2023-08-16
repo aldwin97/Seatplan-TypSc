@@ -59,4 +59,8 @@
     LEFT JOIN table_usertype AS ut ON u.usertype_id = ut.usertype_id
     WHERE u.user_id = #{user_id}
     </select>
+
+    <select id="getUsertype" resultType="com.seatPlan.project.model.UserModel">
+        SELECT usertype_id FROM table_user WHERE username = #{username} AND is_deleted = 0
+    </select>
 </mapper>

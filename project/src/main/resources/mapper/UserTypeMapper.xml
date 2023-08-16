@@ -1,0 +1,9 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seatPlan.project.dao.UserTypeDao">
+
+    <select id="getUsertypeName" resultType="com.seatPlan.project.model.UserTypeModel">
+        SELECT usertype_name FROM table_user WHERE usertype_id = #{usertype_id} AND is_deleted = 0
+    </select>
+</mapper>

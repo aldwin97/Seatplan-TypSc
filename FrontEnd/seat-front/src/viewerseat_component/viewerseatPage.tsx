@@ -433,9 +433,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
 
   const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
     const fetchPromises = seatIds.map((seatId) => {
-      return fetchCommentsBySeatId(seatId);
+      return fetchCommentsBySeatId(seatId, userId); // Pass userId as the second argument
     });
-
+  
     Promise.all(fetchPromises)
       .then((results) => {
         const commentsMap: { [seatId: number]: Comment[] } = {};
@@ -449,9 +449,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error("Error fetching comments for seats:", error);
       });
   };
-
-  const fetchCommentsBySeatId = (seatId: number) => {
-    return fetch(`http://localhost:8080/admin/showAllCommentBy/${seatId}`)
+  
+  const fetchCommentsBySeatId = (seatId: number, userId: number) => {
+    return fetch(`http://localhost:8080/seat/showAllCommentBy/${userId}/${seatId}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -468,7 +468,8 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         return [];
       });
   };
-
+  
+  
   const handleNewCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {

@@ -147,9 +147,10 @@ const DashboardViewerPage: React.FC = () => {
   useEffect(() => {
     // Fetch the data from the endpoint
     const fetchData = async () => {
+      const user_id = window.sessionStorage.getItem("user_id");
       try {
         const response = await axios.get(
-          "http://localhost:8080/dashboard/showAllComment"
+          `http://localhost:8080/seat/showAllCommentBy/${user_id}`
         );
         const data: Comments[] = response.data;
 

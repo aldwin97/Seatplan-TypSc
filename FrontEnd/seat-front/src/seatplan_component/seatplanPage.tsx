@@ -51,6 +51,7 @@ interface Seat {
 interface SeatPopupProps {
   seat: Seat;
   onClose: () => void;
+  
   setSeats: (seats: Seat[]) => void;
   seats: Seat[];
 }
@@ -67,6 +68,7 @@ interface Occupant {
 function SeatPopup({
   seat,
   onClose,
+  
   setSeats,
   seats,
 }: SeatPopupProps): JSX.Element {
@@ -440,7 +442,8 @@ function SeatPopup({
           <button
             type="button"
             className={styles.closeButton}
-            onClick={onClose}
+            onClick={onClose
+            }
           >
             <FontAwesomeIcon icon={faClose} />
           </button>

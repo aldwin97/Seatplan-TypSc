@@ -1494,3 +1494,8 @@ svg:hover .tooltip {
   color: white;
   margin-right: 10px;
 }
+.paginationcontainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}

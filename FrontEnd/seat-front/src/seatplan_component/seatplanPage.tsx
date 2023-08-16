@@ -24,6 +24,8 @@ import { Avatar } from "@mui/material";
 import axios from "axios";
 import defaulImage from "../assets/default.png";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
 
 interface Seat {
   position: { x: number; y: number };
@@ -51,7 +53,7 @@ interface Seat {
 interface SeatPopupProps {
   seat: Seat;
   onClose: () => void;
-  
+
   setSeats: (seats: Seat[]) => void;
   seats: Seat[];
 }
@@ -68,7 +70,7 @@ interface Occupant {
 function SeatPopup({
   seat,
   onClose,
-  
+
   setSeats,
   seats,
 }: SeatPopupProps): JSX.Element {
@@ -442,8 +444,7 @@ function SeatPopup({
           <button
             type="button"
             className={styles.closeButton}
-            onClick={onClose
-            }
+            onClick={onClose}
           >
             <FontAwesomeIcon icon={faClose} />
           </button>
@@ -527,6 +528,10 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     setReplyToCommentId(commentId);
     setReplyToRecipientId(recipientId); // Set the recipientId state when showing the reply box
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const commentsPerPage = 5; // You can adjust this number based on your preference
+  const startIdx = (currentPage - 1) * commentsPerPage;
+  const endIdx = startIdx + commentsPerPage;
 
   const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
     const fetchPromises = seatIds.map((seatId) => {
@@ -539,6 +544,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         results.forEach((comments, index) => {
           commentsMap[seatIds[index]] = comments;
         });
+        setCurrentPage(1); // Reset to the first page
         setCommentsMap(commentsMap);
       })
       .catch((error) => {
@@ -872,7 +878,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       </table>
     );
   };
-
   const PopupModal = () => {
     return (
       <div className={styles.popupModal}>
@@ -942,7 +947,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       </div>
     );
   };
-
+  const totalPages = Math.ceil(
+    commentsMap[seatIds[0]]?.length / commentsPerPage
+  );
   return (
     <div>
       <form>
@@ -967,6 +974,8 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           Add Comment
         </button>
       </form>
+
+      <div className={styles.pagination}></div>
       <div>
         <button
           className={styles.clearButton}
@@ -974,19 +983,23 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         >
           Clear All Comments
         </button>
-
+        <div className={styles.pagination}></div>
         {showConfirmationModal && <ConfirmationModal />}
       </div>
 
       {error && <p className={styles.error}>{error}</p>}
       {seatIds.map((seatId) => (
         <div key={seatId}>
+          {/* Call the renderMainComments function for each seatId */}
           {commentsMap[seatId]?.length > 0 && (
             <div className={styles.commentsContainer}>
               <h4>Comments:</h4>
               <div className={styles.commentsScrollContainer}>
                 {/* Call the renderMainComments function here */}
-                {renderMainComments(commentsMap[seatId], userId)}
+                {renderMainComments(
+                  commentsMap[seatId].slice(startIdx, endIdx),
+                  userId
+                )}
               </div>
             </div>
           )}
@@ -1026,6 +1039,26 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+      <Box className={styles.paginationcontainer} display="flex" justifyContent="center" marginTop={2}>
+  <Pagination
+    count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
+    page={currentPage}
+    onChange={(event, newPage) => setCurrentPage(newPage)}
+    sx={{
+      '& .MuiPaginationItem-root': {
+        color: 'green', 
+        boxShadow: 'none',     
+        background: 'none',  
+        '&:hover': {
+          color: 'blue',      // Change color on hover
+        },
+      },
+    }}
+  />
+</Box>
+
     </div>
   );
 };

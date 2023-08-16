@@ -1407,3 +1407,15 @@ svg:hover .tooltip {
     transform: translateX(0);
   }
 }
+.deleteButton
+{
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none !important;
+  margin-right: 2px;
+}.deleteButton:hover
+{
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 100px;
+}

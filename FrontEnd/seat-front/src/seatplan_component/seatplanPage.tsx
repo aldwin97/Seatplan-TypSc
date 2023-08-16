@@ -1054,10 +1054,15 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         '&:hover': {
           color: 'blue',      // Change color on hover
         },
+        '&.Mui-selected': {
+          background: 'lightgray',  
+          color: 'green',     // Change color when selected
+        },
       },
     }}
   />
 </Box>
+
 
     </div>
   );

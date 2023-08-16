@@ -26,6 +26,8 @@ import svgPathConverter from "svg-path-converter";
 import { Avatar } from "@mui/material";
 import axios from "axios";
 import defaulImage from "../assets/default.png";
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
 
 interface Seat {
   position: { x: number; y: number };
@@ -424,6 +426,10 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     setReplyToCommentId(commentId);
     setReplyToRecipientId(recipientId); // Set the recipientId state when showing the reply box
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const commentsPerPage = 5; // You can adjust this number based on your preference
+  const startIdx = (currentPage - 1) * commentsPerPage;
+  const endIdx = startIdx + commentsPerPage;
 
   const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
     const fetchPromises = seatIds.map((seatId) => {
@@ -436,6 +442,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         results.forEach((comments, index) => {
           commentsMap[seatIds[index]] = comments;
         });
+        setCurrentPage(1); // Reset to the first page
         setCommentsMap(commentsMap);
       })
       .catch((error) => {
@@ -467,13 +474,13 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   ) => {
     setNewComment(event.target.value);
   };
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleCommentSubmit = (seatId: number) => {
     if (!newComment.trim()) {
-      setError("Comment cannot be empty");
+      setShowPopup(true);
       return;
     }
-
     const userIdString = sessionStorage.getItem("user_id");
     if (!userIdString) {
       setError("User ID not found in session storage");
@@ -557,6 +564,22 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error("Error inserting reply:", error);
       });
   };
+  const handleDeleteComment = (commentId: number) => {
+    fetch(`http://localhost:8080/admin/deleteComment/${commentId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Comment deleted successfully");
+          fetchCommentsForAllSeats(userId, seatIds);
+        } else {
+          console.error("Failed to delete comment");
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting comment:", error);
+      });
+  };
 
   const renderFullConversation = (commentId: number | null) => {
     const renderReplies = (replies: Comment[] | undefined) => {
@@ -637,23 +660,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     // Show the entire conversation in the popup modal
     return renderReplies([rootComment]);
   };
-  const handleDeleteComment = (commentId: number) => {
-    fetch(`http://localhost:8080/admin/deleteComment/${commentId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log('Comment deleted successfully');
-          fetchCommentsForAllSeats(userId, seatIds);
-        } else {
-          console.error('Failed to delete comment');
-        }
-      })
-      .catch((error) => {
-        console.error('Error deleting comment:', error);
-      });
-  };
-  
+
   const renderMainComments = (comments: Comment[], userId: number) => {
     const findOriginalComment = (
       commentId: number,
@@ -750,7 +757,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
                     {findReplyingTo(comment.parent_id)}
                   </div>
                 )}
-                
                 {/* Display indicator for the user who received the reply */}
                 {comment.recipient_id === userId && (
                   <div className={styles.repliedTo}>
@@ -772,17 +778,58 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       </table>
     );
   };
+  const PopupModal = () => {
+    return (
+      <div className={styles.popupModal}>
+        <div className={styles.popupContent}>
+          <div className={styles.popupText}>Comment cannot be empty</div>
+          <button
+            className={styles.popupButton}
+            onClick={() => setShowPopup(false)}
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    );
+  };
 
+  const handleClearComments = (seatId: number) => {
+    fetch(`http://localhost:8080/admin/handleClearComments/${seatId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Comments cleared successfully");
+          // After clearing comments, fetch the updated comments
+          fetchCommentsForAllSeats(userId, seatIds);
+        } else {
+          console.error("Failed to clear comments");
+        }
+      })
+      .catch((error) => {
+        console.error("Error clearing comments:", error);
+      });
+  };
+  const totalPages = Math.ceil(
+    commentsMap[seatIds[0]]?.length / commentsPerPage
+  );
   return (
     <div>
       <form>
-        <textarea
-          value={newComment}
-          onChange={handleNewCommentChange}
-          placeholder="Leave a comment..."
-          className={styles.largeInput}
-          required
-        />
+        <div className={styles.commentinput}>
+          <textarea
+            value={newComment}
+            onChange={handleNewCommentChange}
+            placeholder="Leave a comment..."
+            className={styles.largeInput}
+            required
+          />
+          <div className={styles.tooltip} id="commentErrorTooltip">
+            Comment cannot be empty
+          </div>
+        </div>
+        {showPopup && <PopupModal />}
         <button
           className={styles.addComment}
           type="button"
@@ -791,15 +838,21 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           Add Comment
         </button>
       </form>
+
+
       {error && <p className={styles.error}>{error}</p>}
       {seatIds.map((seatId) => (
         <div key={seatId}>
+          {/* Call the renderMainComments function for each seatId */}
           {commentsMap[seatId]?.length > 0 && (
             <div className={styles.commentsContainer}>
               <h4>Comments:</h4>
               <div className={styles.commentsScrollContainer}>
                 {/* Call the renderMainComments function here */}
-                {renderMainComments(commentsMap[seatId], userId)}
+                {renderMainComments(
+                  commentsMap[seatId].slice(startIdx, endIdx),
+                  userId
+                )}
               </div>
             </div>
           )}
@@ -839,6 +892,26 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+      <Box className={styles.paginationcontainer} display="flex" justifyContent="center" marginTop={2}>
+  <Pagination
+    count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
+    page={currentPage}
+    onChange={(event, newPage) => setCurrentPage(newPage)}
+    sx={{
+      '& .MuiPaginationItem-root': {
+        color: 'green', 
+        boxShadow: 'none',     
+        background: 'none',  
+        '&:hover': {
+          color: 'blue',      // Change color on hover
+        },
+      },
+    }}
+  />
+</Box>
+
     </div>
   );
 };

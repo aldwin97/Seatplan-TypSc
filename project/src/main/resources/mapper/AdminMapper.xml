@@ -128,17 +128,6 @@
 
 
     <select id="getCommentBySeatId" resultType="com.seatPlan.project.model.CommentModel">
-        <!-- SELECT c.user_id, 
-            c.comment_id, 
-            c.recipient_id,
-            c.seat_id, 
-            c.comment, 
-            c.created_time, 
-            u.first_name, u.last_name
-        FROM table_comment c
-        JOIN table_user u ON c.user_id = u.user_id
-        WHERE seat_id = #{seat_id}
-        ORDER BY c.created_time ASC -->
         SELECT c.user_id, 
             c.comment_id, 
             c.recipient_id,
@@ -165,8 +154,6 @@
             (#{generatedUserId}, #{project_id})
         </foreach>
     </insert>
-
-    <!-- deleteExistingProject --> 
 
     <delete id="deleteExistingProject" parameterType="com.seatPlan.project.model.UserModel">
         DELETE FROM table_userproject WHERE user_id = #{generatedUserId}

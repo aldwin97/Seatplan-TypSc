@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AreaModel {
-    private Long area_id;
+
+private Long area_id;
 private String area_name;
 private int is_deleted;
 private LocalDateTime created_time;

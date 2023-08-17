@@ -514,55 +514,6 @@ background-color: transparent !important;
 /* ... existing styles ... */
 
 /* Responsive styles */
-@media screen and (max-width: 768px) {
-
-  .scrollableCanvas
-  {
-    width: 120vh;
-  }
-  .seatPopupContent {
-    width: 80%; /* Adjust the width as needed */
-    padding: 20px; /* Adjust the padding as needed */
-  }
-  .swapButton {
-    margin-left: -1%;
-    width: 20%;
-  }
-  .seatPopupContent input[type="text"],
-  .seatPopupContent input[type="color"],
-  .seatPopupContent select {
-    width: 100%; /* Make the inputs and select full width */
-  }
-
-  .seatPopupContent button {
-    width: 100%; /* Make the buttons full width */
-  }
-
-  .seatPopupContent .closeButton {
-    font-size: 14px; /* Adjust the font size as needed */
-  }
-
-  .seatPopupContainer:not(.seatPopupContent) {
-    background-color: rgba(223, 223, 223, 0.9); /* Adjust the background color as needed */
-  }
-  .container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .canvasWrapper {
-    background-color: #fff;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-  }
-  
-
-}
 .value {
   background-color: transparent;
   border: none;
@@ -838,15 +789,7 @@ margin-top: 40px;
 .option[value=""] {
   color: #888; /* Change the color to your desired placeholder color */
 }
-.addCommentButton {
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-}
+
 .menu {
   position: absolute;
   cursor: pointer;
@@ -1374,8 +1317,13 @@ svg:hover .tooltip {
   margin-bottom: 15px;
 }
 
+.buttonRow {
+  display: flex;
+  align-items: center; /* Align buttons vertically in the center */
+  gap: 10px; /* Add spacing between the buttons */
+}
+
 .popupButton {
-  margin-top: 10px;
   background-color: #ff0000 !important;
   color: white;
   border: none;
@@ -1385,6 +1333,19 @@ svg:hover .tooltip {
   cursor: pointer;
   transition: background-color 0.3s;
 }
+
+.popupButtonYes {
+  background-color: #30bb42 !important;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  width: 60px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
 
 .popupButton:hover {
   background-color: #0056b3;
@@ -1407,5 +1368,231 @@ svg:hover .tooltip {
   }
   50% {
     transform: translateX(0);
+  }
+}
+.deleteButton
+{
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none !important;
+  margin-right: 2px;
+}.deleteButton:hover
+{
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 100px;
+}
+/* Add your existing styles here */
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrowToggle {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  color: #ffffff;
+  background-color: #28a745;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-left: 2px solid #6e6e6e;
+  border-right: 2px solid #6e6e6e;
+  width: 561px;
+  height: 30px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  filter: blur(0.7px);
+}
+.modalContent {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 400px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.modalBody p {
+  margin-bottom: 20px;
+}
+
+.confirmButton,
+.cancelButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirmButton {
+  background-color: #308a38 !important;
+  color: white;
+  margin-right: 10px;
+}
+
+.cancelButton {
+  background-color: #ccc !important;
+  color: #3faa48 !important;
+}
+.confirmButton:hover {
+  background-color: #3faa48 !important;
+  color: white;
+  margin-right: 10px;
+}
+
+.cancelButton:hover {
+  background-color: #ff0000 !important;
+  color: rgb(255, 255, 255);
+}
+/* Rest of your existing styles */
+.clearButton
+{background-color: #308a38 !important;
+  color: white;
+  margin-right: 10px;
+}
+  .clearButton:hover
+{background-color: rgb(97, 97, 214) !important;
+  color: white;
+  margin-right: 10px;
+}
+.paginationcontainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+/* Existing styles */
+
+/* Responsive styles */
+@media screen and (max-width: 767px) {
+
+  /* Adjustments to .scrollableCanvas */
+  .scrollableCanvas {
+    width: 120%; /* Adjust the width for responsiveness */
+    height: 110vh;
+    background-size: cover;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .seatPopupContent h3 {
+    margin-left: 25px;
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  /* Adjustments to .seatPopupContent */
+  .seatPopupContent {
+
+    width: 80%; /* Adjust the width as needed */
+  }
+
+  /* Adjustments to .swapButton */
+  .swapButton {
+    margin-left: 25%;
+    width: 50%;
+  }
+  .addComment
+  {
+    margin-right: 83%;
+    width: 30%;
+  }
+  .clearButton{
+    width: 30%;
+    margin-left: 35.5%;
+  }
+  .seatPopupContent input[type="text"] {
+    width: 200px;
+
+  }
+  .largeInput {
+    margin-left: -30%;
+    width: 150%;
+  }
+  /* Adjustments to .container */
+  .container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Adjustments to .canvasWrapper */
+  .canvasWrapper {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+
+  /* Adjustments to .title */
+  .title {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* Adjustments to .searchForm */
+  .searchForm {
+    margin-top: 40px;
+  }
+
+  /* Adjustments to .menu and .menu-out */
+  .menu,
+  .menu-out {
+    right: 10px; /* Adjust the position */
+  }
+  .arrowToggle {
+    cursor: pointer;
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #ffffff;
+    background-color: #28a745;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: 2px solid #6e6e6e;
+    border-right: 2px solid #6e6e6e;
+    width: 97%;
+    height: 30px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    filter: blur(0.7px);
+  }
+  .commentsContainer {
+    width: 66%;
+    height: 90px;
+    margin-left: 15%;
+    margin-top: 5px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+  }
+  .closeButton{
+    margin-right: 30px;
+  }
+  .commentsScrollContainer {
+    /* Enable vertical scrolling when content overflows the container's height */
+    overflow-y: auto;
+  
+    /* Add any other styles you want for the scroll container */
   }
 }

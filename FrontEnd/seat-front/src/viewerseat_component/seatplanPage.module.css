@@ -1372,8 +1372,13 @@ svg:hover .tooltip {
   margin-bottom: 15px;
 }
 
+.buttonRow {
+  display: flex;
+  align-items: center; /* Align buttons vertically in the center */
+  gap: 10px; /* Add spacing between the buttons */
+}
+
 .popupButton {
-  margin-top: 10px;
   background-color: #ff0000 !important;
   color: white;
   border: none;
@@ -1383,6 +1388,20 @@ svg:hover .tooltip {
   cursor: pointer;
   transition: background-color 0.3s;
 }
+
+.popupButtonYes {
+  background-color: #30bb42 !important;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  width: 60px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+
 
 .popupButton:hover {
   background-color: #0056b3;
@@ -1406,4 +1425,16 @@ svg:hover .tooltip {
   50% {
     transform: translateX(0);
   }
+}
+.deleteButton
+{
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none !important;
+  margin-right: 2px;
+}.deleteButton:hover
+{
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 100px;
 }

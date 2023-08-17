@@ -165,6 +165,14 @@ public class AdminService {
         adminDao.deleteExistingProject(user_id);
     }
 
+    public void deleteCommentById(Long comment_id) {
+         adminDao.deleteCommentById(comment_id);
+    }
+
+    public void handleClearComments(Long seat_id) {
+        adminDao.handleClearComments(seat_id);
+    }
+
 
     
     

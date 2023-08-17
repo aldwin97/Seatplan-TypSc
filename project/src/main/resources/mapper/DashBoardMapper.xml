@@ -4,7 +4,7 @@
         <mapper namespace="com.seatPlan.project.dao.DashBoardDao">
 
     <select id="countUser" resultType="int">
-        SELECT COUNT(*) FROM table_user WHERE is_deleted = 0
+        SELECT COUNT(*) FROM table_user WHERE is_deleted = 0 AND is_machine = 0
     </select>
   
     

@@ -17,7 +17,6 @@ import com.seatPlan.project.model.MachineModel;
 
 @Service
 @Transactional
-@PreAuthorize("hasRole('Admin','Editor')")
 public class MachineService {
 
 

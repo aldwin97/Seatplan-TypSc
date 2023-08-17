@@ -20,7 +20,7 @@ import com.seatPlan.project.service.SeatService;
 
 @RestController
 @RequestMapping("/seat")
-@PreAuthorize("hasRole('Admin','Editor','Viewer')")
+@PreAuthorize("hasRole('Admin','Editor','Viewer')") //needs further changes to specify for each function
 public class SeatController {
 
     @Autowired

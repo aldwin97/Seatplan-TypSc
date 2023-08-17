@@ -23,7 +23,6 @@ import com.seatPlan.project.model.UserInputModel;
 
 @Service
 @Transactional
-@PreAuthorize("hasRole('Admin')")
 public class AdminService {
 
     private AdminDao adminDao;

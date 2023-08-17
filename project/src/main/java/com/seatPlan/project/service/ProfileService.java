@@ -20,7 +20,6 @@ import com.seatPlan.project.model.UserModel;
 
 @Service
 @Transactional
-@PreAuthorize("hasRole('Admin','Editor','Viewer')")
 public class ProfileService {
 
     public ProfileDao profileDao;

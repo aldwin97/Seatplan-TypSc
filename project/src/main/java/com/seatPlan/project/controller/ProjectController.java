@@ -22,7 +22,7 @@ import com.seatPlan.project.service.ProjectService;
 
 @RestController
 @RequestMapping("/project")
-@PreAuthorize("hasRole('Admin','Viewer')")
+@PreAuthorize("hasRole('Admin','Editor')")
 public class ProjectController {
     
     @Autowired

@@ -20,6 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private MyUserDetailsService myUserDetailsService;
 
+    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

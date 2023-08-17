@@ -21,8 +21,12 @@ public class MyUserDetailsService implements UserDetailsService{
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
     private UserTypeDao userTypeDao;
+
     private Long usertype_id;
+
     @Override
     public UserDetails loadUserByUsername(String username)throws UsernameNotFoundException{
         UserModel user = userDao.getUserByUsername(username);

@@ -21,7 +21,7 @@ import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
 import { Avatar} from '@mui/material';
-import ResizableFullCalendar from './ResizableFullCalendar'; // Adjust the import path
+
 import styles from './profileviewerPage.module.css';
 
 const ProfileViewerPage: React.FC = () => {
@@ -648,7 +648,6 @@ const ProfileViewerPage: React.FC = () => {
                 {capitalizeFirstLetter(profileData.last_name)}
               </h3>
               <h4>{profileData.position_name}</h4>
-              <ResizableFullCalendar initialView="dayGridMonth" />
             </div>
 
             <div className={styles.profilePicture}>

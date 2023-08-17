@@ -537,17 +537,17 @@ const ProfilePage: React.FC = () => {
     )}
                       </div>
                     </div>
-                    {UserData ? (
+                    {profileData ? (
                       <div className={style['usern']}>
-                        {UserData.first_name}  {UserData.last_name} 
-                          <div className={style['userp']}>{UserData.position_name}</div>
+                        {profileData.first_name}  {profileData.last_name} 
+                          <div className={style['userp']}>{profileData.position_name}</div>
                       </div>
           
                     ) : (
                       <div></div>
                     )}
                   </div>
-                <li className={style["sidebar-title"]}> </li>
+                <li className={style["sidebar-title"]}></li>
                 <li>
                   <a
                     onClick={dashboardPageHandleClick}

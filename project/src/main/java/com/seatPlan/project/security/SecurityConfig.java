@@ -24,17 +24,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+                http
                //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
                 .authorizeHttpRequests(requests -> requests
                         .antMatchers("/admin/**").hasRole("Admin")
                         .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
                         .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
-                        .anyRequest().authenticated())
-                        //.and()
-                        //.addFilter(newJwtAuthenticationFilter(authenticationManager()))
-                .formLogin(login -> login.permitAll())
-                .logout(logout -> logout.permitAll());
+                        .anyRequest().authenticated());
+                http
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll());
+                http
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .permitAll());
+                // http
+                // .oauth2ResourceServer().jwt();
     }
     
 

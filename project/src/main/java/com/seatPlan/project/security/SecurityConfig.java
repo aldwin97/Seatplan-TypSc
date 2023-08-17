@@ -26,8 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
                 .authorizeHttpRequests(requests -> requests
                         .antMatchers("/admin/**").hasRole("Admin")
-                        .antMatchers("/user/**").hasAnyRole("Viewer", "Admin", "Editor")
-                        .antMatchers("/viewer/**").hasAnyRole("Editor", "Admin")
+                        .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
+                        .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
                         .anyRequest().authenticated())
                         //.and()
                         //.addFilter(newJwtAuthenticationFilter(authenticationManager()))

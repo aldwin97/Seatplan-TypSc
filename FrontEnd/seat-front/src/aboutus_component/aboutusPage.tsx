@@ -13,7 +13,17 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
+import abi from "./assets/abi.jpg";
+import ken from "./assets/kenneth.jpg"
+import nym from "./assets/nym.jpg"
+import chin from "./assets/chin.jpeg"
+import aldwin from "./assets/aldwin.jpeg"
+import cvr from "../assets/BG1.jpg"
+import styles from "./aboutusPage.module.css";
+import defaulImage from "../assets/default.png"
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { FaGithub, FaGoogle,FaLinkedin, FaLinkedinIn } from 'react-icons/fa';
+
 
 function Copyright() {
   return (
@@ -27,8 +37,16 @@ function Copyright() {
     </Typography>
   );
 }
+const cardData = [
+  { name: "Rex Merto", role: "Project Manager", image: defaulImage },
+  { name: "Abigail Calaminos", role: "Front-End Developer", image: abi },
+  { name: "Chin Abelardo", role: "Front-End Developer", image: chin },
+  { name: "Nymwhel Bernardo", role: "Front-End Developer", image: nym },
+  { name: "Kenneth Christian Gutierrez", role: "Back-End Developer", image: ken },
+  { name: "Aldwin Revera", role: "Back-End Developer", image: aldwin },
+];
 
-const cards = [1, 2, 3, 4, 5, 6];
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -43,46 +61,38 @@ const AboutUsPage = () => {
     navigate("/viewSeatPage");
   };
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <body>
       <CssBaseline />
-      <AppBar position="relative" sx={{ background: "#308a38" }}>
-        <Toolbar>
+     
+        
+        <Box
+sx={{
+  backgroundImage: `url(${cvr})`,
+  backgroundSize: 'cover', // Adjust as needed (cover, contain, etc.)
+  backgroundPosition: 'center',
+  height:'1300px' // Adjust as needed (center, top, bottom, etc.)
+}}
+        >
+          <Toolbar>
           <Typography variant="h6" color="inherit" noWrap>
-            About Us
+          <div className={styles["logo-box"]}></div>
+          
           </Typography>
         </Toolbar>
-      </AppBar>
-      <main>
-        {/* Hero unit */}
-        <Box
-          sx={{
-            bgcolor: "background.paper",
-            pt: 8,
-            pb: 6,
-          }}
-        >
-          <Container maxWidth="sm">
+          <Container >
             <Typography
               component="h1"
               variant="h2"
               align="center"
               color="text.primary"
+              fontWeight="Bolder"
+              marginTop="300px"
               gutterBottom
             >
-              About Us
+              
+Elevate Your Workspace: Seamlessly Redefine Seating for Enhanced Efficiency and Collaboration.
             </Typography>
-            <Typography
-              variant="h5"
-              align="center"
-              color="text.secondary"
-              paragraph
-            >
-              Welcome to Tsukien Global Seat Planner, the ultimate solution for
-              optimizing employee seating arrangements. We're dedicated to
-              simplifying the process of assigning seats within Tsukien Global
-              Solutions Inc. Our system is designed to ensure efficiency,
-              collaboration, and a comfortable workspace for every employee.
-            </Typography>
+           
             <Stack
               sx={{ pt: 4 }}
               direction="row"
@@ -92,78 +102,113 @@ const AboutUsPage = () => {
               <Button
                 variant="contained"
                 onClick={loginPageHandleClick}
-                sx={{ background: "#308a38" }}
+                sx={{
+                  background: "#308a38",
+                  height: "80px",
+                  width: "300px",
+                  top: "30px",
+                  "&:hover": {
+                    backgroundColor: "#076307", 
+                  },
+                }}
               >
+                
                 Back to Log In Page
               </Button>
               <Button
                 variant="outlined"
                 onClick={viewPageHandleClick}
-                sx={{ borderColor: "#308a38", color: "#308a38" }}
+                sx={{ borderColor: "#308a38",height:"80px", width:"300px", top:"30px", color:"#308a38",
+                "&:hover": {
+                  backgroundColor: "#076307" ,color:"white", 
+                }, }}
               >
                 View Seat Plan
               </Button>
             </Stack>
+           
           </Container>
+         
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+        
+      <main>
+        {/* Hero unit */}
+       
+      
+       <Box sx={{marginTop:"56px",backgroundColor:"white"}}>  <Typography
+              component="h3"
+              variant="h3"
+              align="center"
+              color="text.primary"
+              fontWeight="Bold"
+              line-height="0.75"
+              letter-spacing= "10.8px"
+              padding-bottom= "14px"
+              gutterBottom
+             
+            >Who we are</Typography><Typography 
+            font-Family= "Merriweather"
+            align="center"
+            fontStyle="Italic"
+            fontSize= "24px"
+            fontWeight="400"
+            color="#989898"
+            textTransform= "uppercase"
+            letterSpacing="3.6px"
+            marginBottom= "55px"
+            >Our team</Typography>
+        <Container>
+          <Grid container spacing={3}>
+            {cardData.map((card, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card sx={{ height: 500, boxShadow: "0 2px 10px #efefef" }}>
                   <CardMedia
                     component="div"
                     sx={{
-                      // 16:9
-                      pt: "56.25%",
+                      background: `url(${card.image}) no-repeat center center`,
+                      backgroundSize: "cover",
+                      height: "250px",
+                      width: "250px",
+                      borderRadius: "100%",
+                      margin: "30px auto",
+                      border: "6px solid #efefef",
                     }}
-                    image="https://source.unsplash.com/random?wallpapers"
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {/* Customize the heading for each card */}
-                      {card === 1
-                        ? "Rex Merto"
-                        : card === 2
-                        ? "Abigail Calaminos"
-                        : card === 3
-                        ? "Chin Abelardo"
-                        : card === 4
-                        ? "Nymwhel Bernardo"
-                        : card === 5
-                        ? "Kenneth Christian Gutierrez"
-                        : "Aldwin Revera"}
+                      {card.name}
                     </Typography>
-                    <Typography>
-                      {/* Customize the content for each card */}
-                      {card === 1
-                        ? "Project Manager"
-                        : card === 2
-                        ? "Front-End Developer"
-                        : card === 3
-                        ? "Front-End Developer"
-                        : card === 4
-                        ? "Front-End Developer"
-                        : card === 5
-                        ? "Back-End Developer"
-                        : "Back-End Developer"}
-                    </Typography>
+                    <Typography align="center">{card.role}</Typography>
                   </CardContent>
-                  <CardActions>
-                    <Button size="small">View</Button>
+                  <CardActions sx={{
+             paddingTop:"35px" ,justifyContent: "center"}}>
+                    <Button size="small"        sx={{
+           position: "relative", // Create a stacking context
+           "&::before": {
+             content: '""',
+             position: "absolute",
+             top: "-4px", 
+             left: "50%",
+             transform: "translateX(-50%)",
+             width: "650px", 
+             height: "2px", 
+             backgroundColor: "#efefef", 
+             
+             
+          },
+        }}
+ > 
+   <FaGithub size={24} color="#999999" className="styles.socialicons"  />
+   <FaGoogle size={24} color="#999999" />
+   <FaLinkedin size={24} color="#999999" />
+ </Button>
                   </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
+        </Box>
       </main>
       {/* Footer */}
       <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
@@ -179,7 +224,7 @@ const AboutUsPage = () => {
         <Copyright />
       </Box>
       {/* End footer */}
-    </ThemeProvider>
+    </body>
   );
 };
 export default AboutUsPage;

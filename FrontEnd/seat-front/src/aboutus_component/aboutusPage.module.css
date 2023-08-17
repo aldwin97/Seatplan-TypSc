@@ -1,4 +1,17 @@
-
+html {
+  overflow-x: hidden;
+}
+body {
+  background-color: #F8FAF9;
+  font-weight: normal;
+  color: #000000;
+  line-height: 1.6;
+  -webkit-transition: background .2s ease-in-out;
+  -moz-transition: background .2s ease-in-out;
+  -o-transition: background .2s ease-in-out;
+  transition: background .2s ease-in-out;
+}
+  
   .container2 {
     display: flex;
     justify-content: center;
@@ -62,7 +75,16 @@
     height: 30%;
     opacity: 0.9;
   }
-
+  .logo-box {
+    display: block;
+    padding: 15px 20px;
+    background-image: url('../assets/LOGO.png');
+    background-repeat: no-repeat;
+    margin-top: 20px;
+    background-size: 120px;
+    width:120px;
+    height:100px
+  }
   
   .searchBar {
     display: flex;
@@ -70,7 +92,7 @@
     justify-content: center;
     margin-top: 20px;
   }
-  
+ 
   .searchInput {
     padding: 10px;
     font-size: 16px;
@@ -160,7 +182,34 @@
       -1px 1px 0 #fff,
       1px 1px 0 #fff;
   }
-
+ 
+  .social-icons-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top:20px; 
+    
+  }
+  
+  .line-above-icons {
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 2px;
+    background-color: #308a38;
+    
+  }
+  
+  .socialicons {
+    position: relative;
+    display: flex;
+  left: 20px;
+   
+    
+  }
   /* Media queries for responsiveness */
   @media (max-width: 768px) {
     .form2 {

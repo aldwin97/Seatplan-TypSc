@@ -578,7 +578,7 @@ const AdminMembersPage: React.FC = () => {
                       <div></div>
                     )}
                   </div>
-                <li className={styles["sidebar-title"]}>Apps</li>
+                <li className={styles["sidebar-title"]}></li>
                 <li>
                   <a
                     onClick={dashboardPageHandleClick}

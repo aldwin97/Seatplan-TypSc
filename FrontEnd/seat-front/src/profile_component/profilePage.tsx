@@ -547,7 +547,7 @@ const ProfilePage: React.FC = () => {
                       <div></div>
                     )}
                   </div>
-                <li className={style["sidebar-title"]}>Apps</li>
+                <li className={style["sidebar-title"]}> </li>
                 <li>
                   <a
                     onClick={dashboardPageHandleClick}

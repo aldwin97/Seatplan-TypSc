@@ -353,7 +353,7 @@ const DashboardViewerPage: React.FC = () => {
                       )}
                     </div>
 
-                    <li className={styles["sidebar-title"]}>Apps</li>
+                    <li className={styles["sidebar-title"]}> </li>
                     <li className={styles["active-page"]}>
                       <a
                         onClick={dashboardPageHandleClick}

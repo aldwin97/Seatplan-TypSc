@@ -836,3 +836,4 @@ input:not(:read-only):valid ~ .change-label {
       scale: 1.3;
     }
 }
+/* FullCalendarStyles.module.css */

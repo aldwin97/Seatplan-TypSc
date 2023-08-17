@@ -5,7 +5,6 @@ package com.seatPlan.project.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

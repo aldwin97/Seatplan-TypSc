@@ -5,49 +5,47 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.seatPlan.project.security.service.MyUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity( prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private MyUserDetailsService myUserDetailsService;
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+               //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
                 .authorizeHttpRequests(requests -> requests
-                        .antMatchers("/admin/**").hasRole("ADMIN")
-                        .antMatchers("/user/**").hasRole("USER")
-                        .antMatchers("/editor/**").hasRole("EDITOR")
-                        .antMatchers("/viewer/**").hasRole("VIEWER")
+                        .antMatchers("/admin/**").hasRole("Admin")
+                        .antMatchers("/user/**").hasAnyRole("Viewer", "Admin", "Editor")
+                        .antMatchers("/viewer/**").hasAnyRole("Editor", "Admin")
                         .anyRequest().authenticated())
+                        //.and()
+                        //.addFilter(newJwtAuthenticationFilter(authenticationManager()))
                 .formLogin(login -> login.permitAll())
                 .logout(logout -> logout.permitAll());
     }
     
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService).passwordEncoder(getPasswordEncoder());
-    }
-
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    public MyUserDetailsService getMyUserDetailsService() {
-        return myUserDetailsService;
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    public void setMyUserDetailsService(MyUserDetailsService myUserDetailsService) {
-        this.myUserDetailsService = myUserDetailsService;
-    }
+  
+
 }

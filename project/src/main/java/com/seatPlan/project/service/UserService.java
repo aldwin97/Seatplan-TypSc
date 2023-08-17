@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 @Service
 @Transactional
+
 public class UserService{
 
     

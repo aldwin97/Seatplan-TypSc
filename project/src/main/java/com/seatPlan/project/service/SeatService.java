@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import com.seatPlan.project.model.UserModel;
 
 @Service
 @Transactional
+@PreAuthorize("hasRole('Admin','Editor','Viewer')")
 public class SeatService {
 
     private final SeatDao seatDao;

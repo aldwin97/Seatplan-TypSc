@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +22,7 @@ public class MyUserDetailsService implements UserDetailsService{
     @Autowired
     private UserDao userDao;
     private UserTypeDao userTypeDao;
-    
+    private Long usertype_id;
     @Override
     public UserDetails loadUserByUsername(String username)throws UsernameNotFoundException{
         UserModel user = userDao.getUserByUsername(username);
@@ -31,7 +30,7 @@ public class MyUserDetailsService implements UserDetailsService{
             throw new UsernameNotFoundException("Username not found");
         }
 
-        Long usertype_id;
+        
         usertype_id = user.getUsertype_id();
         UserTypeModel role = userTypeDao.getUsertypeName(usertype_id);
         

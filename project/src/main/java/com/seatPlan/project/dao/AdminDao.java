@@ -49,4 +49,8 @@ public interface AdminDao {
     void insertMultipleProject(long generatedUserId, List<Long> project_id);
 
     void deleteExistingProject(Long user_id);
+
+    void deleteCommentById(Long comment_id);
+
+    void handleClearComments(Long seat_id);
 }

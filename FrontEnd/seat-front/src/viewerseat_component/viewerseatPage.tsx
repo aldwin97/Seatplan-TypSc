@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import style from "../dashboard_component/dashboardPage.module.css";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   BusinessCenterOutlined,
   DashboardOutlined,
@@ -20,12 +21,13 @@ import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { FaInfoCircle } from "react-icons/fa";
+import { faDesktop } from "@fortawesome/free-solid-svg-icons";
+import svgPathConverter from "svg-path-converter";
 import { Avatar } from "@mui/material";
 import axios from "axios";
 import defaulImage from "../assets/default.png";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Box from "@mui/material/Box";
-import Pagination from "@mui/material/Pagination";
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
 
 interface Seat {
   position: { x: number; y: number };
@@ -53,7 +55,6 @@ interface Seat {
 interface SeatPopupProps {
   seat: Seat;
   onClose: () => void;
-
   setSeats: (seats: Seat[]) => void;
   seats: Seat[];
 }
@@ -70,7 +71,6 @@ interface Occupant {
 function SeatPopup({
   seat,
   onClose,
-
   setSeats,
   seats,
 }: SeatPopupProps): JSX.Element {
@@ -79,7 +79,6 @@ function SeatPopup({
   const [, setIsOccupantAlreadyAssigned] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [swapSuccess, setSwapSuccess] = useState(false);
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
   // Add selectedOccupant state with a default value
   const [selectedOccupant, setSelectedOccupant] = useState<string>("");
@@ -308,139 +307,38 @@ function SeatPopup({
       <div className={styles.seatPopupContent}>
         <h3>Seat {seat.seat_id}</h3>
         <form onSubmit={handleFormSubmit}>
-          {isEditMode ? (
-            <>
-              <p>Select a User to be assigned:</p>
-              <select
-                value={selectedOccupant}
-                onChange={handleOccupantChange}
-                required
-              >
-                <option value="">Assign an Occupant</option>
-                {occupantsList
-                  .filter((occupant) => {
-                    const isAssigned = seats.some(
-                      (s) => s.occupant === occupant.user_id.toString()
-                    );
-                    console.log(
-                      `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
-                    );
-                    return !isAssigned;
-                  })
-                  .map((occupant) => (
-                    <option key={occupant.user_id} value={occupant.user_id}>
-                      {` ${occupant.first_name}${
-                        occupant.last_name ? ` ${occupant.last_name}` : ""
-                      }`}
-                    </option>
-                  ))}
-              </select>
-              {errorMsg && (
-                <div className={styles.errorPopup}>
-                  <p>{errorMsg}</p>
-                  <button
-                    onClick={() => {
-                      setErrorMsg("");
-                      window.location.reload();
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              )}
-
-              {isSeatOccupied ? (
-                <>
-                  <button type="submit">Save</button>
-                  <div>
-                    <p>Select a seat to swap:</p>
-                    <select
-                      className={styles.value}
-                      value={selectedSeatId || ""}
-                      onChange={(e) => handleSeatSelect(Number(e.target.value))}
-                    >
-                      <option value="">Select Seat Number</option>
-                      {seats.map((seat) => (
-                        <option key={seat.seat_id} value={seat.seat_id}>
-                          {`Seat ${seat.seat_id} (${seat.occupant})`}
-                        </option>
-                      ))}
-                    </select>
-
-                    <button
-                      type="button"
-                      className={styles.swapButton}
-                      onClick={handleSwapSeats}
-                    >
-                      Swap Now
-                    </button>
-                    {swapSuccess && (
-                      <div className={styles.backdrop}>
-                        <div className={styles.successMessage}>
-                          Swapping is successful!
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <button type="submit">Save</button>
-                  {!isSeatOccupied && (
-                    <button
-                      type="button"
-                      className={styles.editButton}
-                      onClick={handleEdit}
-                    >
-                      Edit
-                    </button>
-                  )}
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <div className={styles.labelsContainer}>
-                <label className={styles.labels}>
-                  Occupant:{" "}
-                  <input
-                    type="text"
-                    value={seat.occupant}
-                    readOnly={!isSeatOccupied}
-                  />
-                </label>
-              </div>
-              <div className={styles.labelsContainer}>
-                <label className={styles.labels}>
-                  Position:{" "}
-                  <input
-                    type="text"
-                    value={seat.position_name}
-                    readOnly={!isSeatOccupied}
-                  />
-                </label>
-              </div>
-              <div className={styles.labelsContainer}>
-                <label className={styles.labels}>
-                  Project:{" "}
-                  <input
-                    type="text"
-                    value={seat.project}
-                    readOnly={!isSeatOccupied}
-                  />
-                </label>
-              </div>
-              {isSeatOccupied && (
-                <button
-                  type="button"
-                  className={styles.editButton}
-                  onClick={handleEdit}
-                >
-                  Edit
-                </button>
-              )}
-            </>
-          )}
+          <>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>
+                Occupant:{" "}
+                <input
+                  type="text"
+                  value={seat.occupant}
+                  readOnly={!isSeatOccupied}
+                />
+              </label>
+            </div>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>
+                Position:{" "}
+                <input
+                  type="text"
+                  value={seat.position_name}
+                  readOnly={!isSeatOccupied}
+                />
+              </label>
+            </div>
+            <div className={styles.labelsContainer}>
+              <label className={styles.labels}>
+                Project:{" "}
+                <input
+                  type="text"
+                  value={seat.project}
+                  readOnly={!isSeatOccupied}
+                />
+              </label>
+            </div>
+          </>
           <button
             type="button"
             className={styles.closeButton}
@@ -535,9 +433,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
 
   const fetchCommentsForAllSeats = (userId: number, seatIds: number[]) => {
     const fetchPromises = seatIds.map((seatId) => {
-      return fetchCommentsBySeatId(seatId);
+      return fetchCommentsBySeatId(seatId, userId); // Pass userId as the second argument
     });
-
+  
     Promise.all(fetchPromises)
       .then((results) => {
         const commentsMap: { [seatId: number]: Comment[] } = {};
@@ -551,9 +449,9 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error("Error fetching comments for seats:", error);
       });
   };
-
-  const fetchCommentsBySeatId = (seatId: number) => {
-    return fetch(`http://localhost:8080/admin/showAllCommentBy/${seatId}`)
+  
+  const fetchCommentsBySeatId = (seatId: number, userId: number) => {
+    return fetch(`http://localhost:8080/seat/showAllCommentBy/${userId}/${seatId}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -570,7 +468,8 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         return [];
       });
   };
-
+  
+  
   const handleNewCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -866,12 +765,14 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
                   </div>
                 )}
               </td>
-              <button
-                className={styles.deleteButton}
-                onClick={() => handleDeleteComment(comment.comment_id)}
-              >
-                <DeleteIcon style={{ color: "red" }} />
-              </button>
+              {comment.user_id === userId && (
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteComment(comment.comment_id)}
+                  >
+                 <DeleteIcon style={{ color: "red" }} />
+                  </button>
+                )}
             </tr>
           ))}
         </tbody>
@@ -911,42 +812,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error("Error clearing comments:", error);
       });
   };
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const ConfirmationModal = () => {
-    return (
-      <div className={styles.modalOverlay}>
-        <div className={styles.modalContent}>
-          <div className={styles.modalHeader}>
-            <h2>Confirm Clear Comments</h2>
-            <button
-              className={styles.closeButton2}
-              onClick={() => setShowConfirmationModal(false)}
-            >
-              <FontAwesomeIcon icon={faClose} />
-            </button>
-          </div>
-          <div className={styles.modalBody}>
-            <p>Are you sure you want to clear all comments?</p>
-            <button
-              className={styles.confirmButton}
-              onClick={() => {
-                handleClearComments(seatIds[0]);
-                setShowConfirmationModal(false);
-              }}
-            >
-              Yes
-            </button>
-            <button
-              className={styles.cancelButton}
-              onClick={() => setShowConfirmationModal(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
   const totalPages = Math.ceil(
     commentsMap[seatIds[0]]?.length / commentsPerPage
   );
@@ -975,17 +840,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         </button>
       </form>
 
-      <div className={styles.pagination}></div>
-      <div>
-        <button
-          className={styles.clearButton}
-          onClick={() => setShowConfirmationModal(true)}
-        >
-          Clear All Comments
-        </button>
-        <div className={styles.pagination}></div>
-        {showConfirmationModal && <ConfirmationModal />}
-      </div>
 
       {error && <p className={styles.error}>{error}</p>}
       {seatIds.map((seatId) => (
@@ -1041,48 +895,40 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       )}
 
       {/* Pagination */}
-      <Box
-        className={styles.paginationcontainer}
-        display="flex"
-        justifyContent="center"
-        marginTop={2}
-      >
-        <Pagination
-          count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
-          page={currentPage}
-          onChange={(event, newPage) => setCurrentPage(newPage)}
-          sx={{
-            "& .MuiPaginationItem-root": {
-              color: "green",
-              boxShadow: "none",
-              background: "none",
-              "&:hover": {
-                color: "blue", // Change color on hover
-              },
-              "&.Mui-selected": {
-                background: "lightgray",
-                color: "green", // Change color when selected
-              },
-            },
-          }}
-        />
-      </Box>
+      <Box className={styles.paginationcontainer} display="flex" justifyContent="center" marginTop={2}>
+  <Pagination
+    count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
+    page={currentPage}
+    onChange={(event, newPage) => setCurrentPage(newPage)}
+    sx={{
+      '& .MuiPaginationItem-root': {
+        color: 'green', 
+        boxShadow: 'none',     
+        background: 'none',  
+        '&:hover': {
+          color: 'blue',      // Change color on hover
+        },
+      },
+    }}
+  />
+</Box>
+
     </div>
   );
 };
 
-function SeatplanPage() {
+function ViewerSeatPage() {
   const navigate = useNavigate();
 
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
   const ProfilePageHandleClick = () => {
-    navigate("/ProfilePage");
+    navigate("/profileviewerPage");
   };
 
   const dashboardPageHandleClick = () => {
-    navigate("/DashboardPage");
+    navigate("/dashboardviewerPage");
   };
 
   const adminPageHandleClick = () => {
@@ -1634,65 +1480,6 @@ function SeatplanPage() {
     return alpha + hexValue.toUpperCase();
   };
 
-  const exportToExcel = async () => {
-    try {
-      const fileName = `SeatData_${new Date().toISOString().slice(0, 10)}.xlsx`;
-
-      // Create a new workbook
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("SeatData");
-
-      // Define headers for the Excel sheet
-      const headers = [
-        "Seat ID",
-        "Occupant",
-        "Position Name",
-        "Project",
-        // Add more headers as needed
-      ];
-
-      // Add headers to the worksheet
-      worksheet.addRow(headers);
-
-      // Add seat data to the worksheet
-      seats.forEach((seat) => {
-        const rowData = [
-          seat.seat_id,
-          seat.occupant,
-          seat.position_name,
-          seat.project,
-          // Add more data fields as needed
-        ];
-        const row = worksheet.addRow(rowData);
-
-        // Set background color based on the seat color
-        if (seat.color_code) {
-          const argbColor = convertColorCodeToArgb(seat.color_code);
-          const colorStyle: ExcelJS.Fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: argbColor },
-          };
-
-          // Apply cell style to the "Project" column
-          const projectCell = row.getCell(headers.indexOf("Project") + 1); // +1 because Excel column index starts from 1
-          projectCell.fill = colorStyle;
-        }
-      });
-
-      // Auto-fit column widths
-      worksheet.columns.forEach((column) => {
-        column.width = 15; // You can adjust the column width as needed
-      });
-
-      // Save the workbook as an Excel file
-      const buffer = await workbook.xlsx.writeBuffer();
-      saveAs(new Blob([buffer]), fileName);
-    } catch (error) {
-      console.error("Error exporting to Excel:", error);
-    }
-  };
-
   const handleInfoButtonClick = () => {
     setShowInfoGuide(true);
   };
@@ -1757,7 +1544,9 @@ function SeatplanPage() {
 
     fetchUserData();
   }, []);
+
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+
   return (
     <body className={styles.body}>
       {" "}
@@ -1843,46 +1632,7 @@ function SeatplanPage() {
                       Profile
                     </a>
                   </li>
-                  <li>
-                    <a
-                      onClick={projectPageHandleClick}
-                      className={style["material-icons"]}
-                    >
-                      <i
-                        className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
-                      >
-                        <WorkOutlineOutlined />
-                      </i>
-                      Project
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      onClick={MachinePageHandleClick}
-                      className={styles["material-icons"]}
-                    >
-                      <i
-                        className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                      >
-                        <BusinessCenterOutlined />
-                      </i>
-                      Machine
-                    </a>
-                  </li>
-                  <li></li>
-                  <li>
-                    <a
-                      onClick={adminPageHandleClick}
-                      className={style["active"]}
-                    >
-                      <i
-                        className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
-                      >
-                        <GroupsOutlined />
-                      </i>
-                      Members
-                    </a>
-                  </li>
+
                   <li className={style["active-page"]}>
                     <a
                       onClick={SeatplanPageHandleClick}
@@ -1937,7 +1687,6 @@ function SeatplanPage() {
                       </div>
                     </div>
                   )}
-
                   
                 </ul>
               </div>
@@ -1977,9 +1726,6 @@ function SeatplanPage() {
             />
             <button type="submit" className={styles.searchButton}>
               <FontAwesomeIcon icon={faSearch} />
-            </button>
-            <button onClick={exportToExcel} className={styles.searchButton}>
-              Export to Excel
             </button>
           </form>
 
@@ -2055,4 +1801,4 @@ function SeatplanPage() {
   );
 }
 
-export default SeatplanPage;
+export default ViewerSeatPage;

@@ -84,9 +84,26 @@
 }
 
 .sub {
-  color: #308a38;
+  font-size: 13px;
+  width: 100px;
+  padding: 10px;
+  padding-right: 8px;
+  padding-top: 9px;
+  margin-right: -70%;
+  margin-top: -30%;
+  background-color: transparent;
+  color: #005b08;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
+    border-color 0.4s ease-in-out;
+  letter-spacing: 3px;
 }
-
+.sub:hover {
+  background-color: #1e7e28;
+  color: #ffffff;
+}
 .dropdownMenu {
   position: absolute;
   top: 50px; /* Adjust the top position as needed */
@@ -541,7 +558,27 @@ body.popupOpen {
     justify-content: center;
     align-items: center;
   }
-
+  .sub {
+    font-size: 13px;
+    width: 100px;
+    padding: 10px;
+    padding-right: 8px;
+    padding-top: 9px;
+    margin-right: -20%;
+    margin-top: 20%;
+    background-color: transparent;
+    color: #005b08;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out,
+      border-color 0.4s ease-in-out;
+    letter-spacing: 3px;
+  }
+  .sub:hover {
+    background-color: #1e7e28;
+    color: #ffffff;
+  }
   .canvasWrapper {
     background-color: #fff;
     width: 100%;

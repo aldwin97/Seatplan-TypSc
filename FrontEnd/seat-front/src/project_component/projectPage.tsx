@@ -18,40 +18,18 @@ import {
   Logout,
 } from "@mui/icons-material";
 import {
-  faUser,
-  faFaceSmile,
-  faChartBar,
-  faUsers,
   faPlus,
-  faPowerOff,
-  faEdit,
-  faProjectDiagram,
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  Select,
-  MenuItem,
-  SelectChangeEvent,
   Snackbar,
-  Alert,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Checkbox,
   Paper,
-  IconButton,
-  Button,
-  Typography,
-  Box,
   Pagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  TextField,
 } from "@mui/material";
 
 import "./projectPage.css";
@@ -180,14 +158,15 @@ function ProjectPage() {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
-
+  
   const handleLogout = () => {
-    sessionStorage.removeItem("user_id");
+    // Clear any user-related data from the session/local storage
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('usertype_id');
 
-    navigate("/");
+
+    // Redirect to the login page
+    navigate('/');
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

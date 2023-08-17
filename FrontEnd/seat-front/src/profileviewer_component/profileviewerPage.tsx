@@ -4,16 +4,13 @@ import style from "../dashboard_component/dashboardPage.module.css";
 import {
   DashboardOutlined,
   ChairOutlined,
-  GroupsOutlined,
   AccountCircleOutlined,
-  WorkOutlineOutlined,
-  BusinessCenterOutlined,
   Menu,
   Logout,
+  
 } from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import styles from "./profilePage.module.css";
 import profileBackg from "./assets/profileBackg.png";
 import defaulImage from "../assets/default.png";
 import ManageAccountsSharpIcon from "@mui/icons-material/ManageAccountsSharp";
@@ -22,12 +19,12 @@ import Tooltip from "@mui/material/Tooltip";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-
-import ResizableFullCalendar from './ResizableFullCalendar'; // Adjust the import path
-
 import axios, { AxiosError } from "axios";
-import { Avatar } from "@mui/material";
-const ProfilePage: React.FC = () => {
+import { Avatar} from '@mui/material';
+import ResizableFullCalendar from './ResizableFullCalendar'; // Adjust the import path
+import styles from './profileviewerPage.module.css';
+
+const ProfileViewerPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -37,7 +34,7 @@ const ProfilePage: React.FC = () => {
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
-
+  const [, setUserPicture1] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -46,7 +43,7 @@ const ProfilePage: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const [response, setResponse] = useState<string>("");
+  const [, setResponse] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [emailError, setEmailError] = useState("");
 
@@ -55,7 +52,7 @@ const ProfilePage: React.FC = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
-  const [isPersonalFormValidSnackbar, setPersonalFormValidSnackbar] =
+  const [, setPersonalFormValidSnackbar] =
     useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
   const [isContactNumberError, setContactNumberError] = useState(false);
@@ -115,6 +112,46 @@ const ProfilePage: React.FC = () => {
     position_name: string;
   }
 
+  useEffect(() => {
+    const fetchUserPicture = async () => {
+      try {
+        const user_id = window.sessionStorage.getItem('user_id');
+        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+          responseType: 'arraybuffer',
+        });
+
+        const base64Data = btoa(
+          new Uint8Array(pictureResponse.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        setUserPicture1(pictureDataUrl);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchUserPicture();
+  }, []);
+
+  useEffect(() => {
+    const user_id = window.sessionStorage.getItem('user_id');
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+
+        const responseData: UserData = response.data[0];
+        setUserData(responseData);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   useEffect(() => {
     const user_id = window.sessionStorage.getItem("user_id");
 
@@ -183,9 +220,6 @@ const ProfilePage: React.FC = () => {
     return null;
   }
 
-  const viewSeatPageHandleClick = () => {
-    navigate("/seatPlanPage");
-  };
   const toggleOldPasswordVisibility = () => {
     setShowOldPassword((prevShow) => !prevShow);
   };
@@ -198,9 +232,6 @@ const ProfilePage: React.FC = () => {
     setShowConfirmPassword((prevShow) => !prevShow);
   };
 
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
 
   // PERSONAL INFORMATION BUTTONS //
 
@@ -467,37 +498,34 @@ const ProfilePage: React.FC = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
-  const MachinePageHandleClick = () => {
-    navigate("/machinetablePage");
-  };
-  const projectPageHandleClick = () => {
-    navigate("/ProjectPage");
-  };
+
   const dashboardPageHandleClick = () => {
-    navigate("/DashboardPage");
+    navigate("/dashboardviewerPage");
   };
-  const adminPageHandleClick = () => {
-    navigate("/AdminPage");
-  };
+  
   const ProfilePageHandleClick = () => {
-    navigate("/ProfilePage");
+    navigate("/profileviewerpage");
   };
   const SeatplanPageHandleClick = () => {
-    navigate("/seatPlanPage");
+    navigate("/viewerseatPage");
   };
 
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem("user_id");
-    sessionStorage.removeItem("usertype_id");
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('usertype_id');
+
 
     // Redirect to the login page
-    navigate("/");
+    navigate('/');
   };
 
   const capitalizeFirstLetter = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
+ 
+
+
 
   return (
     <div className={styles.backg}>
@@ -525,38 +553,30 @@ const ProfilePage: React.FC = () => {
               className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
             >
               <ul className={style["accordion-menu"]}>
-                <div
-                  className="accordion-menu-container"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <div className={style["userbg"]}>
-                    <div className={style["userpr"]}>
+                     <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div className={style['userbg']}>
+                      <div className={style['userpr']}>
                       {userPicture ? (
-                        <Avatar src={userPicture} alt="User" />
-                      ) : (
-                        <img
-                          src={defaulImage}
-                          alt="Profile Default"
-                          className={style.defaultImage} // Add any additional styles here
-                        />
-                      )}
-                    </div>
-                  </div>
-                  {UserData ? (
-                    <div className={style["usern"]}>
-                      {UserData.first_name} {UserData.last_name}
-                      <div className={style["userp"]}>
-                        {UserData.position_name}
+      <Avatar src={userPicture} alt="User" />
+    ) : (
+      <img
+      src={defaulImage}
+      alt="Profile Default"
+      className={style.defaultImage}// Add any additional styles here
+      />
+    )}
                       </div>
                     </div>
-                  ) : (
-                    <div></div>
-                  )}
-                </div>
+                    {UserData ? (
+                      <div className={style['usern']}>
+                        {UserData.first_name}  {UserData.last_name} 
+                          <div className={style['userp']}>{UserData.position_name}</div>
+                      </div>
+          
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
                 <li className={style["sidebar-title"]}>Apps</li>
                 <li>
                   <a
@@ -580,42 +600,6 @@ const ProfilePage: React.FC = () => {
                       <AccountCircleOutlined />
                     </i>
                     Profile
-                  </a>
-                </li>
-                <li>
-                  <a
-                    onClick={projectPageHandleClick}
-                    className={style["material-icons"]}
-                  >
-                    <i
-                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
-                    >
-                      <WorkOutlineOutlined />
-                    </i>
-                    Project
-                  </a>
-                </li>
-                <li>
-                  <a
-                    onClick={MachinePageHandleClick}
-                    className={styles["material-icons"]}
-                  >
-                    <i
-                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                    >
-                      <BusinessCenterOutlined />
-                    </i>
-                    Machine
-                  </a>
-                </li>
-                <li>
-                  <a onClick={adminPageHandleClick} className={style["active"]}>
-                    <i
-                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
-                    >
-                      <GroupsOutlined />
-                    </i>
-                    Members
                   </a>
                 </li>
                 <li>
@@ -664,7 +648,7 @@ const ProfilePage: React.FC = () => {
                 {capitalizeFirstLetter(profileData.last_name)}
               </h3>
               <h4>{profileData.position_name}</h4>
-             <ResizableFullCalendar initialView="dayGridMonth" />
+              <ResizableFullCalendar initialView="dayGridMonth" />
             </div>
 
             <div className={styles.profilePicture}>
@@ -708,14 +692,9 @@ const ProfilePage: React.FC = () => {
                 style={{ display: "none" }}
               />
             </div>
-        
-
           </form>
 
-   
-
-
-
+            
           <div className={styles.set}>
             {/* PERSONAL INFORMATION CONTAINER */}
             <form className={styles.personal} onSubmit={handlePersonalSubmit}>
@@ -734,6 +713,7 @@ const ProfilePage: React.FC = () => {
                   onChange={handleInputChange}
                 />
               </div>
+          
               <div className={styles["name-group"]}>
                 <label className={styles.readLabel}>Last Name *</label>
                 <input
@@ -1106,6 +1086,7 @@ const ProfilePage: React.FC = () => {
                   title="Edit"
                   placement="top"
                   arrow
+                  
                   style={{
                     position: "absolute",
                     top: "24px",
@@ -1122,15 +1103,13 @@ const ProfilePage: React.FC = () => {
                       "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
                   }}
                 >
-                  <IconButton
-                    onClick={handleAccountEditClick}
-                    className={styles.settool1}
-                  >
+                  <IconButton onClick={handleAccountEditClick}className={styles.settool1}>
                     <ManageAccountsSharpIcon />
                   </IconButton>
                 </Tooltip>
               )}
             </form>
+           
           </div>
         </div>
       </div>
@@ -1138,4 +1117,4 @@ const ProfilePage: React.FC = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfileViewerPage;

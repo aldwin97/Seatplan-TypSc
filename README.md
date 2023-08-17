@@ -13,11 +13,11 @@ start the application with 'npm start'
 
 Environment:
 
-JDK 17
+JDK 17 -> JDK 10
 
-Springboot 3.1.1
+Spring boot 3.1.1 -> Spring boot 2.7.14
 
-MyBatis
+MyBatis 2.3.1
 
 Node 18
 

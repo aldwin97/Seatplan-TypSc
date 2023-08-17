@@ -18,14 +18,11 @@ import {
   Paper,
   TablePagination,
 } from "@mui/material";
-import styles from "./dashboardPage.module.css";
+import styles from "./dashboardViewerPage.module.css";
 import {
-  BusinessCenterOutlined,
   DashboardOutlined,
   ChairOutlined,
-  GroupsOutlined,
   AccountCircleOutlined,
-  WorkOutlineOutlined,
   Menu,
   Logout,
   GroupsRounded,
@@ -40,6 +37,8 @@ import occupied from "./asset/occupied.png";
 import available from "./asset/available.png";
 import totalseat from "./asset/totalseat.png";
 import { Grid, Box } from "@mui/material";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import defaulImage from "../assets/default.png";
 
 interface ProjectSummary {
@@ -47,7 +46,7 @@ interface ProjectSummary {
   seatCount: number;
 }
 
-const DashboardPage: React.FC = () => {
+const DashboardViewerPage: React.FC = () => {
   const [userPicture, setUserPicture] = useState<string | null>(null);
   const [com, setComments] = useState<Comments[]>([]);
   const [dashboardData, setDashboardData] = useState<any>({});
@@ -95,6 +94,7 @@ const DashboardPage: React.FC = () => {
     last_name: string;
     position_name: string;
   }
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
   useEffect(() => {
     const fetchUserPicture = async () => {
@@ -147,9 +147,10 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     // Fetch the data from the endpoint
     const fetchData = async () => {
+      const user_id = window.sessionStorage.getItem("user_id");
       try {
         const response = await axios.get(
-          "http://localhost:8080/dashboard/showAllComment"
+          `http://localhost:8080/seat/showAllCommentBy/${user_id}`
         );
         const data: Comments[] = response.data;
 
@@ -247,23 +248,16 @@ const DashboardPage: React.FC = () => {
     setDrawerOpen(!isDrawerOpen);
   };
   const navigate = useNavigate();
-  const MachinePageHandleClick = () => {
-    navigate("/machinetablePage");
-  };
-  const projectPageHandleClick = () => {
-    navigate("/ProjectPage");
-  };
+
   const dashboardPageHandleClick = () => {
     navigate("/DashboardPage");
   };
-  const adminPageHandleClick = () => {
-    navigate("/AdminPage");
-  };
+
   const ProfilePageHandleClick = () => {
-    navigate("/ProfilePage");
+    navigate("/profileviewerpage");
   };
   const SeatplanPageHandleClick = () => {
-    navigate("/seatPlanPage");
+    navigate("/viewerseatPage");
   };
 
   /*table for project overview*/
@@ -299,7 +293,6 @@ const DashboardPage: React.FC = () => {
     return date.toLocaleString("en-US", options);
   };
 
-  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   return (
     <>
       <body>
@@ -388,46 +381,6 @@ const DashboardPage: React.FC = () => {
                     </li>
                     <li>
                       <a
-                        onClick={projectPageHandleClick}
-                        className={styles["material-icons"]}
-                      >
-                        <i
-                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                        >
-                          <WorkOutlineOutlined />
-                        </i>
-                        Project
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        onClick={MachinePageHandleClick}
-                        className={styles["material-icons"]}
-                      >
-                        <i
-                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                        >
-                          <BusinessCenterOutlined />
-                        </i>
-                        Machine
-                      </a>
-                    </li>
-
-                    <li>
-                      <a
-                        onClick={adminPageHandleClick}
-                        className={styles["material-icons"]}
-                      >
-                        <i
-                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                        >
-                          <GroupsOutlined />
-                        </i>
-                        Members
-                      </a>
-                    </li>
-                    <li>
-                      <a
                         onClick={SeatplanPageHandleClick}
                         className={styles["material-icons"]}
                       >
@@ -439,6 +392,7 @@ const DashboardPage: React.FC = () => {
                         Seat
                       </a>
                     </li>
+
                     <li>
                       <a
                         onClick={() => setShowLogoutConfirmation(true)}
@@ -826,4 +780,4 @@ const DashboardPage: React.FC = () => {
   );
 };
 
-export default DashboardPage;
+export default DashboardViewerPage;

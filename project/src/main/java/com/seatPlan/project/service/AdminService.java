@@ -144,6 +144,7 @@ public class AdminService {
             .map(comment -> {
                 Map<String, Object> commentMap = new HashMap<>();
                 commentMap.put("recipient_id",comment.getRecipient_id());
+                commentMap.put("recipient",comment.getRecipient_fname() + " " + comment.getRecipient_lname());
                 commentMap.put("user_id",comment.getUser_id());
                 commentMap.put("comment_id", comment.getComment_id());
                 commentMap.put("seat_id",comment.getSeat_id());
@@ -162,6 +163,14 @@ public class AdminService {
 
     public void deleteExistingProject(Long user_id) {
         adminDao.deleteExistingProject(user_id);
+    }
+
+    public void deleteCommentById(Long comment_id) {
+         adminDao.deleteCommentById(comment_id);
+    }
+
+    public void handleClearComments(Long seat_id) {
+        adminDao.handleClearComments(seat_id);
     }
 
 

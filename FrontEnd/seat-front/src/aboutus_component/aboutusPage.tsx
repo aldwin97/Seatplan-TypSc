@@ -172,6 +172,7 @@ Elevate Your Workspace: Seamlessly Redefine Seating for Enhanced Efficiency and 
                       borderRadius: "100%",
                       margin: "30px auto",
                       border: "6px solid #efefef",
+                      
                     }}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
@@ -182,26 +183,7 @@ Elevate Your Workspace: Seamlessly Redefine Seating for Enhanced Efficiency and 
                   </CardContent>
                   <CardActions sx={{
              paddingTop:"35px" ,justifyContent: "center"}}>
-                    <Button size="small"        sx={{
-           position: "relative", // Create a stacking context
-           "&::before": {
-             content: '""',
-             position: "absolute",
-             top: "-4px", 
-             left: "50%",
-             transform: "translateX(-50%)",
-             width: "650px", 
-             height: "2px", 
-             backgroundColor: "#efefef", 
-             
-             
-          },
-        }}
- > 
-   <FaGithub size={24} color="#999999" className="styles.socialicons"  />
-   <FaGoogle size={24} color="#999999" />
-   <FaLinkedin size={24} color="#999999" />
- </Button>
+                    
                   </CardActions>
                 </Card>
               </Grid>

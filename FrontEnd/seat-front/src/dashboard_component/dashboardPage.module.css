@@ -29,9 +29,8 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 .menu-out {
-  position: absolute;
+  position: fixed;
   cursor: pointer;
-  position: relative;
   top: 35px;
   left: 30px;
   width: 80%;

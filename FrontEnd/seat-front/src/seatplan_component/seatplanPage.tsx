@@ -11,7 +11,7 @@ import {
   Menu,
   Logout,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import styles from "./seatplanPage.module.css";
@@ -26,6 +26,7 @@ import defaulImage from "../assets/default.png";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Box from "@mui/material/Box";
 import Pagination from "@mui/material/Pagination";
+
 
 interface Seat {
   position: { x: number; y: number };
@@ -68,6 +69,7 @@ interface Occupant {
 }
 
 function SeatPopup({
+
   seat,
   onClose,
 
@@ -308,33 +310,37 @@ function SeatPopup({
       <div className={styles.seatPopupContent}>
         <h3>Seat {seat.seat_id}</h3>
         <form onSubmit={handleFormSubmit}>
-          {isEditMode ? (
-            <>
-              <p>Select a User to be assigned:</p>
-              <select
-                value={selectedOccupant}
-                onChange={handleOccupantChange}
-                required
-              >
-                <option value="">Assign an Occupant</option>
-                {occupantsList
-                  .filter((occupant) => {
-                    const isAssigned = seats.some(
-                      (s) => s.occupant === occupant.user_id.toString()
-                    );
-                    console.log(
-                      `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
-                    );
-                    return !isAssigned;
-                  })
-                  .map((occupant) => (
-                    <option key={occupant.user_id} value={occupant.user_id}>
-                      {` ${occupant.first_name}${
-                        occupant.last_name ? ` ${occupant.last_name}` : ""
-                      }`}
-                    </option>
-                  ))}
-              </select>
+        {isEditMode ? (
+        <>
+          <p>Select a User to be assigned:</p>
+          <select
+            value={selectedOccupant}
+            onChange={handleOccupantChange}
+            required
+          >
+            <option value="">Assign an Occupant</option>
+            {occupantsList
+              .filter((occupant) => {
+                const isAssigned = seats.some(
+                  (s) => s.occupant === occupant.user_id.toString()
+                );
+                console.log(
+                  `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
+                );
+                return !isAssigned;
+              })
+              .map((occupant) => (
+                <option key={occupant.user_id} value={occupant.user_id}>
+                  {` ${occupant.first_name}${
+                    occupant.last_name ? ` ${occupant.last_name}` : ""
+                  }`}
+                </option>
+              ))}
+          </select>
+
+         
+
+
               {errorMsg && (
                 <div className={styles.errorPopup}>
                   <p>{errorMsg}</p>

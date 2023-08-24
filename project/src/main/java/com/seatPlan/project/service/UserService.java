@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.seatPlan.project.dao.UserDao;
 import com.seatPlan.project.model.UserModel;
-import javax.servlet.http.HttpSession;
+import com.seatPlan.project.security.jwt.JwtTokenProvider;
 
 
 @Service
@@ -20,23 +21,26 @@ import javax.servlet.http.HttpSession;
 
 public class UserService{
 
-    
+    private JwtTokenProvider jwtTokenProvider;
     public UserDao userDao;
 
-    public UserService(@Autowired(required=true) UserDao userDao) {
+
+    public UserService(@Autowired(required=true) UserDao userDao, JwtTokenProvider jwtTokenProvider) {
         this.userDao = userDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public UserModel authenticateUser(String username, String password, HttpSession session) {
+    public String authenticateUser(String username, String password) {
         UserModel user = userDao.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
-            session.setAttribute("userSession", user);
-            return user;
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, null);
+            String token = jwtTokenProvider.generateToken(authentication);
+            return token;
         } else {
             return null;
         }
     }
-
+    
 
     public int countUsers() {
         return userDao.countUsers();

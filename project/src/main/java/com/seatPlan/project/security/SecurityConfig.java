@@ -3,8 +3,14 @@ package com.seatPlan.project.security;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.seatPlan.project.security.jwt.JwtAuthFilter;
+import com.seatPlan.project.security.jwt.JwtTokenProvider;
 import com.seatPlan.project.security.service.MyUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,31 +24,39 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableGlobalMethodSecurity( prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
-
+    private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
     
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-                http
-               //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
+        http
+                .csrf(csrf -> csrf.disable()) //This is for JWT - WiP
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
                 .authorizeHttpRequests(requests -> requests
-                        .antMatchers("/admin/**").hasRole("Admin")
-                        .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
-                        .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
-                        .anyRequest().authenticated());
-                http
+                .antMatchers("/admin/**").hasRole("Admin")
+                .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
+                .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
+                .anyRequest().authenticated());
+
+        http
+                 .addFilterBefore(new JwtAuthFilter(jwtTokenProvider,userDetailsService),UsernamePasswordAuthenticationFilter.class);
+
+        http
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll());
-                http
+        http
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .permitAll());
-                // http
-                // .oauth2ResourceServer().jwt();
+                 
+
     }
-    
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
   

@@ -2,6 +2,7 @@
   "name": "seat-front",
   "version": "0.1.0",
   "private": true,
+  "homepage": "SeatPlan",
   "dependencies": {
     "@canvasjs/charts": "^3.7.13",
     "@canvasjs/react-charts": "^1.0.0",

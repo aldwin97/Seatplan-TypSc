@@ -115,7 +115,7 @@
   border: 2px solid #8d8d8d; /* Add a border with the desired color and thickness */
   box-shadow: 5px 5px 2px rgb(136, 136, 136);
   width: 480px;
-  height: 760px;
+  height: 460px;
   margin-bottom: 0.1%;
   margin-right: 59%;
   position: absolute;
@@ -668,6 +668,9 @@ input:not(:read-only):valid ~ .change-label {
     right:20px;
 
   }
+  .inputDisplay{
+    top:-100px;
+  }
   .personal-button{  
     position: absolute;
     /* display:flex; */
@@ -751,6 +754,7 @@ input:not(:read-only):valid ~ .change-label {
     width:600px;
     height:400px;
   }
+  
   .accountS{
     position: fixed;
     left:100px;
@@ -832,3 +836,4 @@ input:not(:read-only):valid ~ .change-label {
       scale: 1.3;
     }
 }
+/* FullCalendarStyles.module.css */

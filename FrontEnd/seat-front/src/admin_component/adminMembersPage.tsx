@@ -515,9 +515,7 @@ const AdminMembersPage: React.FC = () => {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
+  
   const MachinePageHandleClick = () => {
     navigate("/machinetablePage");
   };
@@ -580,7 +578,7 @@ const AdminMembersPage: React.FC = () => {
                       <div></div>
                     )}
                   </div>
-                <li className={styles["sidebar-title"]}>Apps</li>
+                <li className={styles["sidebar-title"]}></li>
                 <li>
                   <a
                     onClick={dashboardPageHandleClick}
@@ -593,7 +591,7 @@ const AdminMembersPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a
+                  <a 
                     onClick={ProfilePageHandleClick}
                     className={styles["material-icons"]}
                   >

@@ -380,9 +380,7 @@ function MachinePage() {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  const logInPageHandleClick = (): void => {
-    navigate("/");
-  };
+  
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
     sessionStorage.removeItem("user_id");
@@ -447,7 +445,7 @@ function MachinePage() {
                       <div></div>
                     )}
                   </div>
-                <li className={styles["sidebar-title"]}>Apps</li>
+                <li className={styles["sidebar-title"]}> </li>
                 <li>
                   <a
                     onClick={dashboardPageHandleClick}

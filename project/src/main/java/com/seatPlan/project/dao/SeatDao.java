@@ -37,4 +37,7 @@ public interface SeatDao {
     
     boolean isUserAlreadyAssigned(Long user_id);
 
+
+     List<CommentModel> getCommentByUserIdOnly(Long user_id);
+
 }

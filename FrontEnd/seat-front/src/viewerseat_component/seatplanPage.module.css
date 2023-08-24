@@ -1,0 +1,1440 @@
+
+
+.backg
+{
+  margin: 0;
+  padding: 0;
+  background-size: 100% 100%;
+  background-image: url('./../assets/SEATMGT.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+
+   
+.burgerButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 30px;
+  height: 25px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: absolute;
+  top: 7px;
+  left: 1%;
+  transition: transform 0.3s ease;
+  z-index: 1000; /* Updated z-index value */
+}
+      .burgerButton.open {
+        transform: rotate(90deg);
+      }
+
+      .burgerIcon {
+        width: 100%;
+        height: 3px;
+        background-color: #308a38;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Dropdown Menu */
+      .dropdownMenu2 {
+        position: absolute;
+        top: 50px; /* Adjust the top position as needed */
+        right: 10px; /* Adjust the right position as needed */
+        z-index: 100;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
+
+      .dropdownMenu2 button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdownMenu2 button:hover {
+        background-color: #f5f5f5;
+      }
+
+      .sub
+      {
+        color: #308a38;
+      }
+
+      .dropdownMenu {
+        position: absolute;
+        top: 50px; /* Adjust the top position as needed */
+        left: 10px; /* Adjust the right position as needed */
+        z-index: 100;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        backdrop-filter: blur(5px); /* Adjust the blur value as needed */
+      }
+      
+
+      .dropdownMenu button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdownMenu button:hover {
+        background-color: #ddecde;
+      }
+
+      .sub
+      {
+        color: #308a38;
+      }
+
+      .dropdownRows {
+        flex-direction: row;
+      }
+
+
+
+
+      .profile {
+        position: absolute;
+        top: 4px;
+        right: 1%;
+        width: 30px;
+        padding: 8px;
+        background-color: transparent;
+        color: #308a38;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+        z-index: 1000; /* Updated z-index value */
+      }
+      
+      .profile:hover {
+        background-color: #fff;
+        color: #a7a7a7;
+      }
+
+      .notif {
+        position: absolute;
+        top: 4px;
+        right: 4%;
+        width: 30px;
+        padding: 8px;
+        background-color: transparent;
+        color: #308a38;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.4s ease-in-out;
+        z-index: 1000; /* Updated z-index value */
+      }
+      .notif:hover {
+        background-color: #fff;
+        color: #a7a7a7;
+      }
+      .container{
+        width: 100vw;
+        height: 105vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .canvasWrapper {
+        background-color: #fff;
+        width: 100%;
+        height: 100%; /* Adjust the height as needed */
+        overflow: auto;
+        background-size: 100% 100%;
+        background-image: url('../assets/SEATMGT.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      
+      .scrollableCanvas {
+        width: 130%;
+        height: 110vh;
+        background-size: cover;
+        border-radius: 8px;
+        padding: 20px;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar {
+        width: 8px;
+        background-color: #f2f2f2;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+      }
+      
+      .scrollableCanvas::-webkit-scrollbar-track {
+        background-color: #f2f2f2;
+      }
+        
+      
+      
+      .addSeatForm {
+        margin-top: 2%;
+        position: fixed;
+        width: 120px;
+        top: 20px;
+        border: 1px solid transparent;
+        border-radius: 20px;
+        background-color: rgba(243, 243, 243, 0.3); /* Using rgba with opacity */
+        right: 20px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        transition:0.3s .4s ease-in-out;
+      }
+      
+      .addSeatForm:hover {
+        background-color: #dcdcdc;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+        scale: 0.99;
+      }
+      
+      
+      
+      .addSeatForm input[type='text']
+      {
+        border-color: transparent;
+        margin-bottom: 10px;
+        height: 20px;
+        width: 100px;
+        border-radius: 10px;
+        z-index: 1000;
+      }
+      .addSeatForm input[type='color'] {
+        margin-bottom: 10px;
+        border-radius: 100px;
+        width: 25px;
+        z-index: 1000;
+        cursor: pointer;
+        border-color: transparent;
+      }
+      
+      .addSeatForm button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        background-color: #308a38;
+        color: #fff;
+        cursor: pointer;
+        z-index: 1000;
+      }
+      .addSeatForm button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        background-color: #308a38;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      
+      .addSeatForm button:hover {
+        background-color: #2a7a31;
+      }
+      
+      
+      .draggableItem {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border: 1px solid #000000;
+        background-color: #f2f2f2;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+      }
+      
+      .zoomButtons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 1;
+      }
+      .colorDot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+      }
+      
+      .zoomButtons button {
+        
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border: none;
+        background-color: rgba(218, 218, 218, 0.8);
+        color: #555555;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s ease;
+      }
+      
+      .zoomButtons button:hover {
+        background-color: rgba(255, 255, 255, 1);
+      }
+      
+      .zoomButtons button:first-child {
+        border-bottom: 1px solid #cccccc;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+      }
+      
+      .zoomButtons button:last-child {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+      /* seatplanPage.module.css */
+
+     /* Blur the page when the popup is open */
+     body.popupOpen {
+      filter: blur(4px);
+      pointer-events: none;
+    }
+/* Popup container */
+
+
+/* Popup content */
+.seatPopupContent {
+  display: flex;
+  width: 500px;
+  background-color: white;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  border: 2px solid #8d8d8d;
+  box-shadow: 5px 5px 2px rgb(136, 136, 136);
+  padding: 30px;
+}
+
+.footer {
+  margin-top: auto; /* Push the footer to the bottom */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.seatPopupContent h3 {
+  font-size: 30px;
+  margin-left: -400px;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.seatPopupContent form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seatPopupContent label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: none;
+  font-size: 15px;
+  transition-duration: .3s;
+}
+
+.seatPopupContent input[type="text"] {
+  padding: 8px;
+  width: 500px;
+  border: none;
+  font-size: 15px;
+  transition-duration: .3s;
+}
+
+.seatPopupContent input[type="color"] {
+  padding: 2px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+}
+
+.seatPopupContent button {
+  padding: 5px 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+}
+
+.seatPopupContent button[type="submit"] {
+  background-color: #28a745;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  width: 80px;
+}
+.seatPopupContent button:hover[type="submit"] {
+  background-color: #0056b3;
+}
+.swapButton {
+  background-color: #28a745 !important;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  margin-left: 29%;
+  margin-bottom: 10px;
+}
+.swapButton:hover {
+  background-color: #0056b3 !important;
+}
+.editButton
+{
+  margin-bottom: 20px;
+  width: 80px;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  background-color: #28a745 !important;
+}
+.editButton:hover {
+  background-color: #0056b3 !important;
+  color: white;
+}
+.sub
+{
+  width: 80px;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+  background-color: #28a745 !important;
+}
+.sub:hover {
+  background-color: #0056b3 !important;
+  color: white;
+}
+.seatPopupContent select {
+  padding: 8px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  appearance: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Close button */
+.seatPopupContent .closeButton {
+  position: absolute;
+  margin-left: 470px;
+  margin-top: -70px ;
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none !important;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 20px;
+}
+.seatPopupContent .closeButton2 {
+  position: absolute;
+margin-left: 380px;
+margin-top: -80px ;
+background-color: transparent !important;
+  border: none;
+  box-shadow: none !important;
+  color: #ff0000;
+  cursor: pointer;
+  font-size: 12px;
+}
+.seatPopupContent .closeButton2:hover {
+  color: #777;
+}
+
+.seatPopupContent .closeButton:hover {
+  color: #777;
+}
+
+.seatPopupContainer:not(seatPopupContent){
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(223, 223, 223, 0.9); /* Set the background color with transparency */
+  z-index: 999; /* Ensure the popup appears on top of other elements */
+}/* Common styles */
+
+/* ... existing styles ... */
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+
+  .scrollableCanvas
+  {
+    width: 120vh;
+  }
+  .seatPopupContent {
+    width: 80%; /* Adjust the width as needed */
+    padding: 20px; /* Adjust the padding as needed */
+  }
+  .swapButton {
+    margin-left: -1%;
+    width: 20%;
+  }
+  .seatPopupContent input[type="text"],
+  .seatPopupContent input[type="color"],
+  .seatPopupContent select {
+    width: 100%; /* Make the inputs and select full width */
+  }
+
+  .seatPopupContent button {
+    width: 100%; /* Make the buttons full width */
+  }
+
+  .seatPopupContent .closeButton {
+    font-size: 14px; /* Adjust the font size as needed */
+  }
+
+  .seatPopupContainer:not(.seatPopupContent) {
+    background-color: rgba(223, 223, 223, 0.9); /* Adjust the background color as needed */
+  }
+  .container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .canvasWrapper {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+  
+
+}
+.value {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  color: rgb(0, 0, 0);
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.legend {
+  position: absolute;
+  bottom: 0px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.color-box {
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+.available {
+  background-color: #e9e9e9;
+  margin-right: 5px;
+  width: 1px;
+  padding: 5px;
+}
+
+.unavailable {
+  background-color: #ff0000;
+  margin-right: 5px;
+  width: 1px;
+  padding: 5px;
+}
+
+.label {
+  font-size: 14px;
+  color: #000000;
+}
+
+.searchForm {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin-right: 40px;
+}
+
+
+.searchInput {
+  margin-right: 5px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 2px 2px 5px rgb(136, 136, 136);
+  padding: 7px;
+  transition: 0.2s .3s ease-in-out;
+}
+.searchInput:hover {
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  scale: 0.99;
+}
+
+
+.searchButton {
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgb(136, 136, 136);
+  transition: 0.2s .3s ease-in-out;
+}
+
+.searchButton:hover {
+  background-color: #0056b3;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  scale: 0.99;
+}
+
+.title
+{
+  position: absolute;
+  top: 10px;
+  left: 80px;
+  font-size: 20px;
+  color: #28a745;
+  font-weight: bold;
+}
+@media (max-width: 767px) {
+  .searchForm {
+margin-top: 40px;
+  }
+
+  .title {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}
+
+/* seatplanPage.module.css */
+/* seatplanPage.module.css */
+.errorPopup {
+  position: fixed;
+  top: 50%;
+  width: 400px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #ff0000;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  animation: shake 0.2s ease-in-out;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(-50%, -50%) rotate(-5deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  75% {
+    transform: translate(-50%, -50%) rotate(5deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+.errorPopup p {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.errorPopup button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #ff0000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.errorPopup button:hover {
+  background-color: #b6b6b6;
+}
+/* Default style for the button */
+/* Default style for the button */
+.arrowToggle {
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  color: #ffffff;
+  background-color: #28a745;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-left: 2px solid #6e6e6e;
+  border-right: 2px solid #6e6e6e;
+  width: 561px;
+  height: 30px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  filter: blur(0.7px);
+}
+
+
+/* Style for the button when toggled */
+.arrowToggle.toggled {
+  height: 30px;
+  background-color: #4fce6d;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-left: 0px solid #6e6e6e;
+  border-right: 0px solid #6e6e6e;
+  border-bottom: 2px solid #6e6e6e;;
+  color: white;
+  filter: blur(0.7px);
+}
+
+
+/* Optional styles to change the arrow icon appearance */
+.arrowToggle svg {
+  margin-right: 10px;
+  width: 1em;
+  height: 1em;
+  color: #ffffff; /* Change to your desired color */
+}
+.h5
+{
+  margin-right: 210px;
+  color: white;
+  margin-top: 5px;
+  font-size: 12px;
+}
+/* Styles for the expanded view of the arrow toggle */
+.arrowToggle.expanded {
+  background-color: #e0e0e0; /* Change the background color when expanded */
+}
+
+/* Styles for the arrow icon when the toggle is expanded */
+.arrowToggle.expanded svg {
+  transform: rotate(180deg); /* Rotate the arrow icon 180 degrees when expanded */
+  transition: transform 0.3s ease; /* Add a smooth transition to the rotation animation */
+}
+
+
+/* Styles for labels */
+.labels {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+/* Styles for input elements */
+.input[type="text"] {
+  flex: 1;
+  padding: 5px;
+}
+/* seatplanPage.module.css */
+
+/* Existing styles */
+
+/* Styles for select elements */
+.select {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 100%;
+  max-width: 220px; /* Adjust the max-width as needed */
+}
+
+/* Styles for option elements */
+.option {
+  padding: 5px;
+  font-size: 14px;
+  color: #000000;
+  background-color: #fff;
+}
+
+/* Styles for the default (placeholder) option */
+.option[value=""] {
+  color: #888; /* Change the color to your desired placeholder color */
+}
+.addCommentButton {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.menu {
+  position: absolute;
+  cursor: pointer;
+  width: 100%;
+  height: 3px;
+  color: #A6A6A6;
+
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 22px;
+  font-family: 'Montserrat', sans-serif;
+}
+.menu-out {
+  position: absolute;
+  cursor: pointer;
+  position: relative;
+  bottom: -15px;
+  right: 170px;
+  width: 80%;
+  height: 3px;
+  color: #A6A6A6;
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 22px;
+  font-family: 'Montserrat', sans-serif;
+  z-index: 2;
+}
+.menu-out:hover, .menu:hover {
+  
+  color: #076307;
+}
+/* seatplanPage.css */
+.commentsContainer {
+  margin-top: 5px;
+  height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+.commentsScrollContainer {
+  /* Enable vertical scrolling when content overflows the container's height */
+  overflow-y: auto;
+
+  /* Add any other styles you want for the scroll container */
+}
+/* styles.css */
+.boldName {
+  font-size: 12px;
+  font-weight: bold;
+}
+.text{
+
+  font-size: 11px ;
+}
+
+.commentsContainer h4 {
+  margin-top: 5px;
+  position: sticky;
+  margin-bottom: -6px;
+  font-size: 20px;
+}
+
+.viewCommentsButton,
+.hideCommentsButton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.hideCommentsButton {
+  background-color: #dc3545;
+}
+
+.viewCommentsButton:hover,
+.hideCommentsButton:hover {
+  background-color: #0056b3;
+}
+
+.largeInput {
+  width: 500px;
+  margin-top: 50px;
+  height: 90px;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f3f3f3;
+  border: 2px solid #ccc; /* Add border with a color */
+  border-radius: 8px; /* Add border radius to create rounded corners */
+  /* You can add more styles here to customize the appearance further */
+}
+/* seatplanPage.module.css */
+.error {
+margin-left: 65px;
+color: #f44336;
+}
+/* Add styles to the comments section */
+
+/* SeatPopupComments.css */
+
+/* Styles for the reply button */
+/* CSS for comments */
+.commentsContainer {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.commentsList {
+  list-style: none;
+  padding: 0;
+}
+
+.boldName {
+  font-weight: bold;
+}
+
+.text {
+  margin-left: 5px;
+}
+
+.replyButton {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #007bff !important; /* Change the color to the desired hyperlink color */
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 11px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.replyButton:hover {
+  text-decoration: none !important;
+}
+
+/* CSS for replies */
+.replyList {
+  list-style: none;
+  padding: 0;
+  margin-left: 20px; /* Indent replies */
+}
+
+.replyname {
+  font-weight: bold;
+}
+
+.replytext {
+  margin-left: 5px;
+}
+
+.replyButton {
+  background: none;
+  border: none;
+  color: #007bff; /* Change the color to the desired hyperlink color */
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+.replyButton:hover {
+  text-decoration: none;
+}
+
+.replyIndicator {
+  margin-left: 5px;
+  font-style: italic;
+  color: #777;
+}
+.replyIndicator {
+  font-style: italic;
+  color: #777;
+}
+
+.replyTable {
+  width: 100%;
+}
+
+.replyTable td {
+  vertical-align: top;
+}
+
+.replyTable .replyButtonCell {
+  width: 30%;
+  text-align: right;
+}
+/* styles.css (or your preferred CSS file) */
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 400px;
+}
+
+/* Modal Header */
+.modalHeader h2{
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Modal Body */
+.modalBody {
+  margin-bottom: 15px;
+}
+
+/* Reply Textarea */
+.replyTextarea {
+  width: 95%;
+  height: 100px;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+/* Reply Submit Button */
+.replySubmitButton {
+  background-color: #2fc05b !important;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.replySubmitButton:hover {
+  background-color: #9b9b9b !important;
+}
+.repliedTo{
+
+  font-size: 10px !important;
+margin-left: 20px;
+color: #777;
+}
+
+.addComment
+{
+  margin-left: 400px;
+  background-color: #28a745 !important;
+  box-shadow: 2px 2px 0px rgb(136, 136, 136);
+  transition-duration: .3s;
+width: 120px;
+margin-bottom: 10px;
+}
+.addComment:hover {
+  background-color: #0056b3 !important;
+}
+
+/* Add this CSS to create the tooltip-like effect */
+div[title]:hover:after {
+  content: attr(title);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+div[title]:after {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+div[title]:hover:after {
+  opacity: 1;
+}
+
+
+.handleInfoButtonClick {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  transform: translateX(50%);
+  background-color: transparent;
+  color: #45a049;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.handleInfoButtonClick:hover {
+  background-color: #f0f0f0;
+}
+
+.infoguide {
+  /* Styles for the backdrop blur effect */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  color: #000;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2; /* Ensure the popup is above the backdrop blur */
+
+  /* Additional styles for the info guide content */
+  text-align: center;
+  font-size: 16px;
+}
+
+.infoguide .close {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.infoguide .close:hover{
+  color: red;
+}
+.infoguide h2 {
+  font-size: 30px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.infoguide p {
+  margin: 0;
+  margin-bottom: 10px;
+}
+.backdrop-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity of the backdrop blur */
+  backdrop-filter: blur(8px); /* Adjust the blur strength as needed */
+  z-index: 1;
+}
+/* Add these styles to your existing CSS file */
+
+/* Styling for the backdrop behind the success message */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent black color */
+  z-index: 999; /* Below the success message */
+  backdrop-filter: blur(4px); /* Apply a blur effect to the backdrop */
+}
+
+/* Styling for the success message pop-up */
+.successMessage {
+  position: fixed;
+  top: 50%; /* Center the pop-up vertically */
+  left: 50%; /* Center the pop-up horizontally */
+  transform: translate(-50%, -50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Make sure it appears on top of other content */
+  text-align: center;
+}
+.tooltip {
+  position: absolute;
+  top: 0;
+  margin-left: -70px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #ffffff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #ffffff;
+  bottom: -3px;
+  left: 10%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.uiverse:hover .tooltip {
+  top: -45px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+svg:hover span,
+svg:hover .tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.uiverse:hover,
+.uiverse:hover .tooltip,
+.uiverse:hover .tooltip::before {
+  background: linear-gradient(320deg, rgb(53, 172, 43), rgb(0, 60, 255));
+  color: #ffffff;
+}
+
+
+
+
+.commentsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.commentsTable td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.commentsTable tr:hover {
+  background-color: #f2f2f2; /* Change to your desired hover color */
+}
+
+.boldName {
+  font-weight: bold;
+}
+
+.text {
+  display: block;
+  margin-top: 5px;
+}
+
+.repliedTo {
+  color: #666;
+  font-size: 7px;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.replyButton {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.replyButton:hover {
+  background-color: #258cd1; /* Change to your desired hover color */
+}
+
+/* Add hover effect to the seat */
+.seat-hover {
+  background-color: #f0f0f0; /* Change to the desired background color */
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out; /* Add transition for smooth zoom effect */
+}
+
+/* Apply hover effect to the seat */
+.seat-hover:hover {
+  background-color: #3d3d3d; /* Change to the desired background color */
+  cursor: pointer;
+  transform: scale(1.2); /* Apply zoom effect when hovering */
+}
+.popupModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupContent {
+  color: red;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: shake 0.2s;
+}
+
+.popupText {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.buttonRow {
+  display: flex;
+  align-items: center; /* Align buttons vertically in the center */
+  gap: 10px; /* Add spacing between the buttons */
+}
+
+.popupButton {
+  background-color: #ff0000 !important;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  width: 60px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.popupButtonYes {
+  background-color: #30bb42 !important;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  width: 60px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+
+
+.popupButton:hover {
+  background-color: #0056b3;
+}
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px); /* Adjust the shake distance */
+  }
+  20%, 80% {
+    transform: translateX(5px); /* Adjust the shake distance */
+  }
+  30%, 70% {
+    transform: translateX(-3px); /* Adjust the shake distance */
+  }
+  40%, 60% {
+    transform: translateX(3px); /* Adjust the shake distance */
+  }
+  50% {
+    transform: translateX(0);
+  }
+}
+.deleteButton
+{
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none !important;
+  margin-right: 2px;
+}.deleteButton:hover
+{
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 100px;
+}

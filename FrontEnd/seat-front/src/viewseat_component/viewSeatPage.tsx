@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./viewSeatPage.module.css";
-import { faSearch, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faSearch} from "@fortawesome/free-solid-svg-icons";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface Seat {
@@ -43,9 +43,7 @@ interface Occupant {
 function ViewSeatPage() {
   const navigate = useNavigate();
 
-  const viewSeatPageHandleClick = () => {
-    navigate("/");
-  };
+
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -92,13 +90,22 @@ function ViewSeatPage() {
 
   // MODAL
 
+  const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [redirectToDashboard, setRedirectToDashboard] = useState(false);
 
   useEffect(() => {
     if (redirectToDashboard) {
-      navigate("/dashboardPage");
+      const usertypeId = Number(window.sessionStorage.getItem("usertype_id"));
+
+      if (usertypeId === 1) {
+        navigate("/dashboardviewerPage");
+      } else {
+        navigate("/dashboardPage");
+      }
     }
   }, [redirectToDashboard, navigate]);
 
@@ -111,27 +118,34 @@ function ViewSeatPage() {
     setError(false);
   };
 
-  const [username, setUsername] = useState("");
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
+  // const helpPageHandleClick = () => {
+  //   navigate('/helpPage');
+  // };
 
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
+  const viewSeatPageHandleClick = () => {
+    navigate("/viewSeatPage");
+  };
+  const aboutUsPageHandleClick = () => {
+    navigate("/aboutUsPage");
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
   const dashboardPageHandleClick = async () => {
     if (!username || !password) {
       setError(true);
       return;
     }
-
+  
     try {
       const response = await fetch("http://localhost:8080/user/login", {
         method: "POST",
@@ -140,26 +154,27 @@ function ViewSeatPage() {
         },
         body: JSON.stringify({ username, password }),
       });
-
+  
       if (!response.ok) {
         setError(true);
         return;
       }
-
+  
       const responseData = await response.json();
-      const { user_id } = responseData; // Extract the user_id from responseData
-      console.log(user_id);
-
+      const { user_id, usertype_id } = responseData; // Extract the usertype_id from responseData
+  
       setRedirectToDashboard(true);
-
+  
       // Save session data to Session Storage
       window.sessionStorage.setItem("user_id", user_id);
       window.sessionStorage.setItem("user_name", username);
+      window.sessionStorage.setItem("usertype_id", usertype_id);
     } catch (error) {
       console.log(error);
       setError(true);
     }
   };
+  
 
   // MODAL END
 
@@ -495,84 +510,84 @@ const customBorders = [
             SIGN IN
           </button> */}
 
-          <div className={styles.signInContainer}>
-            <button onClick={openModal} className={styles.sign} type="submit">
+      <div className={styles.signInContainer}>
+        <button onClick={openModal} className={styles.sub} type="submit">
+          SIGN IN
+        </button>
+      </div>
+
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.shape}></div>
+            <button className={styles.closeButton} onClick={closeModal}>
+              Cancel
+            </button>
+            <h2>SIGN IN</h2>
+
+            <div
+              className={`${styles["input-group"]} ${
+                error && !username && styles.errorInput
+              }`}
+            >
+              <input
+                required
+                type="text"
+                name="text"
+                autoComplete="off"
+                className={styles.input}
+                value={username}
+                onChange={handleUsernameChange}
+                onKeyDown={handleKeyDown}
+              />
+              <label className={styles["user-label"]}>Username</label>
+            </div>
+
+            <div
+              className={`${styles["input-group"]} ${
+                error && !password && styles.errorInput
+              }`}
+            >
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                name="password"
+                autoComplete="off"
+                className={styles.input}
+                value={password}
+                onChange={handlePasswordChange}
+                onKeyDown={handleKeyDown}
+              />
+              <label className={styles["user-label"]}>Password</label>
+              <span
+                className={`${styles["toggle-password"]} ${
+                  showPassword ? styles.active : ""
+                }`}
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
+            </div>
+
+            <div
+              className={`${styles.errorMessage} ${
+                error ? styles.showError : ""
+              }`}
+              style={{ visibility: error ? "visible" : "hidden" }} // Use visibility
+            >
+              Incorrect username or password!
+            </div>
+
+            <button
+              onClick={dashboardPageHandleClick}
+              className={`${styles.sub2} ${styles.signInButton}`}
+              type="submit"
+            >
               SIGN IN
             </button>
           </div>
-
-          {isModalOpen && (
-            <div className={styles.modalOverlay}>
-              <div className={styles.modalContent}>
-                <div className={styles.shape}></div>
-                <button className={styles.closeButton} onClick={closeModal}>
-                  Cancel
-                </button>
-                <h2>SIGN IN</h2>
-
-                <div
-                  className={`${styles["input-group"]} ${
-                    error && !username && styles.errorInput
-                  }`}
-                >
-                  <input
-                    required
-                    type="text"
-                    name="text"
-                    autoComplete="off"
-                    className={styles.input}
-                    value={username}
-                    onChange={handleUsernameChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                  <label className={styles["user-label"]}>Username</label>
-                </div>
-
-                <div
-                  className={`${styles["input-group"]} ${
-                    error && !password && styles.errorInput
-                  }`}
-                >
-                  <input
-                    required
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    autoComplete="off"
-                    className={styles.input}
-                    value={password}
-                    onChange={handlePasswordChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                  <label className={styles["user-label"]}>Password</label>
-                  <span
-                    className={`${styles["toggle-password"]} ${
-                      showPassword ? styles.active : ""
-                    }`}
-                    onClick={togglePasswordVisibility}
-                  >
-                    {showPassword ? <FaEye /> : <FaEyeSlash />}
-                  </span>
-                </div>
-
-                <div
-                  className={`${styles.errorMessage} ${
-                    error ? styles.showError : ""
-                  }`}
-                  style={{ visibility: error ? "visible" : "hidden" }} // Use visibility
-                >
-                  Incorrect username or password!
-                </div>
-
-                <button
-                  onClick={dashboardPageHandleClick}
-                  className={styles.sub2}
-                  type="submit"
-                >
-                  SIGN IN
-                </button>
-              </div>
-            </div>
-          )}
+        </div>
+      )}
 
           {/* Render seats on the canvas */}
           {seats.map((seat) => (

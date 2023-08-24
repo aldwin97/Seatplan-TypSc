@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSession;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/user")
 
 public class UserController {
     
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<String> authenticateUser(@RequestBody UserModel userModel) {
     String username = userModel.getUsername();
     String password = userModel.getPassword();

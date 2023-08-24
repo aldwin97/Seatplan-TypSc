@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -183,4 +184,28 @@ public class AdminController {
         List<Map<String, Object>> comments = adminService.getCommentBySeatId(seat_id);
         return comments;
     }
+
+
+
+    @DeleteMapping("deleteComment/{comment_id}")
+       public ResponseEntity<String> deleteCommentById(@PathVariable Long comment_id) {
+        try {
+              adminService.deleteCommentById(comment_id);
+           return ResponseEntity.ok("Comment deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete comment");
+        }    
+    }
+
+
+     @DeleteMapping("handleClearComments/{seat_id}")
+       public ResponseEntity<String> handleClearComments(@PathVariable Long seat_id) {
+        try {
+              adminService.handleClearComments(seat_id);
+           return ResponseEntity.ok("Comment deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete comment");
+        }    
+    }
+
 }

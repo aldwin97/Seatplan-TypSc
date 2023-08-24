@@ -50,6 +50,8 @@ public class SeatController {
         return comments;
     }
 
+
+     
     
 
     @PutMapping("/update/{seat_id}")
@@ -112,6 +114,12 @@ public class SeatController {
         return comments;
     }
 
+
+    @GetMapping("/showAllCommentBy/{user_id}")
+    public List<Map<String, Object>> getCommentByUserIdOnly(@PathVariable ("user_id") Long user_id) {
+        List<Map<String, Object>> comments = seatService.getCommentByUserIdOnly(user_id);
+        return comments;
+    }
 
 
 

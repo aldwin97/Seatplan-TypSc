@@ -37,6 +37,7 @@ public class MyUserDetailsService implements UserDetailsService{
         
         usertype_id = user.getUsertype_id();
         UserTypeModel role = userTypeDao.getUsertypeName(usertype_id);
+        //String roleName = "ROLE_"+role.toString();
         
         return new org.springframework.security.core.userdetails.User(
             user.getUsername(), user.getPassword(), Arrays.asList(new SimpleGrantedAuthority(role.getUsertype_name())));

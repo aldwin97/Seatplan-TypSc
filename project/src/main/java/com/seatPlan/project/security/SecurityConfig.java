@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -37,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
                 .authorizeHttpRequests(requests -> requests
+                .antMatchers( "/user", "/dashboard/**").permitAll()
                 .antMatchers("/admin/**").hasRole("Admin")
                 .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
                 .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
@@ -45,9 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http
                  .addFilterBefore(new JwtAuthFilter(jwtTokenProvider,userDetailsService),UsernamePasswordAuthenticationFilter.class);
 
-        http
+         http
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/user/login")
                         .permitAll());
         http
                 .logout(logout -> logout
@@ -60,7 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+         return new BCryptPasswordEncoder();
+        //return NoOpPasswordEncoder.getInstance();
     }
 
     @Autowired

@@ -23,7 +23,7 @@ import com.seatPlan.project.service.AdminService;
 
 @RestController
 @RequestMapping("/admin")
-@PreAuthorize("hasRole('Admin')")
+//@PreAuthorize("hasRole('Admin')")
 public class AdminController {
     
     @Autowired

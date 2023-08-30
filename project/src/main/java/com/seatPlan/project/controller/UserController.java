@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seatPlan.project.dao.UserDao;
@@ -24,13 +25,13 @@ import com.seatPlan.project.security.jwt.JwtTokenProvider;
 import com.seatPlan.project.service.UserService;
 import javax.servlet.http.HttpSession;
 
-
 @RestController
-@RequestMapping("/user")
-
+//@RequestMapping("/user")
+@RequestMapping(value = "/user", method = {RequestMethod.GET, RequestMethod.POST,RequestMethod.PUT,RequestMethod.DELETE})
 public class UserController {
-    
+    @Autowired
     private UserService userService;
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     public UserDao userDao;
@@ -47,17 +48,16 @@ public class UserController {
     public ResponseEntity<String> authenticateUser(@RequestBody UserModel userModel) {
     String username = userModel.getUsername();
     String password = userModel.getPassword();
-    UserModel user = userDao.getUserByUsername(username);
     String authenticatedUser = userService.authenticateUser(username, password);
 
     if (authenticatedUser != null) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, null);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username,password, null);
         String token = jwtTokenProvider.generateToken(authentication); 
         return ResponseEntity.ok(token);
     } else {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
-}
+    }
 
 
     

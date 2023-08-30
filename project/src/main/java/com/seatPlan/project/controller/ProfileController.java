@@ -31,7 +31,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/profile")
-@PreAuthorize("hasRole('Admin','Editor','Viewer')")
+//@PreAuthorize("hasRole('Admin','Editor','Viewer')")
 public class ProfileController {
 
     @Autowired

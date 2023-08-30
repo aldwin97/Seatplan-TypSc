@@ -22,7 +22,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity( prePostEnabled = true)
+//@EnableGlobalMethodSecurity( prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private UserDetailsService userDetailsService;
@@ -34,10 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) //This is for JWT - WiP
+                .csrf().disable() //This is for JWT - WiP
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
-                .authorizeHttpRequests(requests -> requests
+                .authorizeRequests(requests -> requests
                 .antMatchers( "/user", "/dashboard/**").permitAll()
                 .antMatchers("/admin/**").hasRole("Admin")
                 .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
@@ -62,8 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-         return new BCryptPasswordEncoder();
-        //return NoOpPasswordEncoder.getInstance();
+         //return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Autowired

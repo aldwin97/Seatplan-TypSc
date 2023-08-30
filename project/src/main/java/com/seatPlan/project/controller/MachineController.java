@@ -21,7 +21,7 @@ import com.seatPlan.project.service.MachineService;
 
 @RestController
 @RequestMapping("/machine")
-@PreAuthorize("hasRole('Admin','Editor')")
+//@PreAuthorize("hasRole('Admin','Editor')")
 public class MachineController {
 
      @Autowired

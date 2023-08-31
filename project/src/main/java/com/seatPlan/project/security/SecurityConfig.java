@@ -26,13 +26,14 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-                http
-                //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
+        http
+                .csrf(csrf -> csrf.disable()) //This is for JWT - WiP
                 .authorizeHttpRequests(requests -> requests
+                        .antMatchers("/user/**").permitAll()
                         //.antMatchers("/admin/**").hasRole("Admin")
                         //.antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
                         //.antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
-                        .anyRequest()./*authenticated()*/permitAll());
+                        .anyRequest().authenticated());
                 http
                 .formLogin(form -> form
                         .loginPage("/login")

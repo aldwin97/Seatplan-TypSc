@@ -2,17 +2,15 @@ package com.seatPlan.project.security;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.seatPlan.project.security.jwt.JwtAuthFilter;
 import com.seatPlan.project.security.jwt.JwtTokenProvider;
-import com.seatPlan.project.security.service.MyUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +20,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity( prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+@EnableGlobalMethodSecurity( prePostEnabled = true)
+public class SecurityConfig{
     @Autowired
     private UserDetailsService userDetailsService;
     
@@ -31,17 +29,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private JwtTokenProvider jwtTokenProvider;
     
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() //This is for JWT - WiP
+                .csrf(csrf -> csrf.disable()) //This is for JWT - WiP
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
-                .authorizeRequests(requests -> requests
-                .antMatchers( "/user", "/dashboard/**").permitAll()
-                .antMatchers("/admin/**").hasRole("Admin")
-                .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
-                .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
+                .authorizeHttpRequests(requests -> requests
+                .antMatchers( "/user/**", "/dashboard/**,/seat/**").permitAll()
+                //.antMatchers("/admin/**").hasRole("Admin")
+                //.antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
+                //.antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
                 .anyRequest().authenticated());
 
         http
@@ -55,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .permitAll());
+
+        return http.build();
                  
 
     }
@@ -62,8 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-         //return new BCryptPasswordEncoder();
-        return NoOpPasswordEncoder.getInstance();
+         return new BCryptPasswordEncoder();
+        //return NoOpPasswordEncoder.getInstance();
     }
 
     @Autowired

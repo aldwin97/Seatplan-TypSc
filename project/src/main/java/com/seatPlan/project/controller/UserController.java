@@ -26,8 +26,8 @@ import com.seatPlan.project.service.UserService;
 import javax.servlet.http.HttpSession;
 
 @RestController
-//@RequestMapping("/user")
-@RequestMapping(value = "/user", method = {RequestMethod.GET, RequestMethod.POST,RequestMethod.PUT,RequestMethod.DELETE})
+@RequestMapping("/user")
+//@RequestMapping(value = "/user", method = {RequestMethod.GET, RequestMethod.POST,RequestMethod.PUT,RequestMethod.DELETE})
 public class UserController {
     @Autowired
     private UserService userService;

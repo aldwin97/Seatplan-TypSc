@@ -23,3 +23,4 @@ Node 18
 
 MySQL
 
+This versions adds JWT

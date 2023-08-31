@@ -5,6 +5,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
 import com.seatPlan.project.security.service.MyUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,21 +18,21 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity( prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig{
     @Autowired
     private MyUserDetailsService myUserDetailsService;
 
     
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
-               //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
+                //.csrf(csrf -> csrf.disable()) //This is for JWT - WiP
                 .authorizeHttpRequests(requests -> requests
-                        .antMatchers("/admin/**").hasRole("Admin")
-                        .antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
-                        .antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
-                        .anyRequest().authenticated());
+                        //.antMatchers("/admin/**").hasRole("Admin")
+                        //.antMatchers("/viewer/**").hasAnyRole("Viewer", "Admin", "Editor")
+                        //.antMatchers("/editor/**").hasAnyRole("Editor", "Admin")
+                        .anyRequest()./*authenticated()*/permitAll());
                 http
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -41,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         .permitAll());
                 // http
                 // .oauth2ResourceServer().jwt();
+            return http.build();
     }
     
 

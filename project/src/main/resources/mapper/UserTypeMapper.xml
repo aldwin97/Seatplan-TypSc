@@ -4,6 +4,6 @@
 <mapper namespace="com.seatPlan.project.dao.UserTypeDao">
 
     <select id="getUsertypeName" resultType="com.seatPlan.project.model.UserTypeModel">
-        SELECT usertype_name FROM table_user WHERE usertype_id = #{usertype_id} AND is_deleted = 0
+        SELECT usertype_name FROM table_usertype WHERE usertype_id = #{usertype_id} AND is_deleted = 0
     </select>
 </mapper>

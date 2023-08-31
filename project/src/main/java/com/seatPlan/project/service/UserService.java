@@ -33,7 +33,7 @@ public class UserService{
     public String authenticateUser(String username, String password) {
         UserModel user = userDao.getUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, null);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, null);
             String token = jwtTokenProvider.generateToken(authentication);
             return token;
         } else {

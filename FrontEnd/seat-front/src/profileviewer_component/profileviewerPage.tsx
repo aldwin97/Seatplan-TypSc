@@ -1,4 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import style from "../dashboard_component/dashboardPage.module.css";
 import {
@@ -7,7 +10,6 @@ import {
   AccountCircleOutlined,
   Menu,
   Logout,
-  
 } from "@mui/icons-material";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +22,9 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
-import { Avatar} from '@mui/material';
+import { Avatar } from "@mui/material";
 
-import styles from './profileviewerPage.module.css';
+import styles from "./profileviewerPage.module.css";
 
 const ProfileViewerPage: React.FC = () => {
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const ProfileViewerPage: React.FC = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -52,8 +54,7 @@ const ProfileViewerPage: React.FC = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
-  const [, setPersonalFormValidSnackbar] =
-    useState(false);
+  const [, setPersonalFormValidSnackbar] = useState(false);
   const [isPersonalFormValid, setPersonalFormValid] = useState(true);
   const [isContactNumberError, setContactNumberError] = useState(false);
   const [contactNumberLengthError, setContactNumberLengthError] =
@@ -115,21 +116,26 @@ const ProfileViewerPage: React.FC = () => {
   useEffect(() => {
     const fetchUserPicture = async () => {
       try {
-        const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`/seat/profile/userPicture/${user_id}`, {
-          responseType: 'arraybuffer',
-        });
+        const user_id = window.sessionStorage.getItem("user_id");
+        const pictureResponse = await axios.get(
+          `/seat/profile/userPicture/${user_id}`,
+          {
+            responseType: "arraybuffer",
+          }
+        );
 
         const base64Data = btoa(
           new Uint8Array(pictureResponse.data).reduce(
             (data, byte) => data + String.fromCharCode(byte),
-            ''
+            ""
           )
         );
-        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        const pictureDataUrl = `data:${pictureResponse.headers[
+          "content-type"
+        ].toLowerCase()};base64,${base64Data}`;
         setUserPicture1(pictureDataUrl);
       } catch (error) {
-        console.error('Error fetching profile picture:', error);
+        console.error("Error fetching profile picture:", error);
       }
     };
 
@@ -137,16 +143,18 @@ const ProfileViewerPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const user_id = window.sessionStorage.getItem('user_id');
+    const user_id = window.sessionStorage.getItem("user_id");
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/seat/dashboard/showLogedUserInfo/${user_id}`);
+        const response = await axios.get(
+          `/seat/dashboard/showLogedUserInfo/${user_id}`
+        );
 
         const responseData: UserData = response.data[0];
         setUserData(responseData);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error("Error fetching profile data:", error);
       }
     };
 
@@ -231,7 +239,6 @@ const ProfileViewerPage: React.FC = () => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword((prevShow) => !prevShow);
   };
-
 
   // PERSONAL INFORMATION BUTTONS //
 
@@ -407,10 +414,12 @@ const ProfileViewerPage: React.FC = () => {
     }));
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const user_picture = event.target.files?.[0];
     event.target.value = "";
-  
+
     if (user_picture) {
       if (
         !user_picture.type.startsWith("image/") ||
@@ -421,18 +430,18 @@ const ProfileViewerPage: React.FC = () => {
         );
         return;
       }
-  
+
       const maxFileSize = 5 * 1024 * 1024;
       if (user_picture.size > maxFileSize) {
         setErrorMsg("File size exceeds the maximum limit (5 MB).");
         return;
       }
-  
+
       const formData = new FormData();
       formData.append("user_picture", user_picture);
-  
+
       const userId = sessionStorage.getItem("user_id");
-  
+
       try {
         const response = await axios.put(
           `/seat/profile/updatePicture/${userId}`,
@@ -440,7 +449,7 @@ const ProfileViewerPage: React.FC = () => {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
-  
+
         // Fetch and update the latest user data
         try {
           if (userId !== null) {
@@ -453,25 +462,23 @@ const ProfileViewerPage: React.FC = () => {
         } catch (error) {
           console.error("Error fetching updated user data:", error);
         }
-        
-  
       } catch (error) {
         console.error("Error uploading image:", error);
         setErrorMsg("File size is too big.");
       }
     }
   };
-  
+
   // Function to fetch updated user data from the server
-const fetchUpdatedUserData = async (userId: string) => {
-  try {
-    const response = await axios.get(`/seat/profile/getUserData/${userId}`);
-    return response.data; // Assuming the API response contains the updated user data
-  } catch (error) {
-    console.error("Error fetching updated user data:", error);
-    throw error;
-  }
-};
+  const fetchUpdatedUserData = async (userId: string) => {
+    try {
+      const response = await axios.get(`/seat/profile/getUserData/${userId}`);
+      return response.data; // Assuming the API response contains the updated user data
+    } catch (error) {
+      console.error("Error fetching updated user data:", error);
+      throw error;
+    }
+  };
 
   const validatePersonalInfo = () => {
     const { FirstName, LastName, Email, ContactNumber } = inputValues;
@@ -526,7 +533,7 @@ const fetchUpdatedUserData = async (userId: string) => {
   const dashboardPageHandleClick = () => {
     navigate("/dashboardviewerPage");
   };
-  
+
   const ProfilePageHandleClick = () => {
     navigate("/profileviewerpage");
   };
@@ -536,20 +543,16 @@ const fetchUpdatedUserData = async (userId: string) => {
 
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem('user_id');
-    sessionStorage.removeItem('usertype_id');
-
+    sessionStorage.removeItem("user_id");
+    sessionStorage.removeItem("usertype_id");
 
     // Redirect to the login page
-    navigate('/');
+    navigate("/");
   };
 
   const capitalizeFirstLetter = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
- 
-
-
 
   return (
     <div className={styles.backg}>
@@ -577,30 +580,38 @@ const fetchUpdatedUserData = async (userId: string) => {
               className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
             >
               <ul className={style["accordion-menu"]}>
-                     <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div className={style['userbg']}>
-                      <div className={style['userpr']}>
+                <div
+                  className="accordion-menu-container"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className={style["userbg"]}>
+                    <div className={style["userpr"]}>
                       {userPicture ? (
-      <Avatar src={userPicture} alt="User" />
-    ) : (
-      <img
-      src={defaulImage}
-      alt="Profile Default"
-      className={style.defaultImage}// Add any additional styles here
-      />
-    )}
+                        <Avatar src={userPicture} alt="User" />
+                      ) : (
+                        <img
+                          src={defaulImage}
+                          alt="Profile Default"
+                          className={style.defaultImage} // Add any additional styles here
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {UserData ? (
+                    <div className={style["usern"]}>
+                      {UserData.first_name} {UserData.last_name}
+                      <div className={style["userp"]}>
+                        {UserData.position_name}
                       </div>
                     </div>
-                    {UserData ? (
-                      <div className={style['usern']}>
-                        {UserData.first_name}  {UserData.last_name} 
-                          <div className={style['userp']}>{UserData.position_name}</div>
-                      </div>
-          
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
                 <li className={style["sidebar-title"]}> </li>
                 <li>
                   <a
@@ -626,21 +637,12 @@ const fetchUpdatedUserData = async (userId: string) => {
                     Profile
                   </a>
                 </li>
+
                 <li>
                   <a
-                    onClick={SeatplanPageHandleClick}
+                    onClick={() => setShowLogoutConfirmation(true)}
                     className={style["material-icons"]}
                   >
-                    <i
-                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
-                    >
-                      <ChairOutlined />
-                    </i>
-                    Seat
-                  </a>
-                </li>
-                <li>
-                  <a onClick={handleLogout} className={style["material-icons"]}>
                     <i
                       className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
@@ -649,6 +651,35 @@ const fetchUpdatedUserData = async (userId: string) => {
                     Logout
                   </a>
                 </li>
+
+                {showLogoutConfirmation && (
+                  <div className={styles.popupModal}>
+                    <div className={styles.popupContent}>
+                      <p className={styles.popupText}>
+                        Are you sure you want to log out?
+                      </p>
+                      <div className={styles.buttonRow}>
+                        <button
+                          className={styles.popupButton}
+                          onClick={() => {
+                            handleLogout();
+                            setShowLogoutConfirmation(false);
+                          }}
+                        >
+                          <span>Okay</span>{" "}
+                          <FaSignOutAlt className={styles.buttonIcon} />
+                        </button>
+                        <button
+                          className={styles.popupButtonNo}
+                          onClick={() => setShowLogoutConfirmation(false)}
+                        >
+                          <span>Cancel</span>{" "}
+                          <MdCancel className={styles.buttonIcon} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
@@ -717,7 +748,6 @@ const fetchUpdatedUserData = async (userId: string) => {
             </div>
           </form>
 
-            
           <div className={styles.set}>
             {/* PERSONAL INFORMATION CONTAINER */}
             <form className={styles.personal} onSubmit={handlePersonalSubmit}>
@@ -736,7 +766,7 @@ const fetchUpdatedUserData = async (userId: string) => {
                   onChange={handleInputChange}
                 />
               </div>
-          
+
               <div className={styles["name-group"]}>
                 <label className={styles.readLabel}>Last Name *</label>
                 <input
@@ -1109,7 +1139,6 @@ const fetchUpdatedUserData = async (userId: string) => {
                   title="Edit"
                   placement="top"
                   arrow
-                  
                   style={{
                     position: "absolute",
                     top: "24px",
@@ -1126,13 +1155,15 @@ const fetchUpdatedUserData = async (userId: string) => {
                       "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
                   }}
                 >
-                  <IconButton onClick={handleAccountEditClick}className={styles.settool1}>
+                  <IconButton
+                    onClick={handleAccountEditClick}
+                    className={styles.settool1}
+                  >
                     <ManageAccountsSharpIcon />
                   </IconButton>
                 </Tooltip>
               )}
             </form>
-           
           </div>
         </div>
       </div>

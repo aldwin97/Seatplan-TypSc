@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import style from "../dashboard_component/dashboardPage.module.css";
 import {
@@ -164,10 +167,9 @@ function SeatPopup({
           console.log("Data being swapped:");
           console.log("Current Seat:", updatedCurrentSeat);
           console.log("Swap Seat:", updatedSwapSeat);
-       
+
           // Refresh the page to fetch the updated seat data
-          setTimeout(() => {
-          }, 2000);
+          setTimeout(() => {}, 2000);
         } catch (error) {
           console.error("Failed to swap seats:", error);
         }
@@ -218,21 +220,17 @@ function SeatPopup({
       };
 
       // Send the updated seat data to the backend
-      const response = await fetch(
-        `/seat/seat/update/${seat.seat_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedSeatData),
-        }
-      );
+      const response = await fetch(`/seat/seat/update/${seat.seat_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedSeatData),
+      });
 
       if (response.ok) {
         console.log("Seat updated successfully");
         onClose();
-      
       } else if (response.status === 400) {
         setErrorMsg("This occupant is already assigned to another seat.");
         // You can also display the error message on the page instead of using an alert
@@ -304,43 +302,42 @@ function SeatPopup({
 
   return (
     <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
-    <div className={styles.seatPopupContent}>
-      <h3>Seat {seat.seat_id}</h3>
-      <form onSubmit={handleFormSubmit}>
-      {isEditMode ? (
-      <>
-        <p>Select a User to be assigned:</p>
-        <select
-          value={selectedOccupant}
-          onChange={handleOccupantChange}
-          required
-        >
-          <option value="">Assign an Occupant</option>
-          {occupantsList
-            .filter((occupant) => {
-              const isAssigned = seats.some(
-                (s) => s.occupant === occupant.user_id.toString()
-              );
-              console.log(
-                `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
-              );
-              return !isAssigned;
-            })
-            .map((occupant) => (
-              <option key={occupant.user_id} value={occupant.user_id}>
-                {` ${occupant.first_name}${
-                  occupant.last_name ? ` ${occupant.last_name}` : ""
-                }`}
-              </option>
-            ))}
-        </select>
+      <div className={styles.seatPopupContent}>
+        <h3>Seat {seat.seat_id}</h3>
+        <form onSubmit={handleFormSubmit}>
+          {isEditMode ? (
+            <>
+              <p>Select a User to be assigned:</p>
+              <select
+                value={selectedOccupant}
+                onChange={handleOccupantChange}
+                required
+              >
+                <option value="">Assign an Occupant</option>
+                {occupantsList
+                  .filter((occupant) => {
+                    const isAssigned = seats.some(
+                      (s) => s.occupant === occupant.user_id.toString()
+                    );
+                    console.log(
+                      `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
+                    );
+                    return !isAssigned;
+                  })
+                  .map((occupant) => (
+                    <option key={occupant.user_id} value={occupant.user_id}>
+                      {` ${occupant.first_name}${
+                        occupant.last_name ? ` ${occupant.last_name}` : ""
+                      }`}
+                    </option>
+                  ))}
+              </select>
               {errorMsg && (
                 <div className={styles.errorPopup}>
                   <p>{errorMsg}</p>
                   <button
                     onClick={() => {
                       setErrorMsg("");
-                   
                     }}
                   >
                     Close
@@ -373,7 +370,6 @@ function SeatPopup({
                     >
                       Swap Now
                     </button>
-                  
                   </div>
                 </>
               ) : (
@@ -1811,11 +1807,14 @@ function SeatplanPage() {
                       <div></div>
                     )}
                   </div>
-                  <li className={style['sidebar-title']}> </li>
-                  <li >
-                    <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
-                      <i className={styles['material-icons']}>
-                        <DashboardOutlined/>
+                  <li className={style["sidebar-title"]}> </li>
+                  <li>
+                    <a
+                      onClick={dashboardPageHandleClick}
+                      className={style["material-icons"]}
+                    >
+                      <i className={styles["material-icons"]}>
+                        <DashboardOutlined />
                       </i>
                       Dashboard
                     </a>
@@ -1915,20 +1914,20 @@ function SeatplanPage() {
                               setShowLogoutConfirmation(false);
                             }}
                           >
-                            Yes
+                            <span>Okay</span>{" "}
+                            <FaSignOutAlt className={styles.buttonIcon} />
                           </button>
                           <button
-                            className={styles.popupButtonYes}
+                            className={styles.popupButtonNo}
                             onClick={() => setShowLogoutConfirmation(false)}
                           >
-                            No
+                            <span>Cancel</span>{" "}
+                            <MdCancel className={styles.buttonIcon} />
                           </button>
                         </div>
                       </div>
                     </div>
                   )}
-
-                  
                 </ul>
               </div>
             </div>

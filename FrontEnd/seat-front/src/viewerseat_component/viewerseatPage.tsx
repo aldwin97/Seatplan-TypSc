@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import style from "../dashboard_component/dashboardPage.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -26,8 +29,8 @@ import svgPathConverter from "svg-path-converter";
 import { Avatar } from "@mui/material";
 import axios from "axios";
 import defaulImage from "../assets/default.png";
-import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
+import Box from "@mui/material/Box";
+import Pagination from "@mui/material/Pagination";
 
 interface Seat {
   position: { x: number; y: number };
@@ -165,8 +168,7 @@ function SeatPopup({
           console.log("Swap Seat:", updatedSwapSeat);
 
           // Refresh the page to fetch the updated seat data
-          setTimeout(() => {
-          }, 2000);
+          setTimeout(() => {}, 2000);
         } catch (error) {
           console.error("Failed to swap seats:", error);
         }
@@ -217,21 +219,17 @@ function SeatPopup({
       };
 
       // Send the updated seat data to the backend
-      const response = await fetch(
-        `/seat/seat/update/${seat.seat_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedSeatData),
-        }
-      );
+      const response = await fetch(`/seat/seat/update/${seat.seat_id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedSeatData),
+      });
 
       if (response.ok) {
         console.log("Seat updated successfully");
         onClose();
-      
       } else if (response.status === 400) {
         setErrorMsg("This occupant is already assigned to another seat.");
         // You can also display the error message on the page instead of using an alert
@@ -434,7 +432,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
     const fetchPromises = seatIds.map((seatId) => {
       return fetchCommentsBySeatId(seatId, userId); // Pass userId as the second argument
     });
-  
+
     Promise.all(fetchPromises)
       .then((results) => {
         const commentsMap: { [seatId: number]: Comment[] } = {};
@@ -448,7 +446,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         console.error("Error fetching comments for seats:", error);
       });
   };
-  
+
   const fetchCommentsBySeatId = (seatId: number, userId: number) => {
     return fetch(`/seat/seat/showAllCommentBy/${userId}/${seatId}`)
       .then((response) => {
@@ -467,8 +465,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         return [];
       });
   };
-  
-  
+
   const handleNewCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -765,13 +762,13 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
                 )}
               </td>
               {comment.user_id === userId && (
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => handleDeleteComment(comment.comment_id)}
-                  >
-                 <DeleteIcon style={{ color: "red" }} />
-                  </button>
-                )}
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => handleDeleteComment(comment.comment_id)}
+                >
+                  <DeleteIcon style={{ color: "red" }} />
+                </button>
+              )}
             </tr>
           ))}
         </tbody>
@@ -839,7 +836,6 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
         </button>
       </form>
 
-
       {error && <p className={styles.error}>{error}</p>}
       {seatIds.map((seatId) => (
         <div key={seatId}>
@@ -894,24 +890,28 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       )}
 
       {/* Pagination */}
-      <Box className={styles.paginationcontainer} display="flex" justifyContent="center" marginTop={2}>
-  <Pagination
-    count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
-    page={currentPage}
-    onChange={(event, newPage) => setCurrentPage(newPage)}
-    sx={{
-      '& .MuiPaginationItem-root': {
-        color: 'green', 
-        boxShadow: 'none',     
-        background: 'none',  
-        '&:hover': {
-          color: 'blue',      // Change color on hover
-        },
-      },
-    }}
-  />
-</Box>
-
+      <Box
+        className={styles.paginationcontainer}
+        display="flex"
+        justifyContent="center"
+        marginTop={2}
+      >
+        <Pagination
+          count={Math.ceil(commentsMap[seatIds[0]]?.length / commentsPerPage)}
+          page={currentPage}
+          onChange={(event, newPage) => setCurrentPage(newPage)}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "green",
+              boxShadow: "none",
+              background: "none",
+              "&:hover": {
+                color: "blue", // Change color on hover
+              },
+            },
+          }}
+        />
+      </Box>
     </div>
   );
 };
@@ -1606,11 +1606,14 @@ function ViewerSeatPage() {
                       <div></div>
                     )}
                   </div>
-                  <li className={style['sidebar-title']}> </li>
-                  <li >
-                    <a onClick={dashboardPageHandleClick} className={style['material-icons']}>
-                      <i className={styles['material-icons']}>
-                        <DashboardOutlined/>
+                  <li className={style["sidebar-title"]}> </li>
+                  <li>
+                    <a
+                      onClick={dashboardPageHandleClick}
+                      className={style["material-icons"]}
+                    >
+                      <i className={styles["material-icons"]}>
+                        <DashboardOutlined />
                       </i>
                       Dashboard
                     </a>
@@ -1671,19 +1674,20 @@ function ViewerSeatPage() {
                               setShowLogoutConfirmation(false);
                             }}
                           >
-                            Yes
+                            <span>Okay</span>{" "}
+                            <FaSignOutAlt className={styles.buttonIcon} />
                           </button>
                           <button
-                            className={styles.popupButtonYes}
+                            className={styles.popupButtonNo}
                             onClick={() => setShowLogoutConfirmation(false)}
                           >
-                            No
+                            <span>Cancel</span>{" "}
+                            <MdCancel className={styles.buttonIcon} />
                           </button>
                         </div>
                       </div>
                     </div>
                   )}
-                  
                 </ul>
               </div>
             </div>

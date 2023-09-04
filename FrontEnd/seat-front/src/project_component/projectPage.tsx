@@ -1,11 +1,14 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import styles from "../dashboard_component/dashboardPage.module.css";
 import MuiAlert from "@mui/material/Alert";
-import { Avatar} from '@mui/material';
-import axios from 'axios';
+import { Avatar } from "@mui/material";
+import axios from "axios";
 import defaulImage from "../assets/default.png";
 import {
   BusinessCenterOutlined,
@@ -17,9 +20,7 @@ import {
   Menu,
   Logout,
 } from "@mui/icons-material";
-import {
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
   Snackbar,
   Table,
@@ -56,7 +57,7 @@ function ProjectPage() {
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [projectName, setProjectName] = useState("");
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
-
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -70,21 +71,26 @@ function ProjectPage() {
   useEffect(() => {
     const fetchUserPicture = async () => {
       try {
-        const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`/seat/profile/userPicture/${user_id}`, {
-          responseType: 'arraybuffer',
-        });
+        const user_id = window.sessionStorage.getItem("user_id");
+        const pictureResponse = await axios.get(
+          `/seat/profile/userPicture/${user_id}`,
+          {
+            responseType: "arraybuffer",
+          }
+        );
 
         const base64Data = btoa(
           new Uint8Array(pictureResponse.data).reduce(
             (data, byte) => data + String.fromCharCode(byte),
-            ''
+            ""
           )
         );
-        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        const pictureDataUrl = `data:${pictureResponse.headers[
+          "content-type"
+        ].toLowerCase()};base64,${base64Data}`;
         setUserPicture(pictureDataUrl);
       } catch (error) {
-        console.error('Error fetching profile picture:', error);
+        console.error("Error fetching profile picture:", error);
       }
     };
 
@@ -92,16 +98,18 @@ function ProjectPage() {
   }, []);
 
   useEffect(() => {
-    const user_id = window.sessionStorage.getItem('user_id');
+    const user_id = window.sessionStorage.getItem("user_id");
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/seat/dashboard/showLogedUserInfo/${user_id}`);
+        const response = await axios.get(
+          `/seat/dashboard/showLogedUserInfo/${user_id}`
+        );
 
         const responseData: UserData = response.data[0];
         setUserData(responseData);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error("Error fetching profile data:", error);
       }
     };
 
@@ -158,15 +166,14 @@ function ProjectPage() {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  
+
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem('user_id');
-    sessionStorage.removeItem('usertype_id');
-
+    sessionStorage.removeItem("user_id");
+    sessionStorage.removeItem("usertype_id");
 
     // Redirect to the login page
-    navigate('/');
+    navigate("/");
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -184,16 +191,13 @@ function ProjectPage() {
 
     console.log("New Project:", newProject);
     try {
-      const response = await fetch(
-        "/seat/project/insertNewProject",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newProject),
-        }
-      );
+      const response = await fetch("/seat/project/insertNewProject", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      });
 
       if (response.ok) {
         console.log("Project created successfully!");
@@ -228,9 +232,7 @@ function ProjectPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(
-        "/seat/project/showAllProject"
-      );
+      const response = await fetch("/seat/project/showAllProject");
       if (response.ok) {
         const projectsData = await response.json();
         setProjects(projectsData);
@@ -302,30 +304,38 @@ function ProjectPage() {
               className={`${styles["page-sidebar-inner"]} ${styles["slimscroll"]}`}
             >
               <ul className={styles["accordion-menu"]}>
-              <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div className={styles['userbg']}>
-                      <div className={styles['userpr']}>
+                <div
+                  className="accordion-menu-container"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className={styles["userbg"]}>
+                    <div className={styles["userpr"]}>
                       {userPicture ? (
-      <Avatar src={userPicture} alt="User" />
-    ) : (
-      <img
-      src={defaulImage}
-      alt="Profile Default"
-      className={styles.defaultImage}// Add any additional styles here
-      />
-    )}
+                        <Avatar src={userPicture} alt="User" />
+                      ) : (
+                        <img
+                          src={defaulImage}
+                          alt="Profile Default"
+                          className={styles.defaultImage} // Add any additional styles here
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {UserData ? (
+                    <div className={styles["usern"]}>
+                      {UserData.first_name} {UserData.last_name}
+                      <div className={styles["userp"]}>
+                        {UserData.position_name}
                       </div>
                     </div>
-                    {UserData ? (
-                      <div className={styles['usern']}>
-                        {UserData.first_name}  {UserData.last_name} 
-                          <div className={styles['userp']}>{UserData.position_name}</div>
-                      </div>
-          
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
                 <li className={styles["sidebar-title"]}> </li>
                 <li>
                   <a
@@ -403,19 +413,49 @@ function ProjectPage() {
                     Seat
                   </a>
                 </li>
+
                 <li>
                   <a
-                    onClick={handleLogout}
-                    className={styles["material-icons"]}
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className={style["material-icons"]}
                   >
                     <i
-                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
                       <Logout />
                     </i>
                     Logout
                   </a>
                 </li>
+
+                {showLogoutConfirmation && (
+                  <div className={styles.popupModal}>
+                    <div className={styles.popupContent}>
+                      <p className={styles.popupText}>
+                        Are you sure you want to log out?
+                      </p>
+                      <div className={styles.buttonRow}>
+                        <button
+                          className={styles.popupButton}
+                          onClick={() => {
+                            handleLogout();
+                            setShowLogoutConfirmation(false);
+                          }}
+                        >
+                          <span>Okay</span>{" "}
+                          <FaSignOutAlt className={styles.buttonIcon} />
+                        </button>
+                        <button
+                          className={styles.popupButtonNo}
+                          onClick={() => setShowLogoutConfirmation(false)}
+                        >
+                          <span>Cancel</span>{" "}
+                          <MdCancel className={styles.buttonIcon} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>

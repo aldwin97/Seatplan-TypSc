@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import styles from "../dashboard_component/dashboardPage.module.css";
 import { Avatar } from "@mui/material";
 import axios from "axios";
@@ -105,7 +108,7 @@ const AdminMembersPage: React.FC = () => {
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null); // State variable to store the logged-in user ID
   const [projects, setProjects] = useState<Project[]>([]); // Update 'Project' type accordingly
   const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
-
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const toggleProjectSelection = (projectId: number) => {
     setSelectedProjects((prevSelectedProjects) => {
       if (prevSelectedProjects.includes(projectId)) {
@@ -672,19 +675,49 @@ const AdminMembersPage: React.FC = () => {
                     Seat
                   </a>
                 </li>
+
                 <li>
                   <a
-                    onClick={handleLogout}
-                    className={styles["material-icons"]}
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className={style["material-icons"]}
                   >
                     <i
-                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
                       <Logout />
                     </i>
                     Logout
                   </a>
                 </li>
+
+                {showLogoutConfirmation && (
+                  <div className={styles.popupModal}>
+                    <div className={styles.popupContent}>
+                      <p className={styles.popupText}>
+                        Are you sure you want to log out?
+                      </p>
+                      <div className={styles.buttonRow}>
+                        <button
+                          className={styles.popupButton}
+                          onClick={() => {
+                            handleLogout();
+                            setShowLogoutConfirmation(false);
+                          }}
+                        >
+                          <span>Okay</span>{" "}
+                          <FaSignOutAlt className={styles.buttonIcon} />
+                        </button>
+                        <button
+                          className={styles.popupButtonNo}
+                          onClick={() => setShowLogoutConfirmation(false)}
+                        >
+                          <span>Cancel</span>{" "}
+                          <MdCancel className={styles.buttonIcon} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>

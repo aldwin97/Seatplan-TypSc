@@ -837,3 +837,70 @@ input:not(:read-only):valid ~ .change-label {
     }
 }
 /* FullCalendarStyles.module.css */
+.popupModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupContent {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  text-align: center;
+}
+
+.popupText {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.iconContainer {
+  font-size: 36px;
+  color: #23b643; /* Change the color to your preference */
+}
+
+.logoutIcon,
+.buttonIcon {
+  vertical-align: middle;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupButton,
+.popupButtonNo {
+  background-color: #23b643; /* Change the color to your preference */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.popupButton:hover,
+.popupButtonNo:hover {
+  background-color: #2980b9; /* Change the color to your preference */
+}
+
+.popupButtonNo {
+  background-color: #e74c3c; /* Change the color to your preference */
+}
+
+.popupButton span,
+.popupButtonNo span {
+  margin-right: 10px;
+}

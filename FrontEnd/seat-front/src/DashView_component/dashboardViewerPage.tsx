@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import {
   Tooltip,
@@ -166,9 +169,7 @@ const DashboardViewerPage: React.FC = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get(
-          "/seat/dashboard/display"
-        );
+        const response = await axios.get("/seat/dashboard/display");
         if (response && response.data) {
           setDashboardData(response.data);
         }
@@ -264,9 +265,7 @@ const DashboardViewerPage: React.FC = () => {
   useEffect(() => {
     const fetchProjectSummary = async () => {
       try {
-        const response = await axios.get(
-          "/seat/dashboard/countPerProject"
-        );
+        const response = await axios.get("/seat/dashboard/countPerProject");
         const data = response.data;
 
         // Set the project summary state with the fetched data
@@ -396,10 +395,10 @@ const DashboardViewerPage: React.FC = () => {
                     <li>
                       <a
                         onClick={() => setShowLogoutConfirmation(true)}
-                        className={styles["material-icons"]}
+                        className={style["material-icons"]}
                       >
                         <i
-                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                          className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
                         >
                           <Logout />
                         </i>
@@ -408,31 +407,33 @@ const DashboardViewerPage: React.FC = () => {
                     </li>
 
                     {showLogoutConfirmation && (
-                    <div className={styles.popupModal}>
-                      <div className={styles.popupContent}>
-                        <p className={styles.popupText}>
-                          Are you sure you want to log out?
-                        </p>
-                        <div className={styles.buttonRow}>
-                          <button
-                            className={styles.popupButton}
-                            onClick={() => {
-                              handleLogout();
-                              setShowLogoutConfirmation(false);
-                            }}
-                          >
-                            Yes
-                          </button>
-                          <button
-                            className={styles.popupButtonYes}
-                            onClick={() => setShowLogoutConfirmation(false)}
-                          >
-                            No
-                          </button>
+                      <div className={styles.popupModal}>
+                        <div className={styles.popupContent}>
+                          <p className={styles.popupText}>
+                            Are you sure you want to log out?
+                          </p>
+                          <div className={styles.buttonRow}>
+                            <button
+                              className={styles.popupButton}
+                              onClick={() => {
+                                handleLogout();
+                                setShowLogoutConfirmation(false);
+                              }}
+                            >
+                              <span>Okay</span>{" "}
+                              <FaSignOutAlt className={styles.buttonIcon} />
+                            </button>
+                            <button
+                              className={styles.popupButtonNo}
+                              onClick={() => setShowLogoutConfirmation(false)}
+                            >
+                              <span>Cancel</span>{" "}
+                              <MdCancel className={styles.buttonIcon} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </ul>
                 </div>
               </div>

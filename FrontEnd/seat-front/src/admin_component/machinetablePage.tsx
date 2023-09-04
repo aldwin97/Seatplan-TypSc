@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import styles from "../dashboard_component/dashboardPage.module.css";
-import { Avatar} from '@mui/material';
-import axios from 'axios';
+import { Avatar } from "@mui/material";
+import axios from "axios";
 import defaulImage from "../assets/default.png";
 import {
   BusinessCenterOutlined,
@@ -72,7 +75,8 @@ function MachinePage() {
   const [addMachineDialogOpen, setAddMachineDialogOpen] = useState(false);
   const [MachineInfoDialogOpen, setMachineInfoDialogOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
-  
+
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [machines, setMachines] = useState<Machine[]>([]);
   const [projects, setProjects] = useState<Project[]>([]); // Update 'Project' type accordingly
   const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
@@ -99,21 +103,26 @@ function MachinePage() {
   useEffect(() => {
     const fetchUserPicture = async () => {
       try {
-        const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`/seat/profile/userPicture/${user_id}`, {
-          responseType: 'arraybuffer',
-        });
+        const user_id = window.sessionStorage.getItem("user_id");
+        const pictureResponse = await axios.get(
+          `/seat/profile/userPicture/${user_id}`,
+          {
+            responseType: "arraybuffer",
+          }
+        );
 
         const base64Data = btoa(
           new Uint8Array(pictureResponse.data).reduce(
             (data, byte) => data + String.fromCharCode(byte),
-            ''
+            ""
           )
         );
-        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        const pictureDataUrl = `data:${pictureResponse.headers[
+          "content-type"
+        ].toLowerCase()};base64,${base64Data}`;
         setUserPicture(pictureDataUrl);
       } catch (error) {
-        console.error('Error fetching profile picture:', error);
+        console.error("Error fetching profile picture:", error);
       }
     };
 
@@ -121,16 +130,18 @@ function MachinePage() {
   }, []);
 
   useEffect(() => {
-    const user_id = window.sessionStorage.getItem('user_id');
+    const user_id = window.sessionStorage.getItem("user_id");
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/seat/dashboard/showLogedUserInfo/${user_id}`);
+        const response = await axios.get(
+          `/seat/dashboard/showLogedUserInfo/${user_id}`
+        );
 
         const responseData: UserData = response.data[0];
         setUserData(responseData);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error("Error fetching profile data:", error);
       }
     };
 
@@ -240,21 +251,17 @@ function MachinePage() {
     };
     console.log("Data being updated:", updatedMachineModel);
 
-    fetch(
-      `/seat/machine/updateMachine/${selectedMachine?.user_id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedMachineModel),
-      }
-    )
+    fetch(`/seat/machine/updateMachine/${selectedMachine?.user_id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedMachineModel),
+    })
       .then((response) => {
         if (response.ok) {
           console.log("Machine updated successfully");
           handleCloseDialog();
-        
         } else {
           response.text().then((errorMessage) => {
             console.log("Failed to update machine:", errorMessage);
@@ -311,10 +318,8 @@ function MachinePage() {
           console.log("Machine inserted successfully");
           setAddMachineDialogOpen(false);
           // Reload the machine list or update the state as needed
-      
         } else {
           console.log("Failed to insert Machine");
-      
         }
       })
       .catch((error) => {
@@ -322,28 +327,25 @@ function MachinePage() {
       });
   };
 
-const handleDeleteMachine = (machineId: number) => {
-  fetch(`/seat/admin/delete/${machineId}`, { method: "POST" })
-    .then((response) => {
-      if (response.ok) {
-        console.log(`Machine with ID ${machineId} deleted successfully`);
-        // Remove the deleted machine from the state
-        const updatedMachines = currentMachines.filter(
-          (machine) => machine.user_id !== machineId
-        );
-        setMachines(updatedMachines);
-      } else {
-        console.log(`Failed to delete machine with ID ${machineId}`);
-      }
-    
-    })
-    .catch((error) => {
-      console.log(`Error while deleting machine with ID ${machineId}`, error);
-    });
-};
+  const handleDeleteMachine = (machineId: number) => {
+    fetch(`/seat/admin/delete/${machineId}`, { method: "POST" })
+      .then((response) => {
+        if (response.ok) {
+          console.log(`Machine with ID ${machineId} deleted successfully`);
+          // Remove the deleted machine from the state
+          const updatedMachines = currentMachines.filter(
+            (machine) => machine.user_id !== machineId
+          );
+          setMachines(updatedMachines);
+        } else {
+          console.log(`Failed to delete machine with ID ${machineId}`);
+        }
+      })
+      .catch((error) => {
+        console.log(`Error while deleting machine with ID ${machineId}`, error);
+      });
+  };
 
-  
-  
   const handleMachineClick = (machineId: number) => {
     handleViewMachineInfo(machineId);
   };
@@ -384,7 +386,7 @@ const handleDeleteMachine = (machineId: number) => {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  
+
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
     sessionStorage.removeItem("user_id");
@@ -425,30 +427,38 @@ const handleDeleteMachine = (machineId: number) => {
               className={`${styles["page-sidebar-inner"]} ${styles["slimscroll"]}`}
             >
               <ul className={styles["accordion-menu"]}>
-              <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div className={styles['userbg']}>
-                      <div className={styles['userpr']}>
+                <div
+                  className="accordion-menu-container"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className={styles["userbg"]}>
+                    <div className={styles["userpr"]}>
                       {userPicture ? (
-      <Avatar src={userPicture} alt="User" />
-    ) : (
-      <img
-      src={defaulImage}
-      alt="Profile Default"
-      className={styles.defaultImage}// Add any additional styles here
-      />
-    )}
+                        <Avatar src={userPicture} alt="User" />
+                      ) : (
+                        <img
+                          src={defaulImage}
+                          alt="Profile Default"
+                          className={styles.defaultImage} // Add any additional styles here
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {UserData ? (
+                    <div className={styles["usern"]}>
+                      {UserData.first_name} {UserData.last_name}
+                      <div className={styles["userp"]}>
+                        {UserData.position_name}
                       </div>
                     </div>
-                    {UserData ? (
-                      <div className={styles['usern']}>
-                        {UserData.first_name}  {UserData.last_name} 
-                          <div className={styles['userp']}>{UserData.position_name}</div>
-                      </div>
-          
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
                 <li className={styles["sidebar-title"]}> </li>
                 <li>
                   <a
@@ -527,19 +537,49 @@ const handleDeleteMachine = (machineId: number) => {
                     Seat
                   </a>
                 </li>
+
                 <li>
                   <a
-                    onClick={handleLogout}
-                    className={styles["material-icons"]}
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className={style["material-icons"]}
                   >
                     <i
-                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
                       <Logout />
                     </i>
                     Logout
                   </a>
                 </li>
+
+                {showLogoutConfirmation && (
+                  <div className={styles.popupModal}>
+                    <div className={styles.popupContent}>
+                      <p className={styles.popupText}>
+                        Are you sure you want to log out?
+                      </p>
+                      <div className={styles.buttonRow}>
+                        <button
+                          className={styles.popupButton}
+                          onClick={() => {
+                            handleLogout();
+                            setShowLogoutConfirmation(false);
+                          }}
+                        >
+                          <span>Okay</span>{" "}
+                          <FaSignOutAlt className={styles.buttonIcon} />
+                        </button>
+                        <button
+                          className={styles.popupButtonNo}
+                          onClick={() => setShowLogoutConfirmation(false)}
+                        >
+                          <span>Cancel</span>{" "}
+                          <MdCancel className={styles.buttonIcon} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
@@ -547,7 +587,6 @@ const handleDeleteMachine = (machineId: number) => {
       </SwipeableDrawer>
 
       <Box className="action-buttons" display="flex" justifyContent="flex-end">
-      
         <Button
           className="add-user-button"
           color="primary"
@@ -587,34 +626,35 @@ const handleDeleteMachine = (machineId: number) => {
             </TableRow>
           </TableHead>
 
-         <TableBody>
-  {sortedCurrentMachines.map((machine) => (
-    <TableRow className="table-cell" key={machine.user_id} hover>
-      <TableCell className="checkbox-btn" padding="checkbox">
-      </TableCell>
-      <TableCell>
-        <a
-          className="user-link"
-          href="#"
-          onClick={() => handleMachineClick(machine.user_id)}
-        >
-          {`${machine.first_name}`}
-        </a>
-      </TableCell>
-      <TableCell>{machine.project_name}</TableCell>
-      <TableCell>
-        <IconButton
-          className="delete-button"
-          color="primary"
-          onClick={() => handleDeleteMachine(machine.user_id)}
-        >
-            <DeleteIcon style={{ color: "gray" }} />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-  ))}
-</TableBody>
-
+          <TableBody>
+            {sortedCurrentMachines.map((machine) => (
+              <TableRow className="table-cell" key={machine.user_id} hover>
+                <TableCell
+                  className="checkbox-btn"
+                  padding="checkbox"
+                ></TableCell>
+                <TableCell>
+                  <a
+                    className="user-link"
+                    href="#"
+                    onClick={() => handleMachineClick(machine.user_id)}
+                  >
+                    {`${machine.first_name}`}
+                  </a>
+                </TableCell>
+                <TableCell>{machine.project_name}</TableCell>
+                <TableCell>
+                  <IconButton
+                    className="delete-button"
+                    color="primary"
+                    onClick={() => handleDeleteMachine(machine.user_id)}
+                  >
+                    <DeleteIcon style={{ color: "gray" }} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </TableContainer>
       <Box

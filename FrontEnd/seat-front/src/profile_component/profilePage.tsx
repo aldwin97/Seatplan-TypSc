@@ -1,4 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
+
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import style from "../dashboard_component/dashboardPage.module.css";
 import {
@@ -23,7 +26,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import axios, { AxiosError } from "axios";
-import { Avatar} from '@mui/material';
+import { Avatar } from "@mui/material";
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -34,7 +37,7 @@ const ProfilePage: React.FC = () => {
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [userPicture, setUserPicture] = useState("");
- 
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -373,10 +376,12 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const user_picture = event.target.files?.[0];
     event.target.value = "";
-  
+
     if (user_picture) {
       if (
         !user_picture.type.startsWith("image/") ||
@@ -387,18 +392,18 @@ const ProfilePage: React.FC = () => {
         );
         return;
       }
-  
+
       const maxFileSize = 5 * 1024 * 1024;
       if (user_picture.size > maxFileSize) {
         setErrorMsg("File size exceeds the maximum limit (5 MB).");
         return;
       }
-  
+
       const formData = new FormData();
       formData.append("user_picture", user_picture);
-  
+
       const userId = sessionStorage.getItem("user_id");
-  
+
       try {
         const response = await axios.put(
           `/seat/profile/updatePicture/${userId}`,
@@ -406,7 +411,7 @@ const ProfilePage: React.FC = () => {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
-  
+
         // Fetch and update the latest user data
         try {
           if (userId !== null) {
@@ -419,27 +424,24 @@ const ProfilePage: React.FC = () => {
         } catch (error) {
           console.error("Error fetching updated user data:", error);
         }
-        
-  
       } catch (error) {
         console.error("Error uploading image:", error);
         setErrorMsg("File size is too big.");
       }
     }
   };
-  
-  // Function to fetch updated user data from the server
-const fetchUpdatedUserData = async (userId: string) => {
-  try {
-    const response = await axios.get(`/seat/profile/getUserData/${userId}`);
-    return response.data; // Assuming the API response contains the updated user data
-  } catch (error) {
-    console.error("Error fetching updated user data:", error);
-    throw error;
-  }
-};
 
-  
+  // Function to fetch updated user data from the server
+  const fetchUpdatedUserData = async (userId: string) => {
+    try {
+      const response = await axios.get(`/seat/profile/getUserData/${userId}`);
+      return response.data; // Assuming the API response contains the updated user data
+    } catch (error) {
+      console.error("Error fetching updated user data:", error);
+      throw error;
+    }
+  };
+
   const validatePersonalInfo = () => {
     const { FirstName, LastName, Email, ContactNumber } = inputValues;
     const isFirstNameValid = FirstName.trim() !== "";
@@ -510,12 +512,11 @@ const fetchUpdatedUserData = async (userId: string) => {
 
   const handleLogout = () => {
     // Clear any user-related data from the session/local storage
-    sessionStorage.removeItem('user_id');
-    sessionStorage.removeItem('usertype_id');
-
+    sessionStorage.removeItem("user_id");
+    sessionStorage.removeItem("usertype_id");
 
     // Redirect to the login page
-    navigate('/');
+    navigate("/");
   };
 
   const capitalizeFirstLetter = (name: string) => {
@@ -548,30 +549,38 @@ const fetchUpdatedUserData = async (userId: string) => {
               className={`${style["page-sidebar-inner"]} ${style["slimscroll"]}`}
             >
               <ul className={style["accordion-menu"]}>
-                     <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div className={style['userbg']}>
-                      <div className={style['userpr']}>
+                <div
+                  className="accordion-menu-container"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className={style["userbg"]}>
+                    <div className={style["userpr"]}>
                       {userPicture ? (
-      <Avatar src={userPicture} alt="User" />
-    ) : (
-      <img
-      src={defaulImage}
-      alt="Profile Default"
-      className={style.defaultImage}// Add any additional styles here
-      />
-    )}
+                        <Avatar src={userPicture} alt="User" />
+                      ) : (
+                        <img
+                          src={defaulImage}
+                          alt="Profile Default"
+                          className={style.defaultImage} // Add any additional styles here
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {profileData ? (
+                    <div className={style["usern"]}>
+                      {profileData.first_name} {profileData.last_name}
+                      <div className={style["userp"]}>
+                        {profileData.position_name}
                       </div>
                     </div>
-                    {profileData ? (
-                      <div className={style['usern']}>
-                        {profileData.first_name}  {profileData.last_name} 
-                          <div className={style['userp']}>{profileData.position_name}</div>
-                      </div>
-          
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
                 <li className={style["sidebar-title"]}></li>
                 <li>
                   <a
@@ -611,13 +620,18 @@ const fetchUpdatedUserData = async (userId: string) => {
                   </a>
                 </li>
                 <li>
-                    <a onClick={MachinePageHandleClick} className={styles['material-icons']}>
-                      <i className={`${styles['material-icons-outlined']} ${styles['material-icons']}`}>
-                        <BusinessCenterOutlined/>
-                      </i>
-                      Machine 
-                    </a>
-                  </li>
+                  <a
+                    onClick={MachinePageHandleClick}
+                    className={styles["material-icons"]}
+                  >
+                    <i
+                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <BusinessCenterOutlined />
+                    </i>
+                    Machine
+                  </a>
+                </li>
                 <li>
                   <a onClick={adminPageHandleClick} className={style["active"]}>
                     <i
@@ -641,8 +655,12 @@ const fetchUpdatedUserData = async (userId: string) => {
                     Seat
                   </a>
                 </li>
+
                 <li>
-                  <a onClick={handleLogout} className={style["material-icons"]}>
+                  <a
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className={style["material-icons"]}
+                  >
                     <i
                       className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
@@ -651,6 +669,35 @@ const fetchUpdatedUserData = async (userId: string) => {
                     Logout
                   </a>
                 </li>
+
+                {showLogoutConfirmation && (
+                  <div className={styles.popupModal}>
+                    <div className={styles.popupContent}>
+                      <p className={styles.popupText}>
+                        Are you sure you want to log out?
+                      </p>
+                      <div className={styles.buttonRow}>
+                        <button
+                          className={styles.popupButton}
+                          onClick={() => {
+                            handleLogout();
+                            setShowLogoutConfirmation(false);
+                          }}
+                        >
+                          <span>Okay</span>{" "}
+                          <FaSignOutAlt className={styles.buttonIcon} />
+                        </button>
+                        <button
+                          className={styles.popupButtonNo}
+                          onClick={() => setShowLogoutConfirmation(false)}
+                        >
+                          <span>Cancel</span>{" "}
+                          <MdCancel className={styles.buttonIcon} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
@@ -1109,7 +1156,6 @@ const fetchUpdatedUserData = async (userId: string) => {
                   title="Edit"
                   placement="top"
                   arrow
-                  
                   style={{
                     position: "absolute",
                     top: "24px",
@@ -1126,7 +1172,10 @@ const fetchUpdatedUserData = async (userId: string) => {
                       "background-color 0.4s ease-in-out, color 0.4s ease-in-out, border-color 0.4s ease-in-out",
                   }}
                 >
-                  <IconButton onClick={handleAccountEditClick}className={styles.settool1}>
+                  <IconButton
+                    onClick={handleAccountEditClick}
+                    className={styles.settool1}
+                  >
                     <ManageAccountsSharpIcon />
                   </IconButton>
                 </Tooltip>

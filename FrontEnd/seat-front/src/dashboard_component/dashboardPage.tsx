@@ -440,10 +440,10 @@ const DashboardPage: React.FC = () => {
                     <li>
                       <a
                         onClick={() => setShowLogoutConfirmation(true)}
-                        className={style["material-icons"]}
+                        className={styles["material-icons"]}
                       >
                         <i
-                          className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                           className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
                         >
                           <Logout />
                         </i>

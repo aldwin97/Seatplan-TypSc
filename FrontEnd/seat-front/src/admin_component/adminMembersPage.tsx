@@ -682,7 +682,7 @@ const AdminMembersPage: React.FC = () => {
                     className={style["material-icons"]}
                   >
                     <i
-                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
                       <Logout />
                     </i>

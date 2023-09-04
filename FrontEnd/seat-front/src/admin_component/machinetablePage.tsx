@@ -540,11 +540,11 @@ function MachinePage() {
 
                 <li>
                   <a
-                    onClick={() => setShowLogoutConfirmation(true)}
-                    className={style["material-icons"]}
+              onClick={() => setShowLogoutConfirmation(true)}
+              className={styles["material-icons"]}
                   >
                     <i
-                      className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                       className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
                       <Logout />
                     </i>

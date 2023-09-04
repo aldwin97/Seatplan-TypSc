@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/profile/showLogedUserInfo/${user_id}`
+          `/seat/profile/showLogedUserInfo/${user_id}`
         );
 
         const responseData = response.data[0];
@@ -148,7 +148,7 @@ const ProfilePage: React.FC = () => {
 
         try {
           const pictureResponse = await axios.get(
-            `http://localhost:8080/profile/userPicture/${user_id}`,
+            `/seat/profile/userPicture/${user_id}`,
             {
               responseType: "arraybuffer",
             }
@@ -233,7 +233,7 @@ const ProfilePage: React.FC = () => {
         };
 
         const response = await axios.put(
-          `http://localhost:8080/profile/updatePersonalInfo/${user_id}`,
+          `/seat/profile/updatePersonalInfo/${user_id}`,
           updatedUser
         );
 
@@ -317,7 +317,7 @@ const ProfilePage: React.FC = () => {
       };
 
       const response = await axios.put(
-        `http://localhost:8080/profile/updatePassword/${user_id}`,
+        `/seat/profile/updatePassword/${user_id}`,
         requestData
       );
 
@@ -373,11 +373,10 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const user_picture = event.target.files?.[0];
     event.target.value = "";
+  
     if (user_picture) {
       if (
         !user_picture.type.startsWith("image/") ||
@@ -388,33 +387,59 @@ const ProfilePage: React.FC = () => {
         );
         return;
       }
-
+  
       const maxFileSize = 5 * 1024 * 1024;
       if (user_picture.size > maxFileSize) {
         setErrorMsg("File size exceeds the maximum limit (5 MB).");
         return;
       }
-
+  
       const formData = new FormData();
       formData.append("user_picture", user_picture);
-
+  
       const userId = sessionStorage.getItem("user_id");
-
+  
       try {
         const response = await axios.put(
-          `http://localhost:8080/profile/updatePicture/${userId}`,
+          `/seat/profile/updatePicture/${userId}`,
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
-        window.location.reload();
+  
+        // Fetch and update the latest user data
+        try {
+          if (userId !== null) {
+            const updatedUserData = await fetchUpdatedUserData(userId);
+            // Update the state with the new user data
+            setUserData(updatedUserData);
+          } else {
+            console.error("userId is null, cannot fetch updated user data.");
+          }
+        } catch (error) {
+          console.error("Error fetching updated user data:", error);
+        }
+        
+  
       } catch (error) {
         console.error("Error uploading image:", error);
         setErrorMsg("File size is too big.");
       }
     }
   };
+  
+  // Function to fetch updated user data from the server
+const fetchUpdatedUserData = async (userId: string) => {
+  try {
+    const response = await axios.get(`/seat/profile/getUserData/${userId}`);
+    return response.data; // Assuming the API response contains the updated user data
+  } catch (error) {
+    console.error("Error fetching updated user data:", error);
+    throw error;
+  }
+};
 
+  
   const validatePersonalInfo = () => {
     const { FirstName, LastName, Email, ContactNumber } = inputValues;
     const isFirstNameValid = FirstName.trim() !== "";

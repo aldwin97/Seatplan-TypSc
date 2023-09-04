@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import styles from "../dashboard_component/dashboardPage.module.css";
-import { Avatar} from '@mui/material';
-import axios from 'axios';
+import { Avatar } from "@mui/material";
+import axios from "axios";
 import defaulImage from "../assets/default.png";
 import {
   BusinessCenterOutlined,
@@ -139,21 +139,26 @@ const AdminMembersPage: React.FC = () => {
   useEffect(() => {
     const fetchUserPicture = async () => {
       try {
-        const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
-          responseType: 'arraybuffer',
-        });
+        const user_id = window.sessionStorage.getItem("user_id");
+        const pictureResponse = await axios.get(
+          `/seat/profile/userPicture/${user_id}`,
+          {
+            responseType: "arraybuffer",
+          }
+        );
 
         const base64Data = btoa(
           new Uint8Array(pictureResponse.data).reduce(
             (data, byte) => data + String.fromCharCode(byte),
-            ''
+            ""
           )
         );
-        const pictureDataUrl = `data:${pictureResponse.headers['content-type'].toLowerCase()};base64,${base64Data}`;
+        const pictureDataUrl = `data:${pictureResponse.headers[
+          "content-type"
+        ].toLowerCase()};base64,${base64Data}`;
         setUserPicture(pictureDataUrl);
       } catch (error) {
-        console.error('Error fetching profile picture:', error);
+        console.error("Error fetching profile picture:", error);
       }
     };
 
@@ -161,16 +166,18 @@ const AdminMembersPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const user_id = window.sessionStorage.getItem('user_id');
+    const user_id = window.sessionStorage.getItem("user_id");
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+        const response = await axios.get(
+          `/seat/dashboard/showLogedUserInfo/${user_id}`
+        );
 
         const responseData: UserData = response.data[0];
         setUserData(responseData);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error("Error fetching profile data:", error);
       }
     };
 
@@ -188,7 +195,6 @@ const AdminMembersPage: React.FC = () => {
   const handleCloseDialog = () => {
     setUserInfoDialogOpen(false);
     setAddUserDialogOpen(false);
-    window.location.reload();
   };
 
   const handleUserCheckboxChange = (
@@ -219,7 +225,7 @@ const AdminMembersPage: React.FC = () => {
   };
 
   const handleDeleteUser = (userId: number) => {
-    fetch(`http://localhost:8080/admin/delete/${userId}`, { method: "POST" })
+    fetch(`/seat/admin/delete/${userId}`, { method: "POST" })
       .then((response) => {
         if (response.ok) {
           console.log(`User with ID ${userId} deleted successfully`);
@@ -270,7 +276,7 @@ const AdminMembersPage: React.FC = () => {
     console.log("newUserModel:", newUserModel); // Check the newUserModel object in the console
 
     // Make the POST request to insert a new user
-    fetch("http://localhost:8080/admin/insert", {
+    fetch("/seat/admin/insert", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -284,7 +290,6 @@ const AdminMembersPage: React.FC = () => {
           setSnackbarOpen(true);
           setAddUserDialogOpen(false);
           // Refresh the page to reflect the changes
-          window.location.reload();
         } else if (response.status === 400) {
           response.json().then((data) => {
             console.log("Failed to insert user:", data.message);
@@ -362,10 +367,12 @@ const AdminMembersPage: React.FC = () => {
 
   const [editMode, setEditMode] = useState(false);
   const [editedUser, setEditedUser] = useState<User | null>(null);
+  const [editedProjects, setEditedProjects] = useState<number[]>([]); // State to store edited project_id values
 
   const handleEditUser = () => {
     setEditMode(true);
     setEditedUser(selectedUser);
+    setEditedProjects(selectedUser?.project_id || []);
   };
 
   const handleSaveUser = () => {
@@ -373,12 +380,11 @@ const AdminMembersPage: React.FC = () => {
       return;
     }
 
-    // Prepare the updated user data
+    // Prepare the updated user data excluding project_id
     const updatedUserModel: Partial<User> = {
       user_id: selectedUser?.user_id,
       usertype_id: editedUser?.usertype_id,
       position_id: editedUser?.position_id,
-      project_id: editMode ? selectedProjects : editedUser?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the old projects
       first_name: editedUser?.first_name || "",
       last_name: editedUser?.last_name || "",
       mobile_num: editedUser?.mobile_num || 0,
@@ -392,10 +398,14 @@ const AdminMembersPage: React.FC = () => {
       updatedUserModel.email = editedUser.email;
     }
 
-    console.log("Data being updated:", updatedUserModel);
+    // Prepare the updated project_id data
+    const updatedProjectIds = editedProjects;
 
-    // Make the PUT request to update the user
-    fetch(`http://localhost:8080/admin/update/${selectedUser?.user_id}`, {
+    console.log("Data being updated (User):", updatedUserModel);
+    console.log("Data being updated (Projects):", updatedProjectIds);
+
+    // Make the PUT request to update the user (excluding project_id)
+    fetch(`/seat/admin/update/${selectedUser?.user_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -405,14 +415,15 @@ const AdminMembersPage: React.FC = () => {
       .then((response) => {
         if (response.ok) {
           console.log("User updated successfully");
+
+          // Now, update the user's projects using a separate API call
+          // You can use `updatedProjectIds` to send the updated project data
+          // Make the API call here to update the projects
+
           // Refresh the page to reflect the changes
-          window.location.reload();
-          // Alternatively, update the user in the user list if needed
         } else {
           response.text().then((errorMessage) => {
-            console.log("Failed to update user:", errorMessage);
-            // Set the error message state
-            setErrorMessage(errorMessage);
+            console.log("Error while updating user:", errorMessage);
           });
         }
       })
@@ -422,7 +433,7 @@ const AdminMembersPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/admin/showAllUser")
+    fetch("/seat/admin/showAllUser")
       .then((response) => response.json())
       .then((data) => {
         console.log("Users data:", data);
@@ -440,9 +451,7 @@ const AdminMembersPage: React.FC = () => {
   useEffect(() => {
     const fetchStaffStatuses = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/admin/showAllStaffStatus"
-        );
+        const response = await fetch("/seat/admin/showAllStaffStatus");
         const data = await response.json();
         setStaffStatuses(data);
       } catch (error) {
@@ -456,7 +465,7 @@ const AdminMembersPage: React.FC = () => {
   // Fetch position and usertype data from the server
   useEffect(() => {
     // Fetch positions
-    fetch("http://localhost:8080/admin/showAllPosition")
+    fetch("/seat/admin/showAllPosition")
       .then((response) => response.json())
       .then((data) => {
         setPositions(data);
@@ -466,7 +475,7 @@ const AdminMembersPage: React.FC = () => {
       });
 
     // Fetch usertypes
-    fetch("http://localhost:8080/admin/showAllUserType")
+    fetch("/seat/admin/showAllUserType")
       .then((response) => response.json())
       .then((data) => {
         setUserTypes(data);
@@ -477,7 +486,7 @@ const AdminMembersPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8080/admin/showAllProject")
+    fetch("/seat/admin/showAllProject")
       .then((response) => response.json())
       .then((data) => {
         setProjects(data);
@@ -515,7 +524,7 @@ const AdminMembersPage: React.FC = () => {
   const SeatplanPageHandleClick = () => {
     navigate("/seatPlanPage");
   };
-  
+
   const MachinePageHandleClick = () => {
     navigate("/machinetablePage");
   };
@@ -554,30 +563,38 @@ const AdminMembersPage: React.FC = () => {
               className={`${styles["page-sidebar-inner"]} ${styles["slimscroll"]}`}
             >
               <ul className={styles["accordion-menu"]}>
-              <div className="accordion-menu-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <div className={styles['userbg']}>
-                      <div className={styles['userpr']}>
+                <div
+                  className="accordion-menu-container"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className={styles["userbg"]}>
+                    <div className={styles["userpr"]}>
                       {userPicture ? (
-      <Avatar src={userPicture} alt="User" />
-    ) : (
-      <img
-      src={defaulImage}
-      alt="Profile Default"
-      className={styles.defaultImage}// Add any additional styles here
-      />
-    )}
+                        <Avatar src={userPicture} alt="User" />
+                      ) : (
+                        <img
+                          src={defaulImage}
+                          alt="Profile Default"
+                          className={styles.defaultImage} // Add any additional styles here
+                        />
+                      )}
+                    </div>
+                  </div>
+                  {UserData ? (
+                    <div className={styles["usern"]}>
+                      {UserData.first_name} {UserData.last_name}
+                      <div className={styles["userp"]}>
+                        {UserData.position_name}
                       </div>
                     </div>
-                    {UserData ? (
-                      <div className={styles['usern']}>
-                        {UserData.first_name}  {UserData.last_name} 
-                          <div className={styles['userp']}>{UserData.position_name}</div>
-                      </div>
-          
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
                 <li className={styles["sidebar-title"]}></li>
                 <li>
                   <a
@@ -591,7 +608,7 @@ const AdminMembersPage: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     onClick={ProfilePageHandleClick}
                     className={styles["material-icons"]}
                   >
@@ -739,7 +756,7 @@ const AdminMembersPage: React.FC = () => {
                     color="primary"
                     aria-label="delete"
                   >
-                    <DeleteIcon style={{ color: "red" }} />
+                    <DeleteIcon style={{ color: "gray" }} />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -779,12 +796,13 @@ const AdminMembersPage: React.FC = () => {
                   <div className="name-input">
                     <input
                       className="user-info-value"
-                      value={`${editedUser?.first_name || ""} ${
+                      placeholder="First Name | Last Name"
+                      value={`${editedUser?.first_name || ""} | ${
                         editedUser?.last_name || ""
                       }`}
                       onChange={(e) => {
-                        const fullName = e.target.value;
-                        const [firstName, lastName] = fullName.split(" ");
+                        const [firstName, lastName] =
+                          e.target.value.split(" | ");
                         setEditedUser((prevEditedUser: User | null) => ({
                           ...prevEditedUser!,
                           first_name: firstName || "",
@@ -795,7 +813,11 @@ const AdminMembersPage: React.FC = () => {
                   </div>
                 </>
               ) : (
-                <span className="user-info-value">{`${selectedUser.first_name} ${selectedUser.last_name}`}</span>
+                <div className="user-info-value">
+                  {`${editedUser?.first_name || ""} ${
+                    editedUser?.last_name || ""
+                  }`}
+                </div>
               )}
               <strong className="user-info-label">Username:</strong>
               {editMode ? (

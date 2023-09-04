@@ -61,7 +61,7 @@ function ViewSeatPage() {
 
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
-    fetch("http://localhost:8080/seat/showAllSeat")
+    fetch("/seat/seat/showAllSeat")
       .then((response) => response.json())
       .then((data) => {
         // Update the position and other properties of each seat based on the data received from the backend
@@ -147,7 +147,7 @@ function ViewSeatPage() {
     }
   
     try {
-      const response = await fetch("http://localhost:8080/user/login", {
+      const response = await fetch("/seat/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

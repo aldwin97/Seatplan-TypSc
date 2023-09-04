@@ -60,26 +60,26 @@ const LogInPage: React.FC = () => {
       setError(true);
       return;
     }
-  
+
     try {
-      const response = await fetch("http://localhost:8080/user/login", {
+      const response = await fetch("/seat/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
-  
+
       if (!response.ok) {
         setError(true);
         return;
       }
-  
+
       const responseData = await response.json();
       const { user_id, usertype_id } = responseData; // Extract the usertype_id from responseData
-  
+
       setRedirectToDashboard(true);
-  
+
       // Save session data to Session Storage
       window.sessionStorage.setItem("user_id", user_id);
       window.sessionStorage.setItem("user_name", username);
@@ -89,7 +89,6 @@ const LogInPage: React.FC = () => {
       setError(true);
     }
   };
-  
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -198,10 +197,14 @@ const LogInPage: React.FC = () => {
           >
             View Seatplan
           </button>
-         
-        </div> 
-        <a className={styles.supportContainer} href="#" onClick={aboutUsPageHandleClick}>About Us</a>
-      
+        </div>
+        <a
+          className={styles.supportContainer}
+          href="#"
+          onClick={aboutUsPageHandleClick}
+        >
+          About Us
+        </a>
       </div>
     </div>
   );

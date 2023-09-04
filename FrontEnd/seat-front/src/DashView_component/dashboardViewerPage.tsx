@@ -101,7 +101,7 @@ const DashboardViewerPage: React.FC = () => {
       try {
         const user_id = window.sessionStorage.getItem("user_id");
         const pictureResponse = await axios.get(
-          `http://localhost:8080/profile/userPicture/${user_id}`,
+          `/seat/profile/userPicture/${user_id}`,
           {
             responseType: "arraybuffer",
           }
@@ -131,7 +131,7 @@ const DashboardViewerPage: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`
+          `/seat/dashboard/showLogedUserInfo/${user_id}`
         );
 
         const responseData: UserData = response.data[0];
@@ -150,7 +150,7 @@ const DashboardViewerPage: React.FC = () => {
       const user_id = window.sessionStorage.getItem("user_id");
       try {
         const response = await axios.get(
-          `http://localhost:8080/seat/showAllCommentBy/${user_id}`
+          `/seat/seat/showAllCommentBy/${user_id}`
         );
         const data: Comments[] = response.data;
 
@@ -167,7 +167,7 @@ const DashboardViewerPage: React.FC = () => {
     const fetchDashboardData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/dashboard/display"
+          "/seat/dashboard/display"
         );
         if (response && response.data) {
           setDashboardData(response.data);
@@ -265,7 +265,7 @@ const DashboardViewerPage: React.FC = () => {
     const fetchProjectSummary = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/dashboard/countPerProject"
+          "/seat/dashboard/countPerProject"
         );
         const data = response.data;
 

@@ -143,7 +143,7 @@ function SeatPopup({
         try {
           // Swap the seats in the backend
           await fetch(
-            `http://localhost:8080/seat/swap/${seat.seat_id}/${selectedSeatId}/${updated_by}`,
+            `/seat/seat/swap/${seat.seat_id}/${selectedSeatId}/${updated_by}`,
             {
               method: "POST",
               headers: {
@@ -164,10 +164,9 @@ function SeatPopup({
           console.log("Data being swapped:");
           console.log("Current Seat:", updatedCurrentSeat);
           console.log("Swap Seat:", updatedSwapSeat);
-
+       
           // Refresh the page to fetch the updated seat data
           setTimeout(() => {
-            window.location.reload();
           }, 2000);
         } catch (error) {
           console.error("Failed to swap seats:", error);
@@ -220,7 +219,7 @@ function SeatPopup({
 
       // Send the updated seat data to the backend
       const response = await fetch(
-        `http://localhost:8080/seat/update/${seat.seat_id}`,
+        `/seat/seat/update/${seat.seat_id}`,
         {
           method: "PUT",
           headers: {
@@ -233,7 +232,7 @@ function SeatPopup({
       if (response.ok) {
         console.log("Seat updated successfully");
         onClose();
-        window.location.reload(); // Refresh the page
+      
       } else if (response.status === 400) {
         setErrorMsg("This occupant is already assigned to another seat.");
         // You can also display the error message on the page instead of using an alert
@@ -272,7 +271,7 @@ function SeatPopup({
   /// Function to fetch the list of occupants from the backend
   const fetchOccupants = async () => {
     try {
-      const response = await fetch("http://localhost:8080/seat/showAllUser");
+      const response = await fetch("/seat/seat/showAllUser");
       if (response.ok) {
         const occupantsData: Occupant[] = await response.json();
 
@@ -305,43 +304,43 @@ function SeatPopup({
 
   return (
     <div className={`${styles.seatPopupContainer} ${styles.popupOpen}`}>
-      <div className={styles.seatPopupContent}>
-        <h3>Seat {seat.seat_id}</h3>
-        <form onSubmit={handleFormSubmit}>
-          {isEditMode ? (
-            <>
-              <p>Select a User to be assigned:</p>
-              <select
-                value={selectedOccupant}
-                onChange={handleOccupantChange}
-                required
-              >
-                <option value="">Assign an Occupant</option>
-                {occupantsList
-                  .filter((occupant) => {
-                    const isAssigned = seats.some(
-                      (s) => s.occupant === occupant.user_id.toString()
-                    );
-                    console.log(
-                      `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
-                    );
-                    return !isAssigned;
-                  })
-                  .map((occupant) => (
-                    <option key={occupant.user_id} value={occupant.user_id}>
-                      {` ${occupant.first_name}${
-                        occupant.last_name ? ` ${occupant.last_name}` : ""
-                      }`}
-                    </option>
-                  ))}
-              </select>
+    <div className={styles.seatPopupContent}>
+      <h3>Seat {seat.seat_id}</h3>
+      <form onSubmit={handleFormSubmit}>
+      {isEditMode ? (
+      <>
+        <p>Select a User to be assigned:</p>
+        <select
+          value={selectedOccupant}
+          onChange={handleOccupantChange}
+          required
+        >
+          <option value="">Assign an Occupant</option>
+          {occupantsList
+            .filter((occupant) => {
+              const isAssigned = seats.some(
+                (s) => s.occupant === occupant.user_id.toString()
+              );
+              console.log(
+                `Occupant ${occupant.user_id} is assigned: ${isAssigned}`
+              );
+              return !isAssigned;
+            })
+            .map((occupant) => (
+              <option key={occupant.user_id} value={occupant.user_id}>
+                {` ${occupant.first_name}${
+                  occupant.last_name ? ` ${occupant.last_name}` : ""
+                }`}
+              </option>
+            ))}
+        </select>
               {errorMsg && (
                 <div className={styles.errorPopup}>
                   <p>{errorMsg}</p>
                   <button
                     onClick={() => {
                       setErrorMsg("");
-                      window.location.reload();
+                   
                     }}
                   >
                     Close
@@ -374,13 +373,7 @@ function SeatPopup({
                     >
                       Swap Now
                     </button>
-                    {swapSuccess && (
-                      <div className={styles.backdrop}>
-                        <div className={styles.successMessage}>
-                          Swapping is successful!
-                        </div>
-                      </div>
-                    )}
+                  
                   </div>
                 </>
               ) : (
@@ -553,7 +546,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   };
 
   const fetchCommentsBySeatId = (seatId: number) => {
-    return fetch(`http://localhost:8080/admin/showAllCommentBy/${seatId}`)
+    return fetch(`/seat/admin/showAllCommentBy/${seatId}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -601,7 +594,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       recipient_id: userId, // Set the recipient ID to the current user's ID
     };
 
-    fetch("http://localhost:8080/seat/insertComment", {
+    fetch("/seat/seat/insertComment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -643,7 +636,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       recipient_id: replyToRecipientId,
     };
 
-    fetch("http://localhost:8080/admin/replyComment", {
+    fetch("/seat/admin/replyComment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -667,7 +660,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
       });
   };
   const handleDeleteComment = (commentId: number) => {
-    fetch(`http://localhost:8080/admin/deleteComment/${commentId}`, {
+    fetch(`/seat/admin/deleteComment/${commentId}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -895,7 +888,7 @@ const SeatPopupComments = ({ userId, seatIds }: SeatPopupCommentsProps) => {
   };
 
   const handleClearComments = (seatId: number) => {
-    fetch(`http://localhost:8080/admin/handleClearComments/${seatId}`, {
+    fetch(`/seat/admin/handleClearComments/${seatId}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -1094,7 +1087,7 @@ function SeatplanPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [seats, setSeats] = useState<Seat[]>([]);
   useEffect(() => {
-    fetch("http://localhost:8080/seat/showAllSeat")
+    fetch("/seat/seat/showAllSeat")
       .then((response) => response.json())
       .then((data) => {
         // Update the position and other properties of each seat based on the data received from the backend
@@ -1715,7 +1708,7 @@ function SeatplanPage() {
       try {
         const user_id = window.sessionStorage.getItem("user_id");
         const pictureResponse = await axios.get(
-          `http://localhost:8080/profile/userPicture/${user_id}`,
+          `/seat/profile/userPicture/${user_id}`,
           {
             responseType: "arraybuffer",
           }
@@ -1745,7 +1738,7 @@ function SeatplanPage() {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`
+          `/seat/dashboard/showLogedUserInfo/${user_id}`
         );
 
         const responseData: UserData = response.data[0];

@@ -1,17 +1,17 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import LoginPage from './login_component/logInPage';
-import ViewSeatPage from './viewseat_component/viewSeatPage';
-import AboutUsPage from './aboutus_component/aboutusPage';
-import DashboardPage from './dashboard_component/dashboardPage';
-import AdminMembersPage from './admin_component/adminMembersPage';
-import SeatplanPage from './seatplan_component/seatplanPage';
-import ProfilePage from './profile_component/profilePage';
-import ProjectPage from './project_component/projectPage';
-import MachinePage from './admin_component/machinetablePage';
-import DashboardViewerPage from './DashView_component/dashboardViewerPage';
-import ProfileViewerPage from './profileviewer_component/profileviewerPage';
-import ViewerSeatPage from './viewerseat_component/viewerseatPage';
+import React from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import LoginPage from "./login_component/logInPage";
+import ViewSeatPage from "./viewseat_component/viewSeatPage";
+import AboutUsPage from "./aboutus_component/aboutusPage";
+import DashboardPage from "./dashboard_component/dashboardPage";
+import AdminMembersPage from "./admin_component/adminMembersPage";
+import SeatplanPage from "./seatplan_component/seatplanPage";
+import ProfilePage from "./profile_component/profilePage";
+import ProjectPage from "./project_component/projectPage";
+import MachinePage from "./admin_component/machinetablePage";
+import DashboardViewerPage from "./DashView_component/dashboardViewerPage";
+import ProfileViewerPage from "./profileviewer_component/profileviewerPage";
+import ViewerSeatPage from "./viewerseat_component/viewerseatPage";
 
 function ProtectedRoute({
   allowedUserTypes,
@@ -20,7 +20,7 @@ function ProtectedRoute({
   allowedUserTypes: number[];
   element: React.ElementType;
 }) {
-  const usertypeId = Number(window.sessionStorage.getItem('usertype_id'));
+  const usertypeId = Number(window.sessionStorage.getItem("usertype_id"));
 
   if (!usertypeId || !allowedUserTypes.includes(usertypeId)) {
     return <Navigate to="/" />;
@@ -38,41 +38,77 @@ function App() {
           <Route path="/viewSeatPage" element={<ViewSeatPage />} />
           <Route
             path="/dashboardPage"
-            element={<ProtectedRoute allowedUserTypes={[2, 3]} element={DashboardPage} />}
+            element={
+              <ProtectedRoute
+                allowedUserTypes={[2, 3]}
+                element={DashboardPage}
+              />
+            }
           />
           {/* Repeat for other protected routes */}
           <Route path="/aboutUsPage" element={<AboutUsPage />} />
           <Route
             path="/projectPage"
-            element={<ProtectedRoute allowedUserTypes={[3, 2]} element={ProjectPage} />}
+            element={
+              <ProtectedRoute allowedUserTypes={[3, 2]} element={ProjectPage} />
+            }
           />
           <Route
             path="/seatplanPage"
-            element={<ProtectedRoute allowedUserTypes={[3, 2]} element={SeatplanPage} />}
+            element={
+              <ProtectedRoute
+                allowedUserTypes={[3, 2]}
+                element={SeatplanPage}
+              />
+            }
           />
-            <Route
+          <Route
             path="/viewerseatPage"
-            element={<ProtectedRoute allowedUserTypes={[1]} element={ViewerSeatPage} />}
+            element={
+              <ProtectedRoute allowedUserTypes={[1]} element={ViewerSeatPage} />
+            }
           />
           <Route
             path="/adminPage"
-            element={<ProtectedRoute allowedUserTypes={[3, 2]} element={AdminMembersPage} />}
+            element={
+              <ProtectedRoute
+                allowedUserTypes={[3, 2]}
+                element={AdminMembersPage}
+              />
+            }
           />
           <Route
             path="/profilePage"
-            element={<ProtectedRoute allowedUserTypes={[1, 2, 3]} element={ProfilePage} />}
+            element={
+              <ProtectedRoute
+                allowedUserTypes={[1, 2, 3]}
+                element={ProfilePage}
+              />
+            }
           />
           <Route
             path="/machinetablePage"
-            element={<ProtectedRoute allowedUserTypes={[3, 2]} element={MachinePage} />}
+            element={
+              <ProtectedRoute allowedUserTypes={[3, 2]} element={MachinePage} />
+            }
           />
           <Route
             path="/dashboardviewerPage"
-            element={<ProtectedRoute allowedUserTypes={[1]} element={DashboardViewerPage} />}
+            element={
+              <ProtectedRoute
+                allowedUserTypes={[1]}
+                element={DashboardViewerPage}
+              />
+            }
           />
           <Route
             path="/profileviewerPage"
-            element={<ProtectedRoute allowedUserTypes={[1]} element={ProfileViewerPage} />}
+            element={
+              <ProtectedRoute
+                allowedUserTypes={[1]}
+                element={ProfileViewerPage}
+              />
+            }
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

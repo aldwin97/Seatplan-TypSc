@@ -72,6 +72,7 @@ function MachinePage() {
   const [addMachineDialogOpen, setAddMachineDialogOpen] = useState(false);
   const [MachineInfoDialogOpen, setMachineInfoDialogOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
+  
   const [machines, setMachines] = useState<Machine[]>([]);
   const [projects, setProjects] = useState<Project[]>([]); // Update 'Project' type accordingly
   const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
@@ -99,7 +100,7 @@ function MachinePage() {
     const fetchUserPicture = async () => {
       try {
         const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+        const pictureResponse = await axios.get(`/seat/profile/userPicture/${user_id}`, {
           responseType: 'arraybuffer',
         });
 
@@ -124,7 +125,7 @@ function MachinePage() {
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+        const response = await axios.get(`/seat/dashboard/showLogedUserInfo/${user_id}`);
 
         const responseData: UserData = response.data[0];
         setUserData(responseData);
@@ -240,7 +241,7 @@ function MachinePage() {
     console.log("Data being updated:", updatedMachineModel);
 
     fetch(
-      `http://localhost:8080/machine/updateMachine/${selectedMachine?.user_id}`,
+      `/seat/machine/updateMachine/${selectedMachine?.user_id}`,
       {
         method: "PUT",
         headers: {
@@ -253,7 +254,7 @@ function MachinePage() {
         if (response.ok) {
           console.log("Machine updated successfully");
           handleCloseDialog();
-          window.location.reload();
+        
         } else {
           response.text().then((errorMessage) => {
             console.log("Failed to update machine:", errorMessage);
@@ -266,7 +267,7 @@ function MachinePage() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/admin/showAllProject")
+    fetch("/seat/admin/showAllProject")
       .then((response) => response.json())
       .then((data) => {
         setProjects(data);
@@ -278,7 +279,7 @@ function MachinePage() {
 
   // Fetch all machines from the backend API
   useEffect(() => {
-    fetch("http://localhost:8080/machine/showAllMachine")
+    fetch("/seat/machine/showAllMachine")
       .then((response) => response.json())
       .then((data) => {
         setMachines(data);
@@ -298,7 +299,7 @@ function MachinePage() {
     };
 
     // Send the POST request to insert the new machine
-    fetch("http://localhost:8080/machine/insertNewMachine", {
+    fetch("/seat/machine/insertNewMachine", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -310,10 +311,10 @@ function MachinePage() {
           console.log("Machine inserted successfully");
           setAddMachineDialogOpen(false);
           // Reload the machine list or update the state as needed
-          window.location.reload();
+      
         } else {
           console.log("Failed to insert Machine");
-          window.location.reload();
+      
         }
       })
       .catch((error) => {
@@ -321,25 +322,28 @@ function MachinePage() {
       });
   };
 
-  const handleDeleteSelected = () => {
-    // Make the DELETE request to delete selected users
-    selectedMachines.forEach((machineId) => {
-      fetch(`http://localhost:8080/admin/delete/${machineId}`, {
-        method: "POST",
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log(`User with ID ${machineId} deleted successfully`);
-            window.location.reload();
-          } else {
-            console.log(`Failed to delete user with ID ${machineId}`);
-          }
-        })
-        .catch((error) => {
-          console.log(`Error while deleting user with ID ${machineId}`, error);
-        });
+const handleDeleteMachine = (machineId: number) => {
+  fetch(`/seat/admin/delete/${machineId}`, { method: "POST" })
+    .then((response) => {
+      if (response.ok) {
+        console.log(`Machine with ID ${machineId} deleted successfully`);
+        // Remove the deleted machine from the state
+        const updatedMachines = currentMachines.filter(
+          (machine) => machine.user_id !== machineId
+        );
+        setMachines(updatedMachines);
+      } else {
+        console.log(`Failed to delete machine with ID ${machineId}`);
+      }
+    
+    })
+    .catch((error) => {
+      console.log(`Error while deleting machine with ID ${machineId}`, error);
     });
-  };
+};
+
+  
+  
   const handleMachineClick = (machineId: number) => {
     handleViewMachineInfo(machineId);
   };
@@ -543,16 +547,7 @@ function MachinePage() {
       </SwipeableDrawer>
 
       <Box className="action-buttons" display="flex" justifyContent="flex-end">
-        <IconButton
-          className={`delete-button ${
-            selectedMachines.length > 0 ? "active" : ""
-          }`}
-          color="primary"
-          onClick={handleDeleteSelected}
-          disabled={selectedMachines.length === 0}
-        >
-          <DeleteIcon />
-        </IconButton>
+      
         <Button
           className="add-user-button"
           color="primary"
@@ -588,34 +583,38 @@ function MachinePage() {
               <TableCell></TableCell>
               <TableCell className="table-header">Machine</TableCell>
               <TableCell className="table-header">Project</TableCell>
+              <TableCell className="table-header">Actions</TableCell>{" "}
             </TableRow>
           </TableHead>
 
-          <TableBody>
-            {sortedCurrentMachines.map((machine) => (
-              <TableRow className="table-cell" key={machine.user_id} hover>
-                <TableCell className="checkbox-btn" padding="checkbox">
-                  <Checkbox
-                    className="checkmark"
-                    checked={selectedMachines.includes(machine.user_id)}
-                    onChange={(event) =>
-                      handleMachineCheckboxChange(event, machine.user_id)
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <a
-                    className="user-link"
-                    href="#"
-                    onClick={() => handleMachineClick(machine.user_id)}
-                  >
-                    {`${machine.first_name}`}
-                  </a>
-                </TableCell>
-                <TableCell>{machine.project_name}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+         <TableBody>
+  {sortedCurrentMachines.map((machine) => (
+    <TableRow className="table-cell" key={machine.user_id} hover>
+      <TableCell className="checkbox-btn" padding="checkbox">
+      </TableCell>
+      <TableCell>
+        <a
+          className="user-link"
+          href="#"
+          onClick={() => handleMachineClick(machine.user_id)}
+        >
+          {`${machine.first_name}`}
+        </a>
+      </TableCell>
+      <TableCell>{machine.project_name}</TableCell>
+      <TableCell>
+        <IconButton
+          className="delete-button"
+          color="primary"
+          onClick={() => handleDeleteMachine(machine.user_id)}
+        >
+            <DeleteIcon style={{ color: "gray" }} />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+
         </Table>
       </TableContainer>
       <Box

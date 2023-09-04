@@ -15,7 +15,7 @@
     </insert>
 
     <select id="getAllProjects" resultType="com.seatPlan.project.model.ProjectModel">
-        SELECT * FROM table_project WHERE is_deleted = 0
+        SELECT project_id, project_name FROM table_project WHERE is_deleted = 0
     </select>
 
     <select id="countProject" resultType="int">

@@ -71,7 +71,7 @@ function ProjectPage() {
     const fetchUserPicture = async () => {
       try {
         const user_id = window.sessionStorage.getItem('user_id');
-        const pictureResponse = await axios.get(`http://localhost:8080/profile/userPicture/${user_id}`, {
+        const pictureResponse = await axios.get(`/seat/profile/userPicture/${user_id}`, {
           responseType: 'arraybuffer',
         });
 
@@ -96,7 +96,7 @@ function ProjectPage() {
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/dashboard/showLogedUserInfo/${user_id}`);
+        const response = await axios.get(`/seat/dashboard/showLogedUserInfo/${user_id}`);
 
         const responseData: UserData = response.data[0];
         setUserData(responseData);
@@ -121,7 +121,7 @@ function ProjectPage() {
 
   const fetchColors = async () => {
     try {
-      const response = await fetch("http://localhost:8080/project/allColor");
+      const response = await fetch("/seat/project/allColor");
       if (response.ok) {
         const colorsData = await response.json();
         setColors(colorsData);
@@ -185,7 +185,7 @@ function ProjectPage() {
     console.log("New Project:", newProject);
     try {
       const response = await fetch(
-        "http://localhost:8080/project/insertNewProject",
+        "/seat/project/insertNewProject",
         {
           method: "POST",
           headers: {
@@ -229,7 +229,7 @@ function ProjectPage() {
   const fetchProjects = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/project/showAllProject"
+        "/seat/project/showAllProject"
       );
       if (response.ok) {
         const projectsData = await response.json();

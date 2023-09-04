@@ -678,8 +678,8 @@ const AdminMembersPage: React.FC = () => {
 
                 <li>
                   <a
-                    onClick={() => setShowLogoutConfirmation(true)}
-                    className={style["material-icons"]}
+                     onClick={() => setShowLogoutConfirmation(true)}
+                     className={styles["material-icons"]}
                   >
                     <i
                       className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}

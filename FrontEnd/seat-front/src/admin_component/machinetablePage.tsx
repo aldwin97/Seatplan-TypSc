@@ -261,6 +261,7 @@ function MachinePage() {
       .then((response) => {
         if (response.ok) {
           console.log("Machine updated successfully");
+          window.location.reload();
           handleCloseDialog();
         } else {
           response.text().then((errorMessage) => {
@@ -316,6 +317,7 @@ function MachinePage() {
       .then((response) => {
         if (response.ok) {
           console.log("Machine inserted successfully");
+          window.location.reload();
           setAddMachineDialogOpen(false);
           // Reload the machine list or update the state as needed
         } else {

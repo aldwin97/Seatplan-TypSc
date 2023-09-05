@@ -205,6 +205,7 @@ function ProjectPage() {
         setProjectName("");
         setSelectedColorId(0); // Reset selectedColorId to the default value
         fetchProjects(); // Fetch updated projects
+        window.location.reload();
       } else {
         // Failed to create project
         // Handle the error or show an error message if needed

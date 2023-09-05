@@ -167,7 +167,7 @@ function SeatPopup({
           console.log("Data being swapped:");
           console.log("Current Seat:", updatedCurrentSeat);
           console.log("Swap Seat:", updatedSwapSeat);
-
+          window.location.reload();
           // Refresh the page to fetch the updated seat data
           setTimeout(() => {}, 2000);
         } catch (error) {
@@ -230,6 +230,7 @@ function SeatPopup({
 
       if (response.ok) {
         console.log("Seat updated successfully");
+         window.location.reload();
         onClose();
       } else if (response.status === 400) {
         setErrorMsg("This occupant is already assigned to another seat.");

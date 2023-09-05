@@ -418,7 +418,7 @@ const AdminMembersPage: React.FC = () => {
       .then((response) => {
         if (response.ok) {
           console.log("User updated successfully");
-
+          window.location.reload();
           // Now, update the user's projects using a separate API call
           // You can use `updatedProjectIds` to send the updated project data
           // Make the API call here to update the projects

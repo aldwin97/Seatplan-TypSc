@@ -411,7 +411,7 @@ const ProfilePage: React.FC = () => {
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         console.log("Upload successful:", response.data);
-
+        window.location.reload();
         // Fetch and update the latest user data
         try {
           if (userId !== null) {

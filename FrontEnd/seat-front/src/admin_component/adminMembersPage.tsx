@@ -598,6 +598,19 @@ const AdminMembersPage: React.FC = () => {
                 <li className={styles["sidebar-title"]}></li>
                 <li>
                   <a
+                    onClick={SeatplanPageHandleClick}
+                    className={styles["material-icons"]}
+                  >
+                    <i
+                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <ChairOutlined />
+                    </i>
+                    Seat
+                  </a>
+                </li>
+                <li>
+                  <a
                     onClick={dashboardPageHandleClick}
                     className={styles["material-icons"]}
                   >
@@ -659,19 +672,7 @@ const AdminMembersPage: React.FC = () => {
                     Members
                   </a>
                 </li>
-                <li>
-                  <a
-                    onClick={SeatplanPageHandleClick}
-                    className={styles["material-icons"]}
-                  >
-                    <i
-                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                    >
-                      <ChairOutlined />
-                    </i>
-                    Seat
-                  </a>
-                </li>
+               
 
                 <li>
                   <a

@@ -359,6 +359,19 @@ const DashboardPage: React.FC = () => {
                     </div>
 
                     <li className={styles["sidebar-title"]}> </li>
+                    <li>
+                      <a
+                        onClick={SeatplanPageHandleClick}
+                        className={styles["material-icons"]}
+                      >
+                        <i
+                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                        >
+                          <ChairOutlined />
+                        </i>
+                        Seat
+                      </a>
+                    </li>
                     <li className={styles["active-page"]}>
                       <a
                         onClick={dashboardPageHandleClick}
@@ -423,19 +436,7 @@ const DashboardPage: React.FC = () => {
                         Members
                       </a>
                     </li>
-                    <li>
-                      <a
-                        onClick={SeatplanPageHandleClick}
-                        className={styles["material-icons"]}
-                      >
-                        <i
-                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                        >
-                          <ChairOutlined />
-                        </i>
-                        Seat
-                      </a>
-                    </li>
+                   
 
                     <li>
                       <a

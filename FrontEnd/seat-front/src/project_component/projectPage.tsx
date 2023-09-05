@@ -1,8 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
-import { MdCancel } from "react-icons/md"; // Import the cancel icon
-
+import { FaSignOutAlt } from 'react-icons/fa'; // Import the logout icon
+import { MdCancel } from 'react-icons/md'; // Import the cancel icon
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import styles from "../dashboard_component/dashboardPage.module.css";
@@ -19,18 +18,34 @@ import {
   WorkOutlineOutlined,
   Menu,
   Logout,
+  Search,
 } from "@mui/icons-material";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
+  Select,
+  MenuItem,
+  SelectChangeEvent,
   Snackbar,
+  Alert,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Checkbox,
   Paper,
+  IconButton,
+  Button,
+  Typography,
+  Box,
   Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 
 import "./projectPage.css";
@@ -54,20 +69,57 @@ interface UserData {
 }
 function ProjectPage() {
   const [userPicture, setUserPicture] = useState<string | null>(null);
+  const [addProjectDialogOpen, setAddProjectDialogOpen] = useState(false);
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [projectName, setProjectName] = useState("");
   const [loggedInUserId, setLoggedInUserId] = useState<number | null>(null);
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [perPage, setPerPage] = useState(10);
+  const perPageOptions = [5, 10, 20];
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
+  const [isDialogOpen, setDialogOpen] = useState(false); // State for the dialog
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
 
   const handleProjectNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("Input Value:", e.target.value);
     setProjectName(e.target.value);
   };
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(
+          "/seat/project/showAllProject"
+        );
+        if (response.ok) {
+          const projectsData = await response.json();
+          setProjects(projectsData);
+
+          // Calculate totalPages based on the number of projects and perPage
+          const calculatedTotalPages = Math.ceil(projectsData.length / perPage);
+          setTotalPages(calculatedTotalPages);
+        } else {
+          console.error("Failed to fetch projects");
+        }
+      } catch (error) {
+        console.error("Error occurred while fetching projects:", error);
+      }
+    };
+
+    fetchProjects();
+  }, [perPage]);
+
   useEffect(() => {
     const fetchUserPicture = async () => {
       try {
@@ -191,13 +243,16 @@ function ProjectPage() {
 
     console.log("New Project:", newProject);
     try {
-      const response = await fetch("/seat/project/insertNewProject", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newProject),
-      });
+      const response = await fetch(
+        "/seat/project/insertNewProject",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newProject),
+        }
+      );
 
       if (response.ok) {
         console.log("Project created successfully!");
@@ -205,7 +260,6 @@ function ProjectPage() {
         setProjectName("");
         setSelectedColorId(0); // Reset selectedColorId to the default value
         fetchProjects(); // Fetch updated projects
-        window.location.reload();
       } else {
         // Failed to create project
         // Handle the error or show an error message if needed
@@ -218,11 +272,14 @@ function ProjectPage() {
     }
   };
 
-  const [selectedColorId, setSelectedColorId] = useState(0);
+  const [selectedColorId, setSelectedColorId] = useState<number>(0); // Initialize with a number type
 
-  // Function to handle changes in the color select menu
-  const handleColorIdChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedColorId(parseInt(e.target.value));
+  const handleColorIdChange = (e: SelectChangeEvent<number>) => {
+    const value =
+      typeof e.target.value === "string"
+        ? parseInt(e.target.value, 10)
+        : e.target.value;
+    setSelectedColorId(value);
   };
 
   const [projects, setProjects] = useState<Project[]>([]);
@@ -233,7 +290,9 @@ function ProjectPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("/seat/project/showAllProject");
+      const response = await fetch(
+        "/seat/project/showAllProject"
+      );
       if (response.ok) {
         const projectsData = await response.json();
         setProjects(projectsData);
@@ -252,7 +311,7 @@ function ProjectPage() {
     return color ? color.color_name : "Unknown Color";
   };
 
-  const projectsPerPage = 5;
+  const projectsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -340,6 +399,19 @@ function ProjectPage() {
                 <li className={styles["sidebar-title"]}> </li>
                 <li>
                   <a
+                    onClick={SeatplanPageHandleClick}
+                    className={styles["material-icons"]}
+                  >
+                    <i
+                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    >
+                      <ChairOutlined />
+                    </i>
+                    Seat
+                  </a>
+                </li>
+                <li>
+                  <a
                     onClick={dashboardPageHandleClick}
                     className={styles["material-icons"]}
                   >
@@ -401,175 +473,175 @@ function ProjectPage() {
                     Members
                   </a>
                 </li>
-                <li>
-                  <a
-                    onClick={SeatplanPageHandleClick}
-                    className={styles["material-icons"]}
-                  >
-                    <i
-                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                    >
-                      <ChairOutlined />
-                    </i>
-                    Seat
-                  </a>
-                </li>
 
                 <li>
-                  <a
-                    onClick={() => setShowLogoutConfirmation(true)}
-                    className={styles["material-icons"]}
-                  >
-                    <i
-                       className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                    <a
+                      onClick={() => setShowLogoutConfirmation(true)}
+                      className={styles["material-icons"]}
                     >
-                      <Logout />
-                    </i>
-                    Logout
-                  </a>
-                </li>
+                      <i
+                        className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                      >
+                        <Logout />
+                      </i>
+                      Logout
+                    </a>
+                  </li>
 
-                {showLogoutConfirmation && (
+                  {showLogoutConfirmation && (
                   <div className={styles.popupModal}>
-                    <div className={styles.popupContent}>
-                      <p className={styles.popupText}>
-                        Are you sure you want to log out?
-                      </p>
-                      <div className={styles.buttonRow}>
-                        <button
-                          className={styles.popupButton}
-                          onClick={() => {
-                            handleLogout();
-                            setShowLogoutConfirmation(false);
-                          }}
-                        >
-                          <span>Okay</span>{" "}
-                          <FaSignOutAlt className={styles.buttonIcon} />
-                        </button>
-                        <button
-                          className={styles.popupButtonNo}
-                          onClick={() => setShowLogoutConfirmation(false)}
-                        >
-                          <span>Cancel</span>{" "}
-                          <MdCancel className={styles.buttonIcon} />
-                        </button>
-                      </div>
+                  <div className={styles.popupContent}>
+                    <p className={styles.popupText}>
+                      Are you sure you want to log out?
+                    </p>
+                    <div className={styles.buttonRow}>
+                      <button
+                        className={styles.popupButton}
+                        onClick={() => {
+                          handleLogout();
+                          setShowLogoutConfirmation(false);
+                        }}
+                      >
+                        <span>Okay</span> <FaSignOutAlt className={styles.buttonIcon} />
+                      </button>
+                      <button
+                        className={styles.popupButtonNo}
+                        onClick={() => setShowLogoutConfirmation(false)}
+                      >
+                        <span>Cancel</span> <MdCancel className={styles.buttonIcon} />
+                      </button>
                     </div>
                   </div>
-                )}
-              </ul>
+                </div>
+                  )}
+                  
+                </ul>
+
             </div>
           </div>
         </div>
       </SwipeableDrawer>
-      <div className="backg">
-        <div>
-          {/* Project form */}
-          <form className="form0" onSubmit={handleSubmit}>
-            <div className="formG">
-              <label className="projectlabel" htmlFor="projectName">
-                Project Name:
-              </label>
-              <input
-                type="text"
-                className="projectinput"
-                id="projectName"
-                name="projectName"
-                value={projectName}
-                onChange={handleProjectNameChange}
-                placeholder="Enter Project Name"
-                required
-              />
-            </div>
-            <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={5000}
-              onClose={closeSnackbar}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              style={{ top: "120px", right: "550px" }}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                onClose={closeSnackbar}
-                severity={snackbarSeverity}
-              >
-                {snackbarMessage}
-              </MuiAlert>
-            </Snackbar>
-            <div className="formG">
-              <label className="colorlabel" htmlFor="colorId">
-                Color:
-              </label>
-              <select
-                className="projectselect"
-                id="colorId"
-                name="colorId"
-                value={selectedColorId}
-                onChange={handleColorIdChange}
-                required
-              >
-                <option value={0}>Select a color</option>
-                {colors.map((color) => (
-                  <option key={color.color_id} value={color.color_id}>
-                    {color.color_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="submitButton">
-              <FontAwesomeIcon icon={faPlus} className="icon" />
-              Add Project
-            </button>
-            <br></br>
-          </form>
+      <div className="container2">
+        <div className="title">
+          <Typography className="title-main" variant="h5" gutterBottom>
+            PROJECT
+          </Typography>
 
-          <div className={`${styles.projectDetails} projectDetails`}>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead className={styles.Thead}>
-                  <TableRow>
-                    <TableCell className={`${styles.Tcell} Thead`}></TableCell>
-                    <TableCell className={`${styles.Tcell} Thead`}>
-                      Project Name
-                    </TableCell>
-                    <TableCell className={`${styles.Tcell} Thead`}>
-                      Color
-                    </TableCell>
-                    <TableCell className={`${styles.Tcell} Thead`}>
-                      Created By
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {getCurrentPageProjects().map((project) => (
-                    <TableRow key={project.project_id} hover>
-                      <TableCell padding="checkbox">
-                        {/* Add your checkbox logic here if needed */}
-                      </TableCell>
-                      <TableCell className={`${styles.Tcell} Tcell`}>
-                        {/* You can use a link to navigate to a specific project if needed */}
-                        <a>{project.project_name}</a>
-                      </TableCell>
-                      <TableCell className={`${styles.Tcell} Tcell`}>
-                        {getColorName(project.color_id)}
-                      </TableCell>
-                      <TableCell className="Tcell">
-                        {project.created_by}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+          {/* Button to open the dialog */}
+
+          <Button
+            variant="outlined"
+            className="add-user-button"
+            color="primary"
+            onClick={handleOpenDialog}
+          >
+            Add Project
+          </Button>
+        </div>
+        <TableContainer className="table-container" component={Paper}>
+          <Table>
+            <TableHead className="table-header">
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell className="table-header">Project Name</TableCell>
+                <TableCell className="table-header">Color</TableCell>
+                <TableCell className="table-header">Created by</TableCell>
+
+                {/* Add this cell */}
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {getCurrentPageProjects().map((project) => (
+                <TableRow className="table-cell" key={project.project_id} hover>
+                  <TableCell
+                    className="checkbox-btn"
+                    padding="checkbox"
+                  ></TableCell>
+                  <TableCell>{project.project_name}</TableCell>
+                  <TableCell> {getColorName(project.color_id)}</TableCell>
+                  <TableCell>{project.created_by}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box
+          className="pagination-container"
+          display="flex"
+          justifyContent="center"
+          marginTop={2}
+        ></Box>
+
+        <div className="backg">
+          <div>
+            {/* Project creation dialog */}
+            <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
+              <DialogTitle>Add Project</DialogTitle>
+              <DialogContent>
+                <form onSubmit={handleSubmit}>
+                  <div className="formG">
+                    <label className="projectlabel" htmlFor="projectName">
+                      Project Name:
+                    </label>
+                    <TextField
+                      type="text"
+                      className="projectinput"
+                      id="projectName"
+                      name="projectName"
+                      value={projectName}
+                      onChange={handleProjectNameChange}
+                      placeholder="Enter Project Name"
+                      required
+                      fullWidth
+                    />
+                  </div>
+                  <div className="formG">
+                    <label className="colorlabel" htmlFor="colorId">
+                      Color:
+                    </label>
+                    <Select
+                      className="projectselect"
+                      id="colorId"
+                      name="colorId"
+                      value={selectedColorId}
+                      onChange={handleColorIdChange}
+                      required
+                      fullWidth
+                    >
+                      <MenuItem value={0}>Select a color</MenuItem>
+                      {colors.map((color) => (
+                        <MenuItem key={color.color_id} value={color.color_id}>
+                          {color.color_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <DialogActions>
+                    <Button onClick={handleCloseDialog} color="primary">
+                      Cancel
+                    </Button>
+                    <Button type="submit" color="primary">
+                      Add
+                    </Button>
+                  </DialogActions>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
+        </div>
+        <Box
+          className="pagination-container"
+          display="flex"
+          justifyContent="center"
+          marginTop={2}
+        >
           <Pagination
-            count={Math.ceil(projects.length / projectsPerPage)}
+            count={totalPages} // Use the calculated totalPages
             page={currentPage}
             onChange={handlePageChange}
-            className="pagination"
           />
-        </div>
+        </Box>
       </div>
     </body>
   );

@@ -1809,6 +1809,20 @@ function SeatplanPage() {
                     )}
                   </div>
                   <li className={style["sidebar-title"]}> </li>
+                  <li className={style["active-page"]}>
+                    <a
+                      onClick={SeatplanPageHandleClick}
+                      className={style["material-icons"]}
+                    >
+                      <i
+                        className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
+                      >
+                        <ChairOutlined />
+                      </i>
+                      Seat
+                    </a>
+                  </li>
+
                   <li>
                     <a
                       onClick={dashboardPageHandleClick}
@@ -1873,20 +1887,7 @@ function SeatplanPage() {
                       Members
                     </a>
                   </li>
-                  <li className={style["active-page"]}>
-                    <a
-                      onClick={SeatplanPageHandleClick}
-                      className={style["material-icons"]}
-                    >
-                      <i
-                        className={`${style["material-icons-outlined"]} ${styles["material-icons"]}`}
-                      >
-                        <ChairOutlined />
-                      </i>
-                      Seat
-                    </a>
-                  </li>
-
+                 
                   <li>
                     <a
                       onClick={() => setShowLogoutConfirmation(true)}

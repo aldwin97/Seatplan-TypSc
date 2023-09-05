@@ -317,15 +317,17 @@ function MachinePage() {
       .then((response) => {
         if (response.ok) {
           console.log("Machine inserted successfully");
-          window.location.reload();
           setAddMachineDialogOpen(false);
+          window.location.reload();
           // Reload the machine list or update the state as needed
         } else {
           console.log("Failed to insert Machine");
+          window.location.reload();
         }
       })
       .catch((error) => {
         console.log("Error while inserting Machine", error);
+        window.location.reload();
       });
   };
 

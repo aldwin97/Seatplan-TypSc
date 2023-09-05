@@ -375,7 +375,6 @@ const AdminMembersPage: React.FC = () => {
   const handleEditUser = () => {
     setEditMode(true);
     setEditedUser(selectedUser);
-    setEditedProjects(selectedUser?.project_id || []);
   };
 
   const handleSaveUser = () => {
@@ -383,11 +382,12 @@ const AdminMembersPage: React.FC = () => {
       return;
     }
 
-    // Prepare the updated user data excluding project_id
+    // Prepare the updated user data
     const updatedUserModel: Partial<User> = {
       user_id: selectedUser?.user_id,
       usertype_id: editedUser?.usertype_id,
       position_id: editedUser?.position_id,
+      project_id: editMode ? selectedProjects : editedUser?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the old projects
       first_name: editedUser?.first_name || "",
       last_name: editedUser?.last_name || "",
       mobile_num: editedUser?.mobile_num || 0,
@@ -401,13 +401,9 @@ const AdminMembersPage: React.FC = () => {
       updatedUserModel.email = editedUser.email;
     }
 
-    // Prepare the updated project_id data
-    const updatedProjectIds = editedProjects;
+    console.log("Data being updated:", updatedUserModel);
 
-    console.log("Data being updated (User):", updatedUserModel);
-    console.log("Data being updated (Projects):", updatedProjectIds);
-
-    // Make the PUT request to update the user (excluding project_id)
+    // Make the PUT request to update the user
     fetch(`/seat/admin/update/${selectedUser?.user_id}`, {
       method: "PUT",
       headers: {
@@ -418,20 +414,21 @@ const AdminMembersPage: React.FC = () => {
       .then((response) => {
         if (response.ok) {
           console.log("User updated successfully");
-          window.location.reload();
-          // Now, update the user's projects using a separate API call
-          // You can use `updatedProjectIds` to send the updated project data
-          // Make the API call here to update the projects
-
           // Refresh the page to reflect the changes
+          window.location.reload();
+          // Alternatively, update the user in the user list if needed
         } else {
           response.text().then((errorMessage) => {
-            console.log("Error while updating user:", errorMessage);
+            console.log("Failed to update user:", errorMessage);
+            window.location.reload();
+            // Set the error message state
+            setErrorMessage(errorMessage);
           });
         }
       })
       .catch((error) => {
         console.log("Error while updating user", error);
+        window.location.reload();
       });
   };
 

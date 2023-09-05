@@ -32,7 +32,7 @@ function ProtectedRoute({
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <BrowserRouter basename="/SeatPlan">
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/viewSeatPage" element={<ViewSeatPage />} />

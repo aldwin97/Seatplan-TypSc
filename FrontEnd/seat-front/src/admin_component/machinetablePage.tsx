@@ -591,21 +591,16 @@ function MachinePage() {
         </div>
       </SwipeableDrawer>
 
-      <Box className="action-buttons" display="flex" justifyContent="flex-end">
-        <Button
-          className="add-user-button"
-          color="primary"
-          variant="contained"
-          onClick={handleAddMachine}
-        >
-          Add Machine
-        </Button>
-      </Box>
+     
+        
 
       <div className="title">
         <Typography className="title-main" variant="h5" gutterBottom>
           MACHINE INFORMATION
         </Typography>
+        
+        
+  
         <div className="menu-label">Items per Page:</div>
         <Select
           className="select-container"
@@ -618,6 +613,14 @@ function MachinePage() {
             </MenuItem>
           ))}
         </Select>
+        <Button
+          className="add-user-button"
+          color="primary"
+          variant="contained"
+          onClick={handleAddMachine}
+        >
+          Add Machine
+        </Button>
       </div>
 
       <TableContainer className="table-container" component={Paper}>

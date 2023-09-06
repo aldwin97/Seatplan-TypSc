@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
 import { MdCancel } from "react-icons/md"; // Import the cancel icon
-
+import PersonIcon from '@mui/icons-material/Person';
 import styles from "../dashboard_component/dashboardPage.module.css";
 import { Avatar } from "@mui/material";
 import axios from "axios";
@@ -672,12 +672,11 @@ const AdminMembersPage: React.FC = () => {
                     Members
                   </a>
                 </li>
-               
 
                 <li>
                   <a
-                     onClick={() => setShowLogoutConfirmation(true)}
-                     className={styles["material-icons"]}
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className={styles["material-icons"]}
                   >
                     <i
                       className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
@@ -762,7 +761,6 @@ const AdminMembersPage: React.FC = () => {
               {/* Add this cell */}
             </TableRow>
           </TableHead>
-
           <TableBody>
             {sortedCurrentUsers.map((user) => (
               <TableRow className="table-cell" key={user.user_id} hover>
@@ -771,13 +769,16 @@ const AdminMembersPage: React.FC = () => {
                   padding="checkbox"
                 ></TableCell>
                 <TableCell>
-                  <a
-                    className="user-link"
-                    href="#"
-                    onClick={() => handleUserClick(user.user_id)}
-                  >
-                    {`${user.first_name} ${user.last_name}`}
-                  </a>
+                  <div className="user-info">
+                    <PersonIcon fontSize="large" className="user-icon" />
+                    <a
+                      className="user-link"
+                      href="#"
+                      onClick={() => handleUserClick(user.user_id)}
+                    >
+                      {`${user.first_name} ${user.last_name}`}
+                    </a>
+                  </div>
                 </TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>

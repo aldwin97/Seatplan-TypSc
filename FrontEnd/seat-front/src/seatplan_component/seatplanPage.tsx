@@ -1575,7 +1575,7 @@ function SeatplanPage() {
 
             // Load the machine icon image
             const machineIcon = new Image();
-            machineIcon.src = "/machine.png";
+            machineIcon.src = "http://localhost:8080/SeatPlan/static/media/machine.png";
 
             // Draw the machine icon image
             machineIcon.onload = () => {

@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from 'react-icons/fa'; // Import the logout icon
-import { MdCancel } from 'react-icons/md'; // Import the cancel icon
+import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
+import { MdCancel } from "react-icons/md"; // Import the cancel icon
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import styles from "../dashboard_component/dashboardPage.module.css";
@@ -99,9 +99,7 @@ function ProjectPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch(
-          "/seat/project/showAllProject"
-        );
+        const response = await fetch("/seat/project/showAllProject");
         if (response.ok) {
           const projectsData = await response.json();
           setProjects(projectsData);
@@ -243,16 +241,13 @@ function ProjectPage() {
 
     console.log("New Project:", newProject);
     try {
-      const response = await fetch(
-        "/seat/project/insertNewProject",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newProject),
-        }
-      );
+      const response = await fetch("/seat/project/insertNewProject", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      });
 
       if (response.ok) {
         console.log("Project created successfully!");
@@ -290,9 +285,7 @@ function ProjectPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(
-        "/seat/project/showAllProject"
-      );
+      const response = await fetch("/seat/project/showAllProject");
       if (response.ok) {
         const projectsData = await response.json();
         setProjects(projectsData);
@@ -306,11 +299,14 @@ function ProjectPage() {
 
   const navigate = useNavigate();
 
+  const getColorCode = (colorId: number): string => {
+    const color = colors.find((c) => c.color_id === colorId);
+    return color ? color.color_code : "#FFFFFF"; // Default to white if color not found
+  };
   const getColorName = (colorId: number) => {
     const color = colors.find((c) => c.color_id === colorId);
-    return color ? color.color_name : "Unknown Color";
+    return color ? color.color_name : "White";
   };
-
   const projectsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (
@@ -475,48 +471,48 @@ function ProjectPage() {
                 </li>
 
                 <li>
-                    <a
-                      onClick={() => setShowLogoutConfirmation(true)}
-                      className={styles["material-icons"]}
+                  <a
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className={styles["material-icons"]}
+                  >
+                    <i
+                      className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
                     >
-                      <i
-                        className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
-                      >
-                        <Logout />
-                      </i>
-                      Logout
-                    </a>
-                  </li>
+                      <Logout />
+                    </i>
+                    Logout
+                  </a>
+                </li>
 
-                  {showLogoutConfirmation && (
+                {showLogoutConfirmation && (
                   <div className={styles.popupModal}>
-                  <div className={styles.popupContent}>
-                    <p className={styles.popupText}>
-                      Are you sure you want to log out?
-                    </p>
-                    <div className={styles.buttonRow}>
-                      <button
-                        className={styles.popupButton}
-                        onClick={() => {
-                          handleLogout();
-                          setShowLogoutConfirmation(false);
-                        }}
-                      >
-                        <span>Okay</span> <FaSignOutAlt className={styles.buttonIcon} />
-                      </button>
-                      <button
-                        className={styles.popupButtonNo}
-                        onClick={() => setShowLogoutConfirmation(false)}
-                      >
-                        <span>Cancel</span> <MdCancel className={styles.buttonIcon} />
-                      </button>
+                    <div className={styles.popupContent}>
+                      <p className={styles.popupText}>
+                        Are you sure you want to log out?
+                      </p>
+                      <div className={styles.buttonRow}>
+                        <button
+                          className={styles.popupButton}
+                          onClick={() => {
+                            handleLogout();
+                            setShowLogoutConfirmation(false);
+                          }}
+                        >
+                          <span>Okay</span>{" "}
+                          <FaSignOutAlt className={styles.buttonIcon} />
+                        </button>
+                        <button
+                          className={styles.popupButtonNo}
+                          onClick={() => setShowLogoutConfirmation(false)}
+                        >
+                          <span>Cancel</span>{" "}
+                          <MdCancel className={styles.buttonIcon} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                  )}
-                  
-                </ul>
-
+                )}
+              </ul>
             </div>
           </div>
         </div>
@@ -559,7 +555,22 @@ function ProjectPage() {
                     padding="checkbox"
                   ></TableCell>
                   <TableCell>{project.project_name}</TableCell>
-                  <TableCell> {getColorName(project.color_id)}</TableCell>
+                  <TableCell>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div
+                        style={{
+                          backgroundColor: getColorCode(project.color_id),
+                          width: "20px",
+                          height: "20px",
+                          borderRadius: "50%",
+                          border: "1px solid #000",
+                          marginRight: "8px", // Add some spacing between the circle and text
+                        }}
+                      />
+                      {getColorName(project.color_id)}
+                    </div>
+                  </TableCell>
+
                   <TableCell>{project.created_by}</TableCell>
                 </TableRow>
               ))}
@@ -608,11 +619,64 @@ function ProjectPage() {
                       onChange={handleColorIdChange}
                       required
                       fullWidth
+                      renderValue={(selected) => (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: getColorCode(selected),
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              marginRight: "8px",
+                            }}
+                          />
+                          {getColorName(selected)}
+                        </div>
+                      )}
                     >
-                      <MenuItem value={0}>Select a color</MenuItem>
+                      <MenuItem value={0}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "transparent",
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              marginRight: "8px",
+                            }}
+                          />
+                          Select a color
+                        </div>
+                      </MenuItem>
                       {colors.map((color) => (
                         <MenuItem key={color.color_id} value={color.color_id}>
-                          {color.color_name}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                backgroundColor: getColorCode(color.color_id),
+                                width: "20px",
+                                height: "20px",
+                                borderRadius: "50%",
+                                marginRight: "8px",
+                              }}
+                            />
+                            {color.color_name}
+                          </div>
                         </MenuItem>
                       ))}
                     </Select>

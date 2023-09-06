@@ -23,5 +23,7 @@ public class ProjectModel {
    private Long updated_by;
    private String color_code;
 
+
+   private String color_name;
    private Long seatCount;
 }

@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.seatPlan.project.dao.ProjectDao">
 
-    <insert id="insertProject"  parameterType="com.seatPlan.project.model.ProjectInputModel">
+    <insert id="insertProject" parameterType="com.seatPlan.project.model.ProjectInputModel">
         INSERT INTO table_project (
             project_name, 
             color_id,  
@@ -15,7 +15,15 @@
     </insert>
 
     <select id="getAllProjects" resultType="com.seatPlan.project.model.ProjectModel">
-        SELECT project_id, project_name FROM table_project WHERE is_deleted = 0
+        SELECT 
+            p.project_id, 
+            p.project_name, 
+            p.color_id, 
+            c.color_name AS color_name, 
+            p.created_by 
+        FROM table_project p
+        JOIN table_color c ON p.color_id = c.color_id
+        WHERE p.is_deleted = 0;
     </select>
 
     <select id="countProject" resultType="int">

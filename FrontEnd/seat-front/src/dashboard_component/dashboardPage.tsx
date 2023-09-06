@@ -57,7 +57,7 @@ const DashboardPage: React.FC = () => {
   const chartHeight = 320;
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const myChart = useRef<Chart | null>(null);
-
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [UserData, setUserData] = useState<UserData | null>(null);
   const [projectSummary, setProjectSummary] = useState<ProjectSummary[]>([]);
   const [page, setPage] = useState(0);
@@ -98,6 +98,19 @@ const DashboardPage: React.FC = () => {
     last_name: string;
     position_name: string;
   }
+  useEffect(() => {
+    // Update the currentDateTime every second (1000 milliseconds)
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const hours = Number(currentDateTime.getHours());
+  const minutes = currentDateTime.getMinutes().toString().padStart(2, "0");
+  const seconds = currentDateTime.getSeconds().toString().padStart(2, "0");
 
   useEffect(() => {
     const fetchUserPicture = async () => {
@@ -436,7 +449,6 @@ const DashboardPage: React.FC = () => {
                         Members
                       </a>
                     </li>
-                   
 
                     <li>
                       <a
@@ -444,7 +456,7 @@ const DashboardPage: React.FC = () => {
                         className={styles["material-icons"]}
                       >
                         <i
-                           className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
+                          className={`${styles["material-icons-outlined"]} ${styles["material-icons"]}`}
                         >
                           <Logout />
                         </i>
@@ -507,6 +519,18 @@ const DashboardPage: React.FC = () => {
                   ) : (
                     <div></div>
                   )}
+                  {/* Display current date and time */}
+                  <div className={styles.datetime}>
+                    <div
+                      className={styles.clock}
+                      data-date={currentDateTime.toLocaleDateString()}
+                    >
+                      <span className={styles.time}>
+                        {hours % 12}:{minutes}:{seconds}{" "}
+                        {hours < 12 ? "AM" : "PM"}
+                      </span>
+                    </div>
+                  </div>
                 </Box>
               </Grid>
               <div className={styles.countcontainer}>

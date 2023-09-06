@@ -381,13 +381,13 @@ const AdminMembersPage: React.FC = () => {
     if (!editedUser) {
       return;
     }
-
+  
     // Prepare the updated user data
     const updatedUserModel: Partial<User> = {
       user_id: selectedUser?.user_id,
       usertype_id: editedUser?.usertype_id,
       position_id: editedUser?.position_id,
-      project_id: editMode ? selectedProjects : editedUser?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the old projects
+      project_id: editMode ? selectedProjects : selectedUser?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the existing projects
       first_name: editedUser?.first_name || "",
       last_name: editedUser?.last_name || "",
       mobile_num: editedUser?.mobile_num || 0,
@@ -395,14 +395,14 @@ const AdminMembersPage: React.FC = () => {
       password: editedUser?.password || "",
       updated_by: loggedInUserId ? Number(loggedInUserId) : 0,
     };
-
+  
     // Conditionally include the email field if it has been edited
     if (editedUser.email !== selectedUser?.email) {
       updatedUserModel.email = editedUser.email;
     }
-
+  
     console.log("Data being updated:", updatedUserModel);
-
+  
     // Make the PUT request to update the user
     fetch(`/seat/admin/update/${selectedUser?.user_id}`, {
       method: "PUT",
@@ -420,7 +420,6 @@ const AdminMembersPage: React.FC = () => {
         } else {
           response.text().then((errorMessage) => {
             console.log("Failed to update user:", errorMessage);
-            window.location.reload();
             // Set the error message state
             setErrorMessage(errorMessage);
           });
@@ -428,9 +427,9 @@ const AdminMembersPage: React.FC = () => {
       })
       .catch((error) => {
         console.log("Error while updating user", error);
-        window.location.reload();
       });
   };
+  
 
   useEffect(() => {
     fetch("/seat/admin/showAllUser")

@@ -387,7 +387,7 @@ const AdminMembersPage: React.FC = () => {
       user_id: selectedUser?.user_id,
       usertype_id: editedUser?.usertype_id,
       position_id: editedUser?.position_id,
-      project_id: editMode ? selectedProjects : selectedUser?.project_id || [], // Use selectedProjects when in edit mode, otherwise use the existing projects
+      project_id: editedUser?.project_id || selectedUser?.project_id || [], // Use the updated projects if available, otherwise use the existing projects
       first_name: editedUser?.first_name || "",
       last_name: editedUser?.last_name || "",
       mobile_num: editedUser?.mobile_num || 0,
@@ -421,14 +421,17 @@ const AdminMembersPage: React.FC = () => {
           response.text().then((errorMessage) => {
             console.log("Failed to update user:", errorMessage);
             // Set the error message state
+            window.location.reload();
             setErrorMessage(errorMessage);
           });
         }
       })
       .catch((error) => {
         console.log("Error while updating user", error);
+        window.location.reload();
       });
   };
+  
   
 
   useEffect(() => {

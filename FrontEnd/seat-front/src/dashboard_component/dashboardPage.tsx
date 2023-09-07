@@ -194,12 +194,12 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     if (chartRef.current) {
       const ctx = chartRef.current.getContext("2d");
-
+  
       if (ctx) {
         if (myChart.current) {
           myChart.current.destroy();
         }
-
+  
         myChart.current = new Chart(ctx, {
           type: "bar",
           data: {
@@ -246,13 +246,14 @@ const DashboardPage: React.FC = () => {
         });
       }
     }
-
+  
     return () => {
       if (myChart.current) {
         myChart.current.destroy();
       }
     };
-  });
+  }, [dashboardData]); // Only run the effect when dashboardData changes
+  
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {

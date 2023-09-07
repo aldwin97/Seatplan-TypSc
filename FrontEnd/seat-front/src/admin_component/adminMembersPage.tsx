@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { FaSignOutAlt } from "react-icons/fa"; // Import the logout icon
 import { MdCancel } from "react-icons/md"; // Import the cancel icon
-import PersonIcon from '@mui/icons-material/Person';
+import PersonIcon from "@mui/icons-material/Person";
 import styles from "../dashboard_component/dashboardPage.module.css";
 import { Avatar } from "@mui/material";
 import axios from "axios";
@@ -199,7 +199,6 @@ const AdminMembersPage: React.FC = () => {
     window.location.reload();
     setUserInfoDialogOpen(false);
     setAddUserDialogOpen(false);
-    
   };
 
   const handleUserCheckboxChange = (
@@ -772,7 +771,11 @@ const AdminMembersPage: React.FC = () => {
                 ></TableCell>
                 <TableCell>
                   <div className="user-info">
-                    <PersonIcon fontSize="large" className="user-icon" />
+                    <Avatar
+                      className="user-icon"
+                      alt={user.first_name}
+                      src="/static/images/avatar.jpg"
+                    />
                     <a
                       className="user-link"
                       href="#"
@@ -1029,7 +1032,6 @@ const AdminMembersPage: React.FC = () => {
               onClick={handleCloseDialog}
               color="primary"
               className="user-info-dialog-close-button"
-              
             >
               Close
             </Button>

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,22 +20,31 @@ import jakarta.servlet.http.HttpSession;
 @Transactional
 public class UserService{
 
-    
+    @Autowired
     public UserDao userDao;
 
-    public UserService(@Autowired(required=true) UserDao userDao) {
-        this.userDao = userDao;
+       
+   
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    public UserModel authenticateUser(UserModel userModel, HttpSession session) {
+        String username = userModel.getUsername();
+        String providedPassword = userModel.getPassword();
+        UserModel user = userDao.getUserByUsername(username);
+
+        if (user != null) {
+            String hashedPassword = user.getPassword();
+            if (passwordEncoder.matches(providedPassword, hashedPassword)) {
+                return user;
+            }
+        }
+
+        return user = null;
     }
 
-    public UserModel authenticateUser(String username, String password, HttpSession session) {
-        UserModel user = userDao.getUserByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
-            session.setAttribute("userSession", user);
-            return user;
-        } else {
-            return null;
-        }
-    }
 
 
     public int countUsers() {

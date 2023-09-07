@@ -196,8 +196,10 @@ const AdminMembersPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCloseDialog = () => {
+    window.location.reload();
     setUserInfoDialogOpen(false);
     setAddUserDialogOpen(false);
+    
   };
 
   const handleUserCheckboxChange = (
@@ -1027,6 +1029,7 @@ const AdminMembersPage: React.FC = () => {
               onClick={handleCloseDialog}
               color="primary"
               className="user-info-dialog-close-button"
+              
             >
               Close
             </Button>

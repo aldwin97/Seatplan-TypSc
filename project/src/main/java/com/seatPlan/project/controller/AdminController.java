@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // To show all the Position in the Database.
     @GetMapping("/showAllPosition")
@@ -121,7 +125,8 @@ public class AdminController {
             }
 
             if (userModel.getPassword() != null) {
-                existingUser.setPassword(userModel.getPassword());
+                String hashPassword = passwordEncoder.encode(userModel.getPassword());
+                existingUser.setPassword(hashPassword);
             }
 
             if (userModel.getUsertype_id() != null) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,19 +29,21 @@ public class UserController {
     private UserService userService;
 
     
+     @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/login")
     public ResponseEntity<UserModel> authenticateUser(@RequestBody UserModel userModel, HttpSession session) {
-        String username = userModel.getUsername();
-        String password = userModel.getPassword();
 
-        UserModel authenticatedUser = userService.authenticateUser(username, password, session);
+        UserModel authenticatedUser = userService.authenticateUser(userModel, session);
 
         if (authenticatedUser != null) {
             return ResponseEntity.ok(authenticatedUser);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-    }   
+    }
+
     
     
      @GetMapping("/count")
